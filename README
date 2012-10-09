@@ -1,6 +1,8 @@
-Arduino 1.0+ core for ATTiny's
+BETA Arduino 1.0+ core for ATTiny's
 
-Based on the arduin-tiny core here: http://code.google.com/p/arduino-tiny/
+Note: Beta testers are needed to try out the core and find any bugs!
+
+Based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
 
 The core is largely rewritten from the original to bring it inline with the latest version of the IDE and to make the addition of new processors easier by moving all configuration to additional pins_arduino.h files in keeping with the main arduino core.
 It also features an up to date Print class from the standard Arduino core, plus a fixed String class courtesy of the Teensy core.
