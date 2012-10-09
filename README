@@ -1,0 +1,24 @@
+Arduino 1.0+ core for ATTiny's
+
+Based on the arduin-tiny core here: http://code.google.com/p/arduino-tiny/
+
+The core is largely rewritten from the original to bring it inline with the latest version of the IDE and to make the addition of new processors easier by moving all configuration to additional pins_arduino.h files in keeping with the main arduino core.
+It also features an up to date Print class from the standard Arduino core, plus a fixed String class courtesy of the Teensy core.
+
+Currently the following processors are supported:
+
+ATtiny84,44,24
+ATtiny85,45,25
+ATtiny861
+ATtiny87 (untested)
+ATtiny2313
+
+With plans for support of the Attiny88 - If someone wants to write a pins_arduino.h file and test it, feel free to post it here.
+
+
+This core is still in Beta as I haven't fully tested it out yet. I know that the main functions work such as Serial (software), SPI (software), Digital/Analog read/write, millis(), micros(), delay(), delayMicroseconds(), print(), println(). However on some processors, functions such as Tone() are still not fully functional.
+There is also a certain amount of optimisation required to make the compile size smaller for the those chips with severly limited Flash (such as the tiny24).
+
+Also included for the Tiny84 and Tiny85 is a functioning Optiboot bootloader. There are two versions of this:
+> The first is one which is the normal optiboot which can be compiled using the "make attiny84.bat" and "make attiny85.bat" files. This can be hit and miss whether it works due to the fact that the internal oscillator of the ATtiny's is not well calibrated.
+> The second is optiboot but it comes with the TinyTuner sketch built in. The bootloader takes up no additional space as the tuning sketch is overwritten by any uploaded program, however it allows the oscillator to be fully calibrated before sketches are downloaded. This is the version supplied (can be recompiled with "make attiny84_tuned.bat" and "make attiny85_tuned.bat" files). See the readme in the tiny\bootloades\optiboot\ folder for more info.
