@@ -194,7 +194,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 	_BV(6),
 	_BV(7),
 	_BV(3),
-	_BV(0), /* 15 */
+	_BV(7), /* 15 */
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
