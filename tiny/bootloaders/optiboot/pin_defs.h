@@ -49,6 +49,22 @@
   #define WDTCSR	WDTCR
 #endif
 
+#if defined( __AVR_ATtiny167__) || defined( __AVR_ATtiny87__)
+/* Red LED is connected to pin PA2 */ 
+#define LED_DDR     DDRA
+#define LED_PORT    PORTA
+#define LED_PIN     PINA
+#define LED         PINA2
+/* Ports for soft UART - left port only for now. TX/RX on PA1/PA0 */
+#ifdef SOFT_UART
+#define UART_PORT   PORTA
+#define UART_PIN    PINA
+#define UART_DDR    DDRA
+#define UART_TX_BIT PINA6 //6
+#define UART_RX_BIT PINA7 //7
+#endif
+#endif
+
 /* Tiny84 support */
 #ifdef __AVR_ATtiny84__
 /* Red LED is connected to pin PB2 */ 

@@ -6,18 +6,15 @@
  * it under the terms of either the GNU General Public License version 2
  * or the GNU Lesser General Public License version 2.1, both as
  * published by the Free Software Foundation.
- *
- * Currently, this runs at 125kHz on an 8MHz clock.
  */
 
-#include "TinySoftwareSPI.h"
+#include "tinySoftSPI.h"
 #include "Arduino.h"
 
 SoftSPIClass::SoftSPIClass(){
 	_bitOrder = MSBFIRST;
 	_mode = SPI_MODE0;
-	_running = false;
-	transferType = &SoftSPIClass::noTransfer;
+	transferType = &SoftSPIClass::transferMode0;
 }
 
 #if defined(SS) && defined(MOSI) && defined(MISO) && defined(SCK)
@@ -25,14 +22,6 @@ void SoftSPIClass::begin(){
 	begin(SCK,MOSI,MISO,SS);
 }
 #endif
-
-void SoftSPIClass::writeSS(boolean state){
-	if (state) {
-		*_SS_PORT |= _SS_HIGH;
-	} else {
-		*_SS_PORT &= _SS_LOW;
-	}
-}
 
 void SoftSPIClass::begin(byte SCK_, byte MOSI_, byte MISO_, byte SS_){
 	_SS = SS_;
@@ -71,15 +60,7 @@ void SoftSPIClass::begin(byte SCK_, byte MOSI_, byte MISO_, byte SS_){
 		*_SCK_PORT &= _SCK_LOW;
 		*_MOSI_PORT &= _MOSI_LOW;
 		
-		//Default to Mode0.
-		_mode = SPI_MODE0;
-		transferType = &SoftSPIClass::transferMode0;
 	}
-}
-
-byte SoftSPIClass::noTransfer(byte _data){
-	//This does nothing. If you call SPI.transfer() before calling begin() or after calling end(), the call will be redirected here to avoid crash.
-	return 0xFF;
 }
 
 byte SoftSPIClass::transferMode0(byte _data){
@@ -149,12 +130,11 @@ byte SoftSPIClass::transferMode3(byte _data){
 
 byte SoftSPIClass::transfer(byte _data){
 	byte _newData = 0;
-    byte oldSREG = SREG;
-	cli();
 	if (_bitOrder == MSBFIRST){
 	//Send data
-		_newData = (*this.*transferType)(_data);
-		SREG = oldSREG;
+		cli();
+		_newData = (SPI.*transferType)(_data);
+		sei();
 		return _newData;
 	} else {
 		//flip the data
@@ -164,8 +144,9 @@ byte SoftSPIClass::transfer(byte _data){
 		  _data >>= 1;
 		}
 		//SPI transfer
-		_newData = (*this.*transferType)(_newData);
-		SREG = oldSREG;
+		cli();
+		_newData = (SPI.*transferType)(_newData);
+		sei();
 		//flip data back.
 		_data = 0;
 		for(byte i = 0; i < 8; i++){
@@ -179,7 +160,6 @@ byte SoftSPIClass::transfer(byte _data){
 
 void SoftSPIClass::end(){
 	_running = false;
-	transferType = &SoftSPIClass::noTransfer;
 }
 
 void SoftSPIClass::setBitOrder(uint8_t bitOrder) {
@@ -211,7 +191,7 @@ void SoftSPIClass::setDataMode(uint8_t mode)
 void SoftSPIClass::setClockDivider(uint8_t rate)
 {
 	
-	//does nothing as the speed cannot be changed - fixed at Fcpu/16
+	
 	
 }
 

@@ -63,18 +63,17 @@ static const uint8_t A7 = NUM_DIGITAL_PINS+7;
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-#define INITIALIZE_SECONDARY_TIMERS               1
-/*
-  For various reasons, Timer 1 is a better choice for the millis timer on the
-  '85 processor.
-*/
+#define INITIALIZE_SECONDARY_TIMERS               0
+
 #define TIMER_TO_USE_FOR_MILLIS                   0
+
+#define HAVE_BOOTLOADER                           1
 
 /*
   Where to put the software serial? (Arduino Digital pin numbers)
 */
 //WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL						  0
 //Please define the port on which the analog comparator is found.
 #define ANALOG_COMP_DDR						 	  DDRA
 #define ANALOG_COMP_PORT						  PORTA
@@ -114,63 +113,62 @@ static const uint8_t A7 = NUM_DIGITAL_PINS+7;
 // ATMEL ATTINY167
 //
 //                   +-\/-+
-// RX   (D  0) PA0  1|    |20  PB0 (D  4)**
-// TX   (D  1) PA1  2|    |19  PB1 (D  5)***
-//     *(D 12) PA2  3|    |18  PB2 (D  6)**
-//      (D  3) PA3  4|    |17  PB3 (D  7)***
+// RX   (D  0) PA0  1|    |20  PB0 (D  4)
+// TX   (D  1) PA1  2|    |19  PB1 (D  5)
+//     *(D 12) PA2  3|    |18  PB2 (D  6)
+//      (D  3) PA3  4|    |17  PB3 (D  7)*
 //            AVCC  5|    |16  GND
 //            AGND  6|    |15  VCC
-// INT1 (D 11) PA4  7|    |14  PB4 (D  8)**
-//      (D 13) PA5  8|    |13  PB5 (D  9)***
-//      (D 10) PA6  9|    |12  PB6 (D  2)**
-//      (D 14) PA7 10|    |11  PB7 (D 15)***
+// INT1 (D 11) PA4  7|    |14  PB4 (D  8)
+//      (D 13) PA5  8|    |13  PB5 (D  9)
+//      (D 10) PA6  9|    |12  PB6 (D  2)* INT0
+//      (D 14) PA7 10|    |11  PB7 (D 15)
 //                   +----+
 //
-// * indicates PWM0 pin. **pick one for PWM1. ***pick one for PWM2. 
-// For PWM1 and PWM2, setting one as PWM will disable the others as PWM (it is possible to repeatedly swap between them)
+// * indicates PWM pin.
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-const uint8_t PROGMEM port_to_mode_PGM[] = 
+const uint16_t PROGMEM port_to_mode_PGM[] = 
 {
 	NOT_A_PORT,
-	&DDRA,
-	&DDRB,
+	(uint16_t)&DDRA,
+	(uint16_t)&DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] = 
+const uint16_t PROGMEM port_to_output_PGM[] = 
 {
 	NOT_A_PORT,
-	&PORTA,
-	&PORTB,
+	(uint16_t)&PORTA,
+	(uint16_t)&PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] = 
+const uint16_t PROGMEM port_to_input_PGM[] = 
 {
 	NOT_A_PORT,
-	&PINA,
-	&PINB,
+	(uint16_t)&PINA,
+	(uint16_t)&PINB,
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
 {
-	PORT_A_ID, /* 0 */
-	PORT_A_ID,
-	PORT_B_ID, /* 2 */
-	PORT_A_ID, /* 3 */
-	PORT_B_ID, /* 4 */
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_A_ID, /* 10 */
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_B_ID, /* 15 */
+	PA, /* 0 */
+	PA,
+	PB, /* 2 */
+	PA, /* 3 */
+	PB, /* 4 */
+	PB,
+	PB,
+	PB,
+	PB,
+	PB,
+	PA, /* 10 */
+	PA,
+	PA,
+	PA,
+	PA,
+	PB, /* 15 */
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
@@ -197,20 +195,20 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
 	NOT_ON_TIMER, 
 	NOT_ON_TIMER,
-	TIMER1AX,
-	NOT_ON_TIMER,
-	TIMER1AU,
-	TIMER1BU,
-	TIMER1AV,
-	TIMER1BV,
-	TIMER1AW,
-	TIMER1BW,
+	TIMER1A,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
-	TIMER0A,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
-	TIMER1BX,
+	TIMER1B,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
 };
 
 #endif

@@ -22,7 +22,6 @@
 #ifndef HardwareSerial_h
 #define HardwareSerial_h
 
-#if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL
 #include <inttypes.h>
 
 #include "Stream.h"
@@ -34,7 +33,6 @@ class HardwareSerial : public Stream
   private:
     ring_buffer *_rx_buffer;
     ring_buffer *_tx_buffer;
-    #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
     volatile uint8_t *_ubrrh;
     volatile uint8_t *_ubrrl;
     volatile uint8_t *_ucsra;
@@ -45,18 +43,12 @@ class HardwareSerial : public Stream
     uint8_t _rxcie;
     uint8_t _udrie;
     uint8_t _u2x;
-    #endif
   public:
-    HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
-    #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
-      ,
+    HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
       volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
       volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
       volatile uint8_t *udr,
       uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x);
-    #else
-      );
-    #endif
     void begin(long);
     void end();
     virtual int available(void);
@@ -67,9 +59,8 @@ class HardwareSerial : public Stream
     using Print::write; // pull in write(str) and write(buf, size) from Print
     operator bool();
 };
-#endif
 
-#if (defined(UBRRH) || defined(UBRR0H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL
+#if (defined(UBRRH) || defined(UBRR0H)) && !USE_SOFTWARE_SERIAL
   extern HardwareSerial Serial;
 #endif
 #if defined(UBRR1H)

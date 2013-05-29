@@ -457,6 +457,26 @@ atmega328_pro8_isp: LFUSE = FF
 atmega328_pro8_isp: EFUSE = 05
 atmega328_pro8_isp: isp
 
+#Tiny Bootloaders (12MHz only)
+
+attiny84_12: TARGET = attiny84
+attiny84_12: MCU_TARGET = attiny84
+attiny84_12: CFLAGS += '-DLED_START_FLASHES=3' '-DSOFT_UART' '-DBAUD_RATE=19200' '-DLED_DATA_FLASH'
+attiny84_12: CFLAGS += '-DVIRTUAL_BOOT_PARTITION'
+attiny84_12: AVR_FREQ = 12000000L
+attiny84_12: LDSECTIONS = --gc-sections -nostartfiles -nostdlib -Wl,--section-start=.text=0x1dc0 -Wl,--section-start=.version=0x1ffe
+attiny84_12: $(PROGRAM)_attiny84_12.hex
+attiny84_12: $(PROGRAM)_attiny84_12.lst
+attiny84_12: $(PROGRAM)_attiny84_12.elf
+
+attiny84_12_isp: attiny84
+attiny84_12_isp: TARGET = attiny84
+attiny84_12_isp: MCU_TARGET = attiny84
+attiny84_12_isp: HFUSE = E0
+attiny84_12_isp: LFUSE = D7
+attiny84_12_isp: EFUSE = FE
+attiny84_12_isp: isp
+
 #Tiny Bootloaders (8MHz only)
 
 attiny84: TARGET = attiny84
@@ -530,6 +550,43 @@ attiny85_tuned_isp: HFUSE = E2
 attiny85_tuned_isp: LFUSE = D7
 attiny85_tuned_isp: EFUSE = FE
 attiny85_tuned_isp: isp
+
+attiny167_tuned: TARGET = attiny167
+attiny167_tuned: MCU_TARGET = attiny167
+attiny167_tuned: CFLAGS += '-DLED_START_FLASHES=3' '-DBAUD_RATE=19200' '-DLED_DATA_FLASH' '-DUSE_TINY_TUNER' '-DSOFT_UART'
+attiny167_tuned: CFLAGS += '-DVIRTUAL_BOOT_PARTITION' '-DVIRTUAL_BOOT_PARTITION_START=0x3d50'
+attiny167_tuned: AVR_FREQ = 8000000L
+attiny167_tuned: LDSECTIONS = -Wl,--section-start=.text=0x3000 -Wl,--section-start=.bootloader.start=0x3d50 -Wl,--section-start=.bootloader=0x3f70 -Wl,--section-start=.version=0x3ffc
+attiny167_tuned: $(PROGRAM)_attiny167.hex
+attiny167_tuned: $(PROGRAM)_attiny167.lst
+attiny167_tuned: $(PROGRAM)_attiny167.elf
+
+attiny167_tuned_isp: attiny167
+attiny167_tuned_isp: TARGET = attiny167
+attiny167_tuned_isp: MCU_TARGET = attiny167
+attiny167_tuned_isp: HFUSE = DF
+attiny167_tuned_isp: LFUSE = A0
+attiny167_tuned_isp: EFUSE = FE
+attiny167_tuned_isp: isp
+
+##3d80 without soft uart. There are no start flashes as there is no space for them.
+attiny167: TARGET = attiny167
+attiny167: MCU_TARGET = attiny167
+attiny167: CFLAGS += '-DLED_START_FLASHES=0' '-DBAUD_RATE=57600' '-DLED_DATA_FLASH'
+attiny167: CFLAGS += '-DVIRTUAL_BOOT_PARTITION' '-DVIRTUAL_BOOT_PARTITION_START=0x3d80'
+attiny167: AVR_FREQ = 20000000L
+attiny167: LDSECTIONS = --gc-sections -nostartfiles -nostdlib -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167: $(PROGRAM)_attiny167.hex
+attiny167: $(PROGRAM)_attiny167.lst
+attiny167: $(PROGRAM)_attiny167.elf
+
+attiny167_isp: attiny167
+attiny167_isp: TARGET = attiny167
+attiny167_isp: MCU_TARGET = attiny167
+attiny167_isp: HFUSE = DF
+attiny167_isp: LFUSE = A0
+attiny167_isp: EFUSE = FE
+attiny167_isp: isp
 
 #
 # Generic build instructions

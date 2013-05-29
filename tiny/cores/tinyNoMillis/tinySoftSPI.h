@@ -36,7 +36,6 @@ public:
 	SoftSPIClass();
 private:
 	TransferFunction transferType;
-	byte noTransfer(byte _data);
 	byte transferMode0(byte _data);
 	byte transferMode1(byte _data);
 	byte transferMode2(byte _data);
@@ -55,7 +54,7 @@ public:
 	void setDataMode(uint8_t);
 	void setClockDivider(uint8_t);
 	
-	void writeSS(boolean state);
+	void writeSS(boolean bitValue);
 private:
 	byte _rate;
 	byte _bitOrder;

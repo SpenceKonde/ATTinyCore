@@ -104,32 +104,6 @@ void tinyTuner(){
   
   
   uint16_t addrPtr;
-/*
-  uint8_t *bufPtr;
-  uint8_t ch;
-  ch = SPM_PAGESIZE;
-  bufPtr = buff;
-  do *bufPtr++ = 0xFF;
-  while (--ch);
-  // Copy buffer into programming buffer
-  bufPtr -= 4;
-  *bufPtr++ = 0x00; //prevents tinyTuner ever being called again (good as it will be overwritten by bootloader later.
-  *bufPtr = OSCCAL; //store the new OSCCAL value in the program memory so it can be restored by the bootloader at startup.
-  
-  bufPtr = buff; //go back to the start of the buffer
-  addrPtr = 0;
-  ch = SPM_PAGESIZE / 2;
-  do {
-    twoByte a; //Again by using a union, code length is slashed, this time by 16 bytes.
-    a.array[0] = *bufPtr++;
-    a.array[1] = *bufPtr++;
-    __boot_page_fill_short((uint16_t)(void*)addrPtr,a.integer);
-    addrPtr += 2;
-  } while (--ch);
-
-  // Write from programming buffer
-  addrPtr = (uint16_t)(void*)ver;
-  */
   
   //For this code we are assuming that the cleared value of each byte in the temporary page buffer is 0xFF
   //This is important as we have to write a page at a time which means that we will be overwriting bytes we
@@ -199,7 +173,7 @@ void uartDelay_t() {
 void putstr_t(const prog_char *str){
   unsigned char c = pgm_read_byte(str++);
   while (c) {
-    putch(c);
+    putch_t(c);
 	c = pgm_read_byte(str++);
   }
 }

@@ -119,9 +119,7 @@ void TinySoftwareSerial::begin(long baud)
   }
   _delayCount = (uint8_t)tempDelay;
   cbi(ACSR,ACIE);  //turn off the comparator interrupt to allow change of ACD
-#ifdef ACBG
   sbi(ACSR,ACBG); //enable the internal bandgap reference - used instead of AIN0 to allow it to be used for TX.
-#endif
   cbi(ACSR,ACD);  //turn on the comparator for RX
 #ifdef ACIC
   cbi(ACSR,ACIC);  //prevent the comparator from affecting timer1 - just to be safe.
@@ -144,9 +142,7 @@ void TinySoftwareSerial::end()
 {
   sbi(ACSR,ACI); //clear the flag.
   cbi(ACSR,ACIE);  //turn off the comparator interrupt to allow change of ACD, and because it needs to be turned off now too!
-#ifdef ACBG
   cbi(ACSR,ACBG); //disable the bandgap reference
-#endif
   sbi(ACSR,ACD);  //turn off the comparator to save power
   _delayCount = 0;
   _rx_buffer->head = _rx_buffer->tail;

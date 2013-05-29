@@ -29,21 +29,31 @@
 #include "wiring_private.h"
 
 #if F_CPU >= 3000000L
+
+#if !defined(__AVR_ATtiny167__) && !defined(__AVR_ATtiny87__)
+#define timer0Prescaler 0b011
+#else
+#define timer0Prescaler 0b100
+#endif
+
 //Timers with TCCR1 are slightly different.
 #if defined(TCCR1) && (TIMER_TO_USE_FOR_MILLIS == 1)
   #define MillisTimer_Prescale_Index  (0b0111)
-  #define ToneTimer_Prescale_Index    (0b011)
+  #define ToneTimer_Prescale_Index    (timer0Prescaler)
 #elif defined(TCCR1) && (TIMER_TO_USE_FOR_MILLIS == 0)
-  #define MillisTimer_Prescale_Index  (0b011)
+  #define MillisTimer_Prescale_Index  (timer0Prescaler)
   #define ToneTimer_Prescale_Index    (0b0111)
 #elif defined(TCCR1E) && (TIMER_TO_USE_FOR_MILLIS == 1)
   #define MillisTimer_Prescale_Index  (0b0111)
-  #define ToneTimer_Prescale_Index    (0b011)
+  #define ToneTimer_Prescale_Index    (timer0Prescaler)
 #elif defined(TCCR1E) && (TIMER_TO_USE_FOR_MILLIS == 0)
-  #define MillisTimer_Prescale_Index  (0b011)
+  #define MillisTimer_Prescale_Index  (timer0Prescaler)
   #define ToneTimer_Prescale_Index    (0b0111)
-#else
+#elif (TIMER_TO_USE_FOR_MILLIS == 1)
   #define MillisTimer_Prescale_Index  (0b011)
+  #define ToneTimer_Prescale_Index    (timer0Prescaler)
+#else
+  #define MillisTimer_Prescale_Index  (timer0Prescaler)
   #define ToneTimer_Prescale_Index    (0b011)
 #endif
 
@@ -427,9 +437,18 @@ void initToneTimer(void)
     initToneTimerInternal();
   #endif
 }
-#if F_CPU == 16000000
+#if F_CPU == 20000000
+  // 20 MHz / 128 ~= 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B111
+#elif F_CPU == 18432000
+  // 18.432 MHz / 128 ~= 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B111
+#elif F_CPU == 16000000
   // 16 MHz / 128 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   B111
+#elif F_CPU == 12000000
+  // 12 MHz / 64 ~= 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B110
 #elif F_CPU == 8000000
   // 8 MHz / 64 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   B110
@@ -450,23 +469,32 @@ void init(void)
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
   // Ensure the timer is in the same state as power-up
   #if (TIMER_TO_USE_FOR_MILLIS == 0) && defined(WGM01)
-  TCCR0B = (0<<FOC0A) | (0<<FOC0B) | (0<<WGM02) | (0<<CS02) | (0<<CS01) | (0<<CS00);
-  TCCR0A = (0<<COM0A1) | (0<<COM0A0) | (0<<COM0B1) | (0<<COM0B0) | (0<<WGM01) | (0<<WGM00);
+  TCCR0B = 0;
+  TCCR0A = 0;
   // Reset the count to zero
   TCNT0 = 0;
   // Set the output compare registers to zero
   OCR0A = 0;
+  #ifdef OCR0B
   OCR0B = 0;
+  #endif
   #if defined(TIMSK)
   // Disable all Timer0 interrupts
   TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
   // Clear the Timer0 interrupt flags
   TIFR |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
   #elif defined(TIMSK1)
+  #ifdef OCIE0B
   // Disable all Timer0 interrupts
   TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
   // Clear the Timer0 interrupt flags
   TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
+  #else
+  // Disable all Timer0 interrupts
+  TIMSK0 &= ~((1<<OCIE0A) | (1<<TOIE0));
+  // Clear the Timer0 interrupt flags
+  TIFR0 |= ((1<<OCF0A) | (1<<TOV0));
+  #endif
   #endif
   
   #elif (TIMER_TO_USE_FOR_MILLIS == 0) && defined(TCW0)
