@@ -33,10 +33,10 @@
 
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
 
-#define SS   7
-#define MOSI 5
-#define MISO 4
-#define SCK  6
+#define SS   10
+#define MOSI 11
+#define MISO 12
+#define SCK  13
 
 static const uint8_t SDA = 4;
 static const uint8_t SCL = 6;
