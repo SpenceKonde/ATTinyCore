@@ -65,8 +65,11 @@
 #endif
 #endif
 
-/* Tiny84 support */
-#ifdef __AVR_ATtiny84__
+/* Tiny24 support */
+#ifdef __AVR_ATtiny24__
+/* Bootloader entry pin pin is PB1 */ 
+#define BOOTENTRY_PIN     PINB
+#define BOOTENTRY         PINB1
 /* Red LED is connected to pin PB2 */ 
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
@@ -79,6 +82,39 @@
 #define UART_DDR    DDRA
 #define UART_TX_BIT PINA1
 #define UART_RX_BIT PINA2
+#endif
+#endif
+/* Tiny84 support */
+#ifdef __AVR_ATtiny84__
+#ifdef ALTERNATE_LAYOUT
+/* Red LED is connected to pin PB1 */ 
+#define LED_DDR     DDRB
+#define LED_PORT    PORTB
+#define LED_PIN     PINB
+#define LED         PINB1
+/* Ports for soft UART - left port only for now. TX/RX on PB1/PB0 */
+#ifdef SOFT_UART
+#define UART_RX_PIN    PINA
+#define UART_PORT   PORTB
+#define UART_PIN    PINB
+#define UART_DDR    DDRB
+#define UART_TX_BIT    PINB2
+#define UART_RX_BIT    PINA7
+#endif
+#else
+/* Red LED is connected to pin PB2 */ 
+#define LED_DDR     DDRB
+#define LED_PORT    PORTB
+#define LED_PIN     PINB
+#define LED         PINB2
+/* Ports for soft UART - left port only for now. TX/RX on PB1/PB0 */
+#ifdef SOFT_UART
+#define UART_PORT   PORTA
+#define UART_PIN    PINA
+#define UART_DDR    DDRA
+#define UART_TX_BIT    PINA1
+#define UART_RX_BIT    PINA2
+#endif
 #endif
 #endif
 

@@ -302,6 +302,9 @@ void tinyTuner() __attribute__ ((naked)) __attribute__ ((noreturn));
 #elif defined (__AVR_ATmega644P__)
 #define RAMSTART (0x100)
 #define NRWWSTART (0xE000)
+#elif defined(__AVR_ATtiny24__)
+#define RAMSTART (0x060)
+#define NRWWSTART (0xE000)
 #elif defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny167__) || defined(__AVR_ATtiny87__)
 #define RAMSTART (0x100)
 #define NRWWSTART (0x0000)
@@ -405,8 +408,14 @@ int main(void) {
   ch = MCUSR;
   MCUSR = 0;
 #endif
-#if defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__)// || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
-  if (!(ch & (_BV(EXTRF) | _BV(PORF)))) appStart(); //Power on reset loads bootloader as well - allows bootloader even if reset pin is disabled
+
+#ifdef BOOTENTRY
+  if(!(BOOTENTRY_PIN & _BV(BOOTENTRY))) appStart(); //if there is a bootloader entry pin, skip the bootloader if this is low.
+#endif
+
+#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__)// || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
+  uint8_t mask = (_BV(PORF) | _BV(EXTRF));
+  if (!(ch & mask)) appStart(); //Power on reset loads bootloader as well - allows bootloader even if reset pin is disabled
 #else
   if (!(ch & _BV(EXTRF))) appStart();
 #endif
@@ -452,7 +461,7 @@ int main(void) {
 #endif
 #endif
 
-#if defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
+#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
   // Set up watchdog to trigger after 2s to give software UART a better chance.
   watchdogConfig(WATCHDOG_2S);
 #else
@@ -837,7 +846,11 @@ uint8_t getch(void) {
     :
       "d" ((uint8_t)0),
       [bitCnt] "d" ((uint8_t)8),
+      #ifdef UART_RX_PIN
+      [uartPin] "I" (_SFR_IO_ADDR(UART_RX_PIN)), //rx is on a different port.
+      #else
       [uartPin] "I" (_SFR_IO_ADDR(UART_PIN)),
+      #endif
       [uartBit] "I" (UART_RX_BIT)
     :
       "r25"

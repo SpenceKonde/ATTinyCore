@@ -479,6 +479,16 @@ attiny84_12_isp: isp
 
 #Tiny Bootloaders (8MHz only)
 
+attiny24: TARGET = attiny24
+attiny24: MCU_TARGET = attiny24
+attiny24: CFLAGS += '-DLED_START_FLASHES=3' '-DSOFT_UART' '-DBAUD_RATE=19200' '-DLED_DATA_FLASH'
+attiny24: CFLAGS += '-DVIRTUAL_BOOT_PARTITION'
+attiny24: AVR_FREQ = 8000000L
+attiny24: LDSECTIONS = --gc-sections -nostartfiles -nostdlib -Wl,--section-start=.text=0x05c0 -Wl,--section-start=.version=0x07fc
+attiny24: $(PROGRAM)_attiny24.hex
+attiny24: $(PROGRAM)_attiny24.lst
+attiny24: $(PROGRAM)_attiny24.elf
+
 attiny84: TARGET = attiny84
 attiny84: MCU_TARGET = attiny84
 attiny84: CFLAGS += '-DLED_START_FLASHES=3' '-DSOFT_UART' '-DBAUD_RATE=19200' '-DLED_DATA_FLASH'
@@ -514,6 +524,42 @@ attiny85_isp: HFUSE = E2
 attiny85_isp: LFUSE = D7
 attiny85_isp: EFUSE = FE
 attiny85_isp: isp
+
+attiny24_tuned: TARGET = attiny24
+attiny24_tuned: MCU_TARGET = attiny24
+attiny24_tuned: CFLAGS += '-DLED_START_FLASHES=3' '-DSOFT_UART' '-DBAUD_RATE=19200' '-DUSE_TINY_TUNER'
+attiny24_tuned: CFLAGS += '-DVIRTUAL_BOOT_PARTITION'
+attiny24_tuned: AVR_FREQ = 8000000L
+attiny24_tuned: LDSECTIONS = -Wl,--section-start=.text=0x0000 -Wl,--section-start=.bootloader.start=0x05c0 -Wl,--section-start=.bootloader=0x0774 -Wl,--section-start=.version=0x07fc
+attiny24_tuned: $(PROGRAM)_attiny24.hex
+attiny24_tuned: $(PROGRAM)_attiny24.lst
+attiny24_tuned: $(PROGRAM)_attiny24.elf
+
+attiny24_tuned_isp: attiny24
+attiny24_tuned_isp: TARGET = attiny24
+attiny24_tuned_isp: MCU_TARGET = attiny24
+attiny24_tuned_isp: HFUSE = E2
+attiny24_tuned_isp: LFUSE = D7
+attiny24_tuned_isp: EFUSE = FE
+attiny24_tuned_isp: isp
+
+attiny84_alternate_tuned: TARGET = attiny84
+attiny84_alternate_tuned: MCU_TARGET = attiny84
+attiny84_alternate_tuned: CFLAGS += '-DLED_START_FLASHES=3' '-DSOFT_UART' '-DBAUD_RATE=19200' '-DLED_DATA_FLASH' '-DUSE_TINY_TUNER' '-DALTERNATE_LAYOUT'
+attiny84_alternate_tuned: CFLAGS += '-DVIRTUAL_BOOT_PARTITION'
+attiny84_alternate_tuned: AVR_FREQ = 8000000L
+attiny84_alternate_tuned: LDSECTIONS = -Wl,--section-start=.text=0x0000 -Wl,--section-start=.bootloader.start=0x1dc0 -Wl,--section-start=.bootloader=0x1f74 -Wl,--section-start=.version=0x1ffc
+attiny84_alternate_tuned: $(PROGRAM)_attiny84.hex
+attiny84_alternate_tuned: $(PROGRAM)_attiny84.lst
+attiny84_alternate_tuned: $(PROGRAM)_attiny84.elf
+
+attiny84_alternate_tuned_isp: attiny84
+attiny84_alternate_tuned_isp: TARGET = attiny84
+attiny84_alternate_tuned_isp: MCU_TARGET = attiny84
+attiny84_alternate_tuned_isp: HFUSE = E2
+attiny84_alternate_tuned_isp: LFUSE = D7
+attiny84_alternate_tuned_isp: EFUSE = FE
+attiny84_alternate_tuned_isp: isp
 
 attiny84_tuned: TARGET = attiny84
 attiny84_tuned: MCU_TARGET = attiny84
