@@ -1,0 +1,17 @@
+variant=attiny84at16
+name=ATtiny84 @ 16 MHz  (external crystal; 4.3 V BOD)
+upload.using=arduino:arduinoisp
+upload.maximum_size=8192
+bootloader.low_fuses=0xFF
+bootloader.high_fuses=0xD4
+bootloader.extended_fuses=0xFF
+bootloader.path=empty
+bootloader.file=emptyX4.hex
+build.mcu=attiny84
+build.f_cpu=16000000L
+build.core=tiny
+build.variant=attiny84at16
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

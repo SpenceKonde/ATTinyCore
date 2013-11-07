@@ -1,0 +1,17 @@
+variant=attiny85at16p
+name=ATtiny85 @ 16 MHz  (internal PLL; 4.3 V BOD)
+upload.using=arduino:arduinoisp
+upload.maximum_size=8192
+bootloader.low_fuses=0xC1
+bootloader.high_fuses=0xD4
+bootloader.extended_fuses=0xFF
+bootloader.path=empty
+bootloader.file=emptyX5.hex
+build.mcu=attiny85
+build.f_cpu=16000000L
+build.core=tiny
+build.variant=attiny85at16p
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

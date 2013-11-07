@@ -1,0 +1,1876 @@
+
+optiboot_attiny24.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000005c0  00000000  00000000  000000b4  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bootloader.start 000001b2  000005c0  000005c0  00000674  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bootloader   00000082  00000774  00000774  00000826  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .version      00000004  000007fc  000007fc  000008a8  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .debug_aranges 00000068  00000000  00000000  000008ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_pubnames 000000eb  00000000  00000000  00000914  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   0000079f  00000000  00000000  000009ff  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 00000331  00000000  00000000  0000119e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   0000098d  00000000  00000000  000014cf  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000110  00000000  00000000  00001e5c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    000002f0  00000000  00000000  00001f6c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    000004d3  00000000  00000000  0000225c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 000000d8  00000000  00000000  0000272f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	1f c0       	rjmp	.+62     	; 0x40 <__ctors_end>
+   2:	38 c0       	rjmp	.+112    	; 0x74 <__bad_interrupt>
+   4:	37 c0       	rjmp	.+110    	; 0x74 <__bad_interrupt>
+   6:	36 c0       	rjmp	.+108    	; 0x74 <__bad_interrupt>
+   8:	35 c0       	rjmp	.+106    	; 0x74 <__bad_interrupt>
+   a:	34 c0       	rjmp	.+104    	; 0x74 <__bad_interrupt>
+   c:	33 c0       	rjmp	.+102    	; 0x74 <__bad_interrupt>
+   e:	32 c0       	rjmp	.+100    	; 0x74 <__bad_interrupt>
+  10:	31 c0       	rjmp	.+98     	; 0x74 <__bad_interrupt>
+  12:	30 c0       	rjmp	.+96     	; 0x74 <__bad_interrupt>
+  14:	2f c0       	rjmp	.+94     	; 0x74 <__bad_interrupt>
+  16:	2e c0       	rjmp	.+92     	; 0x74 <__bad_interrupt>
+  18:	2d c0       	rjmp	.+90     	; 0x74 <__bad_interrupt>
+  1a:	2c c0       	rjmp	.+88     	; 0x74 <__bad_interrupt>
+  1c:	2b c0       	rjmp	.+86     	; 0x74 <__bad_interrupt>
+  1e:	2a c0       	rjmp	.+84     	; 0x74 <__bad_interrupt>
+  20:	29 c0       	rjmp	.+82     	; 0x74 <__bad_interrupt>
+  22:	7d c1       	rjmp	.+762    	; 0x31e <L288wfs3+0x14a>
+  24:	7a c1       	rjmp	.+756    	; 0x31a <L288wfs3+0x146>
+  26:	8b c1       	rjmp	.+790    	; 0x33e <L288wfs3+0x16a>
+  28:	7c c1       	rjmp	.+760    	; 0x322 <L288wfs3+0x14e>
+  2a:	8b c1       	rjmp	.+790    	; 0x342 <L288wfs3+0x16e>
+  2c:	8c c1       	rjmp	.+792    	; 0x346 <L288wfs3+0x172>
+  2e:	8d c1       	rjmp	.+794    	; 0x34a <L288wfs3+0x176>
+  30:	7a c1       	rjmp	.+756    	; 0x326 <L288wfs3+0x152>
+  32:	8b c1       	rjmp	.+790    	; 0x34a <L288wfs3+0x176>
+  34:	88 c1       	rjmp	.+784    	; 0x346 <L288wfs3+0x172>
+  36:	85 c1       	rjmp	.+778    	; 0x342 <L288wfs3+0x16e>
+  38:	78 c1       	rjmp	.+752    	; 0x32a <L288wfs3+0x156>
+  3a:	79 c1       	rjmp	.+754    	; 0x32e <L288wfs3+0x15a>
+  3c:	80 c1       	rjmp	.+768    	; 0x33e <L288wfs3+0x16a>
+  3e:	6d c1       	rjmp	.+730    	; 0x31a <L288wfs3+0x146>
+
+00000040 <__ctors_end>:
+  40:	11 24       	eor	r1, r1
+  42:	1f be       	out	0x3f, r1	; 63
+  44:	cf ed       	ldi	r28, 0xDF	; 223
+  46:	cd bf       	out	0x3d, r28	; 61
+
+00000048 <__do_copy_data>:
+  48:	10 e0       	ldi	r17, 0x00	; 0
+  4a:	a0 e6       	ldi	r26, 0x60	; 96
+  4c:	b0 e0       	ldi	r27, 0x00	; 0
+  4e:	e0 ec       	ldi	r30, 0xC0	; 192
+  50:	f5 e0       	ldi	r31, 0x05	; 5
+  52:	02 c0       	rjmp	.+4      	; 0x58 <.do_copy_data_start>
+
+00000054 <.do_copy_data_loop>:
+  54:	05 90       	lpm	r0, Z+
+  56:	0d 92       	st	X+, r0
+
+00000058 <.do_copy_data_start>:
+  58:	a0 36       	cpi	r26, 0x60	; 96
+  5a:	b1 07       	cpc	r27, r17
+  5c:	d9 f7       	brne	.-10     	; 0x54 <.do_copy_data_loop>
+
+0000005e <__do_clear_bss>:
+  5e:	10 e0       	ldi	r17, 0x00	; 0
+  60:	a0 e6       	ldi	r26, 0x60	; 96
+  62:	b0 e0       	ldi	r27, 0x00	; 0
+  64:	01 c0       	rjmp	.+2      	; 0x68 <.do_clear_bss_start>
+
+00000066 <.do_clear_bss_loop>:
+  66:	1d 92       	st	X+, r1
+
+00000068 <.do_clear_bss_start>:
+  68:	a0 36       	cpi	r26, 0x60	; 96
+  6a:	b1 07       	cpc	r27, r17
+  6c:	e1 f7       	brne	.-8      	; 0x66 <.do_clear_bss_loop>
+  6e:	01 d0       	rcall	.+2      	; 0x72 <main>
+  70:	a5 c2       	rjmp	.+1354   	; 0x5bc <_exit>
+
+00000072 <main>:
+
+#endif
+
+/* main program starts here */
+#ifdef USE_TINY_TUNER
+int main(void) {
+  72:	a6 d2       	rcall	.+1356   	; 0x5c0 <_etext>
+
+00000074 <__bad_interrupt>:
+  74:	c5 cf       	rjmp	.-118    	; 0x0 <__vectors>
+
+00000076 <uartDelay_t>:
+#if BAUD_VALUE > 255
+#error Baud rate too slow for soft UART
+#endif
+
+void uartDelay_t() {
+  __asm__ __volatile__ (
+  76:	96 e8       	ldi	r25, 0x86	; 134
+  78:	9a 95       	dec	r25
+  7a:	f1 f7       	brne	.-4      	; 0x78 <uartDelay_t+0x2>
+  7c:	08 95       	ret
+
+0000007e <putch_t>:
+  );
+}
+
+
+void putch_t(char ch) {
+  __asm__ __volatile__ (
+  7e:	2a e0       	ldi	r18, 0x0A	; 10
+  80:	80 95       	com	r24
+  82:	08 94       	sec
+  84:	10 f4       	brcc	.+4      	; 0x8a <putch_t+0xc>
+  86:	d9 98       	cbi	0x1b, 1	; 27
+  88:	02 c0       	rjmp	.+4      	; 0x8e <putch_t+0x10>
+  8a:	d9 9a       	sbi	0x1b, 1	; 27
+  8c:	00 00       	nop
+  8e:	f3 df       	rcall	.-26     	; 0x76 <uartDelay_t>
+  90:	f2 df       	rcall	.-28     	; 0x76 <uartDelay_t>
+  92:	86 95       	lsr	r24
+  94:	2a 95       	dec	r18
+  96:	b1 f7       	brne	.-20     	; 0x84 <putch_t+0x6>
+      [uartPort] "I" (_SFR_IO_ADDR(UART_PORT)),
+      [uartBit] "I" (UART_TX_BIT)
+    :
+      "r25"
+  );
+}
+  98:	08 95       	ret
+
+0000009a <FindBest>:
+    return( false );
+  }
+  return( true );
+}
+
+uint8_t FindBest( tuner_t* tuner ) {
+  9a:	cf 92       	push	r12
+  9c:	df 92       	push	r13
+  9e:	ef 92       	push	r14
+  a0:	ff 92       	push	r15
+  a2:	0f 93       	push	r16
+  a4:	1f 93       	push	r17
+  a6:	cf 93       	push	r28
+  a8:	df 93       	push	r29
+  aa:	7c 01       	movw	r14, r24
+  ac:	ec 01       	movw	r28, r24
+  ae:	dd 24       	eor	r13, r13
+  b0:	0f ef       	ldi	r16, 0xFF	; 255
+  b2:	1f e7       	ldi	r17, 0x7F	; 127
+  b4:	cc 24       	eor	r12, r12
+  
+  for ( position=pLeft; position < pMax; position++ ) {
+    //rmv nbt = ( ( 2 * _info[position].ConfirmNineBitTime / _info[position].ConfirmCount ) + 1 ) / 2;
+    //rmv clocks = (nbt-1)*5 + 5;
+    clocks = (((((((uint32_t)(tuner->_info[position].ConfirmNineBitTime) - 1) * 5ul ) + 5ul) * 2ul) / tuner->_info[position].ConfirmCount) + 1ul) / 2ul;
+    error = clocks - 7500;
+  b6:	6a 85       	ldd	r22, Y+10	; 0x0a
+  b8:	7b 85       	ldd	r23, Y+11	; 0x0b
+  ba:	80 e0       	ldi	r24, 0x00	; 0
+  bc:	90 e0       	ldi	r25, 0x00	; 0
+  be:	2a e0       	ldi	r18, 0x0A	; 10
+  c0:	30 e0       	ldi	r19, 0x00	; 0
+  c2:	40 e0       	ldi	r20, 0x00	; 0
+  c4:	50 e0       	ldi	r21, 0x00	; 0
+  c6:	18 d2       	rcall	.+1072   	; 0x4f8 <__mulsi3>
+  c8:	29 85       	ldd	r18, Y+9	; 0x09
+  ca:	30 e0       	ldi	r19, 0x00	; 0
+  cc:	40 e0       	ldi	r20, 0x00	; 0
+  ce:	50 e0       	ldi	r21, 0x00	; 0
+  d0:	3f d2       	rcall	.+1150   	; 0x550 <__udivmodsi4>
+  d2:	2f 5f       	subi	r18, 0xFF	; 255
+  d4:	3f 4f       	sbci	r19, 0xFF	; 255
+  d6:	4f 4f       	sbci	r20, 0xFF	; 255
+  d8:	5f 4f       	sbci	r21, 0xFF	; 255
+  da:	56 95       	lsr	r21
+  dc:	47 95       	ror	r20
+  de:	37 95       	ror	r19
+  e0:	27 95       	ror	r18
+  e2:	2c 54       	subi	r18, 0x4C	; 76
+  e4:	3d 41       	sbci	r19, 0x1D	; 29
+  e6:	37 ff       	sbrs	r19, 7
+  e8:	03 c0       	rjmp	.+6      	; 0xf0 <__stack+0x11>
+  ea:	30 95       	com	r19
+  ec:	21 95       	neg	r18
+  ee:	3f 4f       	sbci	r19, 0xFF	; 255
+    }
+    
+    // rmv: Strictly for debugging...
+    // rmv _info[position].NineBitTime = nbt;
+    //tuner->_info[position].ConfirmClocks = clocks;
+    tuner->_info[position].Error = error;
+  f0:	38 87       	std	Y+8, r19	; 0x08
+  f2:	2f 83       	std	Y+7, r18	; 0x07
+    // ...rmv
+
+    if ( error < BestError ) {
+  f4:	20 17       	cp	r18, r16
+  f6:	31 07       	cpc	r19, r17
+  f8:	2c f4       	brge	.+10     	; 0x104 <__stack+0x25>
+      BestError = error;
+      tuner->_position = position;
+  fa:	f7 01       	movw	r30, r14
+  fc:	d1 82       	std	Z+1, r13	; 0x01
+  fe:	89 01       	movw	r16, r18
+ 100:	cc 24       	eor	r12, r12
+ 102:	07 c0       	rjmp	.+14     	; 0x112 <__stack+0x33>
+      NeedToTryHarder = false;
+    } else if ( error == BestError ) {
+ 104:	20 17       	cp	r18, r16
+ 106:	31 07       	cpc	r19, r17
+ 108:	21 f4       	brne	.+8      	; 0x112 <__stack+0x33>
+      tuner->_position = position;
+ 10a:	f7 01       	movw	r30, r14
+ 10c:	d1 82       	std	Z+1, r13	; 0x01
+ 10e:	cc 24       	eor	r12, r12
+ 110:	c3 94       	inc	r12
+  uint8_t NeedToTryHarder;
+  
+  BestError = 0x7FFF;
+  NeedToTryHarder = false;
+  
+  for ( position=pLeft; position < pMax; position++ ) {
+ 112:	d3 94       	inc	r13
+ 114:	29 96       	adiw	r28, 0x09	; 9
+ 116:	f3 e0       	ldi	r31, 0x03	; 3
+ 118:	df 16       	cp	r13, r31
+ 11a:	69 f6       	brne	.-102    	; 0xb6 <FindBest+0x1c>
+ 11c:	80 e0       	ldi	r24, 0x00	; 0
+ 11e:	cc 20       	and	r12, r12
+ 120:	09 f4       	brne	.+2      	; 0x124 <__stack+0x45>
+ 122:	81 e0       	ldi	r24, 0x01	; 1
+
+  if ( NeedToTryHarder ) {
+    return( false );
+  }
+  return( true );
+}
+ 124:	df 91       	pop	r29
+ 126:	cf 91       	pop	r28
+ 128:	1f 91       	pop	r17
+ 12a:	0f 91       	pop	r16
+ 12c:	ff 90       	pop	r15
+ 12e:	ef 90       	pop	r14
+ 130:	df 90       	pop	r13
+ 132:	cf 90       	pop	r12
+ 134:	08 95       	ret
+
+00000136 <TransitionToConfirm>:
+
+void TransitionToConfirm( tuner_t* tuner ) {
+ 136:	fc 01       	movw	r30, r24
+  if ( tuner->_info[pLeft].Error < tuner->_info[pRight].Error ) {
+ 138:	a7 81       	ldd	r26, Z+7	; 0x07
+ 13a:	b0 85       	ldd	r27, Z+8	; 0x08
+ 13c:	21 8d       	ldd	r18, Z+25	; 0x19
+ 13e:	32 8d       	ldd	r19, Z+26	; 0x1a
+ 140:	45 81       	ldd	r20, Z+5	; 0x05
+ 142:	56 81       	ldd	r21, Z+6	; 0x06
+ 144:	67 89       	ldd	r22, Z+23	; 0x17
+ 146:	70 8d       	ldd	r23, Z+24	; 0x18
+ 148:	a2 17       	cp	r26, r18
+ 14a:	b3 07       	cpc	r27, r19
+ 14c:	b4 f4       	brge	.+44     	; 0x17a <TransitionToConfirm+0x44>
+    tuner->_info[pThis].OsccalValue = tuner->_info[pLeft].OsccalValue;
+ 14e:	83 81       	ldd	r24, Z+3	; 0x03
+ 150:	94 81       	ldd	r25, Z+4	; 0x04
+ 152:	95 87       	std	Z+13, r25	; 0x0d
+ 154:	84 87       	std	Z+12, r24	; 0x0c
+    tuner->_info[pThis].NineBitTime = tuner->_info[pLeft].NineBitTime;
+ 156:	57 87       	std	Z+15, r21	; 0x0f
+ 158:	46 87       	std	Z+14, r20	; 0x0e
+    tuner->_info[pThis].Error = tuner->_info[pLeft].Error;
+ 15a:	b1 8b       	std	Z+17, r27	; 0x11
+ 15c:	a0 8b       	std	Z+16, r26	; 0x10
+    
+    tuner->_info[pLeft].OsccalValue = tuner->_info[pThis].OsccalValue - 1;
+ 15e:	01 97       	sbiw	r24, 0x01	; 1
+ 160:	94 83       	std	Z+4, r25	; 0x04
+ 162:	83 83       	std	Z+3, r24	; 0x03
+    tuner->_info[pLeft].ConfirmCount = 0;
+ 164:	11 86       	std	Z+9, r1	; 0x09
+    tuner->_info[pLeft].ConfirmNineBitTime = 0;
+ 166:	13 86       	std	Z+11, r1	; 0x0b
+ 168:	12 86       	std	Z+10, r1	; 0x0a
+    
+    tuner->_info[pThis].ConfirmCount = 1;
+ 16a:	81 e0       	ldi	r24, 0x01	; 1
+ 16c:	82 8b       	std	Z+18, r24	; 0x12
+    tuner->_info[pThis].ConfirmNineBitTime = tuner->_info[pThis].NineBitTime;
+ 16e:	54 8b       	std	Z+20, r21	; 0x14
+ 170:	43 8b       	std	Z+19, r20	; 0x13
+    
+    tuner->_info[pRight].ConfirmCount = 1;
+ 172:	83 8f       	std	Z+27, r24	; 0x1b
+    tuner->_info[pRight].ConfirmNineBitTime = tuner->_info[pRight].NineBitTime;
+ 174:	75 8f       	std	Z+29, r23	; 0x1d
+ 176:	64 8f       	std	Z+28, r22	; 0x1c
+ 178:	15 c0       	rjmp	.+42     	; 0x1a4 <TransitionToConfirm+0x6e>
+  } else {
+    tuner->_info[pThis].OsccalValue = tuner->_info[pRight].OsccalValue;
+ 17a:	85 89       	ldd	r24, Z+21	; 0x15
+ 17c:	96 89       	ldd	r25, Z+22	; 0x16
+ 17e:	95 87       	std	Z+13, r25	; 0x0d
+ 180:	84 87       	std	Z+12, r24	; 0x0c
+    tuner->_info[pThis].NineBitTime = tuner->_info[pRight].NineBitTime;
+ 182:	77 87       	std	Z+15, r23	; 0x0f
+ 184:	66 87       	std	Z+14, r22	; 0x0e
+    tuner->_info[pThis].Error = tuner->_info[pRight].Error;
+ 186:	31 8b       	std	Z+17, r19	; 0x11
+ 188:	20 8b       	std	Z+16, r18	; 0x10
+    
+    tuner->_info[pLeft].ConfirmCount = 1;
+ 18a:	21 e0       	ldi	r18, 0x01	; 1
+ 18c:	21 87       	std	Z+9, r18	; 0x09
+    tuner->_info[pLeft].ConfirmNineBitTime = tuner->_info[pLeft].NineBitTime;
+ 18e:	53 87       	std	Z+11, r21	; 0x0b
+ 190:	42 87       	std	Z+10, r20	; 0x0a
+    
+    tuner->_info[pThis].ConfirmCount = 1;
+ 192:	22 8b       	std	Z+18, r18	; 0x12
+    tuner->_info[pThis].ConfirmNineBitTime = tuner->_info[pThis].NineBitTime;
+ 194:	74 8b       	std	Z+20, r23	; 0x14
+ 196:	63 8b       	std	Z+19, r22	; 0x13
+    
+    tuner->_info[pRight].OsccalValue = tuner->_info[pThis].OsccalValue + 1;
+ 198:	01 96       	adiw	r24, 0x01	; 1
+ 19a:	96 8b       	std	Z+22, r25	; 0x16
+ 19c:	85 8b       	std	Z+21, r24	; 0x15
+    tuner->_info[pRight].ConfirmCount = 0;
+ 19e:	13 8e       	std	Z+27, r1	; 0x1b
+    tuner->_info[pRight].ConfirmNineBitTime = 0;
+ 1a0:	15 8e       	std	Z+29, r1	; 0x1d
+ 1a2:	14 8e       	std	Z+28, r1	; 0x1c
+  }
+  tuner->_state = sConfirm;
+ 1a4:	82 e0       	ldi	r24, 0x02	; 2
+ 1a6:	80 83       	st	Z, r24
+}
+ 1a8:	08 95       	ret
+
+000001aa <update>:
+}
+
+
+
+
+uint8_t update( tuner_t* tuner ) {
+ 1aa:	ef 92       	push	r14
+ 1ac:	ff 92       	push	r15
+ 1ae:	0f 93       	push	r16
+ 1b0:	1f 93       	push	r17
+ 1b2:	cf 93       	push	r28
+ 1b4:	df 93       	push	r29
+ 1b6:	ec 01       	movw	r28, r24
+  uint16_t Temp = 0;
+  
+  // lowercase 'x' on the wire...
+  // ...1111111111 0 0001 1110 1 111111111...
+  
+  asm volatile
+ 1b8:	ee 24       	eor	r14, r14
+ 1ba:	ff 24       	eor	r15, r15
+ 1bc:	c7 01       	movw	r24, r14
+
+000001be <L288wfsb>:
+ 1be:	ca 99       	sbic	0x19, 2	; 25
+ 1c0:	fe cf       	rjmp	.-4      	; 0x1be <L288wfsb>
+ 1c2:	f8 94       	cli
+ 1c4:	00 00       	nop
+	...
+
+000001c8 <L288wfs1>:
+ 1c8:	01 96       	adiw	r24, 0x01	; 1
+ 1ca:	ca 9b       	sbis	0x19, 2	; 25
+ 1cc:	fd cf       	rjmp	.-6      	; 0x1c8 <L288wfs1>
+
+000001ce <L288wfs2>:
+ 1ce:	01 96       	adiw	r24, 0x01	; 1
+ 1d0:	ca 99       	sbic	0x19, 2	; 25
+ 1d2:	fd cf       	rjmp	.-6      	; 0x1ce <L288wfs2>
+
+000001d4 <L288wfs3>:
+ 1d4:	01 96       	adiw	r24, 0x01	; 1
+ 1d6:	ca 9b       	sbis	0x19, 2	; 25
+ 1d8:	fd cf       	rjmp	.-6      	; 0x1d4 <L288wfs3>
+ 1da:	78 94       	sei
+ 1dc:	7c 01       	movw	r14, r24
+  int16_t clocks = (nbt-1)*5 + 5;
+  
+  // Calculate the difference between the actual number of cycles spent in TimeNineBits and the expected number of cycles
+  int16_t error = clocks - 7500;
+  
+  if ( tuner->_state == sFirstPass ) {
+ 1de:	88 81       	ld	r24, Y
+ 1e0:	88 23       	and	r24, r24
+ 1e2:	99 f4       	brne	.+38     	; 0x20a <L288wfs3+0x36>
+    tuner->_info[pLeft].OsccalValue  = -1;
+ 1e4:	8f ef       	ldi	r24, 0xFF	; 255
+ 1e6:	9f ef       	ldi	r25, 0xFF	; 255
+ 1e8:	9c 83       	std	Y+4, r25	; 0x04
+ 1ea:	8b 83       	std	Y+3, r24	; 0x03
+    tuner->_info[pThis].OsccalValue  = OSCCAL & 0x7F;
+ 1ec:	81 b7       	in	r24, 0x31	; 49
+ 1ee:	90 e0       	ldi	r25, 0x00	; 0
+ 1f0:	8f 77       	andi	r24, 0x7F	; 127
+ 1f2:	90 70       	andi	r25, 0x00	; 0
+ 1f4:	9d 87       	std	Y+13, r25	; 0x0d
+ 1f6:	8c 87       	std	Y+12, r24	; 0x0c
+    tuner->_info[pRight].OsccalValue = 0x80;
+ 1f8:	80 e8       	ldi	r24, 0x80	; 128
+ 1fa:	90 e0       	ldi	r25, 0x00	; 0
+ 1fc:	9e 8b       	std	Y+22, r25	; 0x16
+ 1fe:	8d 8b       	std	Y+21, r24	; 0x15
+    tuner->_position = pThis;
+ 200:	81 e0       	ldi	r24, 0x01	; 1
+ 202:	89 83       	std	Y+1, r24	; 0x01
+    tuner->_state = sBigSteps;
+ 204:	88 83       	st	Y, r24
+    tuner->_threshold = 3;
+ 206:	83 e0       	ldi	r24, 0x03	; 3
+ 208:	8a 83       	std	Y+2, r24	; 0x02
+  }
+  
+  if ( tuner->_state == sConfirm ) {
+ 20a:	88 81       	ld	r24, Y
+ 20c:	82 30       	cpi	r24, 0x02	; 2
+ 20e:	09 f0       	breq	.+2      	; 0x212 <L288wfs3+0x3e>
+ 210:	6d c0       	rjmp	.+218    	; 0x2ec <L288wfs3+0x118>
+    uint16_t delta;
+    info_t* info = &(tuner->_info[tuner->_position]);
+ 212:	89 81       	ldd	r24, Y+1	; 0x01
+ 214:	a8 2f       	mov	r26, r24
+ 216:	b0 e0       	ldi	r27, 0x00	; 0
+    
+    if ( nbt > info->NineBitTime ){
+ 218:	cd 01       	movw	r24, r26
+ 21a:	69 e0       	ldi	r22, 0x09	; 9
+ 21c:	70 e0       	ldi	r23, 0x00	; 0
+ 21e:	5a d1       	rcall	.+692    	; 0x4d4 <__mulhi3>
+ 220:	fe 01       	movw	r30, r28
+ 222:	e8 0f       	add	r30, r24
+ 224:	f9 1f       	adc	r31, r25
+ 226:	85 81       	ldd	r24, Z+5	; 0x05
+ 228:	96 81       	ldd	r25, Z+6	; 0x06
+ 22a:	8e 15       	cp	r24, r14
+ 22c:	9f 05       	cpc	r25, r15
+ 22e:	20 f4       	brcc	.+8      	; 0x238 <L288wfs3+0x64>
+      delta = nbt - info->NineBitTime;
+ 230:	97 01       	movw	r18, r14
+ 232:	28 1b       	sub	r18, r24
+ 234:	39 0b       	sbc	r19, r25
+ 236:	03 c0       	rjmp	.+6      	; 0x23e <L288wfs3+0x6a>
+    } else {
+      delta = info->NineBitTime - nbt;
+ 238:	9c 01       	movw	r18, r24
+ 23a:	2e 19       	sub	r18, r14
+ 23c:	3f 09       	sbc	r19, r15
+    }
+    
+    info->NineBitTime = nbt;
+ 23e:	cd 01       	movw	r24, r26
+ 240:	69 e0       	ldi	r22, 0x09	; 9
+ 242:	70 e0       	ldi	r23, 0x00	; 0
+ 244:	47 d1       	rcall	.+654    	; 0x4d4 <__mulhi3>
+ 246:	8e 01       	movw	r16, r28
+ 248:	08 0f       	add	r16, r24
+ 24a:	19 1f       	adc	r17, r25
+ 24c:	f8 01       	movw	r30, r16
+ 24e:	f6 82       	std	Z+6, r15	; 0x06
+ 250:	e5 82       	std	Z+5, r14	; 0x05
+    
+    if ( (delta <= 2) || (info->ConfirmCount == 0) ) {
+ 252:	23 30       	cpi	r18, 0x03	; 3
+ 254:	31 05       	cpc	r19, r1
+ 256:	58 f0       	brcs	.+22     	; 0x26e <L288wfs3+0x9a>
+ 258:	cd 01       	movw	r24, r26
+ 25a:	01 96       	adiw	r24, 0x01	; 1
+ 25c:	69 e0       	ldi	r22, 0x09	; 9
+ 25e:	70 e0       	ldi	r23, 0x00	; 0
+ 260:	39 d1       	rcall	.+626    	; 0x4d4 <__mulhi3>
+ 262:	fe 01       	movw	r30, r28
+ 264:	e8 0f       	add	r30, r24
+ 266:	f9 1f       	adc	r31, r25
+ 268:	80 81       	ld	r24, Z
+ 26a:	88 23       	and	r24, r24
+ 26c:	d9 f5       	brne	.+118    	; 0x2e4 <L288wfs3+0x110>
+      ++info->ConfirmCount;
+ 26e:	cd 01       	movw	r24, r26
+ 270:	01 96       	adiw	r24, 0x01	; 1
+ 272:	69 e0       	ldi	r22, 0x09	; 9
+ 274:	70 e0       	ldi	r23, 0x00	; 0
+ 276:	2e d1       	rcall	.+604    	; 0x4d4 <__mulhi3>
+ 278:	fe 01       	movw	r30, r28
+ 27a:	e8 0f       	add	r30, r24
+ 27c:	f9 1f       	adc	r31, r25
+ 27e:	20 81       	ld	r18, Z
+ 280:	2f 5f       	subi	r18, 0xFF	; 255
+ 282:	20 83       	st	Z, r18
+      info->ConfirmNineBitTime += nbt;
+ 284:	cd 01       	movw	r24, r26
+ 286:	69 e0       	ldi	r22, 0x09	; 9
+ 288:	70 e0       	ldi	r23, 0x00	; 0
+ 28a:	24 d1       	rcall	.+584    	; 0x4d4 <__mulhi3>
+ 28c:	fe 01       	movw	r30, r28
+ 28e:	e8 0f       	add	r30, r24
+ 290:	f9 1f       	adc	r31, r25
+ 292:	82 85       	ldd	r24, Z+10	; 0x0a
+ 294:	93 85       	ldd	r25, Z+11	; 0x0b
+ 296:	8e 0d       	add	r24, r14
+ 298:	9f 1d       	adc	r25, r15
+ 29a:	93 87       	std	Z+11, r25	; 0x0b
+ 29c:	82 87       	std	Z+10, r24	; 0x0a
+      
+      if ( info->ConfirmCount >= tuner->_threshold ) {
+ 29e:	8a 81       	ldd	r24, Y+2	; 0x02
+ 2a0:	28 17       	cp	r18, r24
+ 2a2:	20 f1       	brcs	.+72     	; 0x2ec <L288wfs3+0x118>
+        for ( tuner->_position=pLeft; tuner->_position < pMax; tuner->_position=(tuner->_position+1) ) {
+ 2a4:	19 82       	std	Y+1, r1	; 0x01
+ 2a6:	0f c0       	rjmp	.+30     	; 0x2c6 <L288wfs3+0xf2>
+          if ( tuner->_info[tuner->_position].ConfirmCount < tuner->_threshold ) {
+ 2a8:	81 2f       	mov	r24, r17
+ 2aa:	90 e0       	ldi	r25, 0x00	; 0
+ 2ac:	01 96       	adiw	r24, 0x01	; 1
+ 2ae:	69 e0       	ldi	r22, 0x09	; 9
+ 2b0:	70 e0       	ldi	r23, 0x00	; 0
+ 2b2:	10 d1       	rcall	.+544    	; 0x4d4 <__mulhi3>
+ 2b4:	fe 01       	movw	r30, r28
+ 2b6:	e8 0f       	add	r30, r24
+ 2b8:	f9 1f       	adc	r31, r25
+ 2ba:	90 81       	ld	r25, Z
+ 2bc:	8a 81       	ldd	r24, Y+2	; 0x02
+ 2be:	98 17       	cp	r25, r24
+ 2c0:	a8 f0       	brcs	.+42     	; 0x2ec <L288wfs3+0x118>
+    if ( (delta <= 2) || (info->ConfirmCount == 0) ) {
+      ++info->ConfirmCount;
+      info->ConfirmNineBitTime += nbt;
+      
+      if ( info->ConfirmCount >= tuner->_threshold ) {
+        for ( tuner->_position=pLeft; tuner->_position < pMax; tuner->_position=(tuner->_position+1) ) {
+ 2c2:	1f 5f       	subi	r17, 0xFF	; 255
+ 2c4:	19 83       	std	Y+1, r17	; 0x01
+ 2c6:	19 81       	ldd	r17, Y+1	; 0x01
+ 2c8:	13 30       	cpi	r17, 0x03	; 3
+ 2ca:	70 f3       	brcs	.-36     	; 0x2a8 <L288wfs3+0xd4>
+          if ( tuner->_info[tuner->_position].ConfirmCount < tuner->_threshold ) {
+            break;
+          }
+        }
+        if ( tuner->_position == pMax ) {
+ 2cc:	13 30       	cpi	r17, 0x03	; 3
+ 2ce:	71 f4       	brne	.+28     	; 0x2ec <L288wfs3+0x118>
+          if ( FindBest(tuner) ) {
+ 2d0:	ce 01       	movw	r24, r28
+ 2d2:	e3 de       	rcall	.-570    	; 0x9a <FindBest>
+ 2d4:	88 23       	and	r24, r24
+ 2d6:	11 f0       	breq	.+4      	; 0x2dc <L288wfs3+0x108>
+            tuner->_state = sFinished;
+ 2d8:	18 83       	st	Y, r17
+ 2da:	08 c0       	rjmp	.+16     	; 0x2ec <L288wfs3+0x118>
+          } else {
+            tuner->_threshold += 2;
+ 2dc:	8a 81       	ldd	r24, Y+2	; 0x02
+ 2de:	8e 5f       	subi	r24, 0xFE	; 254
+ 2e0:	8a 83       	std	Y+2, r24	; 0x02
+ 2e2:	04 c0       	rjmp	.+8      	; 0x2ec <L288wfs3+0x118>
+            // fix? tuner->_threshold is unbounded.  At some point it may be prudent to just pick one of the two choices.
+          }
+        }
+      }
+    } else {
+      info->ConfirmCount = 0;
+ 2e4:	10 82       	st	Z, r1
+      info->ConfirmNineBitTime = 0;
+ 2e6:	f8 01       	movw	r30, r16
+ 2e8:	13 86       	std	Z+11, r1	; 0x0b
+ 2ea:	12 86       	std	Z+10, r1	; 0x0a
+    }
+  }
+
+  if ( tuner->_state == sBigSteps ) {
+ 2ec:	88 81       	ld	r24, Y
+ 2ee:	81 30       	cpi	r24, 0x01	; 1
+ 2f0:	09 f0       	breq	.+2      	; 0x2f4 <L288wfs3+0x120>
+ 2f2:	78 c0       	rjmp	.+240    	; 0x3e4 <L288wfs3+0x210>
+  
+  // Calculate the number of clock cycles spent in TimeNineBits
+  int16_t clocks = (nbt-1)*5 + 5;
+  
+  // Calculate the difference between the actual number of cycles spent in TimeNineBits and the expected number of cycles
+  int16_t error = clocks - 7500;
+ 2f4:	c7 01       	movw	r24, r14
+ 2f6:	65 e0       	ldi	r22, 0x05	; 5
+ 2f8:	70 e0       	ldi	r23, 0x00	; 0
+ 2fa:	ec d0       	rcall	.+472    	; 0x4d4 <__mulhi3>
+ 2fc:	8c 01       	movw	r16, r24
+ 2fe:	0c 54       	subi	r16, 0x4C	; 76
+ 300:	1d 41       	sbci	r17, 0x1D	; 29
+  }
+  tuner->_state = sConfirm;
+}
+
+static int8_t NumberOfBigSteps( int16_t error ) {
+  error = error / 100;
+ 302:	c8 01       	movw	r24, r16
+ 304:	64 e6       	ldi	r22, 0x64	; 100
+ 306:	70 e0       	ldi	r23, 0x00	; 0
+ 308:	10 d1       	rcall	.+544    	; 0x52a <__divmodhi4>
+  
+  switch ( error )
+ 30a:	fb 01       	movw	r30, r22
+ 30c:	37 96       	adiw	r30, 0x07	; 7
+ 30e:	ef 30       	cpi	r30, 0x0F	; 15
+ 310:	f1 05       	cpc	r31, r1
+ 312:	78 f4       	brcc	.+30     	; 0x332 <L288wfs3+0x15e>
+ 314:	ef 5e       	subi	r30, 0xEF	; 239
+ 316:	ff 4f       	sbci	r31, 0xFF	; 255
+ 318:	09 94       	ijmp
+ 31a:	81 e1       	ldi	r24, 0x11	; 17
+ 31c:	17 c0       	rjmp	.+46     	; 0x34c <L288wfs3+0x178>
+ 31e:	84 e1       	ldi	r24, 0x14	; 20
+ 320:	15 c0       	rjmp	.+42     	; 0x34c <L288wfs3+0x178>
+ 322:	8c e0       	ldi	r24, 0x0C	; 12
+ 324:	13 c0       	rjmp	.+38     	; 0x34c <L288wfs3+0x178>
+ 326:	81 e0       	ldi	r24, 0x01	; 1
+ 328:	11 c0       	rjmp	.+34     	; 0x34c <L288wfs3+0x178>
+ 32a:	8b e0       	ldi	r24, 0x0B	; 11
+ 32c:	0f c0       	rjmp	.+30     	; 0x34c <L288wfs3+0x178>
+ 32e:	8d e0       	ldi	r24, 0x0D	; 13
+ 330:	0d c0       	rjmp	.+26     	; 0x34c <L288wfs3+0x178>
+    case +4:  return( 11 );
+    case +5:  return( 13 );
+    case +6:  return( 15 );
+    case +7:  return( 17 );
+  }
+  return( error < 0 ? 21 : 18 );
+ 332:	77 fd       	sbrc	r23, 7
+ 334:	02 c0       	rjmp	.+4      	; 0x33a <L288wfs3+0x166>
+ 336:	82 e1       	ldi	r24, 0x12	; 18
+ 338:	09 c0       	rjmp	.+18     	; 0x34c <L288wfs3+0x178>
+ 33a:	85 e1       	ldi	r24, 0x15	; 21
+ 33c:	07 c0       	rjmp	.+14     	; 0x34c <L288wfs3+0x178>
+ 33e:	8f e0       	ldi	r24, 0x0F	; 15
+ 340:	05 c0       	rjmp	.+10     	; 0x34c <L288wfs3+0x178>
+ 342:	89 e0       	ldi	r24, 0x09	; 9
+ 344:	03 c0       	rjmp	.+6      	; 0x34c <L288wfs3+0x178>
+ 346:	86 e0       	ldi	r24, 0x06	; 6
+ 348:	01 c0       	rjmp	.+2      	; 0x34c <L288wfs3+0x178>
+ 34a:	83 e0       	ldi	r24, 0x03	; 3
+ 34c:	2c 85       	ldd	r18, Y+12	; 0x0c
+ 34e:	3d 85       	ldd	r19, Y+13	; 0x0d
+ 350:	48 2f       	mov	r20, r24
+ 352:	55 27       	eor	r21, r21
+ 354:	47 fd       	sbrc	r20, 7
+ 356:	50 95       	com	r21
+  }
+
+  if ( tuner->_state == sBigSteps ) {
+    int8_t nobs = NumberOfBigSteps( error );
+
+    if ( error < 0 ) {
+ 358:	17 ff       	sbrs	r17, 7
+ 35a:	23 c0       	rjmp	.+70     	; 0x3a2 <L288wfs3+0x1ce>
+      tuner->_info[pLeft].OsccalValue = tuner->_info[pThis].OsccalValue;
+ 35c:	3c 83       	std	Y+4, r19	; 0x04
+ 35e:	2b 83       	std	Y+3, r18	; 0x03
+      tuner->_info[pLeft].NineBitTime = nbt;
+ 360:	fe 82       	std	Y+6, r15	; 0x06
+ 362:	ed 82       	std	Y+5, r14	; 0x05
+      tuner->_info[pLeft].Error = -error;
+ 364:	88 27       	eor	r24, r24
+ 366:	99 27       	eor	r25, r25
+ 368:	80 1b       	sub	r24, r16
+ 36a:	91 0b       	sbc	r25, r17
+ 36c:	98 87       	std	Y+8, r25	; 0x08
+ 36e:	8f 83       	std	Y+7, r24	; 0x07
+      tuner->_info[pThis].OsccalValue += nobs;
+ 370:	ca 01       	movw	r24, r20
+ 372:	82 0f       	add	r24, r18
+ 374:	93 1f       	adc	r25, r19
+ 376:	9d 87       	std	Y+13, r25	; 0x0d
+ 378:	8c 87       	std	Y+12, r24	; 0x0c
+
+      if ( tuner->_info[pThis].OsccalValue >= tuner->_info[pRight].OsccalValue ) {
+ 37a:	4d 89       	ldd	r20, Y+21	; 0x15
+ 37c:	5e 89       	ldd	r21, Y+22	; 0x16
+ 37e:	84 17       	cp	r24, r20
+ 380:	95 07       	cpc	r25, r21
+ 382:	84 f1       	brlt	.+96     	; 0x3e4 <L288wfs3+0x210>
+        tuner->_info[pThis].OsccalValue = tuner->_info[pRight].OsccalValue - 1;
+ 384:	ca 01       	movw	r24, r20
+ 386:	01 97       	sbiw	r24, 0x01	; 1
+ 388:	9d 87       	std	Y+13, r25	; 0x0d
+ 38a:	8c 87       	std	Y+12, r24	; 0x0c
+
+        if ( tuner->_info[pThis].OsccalValue <= tuner->_info[pLeft].OsccalValue ) {
+ 38c:	28 17       	cp	r18, r24
+ 38e:	39 07       	cpc	r19, r25
+ 390:	4c f1       	brlt	.+82     	; 0x3e4 <L288wfs3+0x210>
+          // fix? Do something special about the greater-than case?  If everything else is correct, it will never occur.
+          if ( tuner->_info[pLeft].OsccalValue + 1 == tuner->_info[pRight].OsccalValue ) {
+ 392:	c9 01       	movw	r24, r18
+ 394:	01 96       	adiw	r24, 0x01	; 1
+ 396:	84 17       	cp	r24, r20
+ 398:	95 07       	cpc	r25, r21
+ 39a:	e9 f0       	breq	.+58     	; 0x3d6 <L288wfs3+0x202>
+            TransitionToConfirm(tuner);
+          } else {
+            tuner->_info[pThis].OsccalValue = tuner->_info[pLeft].OsccalValue + 1;
+ 39c:	9d 87       	std	Y+13, r25	; 0x0d
+ 39e:	8c 87       	std	Y+12, r24	; 0x0c
+ 3a0:	21 c0       	rjmp	.+66     	; 0x3e4 <L288wfs3+0x210>
+          }
+        }
+      }
+    } else {
+      tuner->_info[pRight].OsccalValue = tuner->_info[pThis].OsccalValue;
+ 3a2:	3e 8b       	std	Y+22, r19	; 0x16
+ 3a4:	2d 8b       	std	Y+21, r18	; 0x15
+      tuner->_info[pRight].NineBitTime = nbt;
+ 3a6:	f8 8e       	std	Y+24, r15	; 0x18
+ 3a8:	ef 8a       	std	Y+23, r14	; 0x17
+      tuner->_info[pRight].Error = +error;
+ 3aa:	1a 8f       	std	Y+26, r17	; 0x1a
+ 3ac:	09 8f       	std	Y+25, r16	; 0x19
+      tuner->_info[pThis].OsccalValue -= nobs;
+ 3ae:	c9 01       	movw	r24, r18
+ 3b0:	84 1b       	sub	r24, r20
+ 3b2:	95 0b       	sbc	r25, r21
+ 3b4:	9d 87       	std	Y+13, r25	; 0x0d
+ 3b6:	8c 87       	std	Y+12, r24	; 0x0c
+
+      if ( tuner->_info[pThis].OsccalValue <= tuner->_info[pLeft].OsccalValue ) {
+ 3b8:	4b 81       	ldd	r20, Y+3	; 0x03
+ 3ba:	5c 81       	ldd	r21, Y+4	; 0x04
+ 3bc:	48 17       	cp	r20, r24
+ 3be:	59 07       	cpc	r21, r25
+ 3c0:	8c f0       	brlt	.+34     	; 0x3e4 <L288wfs3+0x210>
+        tuner->_info[pThis].OsccalValue = tuner->_info[pLeft].OsccalValue + 1;
+ 3c2:	ca 01       	movw	r24, r20
+ 3c4:	01 96       	adiw	r24, 0x01	; 1
+ 3c6:	9d 87       	std	Y+13, r25	; 0x0d
+ 3c8:	8c 87       	std	Y+12, r24	; 0x0c
+
+        if ( tuner->_info[pThis].OsccalValue >= tuner->_info[pRight].OsccalValue ) {
+ 3ca:	82 17       	cp	r24, r18
+ 3cc:	93 07       	cpc	r25, r19
+ 3ce:	54 f0       	brlt	.+20     	; 0x3e4 <L288wfs3+0x210>
+          // fix? Do something special about the less-than case?  If everything else is correct, it will never occur.
+          if ( tuner->_info[pLeft].OsccalValue + 1 == tuner->_info[pRight].OsccalValue ) {
+ 3d0:	82 17       	cp	r24, r18
+ 3d2:	93 07       	cpc	r25, r19
+ 3d4:	19 f4       	brne	.+6      	; 0x3dc <L288wfs3+0x208>
+            TransitionToConfirm(tuner);
+ 3d6:	ce 01       	movw	r24, r28
+ 3d8:	ae de       	rcall	.-676    	; 0x136 <TransitionToConfirm>
+ 3da:	04 c0       	rjmp	.+8      	; 0x3e4 <L288wfs3+0x210>
+          } else {
+            tuner->_info[pThis].OsccalValue = tuner->_info[pRight].OsccalValue - 1;
+ 3dc:	21 50       	subi	r18, 0x01	; 1
+ 3de:	30 40       	sbci	r19, 0x00	; 0
+ 3e0:	3d 87       	std	Y+13, r19	; 0x0d
+ 3e2:	2c 87       	std	Y+12, r18	; 0x0c
+        }
+      }
+    }
+  }
+  
+  AdjustOSCCAL( (uint8_t)(tuner->_info[tuner->_position].OsccalValue) );
+ 3e4:	89 81       	ldd	r24, Y+1	; 0x01
+ 3e6:	90 e0       	ldi	r25, 0x00	; 0
+ 3e8:	69 e0       	ldi	r22, 0x09	; 9
+ 3ea:	70 e0       	ldi	r23, 0x00	; 0
+ 3ec:	73 d0       	rcall	.+230    	; 0x4d4 <__mulhi3>
+ 3ee:	fe 01       	movw	r30, r28
+ 3f0:	e8 0f       	add	r30, r24
+ 3f2:	f9 1f       	adc	r31, r25
+ 3f4:	23 81       	ldd	r18, Z+3	; 0x03
+static void AdjustOSCCAL( uint8_t NewValue ) {
+  uint8_t Temp;
+  uint8_t Value;
+  uint8_t Range;
+  
+  Temp = OSCCAL;
+ 3f6:	81 b7       	in	r24, 0x31	; 49
+  
+  Value = Temp & 0x7F;
+ 3f8:	98 2f       	mov	r25, r24
+ 3fa:	9f 77       	andi	r25, 0x7F	; 127
+  Range = Temp & 0x80;
+ 3fc:	38 2f       	mov	r19, r24
+ 3fe:	30 78       	andi	r19, 0x80	; 128
+  
+  if ( NewValue < Value ){
+ 400:	29 17       	cp	r18, r25
+ 402:	38 f4       	brcc	.+14     	; 0x412 <L288wfs3+0x23e>
+    while ( NewValue != Value ){
+      --Value;
+ 404:	91 50       	subi	r25, 0x01	; 1
+      OSCCAL = Range | Value;
+ 406:	89 2f       	mov	r24, r25
+ 408:	83 2b       	or	r24, r19
+ 40a:	81 bf       	out	0x31, r24	; 49
+  
+  Value = Temp & 0x7F;
+  Range = Temp & 0x80;
+  
+  if ( NewValue < Value ){
+    while ( NewValue != Value ){
+ 40c:	29 17       	cp	r18, r25
+ 40e:	d1 f7       	brne	.-12     	; 0x404 <L288wfs3+0x230>
+ 410:	08 c0       	rjmp	.+16     	; 0x422 <L288wfs3+0x24e>
+      --Value;
+      OSCCAL = Range | Value;
+    }
+  } else if ( NewValue > Value ) {
+ 412:	92 17       	cp	r25, r18
+ 414:	30 f4       	brcc	.+12     	; 0x422 <L288wfs3+0x24e>
+    while ( NewValue != Value ) {
+      ++Value;
+ 416:	9f 5f       	subi	r25, 0xFF	; 255
+      OSCCAL = Range | Value;
+ 418:	89 2f       	mov	r24, r25
+ 41a:	83 2b       	or	r24, r19
+ 41c:	81 bf       	out	0x31, r24	; 49
+    while ( NewValue != Value ){
+      --Value;
+      OSCCAL = Range | Value;
+    }
+  } else if ( NewValue > Value ) {
+    while ( NewValue != Value ) {
+ 41e:	29 17       	cp	r18, r25
+ 420:	d1 f7       	brne	.-12     	; 0x416 <L288wfs3+0x242>
+ 422:	90 e0       	ldi	r25, 0x00	; 0
+ 424:	88 81       	ld	r24, Y
+ 426:	83 30       	cpi	r24, 0x03	; 3
+ 428:	09 f0       	breq	.+2      	; 0x42c <L288wfs3+0x258>
+ 42a:	91 e0       	ldi	r25, 0x01	; 1
+  
+  if ( tuner->_state == sFinished ){
+    return( false );
+  }
+  return( true );
+}
+ 42c:	89 2f       	mov	r24, r25
+ 42e:	df 91       	pop	r29
+ 430:	cf 91       	pop	r28
+ 432:	1f 91       	pop	r17
+ 434:	0f 91       	pop	r16
+ 436:	ff 90       	pop	r15
+ 438:	ef 90       	pop	r14
+ 43a:	08 95       	ret
+
+0000043c <tinyTuner>:
+  TCCR1 = _BV(CS13) | _BV(CS12); // div 2048 as it is only 8bit, so having to half TCNT1 value
+#elif !defined(__AVR_ATtiny24__)
+  TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
+#endif
+  /* Set LED pin as output */
+  LED_DDR |= _BV(LED);
+ 43c:	ba 9a       	sbi	0x17, 2	; 23
+#if !defined(__AVR_ATtiny24__)
+  LED_PORT &= ~ _BV(LED);
+#endif
+#ifdef SOFT_UART
+  /* Set TX pin as output */
+  UART_DDR |= _BV(UART_TX_BIT);
+ 43e:	d1 9a       	sbi	0x1a, 1	; 26
+  UART_PORT |= _BV(UART_TX_BIT); //set high!
+ 440:	d9 9a       	sbi	0x1b, 1	; 27
+
+  flash_led(LED_START_FLASHES * 10);
+#endif
+  
+  tuner_t tuner;
+  tuner._state = sFirstPass;
+ 442:	19 82       	std	Y+1, r1	; 0x01
+  
+  uint8_t running = true;
+  
+  while ( running )
+  {
+    running = update(&tuner);
+ 444:	8e 01       	movw	r16, r28
+ 446:	0f 5f       	subi	r16, 0xFF	; 255
+ 448:	1f 4f       	sbci	r17, 0xFF	; 255
+ 44a:	c8 01       	movw	r24, r16
+ 44c:	ae de       	rcall	.-676    	; 0x1aa <update>
+      TIFR1 |= _BV(TOV1); //at boot TIFR1 is 0, so can just set the TOV1 bit - save memory.
+      while(!(TIFR1 & _BV(TOV1)));
+    #endif
+    }
+#else 
+    LED_PIN |= _BV(LED); //toggle pin
+ 44e:	b2 9a       	sbi	0x16, 2	; 22
+  tuner_t tuner;
+  tuner._state = sFirstPass;
+  
+  uint8_t running = true;
+  
+  while ( running )
+ 450:	88 23       	and	r24, r24
+ 452:	d9 f7       	brne	.-10     	; 0x44a <tinyTuner+0xe>
+#if !defined(__AVR_ATtiny24__)
+  putstr_t(PSTR("\r\n\r\nFinal Cal = "));
+  putch_t(OSCCAL);
+  putstr_t(PSTR("\r\nSaving Calibration to Program Memory...\r\n"));
+#else
+  putch_t('C');
+ 454:	83 e4       	ldi	r24, 0x43	; 67
+ 456:	13 de       	rcall	.-986    	; 0x7e <putch_t>
+  putch_t('=');
+ 458:	8d e3       	ldi	r24, 0x3D	; 61
+ 45a:	11 de       	rcall	.-990    	; 0x7e <putch_t>
+  putch_t(OSCCAL);
+ 45c:	81 b7       	in	r24, 0x31	; 49
+ 45e:	0f de       	rcall	.-994    	; 0x7e <putch_t>
+  //For this code we are assuming that the cleared value of each byte in the temporary page buffer is 0xFF
+  //This is important as we have to write a page at a time which means that we will be overwriting bytes we
+  //don't want to change - by using 0xFF this isn't an issue as programming can only convert a bit from a 1
+  //to a 0 (otherwise it needs to erase which is not being done here). So if say you had 0b00100101, and reprogrammed
+  //it with 0b11111111, the result would be 0b00100101 as none on the 0's can be turned into 1's. 
+  addrPtr = (uint16_t)(void*)ver;
+ 460:	ec ef       	ldi	r30, 0xFC	; 252
+ 462:	f7 e0       	ldi	r31, 0x07	; 7
+  
+  SPMCSR = CTPB; //clear the temporary page buffer - this sets all bytes to 0xFF so as not to change any bytes we don't want to
+ 464:	84 e0       	ldi	r24, 0x04	; 4
+ 466:	87 bf       	out	0x37, r24	; 55
+  twoByte oscProg;
+  oscProg.array[1] = OSCCAL; //store the new OSCCAL value in the program memory so it can be restored by the bootloader at startup.
+ 468:	21 b7       	in	r18, 0x31	; 49
+ 46a:	92 2f       	mov	r25, r18
+  oscProg.array[0] = (uint8_t)0x00; //prevents tinyTuner ever being called again (good as it will be overwritten by bootloader later.
+ 46c:	80 e0       	ldi	r24, 0x00	; 0
+  __boot_page_fill_short((uint16_t)(void*)addrPtr,oscProg.integer); //store the two oscProg bytes to the temporary buffer
+ 46e:	21 e0       	ldi	r18, 0x01	; 1
+ 470:	0c 01       	movw	r0, r24
+ 472:	27 bf       	out	0x37, r18	; 55
+ 474:	e8 95       	spm
+ 476:	11 24       	eor	r1, r1
+  __boot_page_write_short((uint16_t)(void*)addrPtr); //program the whole page. Any byte where temp=0xFF will remain as they were.
+ 478:	85 e0       	ldi	r24, 0x05	; 5
+ 47a:	87 bf       	out	0x37, r24	; 55
+ 47c:	e8 95       	spm
+  boot_spm_busy_wait(); //wait for completion
+ 47e:	07 b6       	in	r0, 0x37	; 55
+ 480:	00 fc       	sbrc	r0, 0
+ 482:	fd cf       	rjmp	.-6      	; 0x47e <tinyTuner+0x42>
+#if !defined(__AVR_ATtiny24__)
+  putstr_t(PSTR("Removing call to TinyTuner to reduce bootloader size by 2.3kbytes\r\n"));
+#endif
+  
+  addrPtr = (uint16_t)(void*)bootloader; //get the page on which to bootloader starts;
+  addrPtr += 0x0A; //move to the correct place in the bootloader (where the RCALL to tinyTuner() is)
+ 484:	e5 ee       	ldi	r30, 0xE5	; 229
+ 486:	f2 e0       	ldi	r31, 0x02	; 2
+  
+  SPMCSR = CTPB; //clear the temporary page buffer - this sets all bytes to 0xFF so as not to change any bytes we don't want to
+ 488:	84 e0       	ldi	r24, 0x04	; 4
+ 48a:	87 bf       	out	0x37, r24	; 55
+  __boot_page_fill_short((uint16_t)(void*)addrPtr,(uint16_t)0x00); //write a NOP instruction to prevent calling tinyTuner when it doesn't exist anymore.
+ 48c:	80 e0       	ldi	r24, 0x00	; 0
+ 48e:	90 e0       	ldi	r25, 0x00	; 0
+ 490:	21 e0       	ldi	r18, 0x01	; 1
+ 492:	0c 01       	movw	r0, r24
+ 494:	27 bf       	out	0x37, r18	; 55
+ 496:	e8 95       	spm
+ 498:	11 24       	eor	r1, r1
+  __boot_page_write_short((uint16_t)(void*)addrPtr); //program the whole page. Any byte where temp=0xFF will remain as they were.
+ 49a:	85 e0       	ldi	r24, 0x05	; 5
+ 49c:	87 bf       	out	0x37, r24	; 55
+ 49e:	e8 95       	spm
+  boot_spm_busy_wait(); //wait for completion
+ 4a0:	07 b6       	in	r0, 0x37	; 55
+ 4a2:	00 fc       	sbrc	r0, 0
+ 4a4:	fd cf       	rjmp	.-6      	; 0x4a0 <tinyTuner+0x64>
+#if !defined(__AVR_ATtiny24__)
+  putstr_t(PSTR("Calibration saved and TinyTuner Deleted\r\n"));
+  putstr_t(PSTR("\r\n\r\nEnabling Bootloader and Rebooting\r\n\r\n"));
+#endif
+
+  __asm__ __volatile__ (
+ 4a6:	e4 e0       	ldi	r30, 0x04	; 4
+ 4a8:	ff 27       	eor	r31, r31
+ 4aa:	09 94       	ijmp
+ 4ac:	ff cf       	rjmp	.-2      	; 0x4ac <tinyTuner+0x70>
+
+000004ae <fullInit>:
+  #endif
+  
+  return( Temp );
+}
+
+void fullInit( tuner_t* tuner ) {
+ 4ae:	fc 01       	movw	r30, r24
+  tuner->_position = pMax;
+ 4b0:	83 e0       	ldi	r24, 0x03	; 3
+ 4b2:	81 83       	std	Z+1, r24	; 0x01
+  tuner->_threshold = 0;
+ 4b4:	12 82       	std	Z+2, r1	; 0x02
+ 4b6:	80 e0       	ldi	r24, 0x00	; 0
+  
+  uint8_t p = pLeft;
+  for ( ; p < pMax; p=(p+1) ) {
+    tuner->_info[p].OsccalValue = 0;
+ 4b8:	14 82       	std	Z+4, r1	; 0x04
+ 4ba:	13 82       	std	Z+3, r1	; 0x03
+    tuner->_info[p].NineBitTime = 0;
+ 4bc:	16 82       	std	Z+6, r1	; 0x06
+ 4be:	15 82       	std	Z+5, r1	; 0x05
+    tuner->_info[p].Error = 0;
+ 4c0:	10 86       	std	Z+8, r1	; 0x08
+ 4c2:	17 82       	std	Z+7, r1	; 0x07
+    tuner->_info[p].ConfirmCount = 0;
+ 4c4:	11 86       	std	Z+9, r1	; 0x09
+    tuner->_info[p].ConfirmNineBitTime = 0;
+ 4c6:	13 86       	std	Z+11, r1	; 0x0b
+ 4c8:	12 86       	std	Z+10, r1	; 0x0a
+void fullInit( tuner_t* tuner ) {
+  tuner->_position = pMax;
+  tuner->_threshold = 0;
+  
+  uint8_t p = pLeft;
+  for ( ; p < pMax; p=(p+1) ) {
+ 4ca:	8f 5f       	subi	r24, 0xFF	; 255
+ 4cc:	39 96       	adiw	r30, 0x09	; 9
+ 4ce:	83 30       	cpi	r24, 0x03	; 3
+ 4d0:	99 f7       	brne	.-26     	; 0x4b8 <fullInit+0xa>
+    tuner->_info[p].Error = 0;
+    tuner->_info[p].ConfirmCount = 0;
+    tuner->_info[p].ConfirmNineBitTime = 0;
+    //tuner->_info[p].ConfirmClocks = 0;
+  }
+ 4d2:	08 95       	ret
+
+000004d4 <__mulhi3>:
+ 4d4:	55 27       	eor	r21, r21
+ 4d6:	00 24       	eor	r0, r0
+
+000004d8 <__mulhi3_loop>:
+ 4d8:	80 ff       	sbrs	r24, 0
+ 4da:	02 c0       	rjmp	.+4      	; 0x4e0 <__mulhi3_skip1>
+ 4dc:	06 0e       	add	r0, r22
+ 4de:	57 1f       	adc	r21, r23
+
+000004e0 <__mulhi3_skip1>:
+ 4e0:	66 0f       	add	r22, r22
+ 4e2:	77 1f       	adc	r23, r23
+ 4e4:	61 15       	cp	r22, r1
+ 4e6:	71 05       	cpc	r23, r1
+ 4e8:	21 f0       	breq	.+8      	; 0x4f2 <__mulhi3_exit>
+ 4ea:	96 95       	lsr	r25
+ 4ec:	87 95       	ror	r24
+ 4ee:	00 97       	sbiw	r24, 0x00	; 0
+ 4f0:	99 f7       	brne	.-26     	; 0x4d8 <__mulhi3_loop>
+
+000004f2 <__mulhi3_exit>:
+ 4f2:	95 2f       	mov	r25, r21
+ 4f4:	80 2d       	mov	r24, r0
+ 4f6:	08 95       	ret
+
+000004f8 <__mulsi3>:
+ 4f8:	ff 27       	eor	r31, r31
+ 4fa:	ee 27       	eor	r30, r30
+ 4fc:	bb 27       	eor	r27, r27
+ 4fe:	aa 27       	eor	r26, r26
+
+00000500 <__mulsi3_loop>:
+ 500:	60 ff       	sbrs	r22, 0
+ 502:	04 c0       	rjmp	.+8      	; 0x50c <__mulsi3_skip1>
+ 504:	a2 0f       	add	r26, r18
+ 506:	b3 1f       	adc	r27, r19
+ 508:	e4 1f       	adc	r30, r20
+ 50a:	f5 1f       	adc	r31, r21
+
+0000050c <__mulsi3_skip1>:
+ 50c:	22 0f       	add	r18, r18
+ 50e:	33 1f       	adc	r19, r19
+ 510:	44 1f       	adc	r20, r20
+ 512:	55 1f       	adc	r21, r21
+ 514:	96 95       	lsr	r25
+ 516:	87 95       	ror	r24
+ 518:	77 95       	ror	r23
+ 51a:	67 95       	ror	r22
+ 51c:	89 f7       	brne	.-30     	; 0x500 <__mulsi3_loop>
+ 51e:	00 97       	sbiw	r24, 0x00	; 0
+ 520:	76 07       	cpc	r23, r22
+ 522:	71 f7       	brne	.-36     	; 0x500 <__mulsi3_loop>
+
+00000524 <__mulsi3_exit>:
+ 524:	cf 01       	movw	r24, r30
+ 526:	bd 01       	movw	r22, r26
+ 528:	08 95       	ret
+
+0000052a <__divmodhi4>:
+ 52a:	97 fb       	bst	r25, 7
+ 52c:	09 2e       	mov	r0, r25
+ 52e:	07 26       	eor	r0, r23
+ 530:	0a d0       	rcall	.+20     	; 0x546 <__divmodhi4_neg1>
+ 532:	77 fd       	sbrc	r23, 7
+ 534:	04 d0       	rcall	.+8      	; 0x53e <__divmodhi4_neg2>
+ 536:	2e d0       	rcall	.+92     	; 0x594 <__udivmodhi4>
+ 538:	06 d0       	rcall	.+12     	; 0x546 <__divmodhi4_neg1>
+ 53a:	00 20       	and	r0, r0
+ 53c:	1a f4       	brpl	.+6      	; 0x544 <__divmodhi4_exit>
+
+0000053e <__divmodhi4_neg2>:
+ 53e:	70 95       	com	r23
+ 540:	61 95       	neg	r22
+ 542:	7f 4f       	sbci	r23, 0xFF	; 255
+
+00000544 <__divmodhi4_exit>:
+ 544:	08 95       	ret
+
+00000546 <__divmodhi4_neg1>:
+ 546:	f6 f7       	brtc	.-4      	; 0x544 <__divmodhi4_exit>
+ 548:	90 95       	com	r25
+ 54a:	81 95       	neg	r24
+ 54c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 54e:	08 95       	ret
+
+00000550 <__udivmodsi4>:
+ 550:	a1 e2       	ldi	r26, 0x21	; 33
+ 552:	1a 2e       	mov	r1, r26
+ 554:	aa 1b       	sub	r26, r26
+ 556:	bb 1b       	sub	r27, r27
+ 558:	fd 01       	movw	r30, r26
+ 55a:	0d c0       	rjmp	.+26     	; 0x576 <__udivmodsi4_ep>
+
+0000055c <__udivmodsi4_loop>:
+ 55c:	aa 1f       	adc	r26, r26
+ 55e:	bb 1f       	adc	r27, r27
+ 560:	ee 1f       	adc	r30, r30
+ 562:	ff 1f       	adc	r31, r31
+ 564:	a2 17       	cp	r26, r18
+ 566:	b3 07       	cpc	r27, r19
+ 568:	e4 07       	cpc	r30, r20
+ 56a:	f5 07       	cpc	r31, r21
+ 56c:	20 f0       	brcs	.+8      	; 0x576 <__udivmodsi4_ep>
+ 56e:	a2 1b       	sub	r26, r18
+ 570:	b3 0b       	sbc	r27, r19
+ 572:	e4 0b       	sbc	r30, r20
+ 574:	f5 0b       	sbc	r31, r21
+
+00000576 <__udivmodsi4_ep>:
+ 576:	66 1f       	adc	r22, r22
+ 578:	77 1f       	adc	r23, r23
+ 57a:	88 1f       	adc	r24, r24
+ 57c:	99 1f       	adc	r25, r25
+ 57e:	1a 94       	dec	r1
+ 580:	69 f7       	brne	.-38     	; 0x55c <__udivmodsi4_loop>
+ 582:	60 95       	com	r22
+ 584:	70 95       	com	r23
+ 586:	80 95       	com	r24
+ 588:	90 95       	com	r25
+ 58a:	9b 01       	movw	r18, r22
+ 58c:	ac 01       	movw	r20, r24
+ 58e:	bd 01       	movw	r22, r26
+ 590:	cf 01       	movw	r24, r30
+ 592:	08 95       	ret
+
+00000594 <__udivmodhi4>:
+ 594:	aa 1b       	sub	r26, r26
+ 596:	bb 1b       	sub	r27, r27
+ 598:	51 e1       	ldi	r21, 0x11	; 17
+ 59a:	07 c0       	rjmp	.+14     	; 0x5aa <__udivmodhi4_ep>
+
+0000059c <__udivmodhi4_loop>:
+ 59c:	aa 1f       	adc	r26, r26
+ 59e:	bb 1f       	adc	r27, r27
+ 5a0:	a6 17       	cp	r26, r22
+ 5a2:	b7 07       	cpc	r27, r23
+ 5a4:	10 f0       	brcs	.+4      	; 0x5aa <__udivmodhi4_ep>
+ 5a6:	a6 1b       	sub	r26, r22
+ 5a8:	b7 0b       	sbc	r27, r23
+
+000005aa <__udivmodhi4_ep>:
+ 5aa:	88 1f       	adc	r24, r24
+ 5ac:	99 1f       	adc	r25, r25
+ 5ae:	5a 95       	dec	r21
+ 5b0:	a9 f7       	brne	.-22     	; 0x59c <__udivmodhi4_loop>
+ 5b2:	80 95       	com	r24
+ 5b4:	90 95       	com	r25
+ 5b6:	bc 01       	movw	r22, r24
+ 5b8:	cd 01       	movw	r24, r26
+ 5ba:	08 95       	ret
+
+000005bc <_exit>:
+ 5bc:	f8 94       	cli
+
+000005be <__stop_program>:
+ 5be:	ff cf       	rjmp	.-2      	; 0x5be <__stop_program>
+
+Disassembly of section .bootloader.start:
+
+000005c0 <bootloader>:
+  //newMain = bootloader;
+  //(*newMain)();
+  bootloader();
+}
+
+void bootloader(void) {
+ 5c0:	ec ef       	ldi	r30, 0xFC	; 252
+ 5c2:	f7 e0       	ldi	r31, 0x07	; 7
+ 5c4:	84 91       	lpm	r24, Z+
+#endif
+  uint8_t ch;
+
+#ifdef USE_TINY_TUNER
+  ch = pgm_read_byte_near(ver);
+  if(ch == 255) tinyTuner();
+ 5c6:	8f 3f       	cpi	r24, 0xFF	; 255
+ 5c8:	09 f4       	brne	.+2      	; 0x5cc <bootloader+0xc>
+ 5ca:	38 df       	rcall	.-400    	; 0x43c <tinyTuner>
+  ch = pgm_read_byte_near(ver+1);
+ 5cc:	31 96       	adiw	r30, 0x01	; 1
+ 5ce:	84 91       	lpm	r24, Z+
+  OSCCAL = ch;
+ 5d0:	81 bf       	out	0x31, r24	; 49
+  //  r1 contains zero
+  //
+  // If not, uncomment the following instructions:
+  //cli();
+
+  asm volatile ("clr __zero_reg__");
+ 5d2:	11 24       	eor	r1, r1
+#ifdef __AVR_ATmega162__
+  ch = MCUCSR;
+  ch &= 0x0F;
+  MCUCSR &= 0xF0;
+#else
+  ch = MCUSR;
+ 5d4:	14 b7       	in	r17, 0x34	; 52
+  MCUSR = 0;
+ 5d6:	14 be       	out	0x34, r1	; 52
+#endif
+
+#ifdef BOOTENTRY
+  if(!(BOOTENTRY_PIN & _BV(BOOTENTRY))) appStart(); //if there is a bootloader entry pin, skip the bootloader if this is low.
+ 5d8:	b1 9b       	sbis	0x16, 1	; 22
+ 5da:	08 d1       	rcall	.+528    	; 0x7ec <appStart>
+#endif
+
+#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__)// || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
+  uint8_t mask = (_BV(PORF) | _BV(EXTRF));
+  if (!(ch & mask)) appStart(); //Power on reset loads bootloader as well - allows bootloader even if reset pin is disabled
+ 5dc:	13 70       	andi	r17, 0x03	; 3
+ 5de:	09 f4       	brne	.+2      	; 0x5e2 <bootloader+0x22>
+ 5e0:	05 d1       	rcall	.+522    	; 0x7ec <appStart>
+#if LED_START_FLASHES > 0
+  // Set up Timer 1 for timeout counter
+#if defined(__AVR_ATtiny85__)
+  TCCR1 = _BV(CS13) | _BV(CS12); // div 2048 as it is only 8bit, so having to half TCNT1 value
+#else
+  TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
+ 5e2:	85 e0       	ldi	r24, 0x05	; 5
+ 5e4:	8e bd       	out	0x2e, r24	; 46
+#endif
+#endif
+
+#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny85__) || defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
+  // Set up watchdog to trigger after 2s to give software UART a better chance.
+  watchdogConfig(WATCHDOG_2S);
+ 5e6:	8f e0       	ldi	r24, 0x0F	; 15
+ 5e8:	ed d0       	rcall	.+474    	; 0x7c4 <watchdogConfig>
+  // Set up watchdog to trigger after 1s
+  watchdogConfig(WATCHDOG_1S);
+#endif
+
+  /* Set LED pin as output */
+  LED_DDR |= _BV(LED);
+ 5ea:	ba 9a       	sbi	0x17, 2	; 23
+  
+#ifdef SOFT_UART
+  /* Set TX pin as output */
+  UART_DDR |= _BV(UART_TX_BIT);
+ 5ec:	d1 9a       	sbi	0x1a, 1	; 26
+  UART_PORT |= _BV(UART_TX_BIT); //set high!
+ 5ee:	d9 9a       	sbi	0x1b, 1	; 27
+ 5f0:	86 e0       	ldi	r24, 0x06	; 6
+#elif defined(__AVR_ATtiny85__)
+    TCNT1 = -(char)(F_CPU/(2048U*16U));
+    while(!(TIFR & _BV(TOV1)));
+    TIFR = _BV(TOV1); //For tiny85, sbi() doesn't reach this register, so it saves memory to use an assignment rather than a bitwise or.
+#else
+    TCNT1 = -(F_CPU/(1024*16));
+ 5f2:	28 e1       	ldi	r18, 0x18	; 24
+ 5f4:	3e ef       	ldi	r19, 0xFE	; 254
+ 5f6:	3d bd       	out	0x2d, r19	; 45
+ 5f8:	2c bd       	out	0x2c, r18	; 44
+    //TIFR1 = _BV(TOV1);
+    TIFR1 |= _BV(TOV1); //at boot TIFR1 is 0, so can just set the TOV1 bit - save memory.
+ 5fa:	58 9a       	sbi	0x0b, 0	; 11
+    while(!(TIFR1 & _BV(TOV1)));
+ 5fc:	58 9b       	sbis	0x0b, 0	; 11
+ 5fe:	fe cf       	rjmp	.-4      	; 0x5fc <bootloader+0x3c>
+#endif
+#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__) 
+    LED_PORT ^= _BV(LED);
+#else
+    LED_PIN |= _BV(LED);
+ 600:	b2 9a       	sbi	0x16, 2	; 22
+}
+#endif
+
+// Watchdog functions. These are only safe with interrupts turned off.
+void watchdogReset() {
+  __asm__ __volatile__ (
+ 602:	a8 95       	wdr
+    LED_PORT ^= _BV(LED);
+#else
+    LED_PIN |= _BV(LED);
+#endif
+    watchdogReset();
+  } while (--count);
+ 604:	81 50       	subi	r24, 0x01	; 1
+ 606:	b9 f7       	brne	.-18     	; 0x5f6 <bootloader+0x36>
+ 608:	ee 24       	eor	r14, r14
+ 60a:	ff 24       	eor	r15, r15
+        //a |= (*bufPtr++) << 8;
+        //__boot_page_fill_short((uint16_t)(void*)addrPtr,a);
+        twoByte a; //Again by using a union, code length is slashed, this time by 16 bytes.
+        a.array[0] = *bufPtr++;
+        a.array[1] = *bufPtr++;
+        __boot_page_fill_short((uint16_t)(void*)addrPtr,a.integer);
+ 60c:	22 24       	eor	r2, r2
+ 60e:	23 94       	inc	r2
+        addrPtr += 2;
+      } while (--ch);
+
+      // Write from programming buffer
+      __boot_page_write_short((uint16_t)(void*)address);
+ 610:	45 e0       	ldi	r20, 0x05	; 5
+ 612:	44 2e       	mov	r4, r20
+        tempWdtVect.array[2] = buff[WDT_VECT_START+2];
+        tempWdtVect.array[3] = buff[WDT_VECT_START+3];
+        #endif
+        
+        // Add jump to bootloader at RESET vector
+        buff[0] = RJUMP_COMMAND_LOW; //df
+ 614:	3f ed       	ldi	r19, 0xDF	; 223
+ 616:	33 2e       	mov	r3, r19
+        buff[1] = RJUMP_COMMAND_HIGH; //ce   rjmp instruction
+ 618:	26 ec       	ldi	r18, 0xC6	; 198
+ 61a:	52 2e       	mov	r5, r18
+#endif
+
+  /* Forever loop */
+  for (;;) {
+    /* get character from UART */
+    ch = getch();
+ 61c:	bb d0       	rcall	.+374    	; 0x794 <getch>
+
+    if(ch == STK_GET_PARAMETER) {
+ 61e:	81 34       	cpi	r24, 0x41	; 65
+ 620:	21 f4       	brne	.+8      	; 0x62a <bootloader+0x6a>
+     * Send optiboot version as "major SW version"
+     */
+        putch(OPTIBOOT_MAJVER);
+      } else 
+#else
+      getch();
+ 622:	b8 d0       	rcall	.+368    	; 0x794 <getch>
+      verifySpace();
+ 624:	d3 d0       	rcall	.+422    	; 0x7cc <verifySpace>
+      {
+    /*
+     * GET PARAMETER returns a generic 0x03 reply for
+         * other parameters - enough to keep Avrdude happy
+     */
+        putch(0x03);
+ 626:	83 e0       	ldi	r24, 0x03	; 3
+ 628:	9a c0       	rjmp	.+308    	; 0x75e <bootloader+0x19e>
+      }
+    }
+    else if(ch == STK_SET_DEVICE) {
+ 62a:	82 34       	cpi	r24, 0x42	; 66
+ 62c:	11 f4       	brne	.+4      	; 0x632 <bootloader+0x72>
+      // SET DEVICE is ignored
+      getNch(20);
+ 62e:	84 e1       	ldi	r24, 0x14	; 20
+ 630:	03 c0       	rjmp	.+6      	; 0x638 <bootloader+0x78>
+    }
+    else if(ch == STK_SET_DEVICE_EXT) {
+ 632:	85 34       	cpi	r24, 0x45	; 69
+ 634:	19 f4       	brne	.+6      	; 0x63c <bootloader+0x7c>
+      // SET DEVICE EXT is ignored
+      getNch(5);
+ 636:	85 e0       	ldi	r24, 0x05	; 5
+ 638:	d1 d0       	rcall	.+418    	; 0x7dc <verifySpace+0x10>
+ 63a:	98 c0       	rjmp	.+304    	; 0x76c <bootloader+0x1ac>
+    }
+    else if(ch == STK_LOAD_ADDRESS) {
+ 63c:	85 35       	cpi	r24, 0x55	; 85
+ 63e:	41 f4       	brne	.+16     	; 0x650 <bootloader+0x90>
+      // LOAD ADDRESS
+      twoByte newAddress; //By using a union which combines a uint16_t with an array of two uint8_t's, code is MUCH smaller.
+      newAddress.array[0] = getch();
+ 640:	a9 d0       	rcall	.+338    	; 0x794 <getch>
+ 642:	a8 2e       	mov	r10, r24
+      newAddress.array[1] = getch();
+ 644:	a7 d0       	rcall	.+334    	; 0x794 <getch>
+ 646:	b8 2e       	mov	r11, r24
+      //newAddress |= /*(newAddress & 0xff) |*/ (getch() << 8);
+#ifdef RAMPZ
+      // Transfer top bit to RAMPZ
+      RAMPZ = (newAddress.integer & 0x8000) ? 1 : 0;
+#endif
+      newAddress.integer += newAddress.integer; // Convert from word address to byte address
+ 648:	aa 0c       	add	r10, r10
+ 64a:	bb 1c       	adc	r11, r11
+ 64c:	75 01       	movw	r14, r10
+ 64e:	8d c0       	rjmp	.+282    	; 0x76a <bootloader+0x1aa>
+      address = newAddress.integer;
+      //newAddress += newAddress;
+      //address = newAddress;
+      verifySpace();
+    }
+    else if(ch == STK_UNIVERSAL) {
+ 650:	86 35       	cpi	r24, 0x56	; 86
+ 652:	21 f4       	brne	.+8      	; 0x65c <bootloader+0x9c>
+      // UNIVERSAL command is ignored
+      getNch(4);
+ 654:	84 e0       	ldi	r24, 0x04	; 4
+ 656:	c2 d0       	rcall	.+388    	; 0x7dc <verifySpace+0x10>
+      putch(0x00);
+ 658:	80 e0       	ldi	r24, 0x00	; 0
+ 65a:	81 c0       	rjmp	.+258    	; 0x75e <bootloader+0x19e>
+    }
+    /* Write memory, length is big endian and is in bytes */
+    else if(ch == STK_PROG_PAGE) {
+ 65c:	84 36       	cpi	r24, 0x64	; 100
+ 65e:	09 f0       	breq	.+2      	; 0x662 <bootloader+0xa2>
+ 660:	49 c0       	rjmp	.+146    	; 0x6f4 <bootloader+0x134>
+      // PROGRAM PAGE - we support flash programming only, not EEPROM
+      uint8_t *bufPtr;
+      uint16_t addrPtr;
+
+      getch();            /* getlen() */
+ 662:	98 d0       	rcall	.+304    	; 0x794 <getch>
+      length = getch();
+ 664:	97 d0       	rcall	.+302    	; 0x794 <getch>
+ 666:	18 2f       	mov	r17, r24
+      getch();
+ 668:	95 d0       	rcall	.+298    	; 0x794 <getch>
+ 66a:	c0 e6       	ldi	r28, 0x60	; 96
+ 66c:	d0 e0       	ldi	r29, 0x00	; 0
+      //For tiny chips, this is never possible
+#endif
+
+      // While that is going on, read in page contents
+      bufPtr = buff;
+      do *bufPtr++ = getch();
+ 66e:	92 d0       	rcall	.+292    	; 0x794 <getch>
+ 670:	89 93       	st	Y+, r24
+      while (--length);
+ 672:	11 50       	subi	r17, 0x01	; 1
+ 674:	e1 f7       	brne	.-8      	; 0x66e <bootloader+0xae>
+
+#ifdef SOFT_UART
+      // Read command terminator, start reply
+      verifySpace(); //Have to do this before starting page erase otherwise we miss the last byte from avrdude as CPU is disabled for erase
+ 676:	aa d0       	rcall	.+340    	; 0x7cc <verifySpace>
+      // Todo: Take RAMPZ into account
+#ifndef VIRTUAL_BOOT_PARTITION
+      if (address >= NRWWSTART) __boot_page_erase_short((uint16_t)(void*)address);
+#else
+      //For tiny chips, this is always the case
+      __boot_page_erase_short((uint16_t)(void*)address);
+ 678:	83 e0       	ldi	r24, 0x03	; 3
+ 67a:	f7 01       	movw	r30, r14
+ 67c:	87 bf       	out	0x37, r24	; 55
+ 67e:	e8 95       	spm
+      verifySpace();
+#endif
+
+      // If only a partial page is to be programmed, the erase might not be complete.
+      // So check that here
+      boot_spm_busy_wait();
+ 680:	07 b6       	in	r0, 0x37	; 55
+ 682:	00 fc       	sbrc	r0, 0
+ 684:	fd cf       	rjmp	.-6      	; 0x680 <bootloader+0xc0>
+
+#ifdef VIRTUAL_BOOT_PARTITION
+      if ((uint16_t)(void*)address == 0) {
+ 686:	e1 14       	cp	r14, r1
+ 688:	f1 04       	cpc	r15, r1
+ 68a:	e1 f4       	brne	.+56     	; 0x6c4 <bootloader+0x104>
+        // bootloader runs.
+        //
+        // Move RESET vector to WDT vector
+        #if VECTOR_WORDS == 1
+        twoByte vect;
+        vect.array[0] = buff[0];
+ 68c:	c0 90 60 00 	lds	r12, 0x0060
+        vect.array[1] = buff[1];
+ 690:	d0 90 61 00 	lds	r13, 0x0061
+        twoByte tempWdtVect;
+        tempWdtVect.array[0] = buff[WDT_VECT_START];
+ 694:	80 90 68 00 	lds	r8, 0x0068
+        tempWdtVect.array[1] = buff[WDT_VECT_START+1];
+ 698:	90 90 69 00 	lds	r9, 0x0069
+        tempWdtVect.array[2] = buff[WDT_VECT_START+2];
+        tempWdtVect.array[3] = buff[WDT_VECT_START+3];
+        #endif
+        
+        // Add jump to bootloader at RESET vector
+        buff[0] = RJUMP_COMMAND_LOW; //df
+ 69c:	30 92 60 00 	sts	0x0060, r3
+        buff[1] = RJUMP_COMMAND_HIGH; //ce   rjmp instruction
+ 6a0:	50 92 61 00 	sts	0x0061, r5
+        #if VECTOR_WORDS == 2
+        buff[2] = 0x00; //nop
+        buff[3] = 0x00; //nop
+        #endif
+        
+        wdtVect.integer = tempWdtVect.integer;
+ 6a4:	90 92 a7 00 	sts	0x00A7, r9
+ 6a8:	80 92 a6 00 	sts	0x00A6, r8
+        rstVect.integer = vect.integer;
+ 6ac:	d0 92 a5 00 	sts	0x00A5, r13
+ 6b0:	c0 92 a4 00 	sts	0x00A4, r12
+        
+        #if VECTOR_WORDS == 1
+        vect.integer -= (WDT_VECT_START/2); // Instruction is a relative jump (rjmp), so recalculate.
+ 6b4:	ec ef       	ldi	r30, 0xFC	; 252
+ 6b6:	ff ef       	ldi	r31, 0xFF	; 255
+ 6b8:	ce 0e       	add	r12, r30
+ 6ba:	df 1e       	adc	r13, r31
+        #else
+        buff[WDT_VECT_START+2] = vect.array[2]; //Instruction is a direct jump (jmp), so no need to recalculate.
+        buff[WDT_VECT_START+3] = vect.array[3];
+        #endif
+        buff[WDT_VECT_START] = vect.array[0];
+ 6bc:	c0 92 68 00 	sts	0x0068, r12
+        buff[WDT_VECT_START+1] = vect.array[1];
+ 6c0:	d0 92 69 00 	sts	0x0069, r13
+ 6c4:	c7 01       	movw	r24, r14
+ 6c6:	a0 e6       	ldi	r26, 0x60	; 96
+ 6c8:	b0 e0       	ldi	r27, 0x00	; 0
+        //uint16_t a;
+        //a = *bufPtr++;
+        //a |= (*bufPtr++) << 8;
+        //__boot_page_fill_short((uint16_t)(void*)addrPtr,a);
+        twoByte a; //Again by using a union, code length is slashed, this time by 16 bytes.
+        a.array[0] = *bufPtr++;
+ 6ca:	6c 90       	ld	r6, X
+        a.array[1] = *bufPtr++;
+ 6cc:	11 96       	adiw	r26, 0x01	; 1
+ 6ce:	7c 90       	ld	r7, X
+ 6d0:	11 97       	sbiw	r26, 0x01	; 1
+  //newMain = bootloader;
+  //(*newMain)();
+  bootloader();
+}
+
+void bootloader(void) {
+ 6d2:	12 96       	adiw	r26, 0x02	; 2
+        //a |= (*bufPtr++) << 8;
+        //__boot_page_fill_short((uint16_t)(void*)addrPtr,a);
+        twoByte a; //Again by using a union, code length is slashed, this time by 16 bytes.
+        a.array[0] = *bufPtr++;
+        a.array[1] = *bufPtr++;
+        __boot_page_fill_short((uint16_t)(void*)addrPtr,a.integer);
+ 6d4:	fc 01       	movw	r30, r24
+ 6d6:	03 01       	movw	r0, r6
+ 6d8:	27 be       	out	0x37, r2	; 55
+ 6da:	e8 95       	spm
+ 6dc:	11 24       	eor	r1, r1
+        addrPtr += 2;
+ 6de:	02 96       	adiw	r24, 0x02	; 2
+      } while (--ch);
+ 6e0:	a0 38       	cpi	r26, 0x80	; 128
+ 6e2:	b1 05       	cpc	r27, r1
+ 6e4:	91 f7       	brne	.-28     	; 0x6ca <bootloader+0x10a>
+
+      // Write from programming buffer
+      __boot_page_write_short((uint16_t)(void*)address);
+ 6e6:	f7 01       	movw	r30, r14
+ 6e8:	47 be       	out	0x37, r4	; 55
+ 6ea:	e8 95       	spm
+      boot_spm_busy_wait();
+ 6ec:	07 b6       	in	r0, 0x37	; 55
+ 6ee:	00 fc       	sbrc	r0, 0
+ 6f0:	fd cf       	rjmp	.-6      	; 0x6ec <bootloader+0x12c>
+ 6f2:	3c c0       	rjmp	.+120    	; 0x76c <bootloader+0x1ac>
+      boot_rww_enable();
+#endif
+
+    }
+    /* Read memory block mode, length is big endian.  */
+    else if(ch == STK_READ_PAGE) {
+ 6f4:	84 37       	cpi	r24, 0x74	; 116
+ 6f6:	59 f5       	brne	.+86     	; 0x74e <bootloader+0x18e>
+      // READ PAGE - we only read flash
+      getch();            /* getlen() */
+ 6f8:	4d d0       	rcall	.+154    	; 0x794 <getch>
+      length = getch();
+ 6fa:	4c d0       	rcall	.+152    	; 0x794 <getch>
+ 6fc:	08 2f       	mov	r16, r24
+      getch();
+ 6fe:	4a d0       	rcall	.+148    	; 0x794 <getch>
+
+      verifySpace();
+ 700:	65 d0       	rcall	.+202    	; 0x7cc <verifySpace>
+ 702:	e7 01       	movw	r28, r14
+ 704:	10 2f       	mov	r17, r16
+#ifdef VIRTUAL_BOOT_PARTITION
+      do {
+        // Undo vector patch in bottom page so verify passes
+        if (address == 0)       ch=rstVect.array[0];
+ 706:	20 97       	sbiw	r28, 0x00	; 0
+ 708:	19 f4       	brne	.+6      	; 0x710 <bootloader+0x150>
+ 70a:	80 91 a4 00 	lds	r24, 0x00A4
+ 70e:	14 c0       	rjmp	.+40     	; 0x738 <bootloader+0x178>
+        else if (address == 1)  ch=rstVect.array[1];
+ 710:	c1 30       	cpi	r28, 0x01	; 1
+ 712:	d1 05       	cpc	r29, r1
+ 714:	19 f4       	brne	.+6      	; 0x71c <bootloader+0x15c>
+ 716:	80 91 a5 00 	lds	r24, 0x00A5
+ 71a:	0e c0       	rjmp	.+28     	; 0x738 <bootloader+0x178>
+        #if VECTOR_WORDS == 2
+        else if (address == 2)  ch=rstVect.array[2];
+        else if (address == 3)  ch=rstVect.array[3];
+        #endif
+        else if (address == WDT_VECT_START)     ch=wdtVect.array[0];
+ 71c:	c8 30       	cpi	r28, 0x08	; 8
+ 71e:	d1 05       	cpc	r29, r1
+ 720:	19 f4       	brne	.+6      	; 0x728 <bootloader+0x168>
+ 722:	80 91 a6 00 	lds	r24, 0x00A6
+ 726:	08 c0       	rjmp	.+16     	; 0x738 <bootloader+0x178>
+        else if (address == (WDT_VECT_START+1)) ch=wdtVect.array[1];
+ 728:	c9 30       	cpi	r28, 0x09	; 9
+ 72a:	d1 05       	cpc	r29, r1
+ 72c:	19 f4       	brne	.+6      	; 0x734 <bootloader+0x174>
+ 72e:	80 91 a7 00 	lds	r24, 0x00A7
+ 732:	02 c0       	rjmp	.+4      	; 0x738 <bootloader+0x178>
+        #if VECTOR_WORDS == 2
+        else if (address == (WDT_VECT_START+2)) ch=wdtVect.array[2];
+        else if (address == (WDT_VECT_START+3)) ch=wdtVect.array[3];
+        #endif
+        else ch = pgm_read_byte_near(address);
+ 734:	fe 01       	movw	r30, r28
+ 736:	84 91       	lpm	r24, Z+
+        address++;
+ 738:	21 96       	adiw	r28, 0x01	; 1
+        putch(ch);
+ 73a:	1c d0       	rcall	.+56     	; 0x774 <putch>
+      } while (--length);
+ 73c:	11 50       	subi	r17, 0x01	; 1
+ 73e:	19 f7       	brne	.-58     	; 0x706 <bootloader+0x146>
+  //newMain = bootloader;
+  //(*newMain)();
+  bootloader();
+}
+
+void bootloader(void) {
+ 740:	08 94       	sec
+ 742:	e1 1c       	adc	r14, r1
+ 744:	f1 1c       	adc	r15, r1
+ 746:	01 50       	subi	r16, 0x01	; 1
+ 748:	e0 0e       	add	r14, r16
+ 74a:	f1 1c       	adc	r15, r1
+ 74c:	0f c0       	rjmp	.+30     	; 0x76c <bootloader+0x1ac>
+#endif
+#endif
+    }
+
+    /* Get device signature bytes  */
+    else if(ch == STK_READ_SIGN) {
+ 74e:	85 37       	cpi	r24, 0x75	; 117
+ 750:	41 f4       	brne	.+16     	; 0x762 <bootloader+0x1a2>
+      // READ SIGN - return what Avrdude wants to hear
+      verifySpace();
+ 752:	3c d0       	rcall	.+120    	; 0x7cc <verifySpace>
+      putch(SIGNATURE_0);
+ 754:	8e e1       	ldi	r24, 0x1E	; 30
+ 756:	0e d0       	rcall	.+28     	; 0x774 <putch>
+      putch(SIGNATURE_1);
+ 758:	81 e9       	ldi	r24, 0x91	; 145
+ 75a:	0c d0       	rcall	.+24     	; 0x774 <putch>
+      putch(SIGNATURE_2);
+ 75c:	8b e0       	ldi	r24, 0x0B	; 11
+ 75e:	0a d0       	rcall	.+20     	; 0x774 <putch>
+ 760:	05 c0       	rjmp	.+10     	; 0x76c <bootloader+0x1ac>
+    }
+    else if (ch == STK_LEAVE_PROGMODE) {
+ 762:	81 35       	cpi	r24, 0x51	; 81
+ 764:	11 f4       	brne	.+4      	; 0x76a <bootloader+0x1aa>
+      // Adaboot no-wait mod
+      watchdogConfig(WATCHDOG_16MS);
+ 766:	88 e0       	ldi	r24, 0x08	; 8
+ 768:	2d d0       	rcall	.+90     	; 0x7c4 <watchdogConfig>
+      verifySpace();
+    }
+    else {
+      // This covers the response to commands like STK_ENTER_PROGMODE
+      verifySpace();
+ 76a:	30 d0       	rcall	.+96     	; 0x7cc <verifySpace>
+    }
+    putch(STK_OK);
+ 76c:	80 e1       	ldi	r24, 0x10	; 16
+ 76e:	02 d0       	rcall	.+4      	; 0x774 <putch>
+ 770:	55 cf       	rjmp	.-342    	; 0x61c <bootloader+0x5c>
+
+Disassembly of section .bootloader:
+
+00000774 <putch>:
+  LED_PIN |= _BV(LED);
+#endif
+#endif
+
+#else
+  __asm__ __volatile__ (
+ 774:	2a e0       	ldi	r18, 0x0A	; 10
+ 776:	80 95       	com	r24
+ 778:	08 94       	sec
+ 77a:	10 f4       	brcc	.+4      	; 0x780 <putch+0xc>
+ 77c:	d9 98       	cbi	0x1b, 1	; 27
+ 77e:	02 c0       	rjmp	.+4      	; 0x784 <putch+0x10>
+ 780:	d9 9a       	sbi	0x1b, 1	; 27
+ 782:	00 00       	nop
+ 784:	1b d0       	rcall	.+54     	; 0x7bc <uartDelay>
+ 786:	1a d0       	rcall	.+52     	; 0x7bc <uartDelay>
+ 788:	19 d0       	rcall	.+50     	; 0x7bc <uartDelay>
+ 78a:	18 d0       	rcall	.+48     	; 0x7bc <uartDelay>
+ 78c:	86 95       	lsr	r24
+ 78e:	2a 95       	dec	r18
+ 790:	a1 f7       	brne	.-24     	; 0x77a <putch+0x6>
+      [uartBit] "I" (UART_TX_BIT)
+    :
+      "r25"
+  );
+#endif
+}
+ 792:	08 95       	ret
+
+00000794 <getch>:
+  LED_PIN |= _BV(LED);
+#endif
+#endif
+
+  return ch;
+}
+ 794:	28 e0       	ldi	r18, 0x08	; 8
+ 796:	80 e0       	ldi	r24, 0x00	; 0
+ 798:	ca 99       	sbic	0x19, 2	; 25
+ 79a:	fe cf       	rjmp	.-4      	; 0x798 <getch+0x4>
+ 79c:	0f d0       	rcall	.+30     	; 0x7bc <uartDelay>
+ 79e:	0e d0       	rcall	.+28     	; 0x7bc <uartDelay>
+ 7a0:	0d d0       	rcall	.+26     	; 0x7bc <uartDelay>
+ 7a2:	0c d0       	rcall	.+24     	; 0x7bc <uartDelay>
+ 7a4:	0b d0       	rcall	.+22     	; 0x7bc <uartDelay>
+ 7a6:	88 94       	clc
+ 7a8:	ca 99       	sbic	0x19, 2	; 25
+ 7aa:	08 94       	sec
+ 7ac:	87 95       	ror	r24
+ 7ae:	2a 95       	dec	r18
+ 7b0:	09 f0       	breq	.+2      	; 0x7b4 <getch+0x20>
+ 7b2:	f5 cf       	rjmp	.-22     	; 0x79e <getch+0xa>
+ 7b4:	a8 95       	wdr
+ 7b6:	02 d0       	rcall	.+4      	; 0x7bc <uartDelay>
+ 7b8:	01 d0       	rcall	.+2      	; 0x7bc <uartDelay>
+ 7ba:	00 c0       	rjmp	.+0      	; 0x7bc <uartDelay>
+
+000007bc <uartDelay>:
+#if UART_B_VALUE > 255
+#error Baud rate too slow for soft UART
+#endif
+
+void uartDelay() {
+  __asm__ __volatile__ (
+ 7bc:	90 e2       	ldi	r25, 0x20	; 32
+ 7be:	9a 95       	dec	r25
+ 7c0:	f1 f7       	brne	.-4      	; 0x7be <uartDelay+0x2>
+ 7c2:	08 95       	ret
+
+000007c4 <watchdogConfig>:
+#if !defined(WDTCSR) && defined(WDTCR)
+  #define WDTCSR WDTCR
+#endif
+
+void watchdogConfig(uint8_t x) {
+  WDTCSR = _BV(WDCE) | _BV(WDE);
+ 7c4:	98 e1       	ldi	r25, 0x18	; 24
+ 7c6:	91 bd       	out	0x21, r25	; 33
+  WDTCSR = x;
+ 7c8:	81 bd       	out	0x21, r24	; 33
+}
+ 7ca:	08 95       	ret
+
+000007cc <verifySpace>:
+  do getch(); while (--count);
+  verifySpace();
+}
+
+void verifySpace() {
+  if (getch() != CRC_EOP) {
+ 7cc:	e3 df       	rcall	.-58     	; 0x794 <getch>
+ 7ce:	80 32       	cpi	r24, 0x20	; 32
+ 7d0:	19 f0       	breq	.+6      	; 0x7d8 <verifySpace+0xc>
+    watchdogConfig(WATCHDOG_16MS);    // shorten WD timeout
+ 7d2:	88 e0       	ldi	r24, 0x08	; 8
+ 7d4:	f7 df       	rcall	.-18     	; 0x7c4 <watchdogConfig>
+ 7d6:	ff cf       	rjmp	.-2      	; 0x7d6 <verifySpace+0xa>
+    while (1)                  // and busy-loop so that WD causes
+      ;                      //  a reset and app start.
+  }
+  putch(STK_INSYNC);
+ 7d8:	84 e1       	ldi	r24, 0x14	; 20
+}
+ 7da:	cc cf       	rjmp	.-104    	; 0x774 <putch>
+    ::[count] "M" (UART_B_VALUE):"r25"
+  );
+}
+#endif
+
+void getNch(uint8_t count) {
+ 7dc:	1f 93       	push	r17
+ 7de:	18 2f       	mov	r17, r24
+
+000007e0 <getNch>:
+  do getch(); while (--count);
+ 7e0:	d9 df       	rcall	.-78     	; 0x794 <getch>
+ 7e2:	11 50       	subi	r17, 0x01	; 1
+ 7e4:	e9 f7       	brne	.-6      	; 0x7e0 <getNch>
+  verifySpace();
+ 7e6:	f2 df       	rcall	.-28     	; 0x7cc <verifySpace>
+}
+ 7e8:	1f 91       	pop	r17
+ 7ea:	08 95       	ret
+
+000007ec <appStart>:
+  WDTCSR = _BV(WDCE) | _BV(WDE);
+  WDTCSR = x;
+}
+
+void appStart() {
+  watchdogConfig(WATCHDOG_OFF);
+ 7ec:	80 e0       	ldi	r24, 0x00	; 0
+ 7ee:	ea df       	rcall	.-44     	; 0x7c4 <watchdogConfig>
+  __asm__ __volatile__ (
+ 7f0:	e4 e0       	ldi	r30, 0x04	; 4
+ 7f2:	ff 27       	eor	r31, r31
+ 7f4:	09 94       	ijmp

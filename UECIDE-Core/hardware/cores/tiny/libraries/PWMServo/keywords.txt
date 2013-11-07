@@ -1,0 +1,26 @@
+
+#######################################
+# Syntax Coloring Map for PWMServo
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+PWMServo	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+attach	KEYWORD2
+detach	KEYWORD2
+write	KEYWORD2
+read	KEYWORD2
+attached	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+SERVO_PIN_A LITERAL1
+SERVO_PIN_B LITERAL1
+SERVO_PIN_C LITERAL1

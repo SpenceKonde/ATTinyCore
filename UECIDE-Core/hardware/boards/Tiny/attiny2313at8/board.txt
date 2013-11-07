@@ -1,0 +1,17 @@
+variant=attiny2313at8
+name=ATtiny2313 @ 8 MHz  (internal oscillator; BOD disabled)
+upload.using=arduino:arduinoisp
+upload.maximum_size=2048
+bootloader.low_fuses=0xE4
+bootloader.high_fuses=0x9F
+bootloader.extended_fuses=0xFF
+bootloader.path=empty
+bootloader.file=emptyX313.hex
+build.mcu=attiny2313
+build.f_cpu=8000000L
+build.core=tiny
+build.variant=attiny2313at8
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

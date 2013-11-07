@@ -1,0 +1,17 @@
+variant=attiny45at1
+name=ATtiny45 @ 1 MHz  (internal oscillator; BOD disabled)
+upload.using=arduino:arduinoisp
+upload.maximum_size=4096
+bootloader.low_fuses=0x62
+bootloader.high_fuses=0xD7
+bootloader.extended_fuses=0xFF
+bootloader.path=empty
+bootloader.file=emptyX5.hex
+build.mcu=attiny45
+build.f_cpu=1000000L
+build.core=tiny
+build.variant=attiny45at1
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

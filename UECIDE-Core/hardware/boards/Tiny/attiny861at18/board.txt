@@ -1,0 +1,17 @@
+variant=attiny861at18
+name=ATtiny861 @ 18.432 MHz  (external oscillator; BOD disabled)
+upload.using=arduino:arduinoisp
+upload.maximum_size=8192
+bootloader.low_fuses=0xA0
+bootloader.high_fuses=0xD7
+bootloader.extended_fuses=0x00
+bootloader.path=empty
+bootloader.file=emptyX61.hex
+build.mcu=attiny861
+build.f_cpu=18432000L
+build.core=tiny
+build.variant=attiny861at18
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

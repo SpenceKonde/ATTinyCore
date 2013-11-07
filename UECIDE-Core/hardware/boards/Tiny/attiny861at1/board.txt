@@ -1,0 +1,17 @@
+variant=attiny861at1
+name=ATtiny861 @ 1 MHz  (internal oscillator; BOD disabled)
+upload.using=arduino:arduinoisp
+upload.maximum_size=8192
+bootloader.low_fuses=0x62
+bootloader.high_fuses=0xDF
+bootloader.extended_fuses=0xFF
+bootloader.path=empty
+bootloader.file=emptyX61.hex
+build.mcu=attiny861
+build.f_cpu=1000000L
+build.core=tiny
+build.variant=attiny861at1
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

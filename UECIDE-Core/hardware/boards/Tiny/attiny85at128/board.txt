@@ -1,0 +1,17 @@
+variant=attiny85at128
+name=ATtiny85 @ 128 KHz  (watchdog oscillator; 1.8 V BOD)
+upload.using=arduino:arduinoisp
+upload.maximum_size=8192
+bootloader.low_fuses=0xC4
+bootloader.high_fuses=0xD6
+bootloader.extended_fuses=0xFF
+bootloader.path=empty
+bootloader.file=emptyX5.hex
+build.mcu=attiny85
+build.f_cpu=128000L
+build.core=tiny
+build.variant=attiny85at128
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny

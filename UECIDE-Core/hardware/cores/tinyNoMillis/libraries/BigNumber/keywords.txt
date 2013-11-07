@@ -1,0 +1,11 @@
+BigNumber	KEYWORD1
+begin	KEYWORD2
+finish	KEYWORD2
+setScale	KEYWORD2
+toString	KEYWORD2
+isNegative KEYWORD2
+isZero KEYWORD2
+isNearZero KEYWORD2
+sqrt KEYWORD2
+pow KEYWORD2
+divMod KEYWORD2

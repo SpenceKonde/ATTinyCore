@@ -1,0 +1,17 @@
+variant=attiny84_12-8
+name=ATtiny84 @ 12.8 MHz  (internal osc)
+upload.using=arduino:arduinoisp
+upload.maximum_size=8192
+bootloader.low_fuses=0xE2
+bootloader.high_fuses=0xD7
+bootloader.extended_fuses=0xFE
+bootloader.path=empty
+bootloader.file=empty84at8.hex
+build.mcu=attiny84
+build.f_cpu=12800000L
+build.core=tiny
+build.variant=attiny84_12-8
+group=Tiny
+family=avrtiny
+version=0.2
+core=tiny
