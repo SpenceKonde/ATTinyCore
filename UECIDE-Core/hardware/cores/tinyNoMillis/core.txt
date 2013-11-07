@@ -1,4 +1,4 @@
-name=ATTiny Core (No Millis)
+name=tinyNoMillis
 description=A Beta ATTiny Core which doesn't use any timers (no millis())
 compiler=avr-gcc
 

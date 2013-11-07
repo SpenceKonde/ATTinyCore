@@ -1,4 +1,4 @@
-name=ATTiny Core
+name=tiny
 description=A Beta ATTiny Core
 compiler=avr-gcc
 
