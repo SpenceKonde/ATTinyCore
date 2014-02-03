@@ -28,6 +28,14 @@
 
 #include "wiring_private.h"
 
+void delay(unsigned int ms)
+{
+  while(ms--){
+    delayMicroseconds(1000);
+  }
+}
+
+
 /* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
 void delayMicroseconds(unsigned int us)
 {
