@@ -1,0 +1,19 @@
+<project name="boards" default="build">
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="/usr/share/java/ant-contrib-1.0b5-SNAPSHOT.jar"/>
+        </classpath>
+    </taskdef>
+
+    <target name="build">
+        <subant target="build">
+            <dirset dir="." includes="*"/>
+        </subant>
+    </target>
+    <target name="install">
+        <subant target="install">
+            <dirset dir="." includes="*"/>
+        </subant>
+    </target>
+</project>
