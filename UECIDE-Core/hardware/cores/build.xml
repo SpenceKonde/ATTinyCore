@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="avrtiny" default="build">
+
+    <property name="version" value="100" />
+    <property name="revision" value="1001" />
+
+    <target name="build">
+
+        <jar basedir="." destfile="tiny.jar" includes="tiny/**/*">
+            <manifest>
+                <attribute name="Version" value="${version}-${revision}" />
+                <attribute name="Author" value="TCWORLD" />
+                <attribute name="Compiler" value="avr-gcc" />
+                <attribute name="Core" value="tiny" />
+                <attribute name="Platform" value="any" />
+                <attribute name="Family" value="avrtiny" />
+                <attribute name="Description" value="A Beta ATTiny Core" />
+            </manifest>
+        </jar>
+
+        <jar basedir="." destfile="tinyNoMillis.jar" includes="tinyNoMillis/**/*">
+            <manifest>
+                <attribute name="Version" value="${version}-${revision}" />
+                <attribute name="Author" value="TCWORLD" />
+                <attribute name="Compiler" value="avr-gcc" />
+                <attribute name="Core" value="tinyNoMillis" />
+                <attribute name="Platform" value="any" />
+                <attribute name="Family" value="avrtiny" />
+                <attribute name="Description" value="A Beta ATTiny Core" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="install" depends="build">
+        <move file="tiny.jar" todir="/var/www/uecide/plugins/cores" />
+        <move file="tinyNoMillis.jar" todir="/var/www/uecide/plugins/cores" />
+    </target>
+
+    <target name="clean">
+        <delete file="tiny.jar" />
+        <delete file="tinyNoMillis.jar" />
+    </target>
+
+
+</project>
