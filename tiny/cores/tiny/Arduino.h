@@ -15,6 +15,8 @@
 extern "C"{
 #endif
 
+#define ATTINY_CORE 1
+
 #define HIGH 0x1
 #define LOW  0x0
 

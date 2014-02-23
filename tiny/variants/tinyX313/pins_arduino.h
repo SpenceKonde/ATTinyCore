@@ -2,6 +2,9 @@
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
+#define ATTINYX313 1
+#define USE_SOFTWARE_SPI 1
+
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            18
@@ -17,7 +20,6 @@
 
 static const uint8_t SDA = 14;
 static const uint8_t SCL = 16;
-
 
 //----------------------------------------------------------
 //----------------------------------------------------------

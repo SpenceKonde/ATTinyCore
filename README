@@ -20,6 +20,24 @@ ATtiny2313
 
 With plans for support of the Attiny88 - If someone wants to write a pins_arduino.h file and test it, feel free to post it here.
 
+You can identify the core using the following:
+#define ATTINY_CORE       - Attiny Core
+#define ATTINY_CORE_NM    - No-Millis Attiny Core
+
+These are used to identify features:
+#define USE_SOFTWARE_SERIAL    (0 = hardware serial, 1 = software serial
+#define USE_SOFTWARE_SPI       (not defined if hardware spi present)
+#define HAVE_ADC               (1 = has ADC functions)
+
+The following identify board variants:
+#define ATTINYX4
+#define ATTINYX5
+#define ATTINYX61
+#define ATTINYX7
+#define ATTINYX313
+
+
+
 This core is still in Beta as I haven't fully tested it out yet. I know that the main functions work such as Serial (software), SPI (software), Digital/Analog read/write, millis(), micros(), delay(), delayMicroseconds(), print(), println(). However on some processors, functions such as Tone() are still not fully functional.
 There is also a certain amount of optimisation required to make the compile size smaller for the those chips with severly limited Flash (such as the tiny24).
 

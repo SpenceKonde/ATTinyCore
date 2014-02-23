@@ -25,6 +25,9 @@
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
+#define ATTINYX61 1
+#define USE_SOFTWARE_SPI 1
+
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            16
