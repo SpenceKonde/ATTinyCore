@@ -2,7 +2,7 @@
 <project name="avrtiny" default="build">
 
     <property name="version" value="100" />
-    <property name="revision" value="1001" />
+    <property name="revision" value="1002" />
 
     <target name="build">
 

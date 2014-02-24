@@ -15,4 +15,5 @@ build.variant=attiny84_12
 group=Tiny
 family=avrtiny
 version=0.2
+revision=1
 core=tiny
