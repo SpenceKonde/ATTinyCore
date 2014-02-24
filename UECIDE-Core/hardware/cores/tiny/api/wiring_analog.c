@@ -58,7 +58,13 @@ int analogRead(uint8_t pin)
   #endif
   
   #if defined(ADMUX)
+  #if defined(MUX4)
+  ADMUX = ((analog_reference & 0x03) << REFS0) | ((pin & 0x1F) << MUX0); //select the channel and reference
+  #elif defined(MUX3)
+  ADMUX = ((analog_reference & 0x03) << REFS0) | ((pin & 0x0F) << MUX0); //select the channel and reference
+  #else
   ADMUX = ((analog_reference & 0x03) << REFS0) | ((pin & 0x07) << MUX0); //select the channel and reference
+  #endif
   #endif
   #if defined(REFS2)
   ADMUX |= (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
