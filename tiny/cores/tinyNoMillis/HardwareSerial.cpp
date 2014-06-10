@@ -122,7 +122,7 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
   #endif
     store_char(c, &rx_buffer);
   }
-#else defined(LIN_TC_vect)
+#elif defined(LIN_TC_vect)
   // this is for attinyX7
   ISR(LIN_TC_vect)
   {
@@ -151,7 +151,7 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 //#if defined(SIG_USART1_RECV)
 #if defined(USART1_RX_vect)
   ISR(USART1_RX_vect)
-#if defined(USART1_RXC_vect)
+#elif defined(USART1_RXC_vect)
   ISR(USART1_RXC_vect )
 #else
   #error No interrupt handler for usart 1
