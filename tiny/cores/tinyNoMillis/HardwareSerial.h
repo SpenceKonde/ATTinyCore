@@ -45,7 +45,7 @@ class HardwareSerial : public Stream
     uint8_t _udrie;
     uint8_t _u2x;
   public:
-    HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+    HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
     #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
       ,
       volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,

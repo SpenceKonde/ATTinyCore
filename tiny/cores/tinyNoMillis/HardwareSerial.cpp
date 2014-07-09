@@ -77,10 +77,10 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 #if defined(USART_RX_vect)
   ISR(USART_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8535
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
   #else
     #error UDR not defined
   #endif
@@ -89,10 +89,10 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 #elif defined(USART0_RX_vect)
   ISR(USART0_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8535
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
   #else
     #error UDR not defined
   #endif
@@ -101,10 +101,10 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 #elif defined(UART_RX_vect)
   ISR(UART_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8535
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
   #else
     #error UDR not defined
   #endif
@@ -113,10 +113,10 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 #elif defined(UART0_RX_vect)
   ISR(UART0_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8535
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
   #else
     #error UDR not defined
   #endif
@@ -151,15 +151,19 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 //#if defined(SIG_USART1_RECV)
 #if defined(USART1_RX_vect)
   ISR(USART1_RX_vect)
-#elif defined(USART1_RXC_vect)
-  ISR(USART1_RXC_vect )
-#else
-  #error No interrupt handler for usart 1
-#endif
   {
     unsigned char c = UDR1;
     store_char(c, &rx_buffer1);
   }
+#elif defined(USART1_RXC_vect)
+  ISR(USART1_RXC_vect )
+  {
+    unsigned char c = UDR1;
+    store_char(c, &rx_buffer1);
+  }
+#else
+  //no UART1
+#endif
 
 #if !defined(UART0_UDRE_vect) && !defined(UART_UDRE_vect) && !defined(USART0_UDRE_vect) && !defined(USART_UDRE_vect) && !defined(LIN_TC_vect)
   #error "Don't know what the Data Register Empty vector is called for the first UART"
@@ -187,10 +191,10 @@ ISR(USART_UDRE_vect)
     unsigned char c = tx_buffer.buffer[tx_buffer.tail];
     tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
 	
-  #if defined(UDR0)
-    UDR0 = c;
-  #elif defined(UDR)
+  #if defined(UDR)
     UDR = c;
+  #elif defined(UDR0)
+    UDR0 = c;
   #else
     #error UDR not defined
   #endif
