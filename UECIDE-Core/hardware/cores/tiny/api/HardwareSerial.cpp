@@ -51,7 +51,7 @@ struct ring_buffer
   byte tail;
 };
 
-#if defined(UBRRH) || defined(UBRR0H) || defined(LINBRRH)
+#if defined(UBRRH) || defined(UBRR0H)
   ring_buffer rx_buffer  =  { { 0 }, 0, 0 };
   ring_buffer tx_buffer  =  { { 0 }, 0, 0 };
 #endif
@@ -75,63 +75,61 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 }
 
 #if defined(USART_RX_vect)
-  SIGNAL(USART_RX_vect)
+  ISR(USART_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8535
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
   #else
     #error UDR not defined
   #endif
     store_char(c, &rx_buffer);
   }
-#elif defined(SIG_USART0_RECV) && defined(UDR0)
-  SIGNAL(SIG_USART0_RECV)
-  {
-    unsigned char c  =  UDR0;
-    store_char(c, &rx_buffer);
-  }
-#elif defined(SIG_UART0_RECV) && defined(UDR0)
-  SIGNAL(SIG_UART0_RECV)
-  {
-    unsigned char c  =  UDR0;
-    store_char(c, &rx_buffer);
-  }
-//#elif defined(SIG_USART_RECV)
 #elif defined(USART0_RX_vect)
-  // fixed by Mark Sproul this is on the 644/644p
-  //SIGNAL(SIG_USART_RECV)
-  SIGNAL(USART0_RX_vect)
+  ISR(USART0_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8, atmega32
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
   #else
     #error UDR not defined
   #endif
     store_char(c, &rx_buffer);
   }
-#elif defined(SIG_UART_RECV)
-  // this is for atmega8
-  SIGNAL(SIG_UART_RECV)
+#elif defined(UART_RX_vect)
+  ISR(UART_RX_vect)
   {
-  #if defined(UDR0)
-    unsigned char c  =  UDR0;  //  atmega645
-  #elif defined(UDR)
-    unsigned char c  =  UDR;  //  atmega8
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
+  #else
+    #error UDR not defined
+  #endif
+    store_char(c, &rx_buffer);
+  }
+#elif defined(UART0_RX_vect)
+  ISR(UART0_RX_vect)
+  {
+  #if defined(UDR)
+    unsigned char c  =  UDR;
+  #elif defined(UDR0)
+    unsigned char c  =  UDR0;  //  atmega8535
+  #else
+    #error UDR not defined
   #endif
     store_char(c, &rx_buffer);
   }
 #elif defined(LIN_TC_vect)
   // this is for attinyX7
-  SIGNAL(LIN_TC_vect)
+  ISR(LIN_TC_vect)
   {
-	if(LINSIR & _BV(LRXOK)) {
-      unsigned char c  =  LINDAT;
-      store_char(c, &rx_buffer);
-	}
+    if(LINSIR & _BV(LRXOK)) {
+        unsigned char c  =  LINDAT;
+        store_char(c, &rx_buffer);
+    }
     if(LINSIR & _BV(LTXOK)){
       PINA |= _BV(PINA5);
       if (tx_buffer.head == tx_buffer.tail) {
@@ -144,7 +142,7 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
         
         LINDAT = c;
       }
-	}
+    }
   }
 #else
   #error No interrupt handler for usart 0
@@ -152,19 +150,24 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
 
 //#if defined(SIG_USART1_RECV)
 #if defined(USART1_RX_vect)
-  //SIGNAL(SIG_USART1_RECV)
-  SIGNAL(USART1_RX_vect)
+  ISR(USART1_RX_vect)
   {
     unsigned char c = UDR1;
     store_char(c, &rx_buffer1);
   }
-#elif defined(SIG_USART1_RECV)
-  #error SIG_USART1_RECV
+#elif defined(USART1_RXC_vect)
+  ISR(USART1_RXC_vect )
+  {
+    unsigned char c = UDR1;
+    store_char(c, &rx_buffer1);
+  }
+#else
+  //no UART1
 #endif
 
 #if !defined(UART0_UDRE_vect) && !defined(UART_UDRE_vect) && !defined(USART0_UDRE_vect) && !defined(USART_UDRE_vect) && !defined(LIN_TC_vect)
   #error "Don't know what the Data Register Empty vector is called for the first UART"
-#elif ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
+#else
 #if defined(UART0_UDRE_vect)
 ISR(UART0_UDRE_vect)
 #elif defined(UART_UDRE_vect)
@@ -188,10 +191,10 @@ ISR(USART_UDRE_vect)
     unsigned char c = tx_buffer.buffer[tx_buffer.tail];
     tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
 	
-  #if defined(UDR0)
-    UDR0 = c;
-  #elif defined(UDR)
+  #if defined(UDR)
     UDR = c;
+  #elif defined(UDR0)
+    UDR0 = c;
   #else
     #error UDR not defined
   #endif
@@ -219,14 +222,12 @@ ISR(USART1_UDRE_vect)
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
+HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
 #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
-    ,
-    volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
-    volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
-    volatile uint8_t *udr,
-    uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x
-  )
+  volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
+  volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
+  volatile uint8_t *udr,
+  uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x)
 {
   _rx_buffer = rx_buffer;
   _tx_buffer = tx_buffer;
@@ -248,6 +249,7 @@ HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
   _tx_buffer = tx_buffer;
 }
 #endif
+
 
 // Public Methods //////////////////////////////////////////////////////////////
 
@@ -297,6 +299,7 @@ try_again:
   LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0); 
   sbi(LINENIR,LENRXOK);
 #endif
+
 }
 
 void HardwareSerial::end()
@@ -316,6 +319,7 @@ void HardwareSerial::end()
   cbi(LINCR,LCMD1);
   cbi(LINCR,LCMD2);
 #endif
+
   _rx_buffer->head = _rx_buffer->tail;
 }
 
@@ -363,6 +367,7 @@ size_t HardwareSerial::write(uint8_t c)
 	
   _tx_buffer->buffer[_tx_buffer->head] = c;
   _tx_buffer->head = i;
+	
   #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) )
   sbi(*_ucsrb, _udrie);
   #else
@@ -374,6 +379,8 @@ size_t HardwareSerial::write(uint8_t c)
     LINDAT = c;
   }
   #endif
+
+  
   return 1;
 }
 
@@ -390,6 +397,7 @@ HardwareSerial::operator bool() {
 #elif defined(LINBRRH)
   HardwareSerial Serial(&rx_buffer, &tx_buffer);
 #endif
+
 
 #if defined(UBRR1H)
   HardwareSerial Serial1(&rx_buffer1, &tx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UDR1, RXEN1, TXEN1, RXCIE1, UDRE1, U2X1);

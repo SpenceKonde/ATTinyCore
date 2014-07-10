@@ -16,13 +16,13 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-  Modified 28 September 2010 by Mark Sproul
 */
 
 #ifndef HardwareSerial_h
 #define HardwareSerial_h
 
 #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL
+
 #include <inttypes.h>
 
 #include "Stream.h"
@@ -34,7 +34,6 @@ class HardwareSerial : public Stream
   private:
     ring_buffer *_rx_buffer;
     ring_buffer *_tx_buffer;
-    #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
     volatile uint8_t *_ubrrh;
     volatile uint8_t *_ubrrl;
     volatile uint8_t *_ucsra;
@@ -45,7 +44,6 @@ class HardwareSerial : public Stream
     uint8_t _rxcie;
     uint8_t _udrie;
     uint8_t _u2x;
-    #endif
   public:
     HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
     #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
@@ -67,6 +65,7 @@ class HardwareSerial : public Stream
     using Print::write; // pull in write(str) and write(buf, size) from Print
     operator bool();
 };
+
 #endif
 
 #if (defined(UBRRH) || defined(UBRR0H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL

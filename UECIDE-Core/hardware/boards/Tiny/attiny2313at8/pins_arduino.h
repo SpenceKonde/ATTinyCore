@@ -2,6 +2,9 @@
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
+#define ATTINYX313 1
+#define USE_SOFTWARE_SPI 1
+
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            18
@@ -18,10 +21,17 @@
 static const uint8_t SDA = 14;
 static const uint8_t SCL = 16;
 
-
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
+
+//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
+//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out. 
+#define TUNED_OSCCAL_VALUE                        OSCCAL
+//e.g
+//#define TUNED_OSCCAL_VALUE                        0x57
+
+
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_SECONDARY_TIMERS              0
 /*
