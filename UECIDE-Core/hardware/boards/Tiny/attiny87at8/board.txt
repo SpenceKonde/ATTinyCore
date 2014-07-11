@@ -1,5 +1,5 @@
 variant=attiny87at8
-name=ATtiny87 @ 8 MHz  (internal oscillator; BOD disabled)
+description=ATtiny87 @ 8 MHz  (internal oscillator; BOD disabled)
 upload.using=arduino:arduinoisp
 upload.maximum_size=8192
 bootloader.low_fuses=0xE2

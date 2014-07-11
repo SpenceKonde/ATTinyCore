@@ -1,5 +1,5 @@
 variant=attiny167_20
-name=Optiboot ATtiny167 @ 20 MHz  (external oscillator; BOD enabled)
+description=Optiboot ATtiny167 @ 20 MHz  (external oscillator; BOD enabled)
 upload.protocol=arduino
 upload.speed=57600
 upload.maximum_size=15808

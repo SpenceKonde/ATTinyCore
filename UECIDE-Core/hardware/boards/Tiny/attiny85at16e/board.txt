@@ -1,5 +1,5 @@
 variant=attiny85at16e
-name=ATtiny85 @ 16 MHz  (external crystal; 4.3 V BOD)
+description=ATtiny85 @ 16 MHz  (external crystal; 4.3 V BOD)
 upload.using=arduino:arduinoisp
 upload.maximum_size=8192
 bootloader.low_fuses=0xFF

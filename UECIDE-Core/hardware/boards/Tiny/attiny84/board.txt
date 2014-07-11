@@ -1,5 +1,5 @@
 variant=attiny84
-name=Optiboot ATtiny84 @ 8 MHz  (internal osc)
+description=Optiboot ATtiny84 @ 8 MHz  (internal osc)
 upload.protocol=arduino
 upload.speed=19200
 upload.maximum_size=7616

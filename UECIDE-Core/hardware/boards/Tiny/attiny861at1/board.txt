@@ -1,5 +1,5 @@
 variant=attiny861at1
-name=ATtiny861 @ 1 MHz  (internal oscillator; BOD disabled)
+description=ATtiny861 @ 1 MHz  (internal oscillator; BOD disabled)
 upload.using=arduino:arduinoisp
 upload.maximum_size=8192
 bootloader.low_fuses=0x62

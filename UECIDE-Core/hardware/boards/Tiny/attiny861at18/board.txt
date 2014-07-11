@@ -1,5 +1,5 @@
 variant=attiny861at18
-name=ATtiny861 @ 18.432 MHz  (external oscillator; BOD disabled)
+description=ATtiny861 @ 18.432 MHz  (external oscillator; BOD disabled)
 upload.using=arduino:arduinoisp
 upload.maximum_size=8192
 bootloader.low_fuses=0xA0
