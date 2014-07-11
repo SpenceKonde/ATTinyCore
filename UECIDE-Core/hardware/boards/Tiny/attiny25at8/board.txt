@@ -1,5 +1,5 @@
 variant=attiny25at8
-name=ATtiny25 @ 8 MHz  (internal oscillator; BOD disabled)
+description=ATtiny25 @ 8 MHz  (internal oscillator; BOD disabled)
 upload.using=arduino:arduinoisp
 upload.maximum_size=2048
 bootloader.low_fuses=0xE2
@@ -13,6 +13,6 @@ build.core=tiny
 build.variant=attiny25at8
 group=Tiny
 family=avrtiny
-version=0.2
+version=0.3
 revision=1
 core=tiny

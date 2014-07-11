@@ -1,5 +1,5 @@
 variant=attiny2313at1
-name=ATtiny2313 @ 1 MHz  (internal oscillator; BOD disabled)
+description=ATtiny2313 @ 1 MHz  (internal oscillator; BOD disabled)
 upload.using=arduino:arduinoisp
 upload.maximum_size=2048
 bootloader.low_fuses=0x64
@@ -13,6 +13,6 @@ build.core=tiny
 build.variant=attiny2313at1
 group=Tiny
 family=avrtiny
-version=0.2
+version=0.3
 revision=1
 core=tiny

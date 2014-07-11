@@ -1,5 +1,5 @@
 variant=attiny84_nr
-name=Optiboot ATtiny84 @ 8 MHz  (NO RESET!)
+description=Optiboot ATtiny84 @ 8 MHz  (NO RESET!)
 upload.protocol=arduino
 upload.speed=19200
 upload.maximum_size=7616
@@ -14,6 +14,6 @@ build.core=tiny
 build.variant=attiny84_nr
 group=Tiny
 family=avrtiny
-version=0.2
+version=0.3
 revision=1
 core=tiny

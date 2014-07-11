@@ -1,5 +1,5 @@
 variant=attiny24at16
-name=ATtiny24 @ 16 MHz  (external crystal; BOD disabled)
+description=ATtiny24 @ 16 MHz  (external crystal; BOD disabled)
 upload.using=arduino:arduinoisp
 upload.maximum_size=2048
 bootloader.low_fuses=0xFF
@@ -13,6 +13,6 @@ build.core=tiny
 build.variant=attiny24at16
 group=Tiny
 family=avrtiny
-version=0.2
+version=0.3
 revision=1
 core=tiny
