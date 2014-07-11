@@ -13,6 +13,6 @@ build.core=tiny
 build.variant=attiny85at8
 group=Tiny
 family=avrtiny
-version=0.2
+version=0.3
 revision=1
 core=tiny
