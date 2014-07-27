@@ -32,8 +32,8 @@
     </target>
 
     <target name="install" depends="build">
-        <move file="tiny.jar" todir="/var/www/uecide/plugins/cores" />
-        <move file="tinyNoMillis.jar" todir="/var/www/uecide/plugins/cores" />
+        <move file="tiny.jar" todir="/var/www/uecide/plugins-087/cores" />
+        <move file="tinyNoMillis.jar" todir="/var/www/uecide/plugins-087/cores" />
     </target>
 
     <target name="clean">
