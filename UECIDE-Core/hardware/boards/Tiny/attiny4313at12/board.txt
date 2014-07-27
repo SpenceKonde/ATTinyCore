@@ -1,0 +1,17 @@
+variant=attiny4313at12
+description=ATtiny4313 @ 12 MHz  (crystal; BOD disabled)
+sketch.upload=arduinoisp::avrisp
+upload.maximum_size=4096
+upload.maximum_ram=256
+bootloader.low_fuses=0xFF
+bootloader.high_fuses=0xDF
+bootloader.extended_fuses=0xFF
+build.mcu=attiny4313
+build.f_cpu=12000000L
+build.core=tiny
+build.variant=attiny4313at12
+group=Tiny
+family=avrtiny
+version=0.5
+revision=1
+core=tiny

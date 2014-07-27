@@ -1,0 +1,17 @@
+variant=attiny861at16-384i
+description=ATtiny861 @ 16.384 MHz  (internal oscillator + PLL; BOD disabled)
+sketch.upload=arduinoisp::avrisp
+upload.maximum_size=8192
+upload.maximum_ram=512
+bootloader.low_fuses=0xF1
+bootloader.high_fuses=0xDD
+bootloader.extended_fuses=0x01
+build.mcu=attiny861
+build.f_cpu=16384000L
+build.core=tiny
+build.variant=attiny861at16-384i
+group=Tiny
+family=avrtiny
+version=0.5
+revision=1
+core=tiny
