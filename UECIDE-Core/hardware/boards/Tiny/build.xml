@@ -53,7 +53,7 @@
 
     <target name="install-board">
         <basename file="${filepath}" property="file"/>
-        <move file="${file}" todir="/var/www/uecide/plugins/boards/" />
+        <move file="${file}" todir="/var/www/uecide/plugins-087/boards/" />
     </target>
 
 </project>
