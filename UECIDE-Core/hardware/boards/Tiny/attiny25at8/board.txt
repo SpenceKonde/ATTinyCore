@@ -1,6 +1,6 @@
 variant=attiny25at8
 description=ATtiny25 @ 8 MHz  (internal oscillator; BOD disabled)
-sketch.upload=arduinoisp::avrisp
+sketch.upload=arduinoisp::avrisp::arduinoispfuse::avrispfuse
 upload.maximum_size=2048
 upload.maximum_ram=128
 bootloader.low_fuses=0xE2
@@ -12,6 +12,6 @@ build.core=tiny
 build.variant=attiny25at8
 group=Tiny
 family=avrtiny
-version=0.5
+version=0.6
 revision=1
 core=tiny

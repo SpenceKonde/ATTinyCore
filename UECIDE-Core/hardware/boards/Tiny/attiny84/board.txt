@@ -1,7 +1,7 @@
 variant=attiny84
 description=Optiboot ATtiny84 @ 8 MHz  (internal osc)
-sketch.upload=arduino
-bootloader.upload=arduinoisp::avrisp
+sketch.upload=arduino::arduinoispboot::avrispboot
+#bootloader.upload=arduinoisp::avrisp
 upload.speed=19200
 upload.maximum_size=7616
 upload.maximum_ram=512
@@ -16,6 +16,6 @@ build.core=tiny
 build.variant=attiny84
 group=Tiny
 family=avrtiny
-version=0.5
+version=0.6
 revision=1
 core=tiny

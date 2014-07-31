@@ -6,9 +6,9 @@ core.library.api=api
 core.flags=-DF_CPU=${build.f_cpu}::-DARDUINO=${core.version}::-D${board}
 core.header=Arduino.h
 core.version=100
-core.revision=1005
+core.revision=1006
 version=100
-revision=1005
+revision=1006
 
 family=avrtiny
 
@@ -17,7 +17,7 @@ examples.path=examples
 
 board=_UNKNOWN_BOARD_
 
-upload.arduino.name=Upload direct to an Arduino board
+upload.arduino.name=Upload using Optiboot Bootloader
 upload.arduino.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b${upload.speed}::-C${core.root}/tools/linux_pi/avrdude.conf::-carduino::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
 upload.arduino.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b${upload.speed}::-C${core.root}/tools/linux64/avrdude.conf::-carduino::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
 upload.arduino.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b${upload.speed}::-C${core.root}/tools/linux32/avrdude.conf::-carduino::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
@@ -28,23 +28,59 @@ upload.arduino.quiet=-q::-q
 upload.arduino.dtr=yes
 upload.arduino.rts=yes
 
-upload.arduinoisp.name=Upload via ArduinoISP
-upload.arduinoisp.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.arduinoisp.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.arduinoisp.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.arduinoisp.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.arduinoisp.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/windows/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoisp.name=Upload using ArduinoISP
+upload.arduinoisp.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.arduinoisp.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.arduinoisp.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.arduinoisp.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.arduinoisp.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/windows/avrdude.conf::-cstk500v1::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
 upload.arduinoisp.verbose=-v::-v::-v
 upload.arduinoisp.quiet=-q::-q
 
-upload.avrisp.name=Upload via AVR-ISP MKII
-upload.avrisp.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.avrisp.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.avrisp.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.avrisp.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
-upload.avrisp.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/windows/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrisp.name=Upload using AVR-ISP MKII
+upload.avrisp.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.avrisp.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.avrisp.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.avrisp.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
+upload.avrisp.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/windows/avrdude.conf::-cstk500v2::-Uflash:w:${build.path}/${filename}.hex:i::${verbose}
 upload.avrisp.verbose=-v::-v::-v
 upload.avrisp.quiet=-q::-q
 
-sketch.upload=arduino::arduinoisp::avrisp
-bootloader.upload=arduinoisp::avrisp
+upload.arduinoispboot.name=Flash Bootloader using ArduinoISP
+upload.arduinoispboot.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v1::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispboot.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v1::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispboot.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v1::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispboot.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v1::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispboot.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/windows/avrdude.conf::-cstk500v1::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispboot.verbose=-v::-v::-v
+upload.arduinoispboot.quiet=-q::-q
+
+upload.avrispboot.name=Flash Bootloader using AVR-ISP MKII
+upload.avrispboot.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v2::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispboot.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v2::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispboot.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v2::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispboot.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v2::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispboot.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/windows/avrdude.conf::-cstk500v2::-Uflash:w:${core.root}/bootloaders/${bootloader.path}/${bootloader.file}.hex:i::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispboot.verbose=-v::-v::-v
+upload.avrispboot.quiet=-q::-q
+
+upload.arduinoispfuse.name=Set Fuses with ArduinoISP
+upload.arduinoispfuse.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v1::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispfuse.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v1::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispfuse.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v1::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispfuse.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v1::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispfuse.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-P${port}::-b19200::-C${core.root}/tools/windows/avrdude.conf::-cstk500v1::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.arduinoispfuse.verbose=-v::-v::-v
+upload.arduinoispfuse.quiet=-q::-q
+
+upload.avrispfuse.name=Set Fuses with AVR-ISP MKII
+upload.avrispfuse.command.linux_arm=${core.root}/tools/linux_pi/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux_pi/avrdude.conf::-cstk500v2::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispfuse.command.linux_amd64=${core.root}/tools/linux64/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux64/avrdude.conf::-cstk500v2::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispfuse.command.linux_i386=${core.root}/tools/linux32/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/linux32/avrdude.conf::-cstk500v2::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispfuse.command.macosx=${core.root}/tools/macosx/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/macosx/avrdude.conf::-cstk500v2::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispfuse.command.windows=${core.root}/tools/windows/avrdude::-D::-V::-p${build.mcu}::-Pusb::-b16::-C${core.root}/tools/windows/avrdude.conf::-cstk500v2::${verbose}::-Uefuse:w:${bootloader.extended_fuses}:m::-Uhfuse:w:${bootloader.high_fuses}:m::-Ulfuse:w:${bootloader.low_fuses}:m
+upload.avrispfuse.verbose=-v::-v::-v
+upload.avrispfuse.quiet=-q::-q
+
+sketch.upload=arduino::arduinoisp::avrisp::arduinoispfuse::avrispfuse::arduinoispboot::avrispboot
+#bootloader.upload=arduinoispboot::avrispboot
