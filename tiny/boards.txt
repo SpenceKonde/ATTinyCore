@@ -788,7 +788,7 @@ attiny88_1MHz.bootloader.low_fuses=0x6E
 attiny88_1MHz.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88_1MHz.bootloader.extended_fuses=0x06
+attiny88_1MHz.bootloader.extended_fuses=0x07
 
 attiny88_1MHz.bootloader.path=
 attiny88_1MHz.bootloader.file=
@@ -809,7 +809,6 @@ attiny88_8MHz.upload.speed=19200
 
 # Default clock (slowly rising power; long delay to clock; 8 MHz internal)
 # Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
-# Divide clock by 8 internally; [CKDIV8=0]
 attiny88_8MHz.bootloader.low_fuses=0xEE
 
 # Brown-out detection disabled; [BODLEVEL=111]
@@ -818,7 +817,7 @@ attiny88_8MHz.bootloader.low_fuses=0xEE
 attiny88_8MHz.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88_8MHz.bootloader.extended_fuses=0x06
+attiny88_8MHz.bootloader.extended_fuses=0x07
 
 attiny88_8MHz.bootloader.path=
 attiny88_8MHz.bootloader.file=
