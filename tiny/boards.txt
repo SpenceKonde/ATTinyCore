@@ -771,32 +771,62 @@ attiny85.build.variant=tinyX5optiboot
  
 ###########################################################################
 
-attiny88.name=ATtiny88 @ 1 MHz  (internal oscillator; BOD enabled)
-attiny88.upload.using=arduino:arduinoisp
-attiny88.upload.maximum_size=8192
+attiny88_1MHz.name=attiny88 @ 1 MHz  (internal oscillator; BOD enabled)
+attiny88_1MHz.upload.using=arduino:arduinoisp
+attiny88_1MHz.upload.maximum_size=8192
+attiny88_1MHz.upload.protocol=arduino
+attiny88_1MHz.upload.speed=19200
+
+# Default clock (slowly rising power; long delay to clock; 8 MHz internal)
+# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
+# Divide clock by 8 internally; [CKDIV8=0]
+attiny88_1MHz.bootloader.low_fuses=0x6E
+
+# Brown-out detection disabled; [BODLEVEL=111]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
+# Serial program downloading (SPI) enabled; [SPIEN=0]
+attiny88_1MHz.bootloader.high_fuses=0xD7
+
+# Self-Programming Disabled; [SELFPRGEN=1]
+attiny88_1MHz.bootloader.extended_fuses=0x06
+
+attiny88_1MHz.bootloader.path=
+attiny88_1MHz.bootloader.file=
+attiny88_1MHz.build.mcu=attiny88
+attiny88_1MHz.build.f_cpu=1000000L
+attiny88_1MHz.build.core=tinyNoMillis
+# standard arduino core also compiles: 
+#attiny88_1MHz.build.core=arduino
+attiny88_1MHz.build.variant=tinyX8
+
+###########################################################################
+
+attiny88_8MHz.name=attiny88 @ 8 MHz  (internal oscillator; BOD enabled)
+attiny88_8MHz.upload.using=arduino:arduinoisp
+attiny88_8MHz.upload.maximum_size=8192
 attiny88_8MHz.upload.protocol=arduino
 attiny88_8MHz.upload.speed=19200
 
 # Default clock (slowly rising power; long delay to clock; 8 MHz internal)
 # Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
 # Divide clock by 8 internally; [CKDIV8=0]
-attiny88.bootloader.low_fuses=0x6E
+attiny88_8MHz.bootloader.low_fuses=0xEE
 
 # Brown-out detection disabled; [BODLEVEL=111]
 # Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
 # Serial program downloading (SPI) enabled; [SPIEN=0]
-attiny88.bootloader.high_fuses=0xD7
+attiny88_8MHz.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88.bootloader.extended_fuses=0x06
+attiny88_8MHz.bootloader.extended_fuses=0x06
 
-attiny88.bootloader.path=
-attiny88.bootloader.file=
-attiny88.build.mcu=attiny88
-attiny88.build.f_cpu=1000000L
-attiny88.build.core=tinyNoMillis
+attiny88_8MHz.bootloader.path=
+attiny88_8MHz.bootloader.file=
+attiny88_8MHz.build.mcu=attiny88
+attiny88_8MHz.build.f_cpu=8000000L
+attiny88_8MHz.build.core=tinyNoMillis
 # standard arduino core also compiles: 
-#attiny88.build.core=arduino
-attiny88.build.variant=tinyX8
+#attiny88_8MHz.build.core=arduino
+attiny88_8MHz.build.variant=tinyX8
 
 ###########################################################################
