@@ -774,6 +774,8 @@ attiny85.build.variant=tinyX5optiboot
 attiny88.name=ATtiny88 @ 1 MHz  (internal oscillator; BOD enabled)
 attiny88.upload.using=arduino:arduinoisp
 attiny88.upload.maximum_size=8192
+attiny88_8MHz.upload.protocol=arduino
+attiny88_8MHz.upload.speed=19200
 
 # Default clock (slowly rising power; long delay to clock; 8 MHz internal)
 # Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
