@@ -770,3 +770,31 @@ attiny85.build.core=tiny
 attiny85.build.variant=tinyX5optiboot
  
 ###########################################################################
+
+attiny88.name=ATtiny88 @ 1 MHz  (internal oscillator; BOD enabled)
+attiny88.upload.using=arduino:arduinoisp
+attiny88.upload.maximum_size=8192
+
+# Default clock (slowly rising power; long delay to clock; 8 MHz internal)
+# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
+# Divide clock by 8 internally; [CKDIV8=0]
+attiny88.bootloader.low_fuses=0x6E
+
+# Brown-out detection disabled; [BODLEVEL=111]
+# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
+# Serial program downloading (SPI) enabled; [SPIEN=0]
+attiny88.bootloader.high_fuses=0xD7
+
+# Self-Programming Disabled; [SELFPRGEN=1]
+attiny88.bootloader.extended_fuses=0x06
+
+attiny88.bootloader.path=
+attiny88.bootloader.file=
+attiny88.build.mcu=attiny88
+attiny88.build.f_cpu=1000000L
+attiny88.build.core=tinyNoMillis
+# standard arduino core also compiles: 
+#attiny88.build.core=arduino
+attiny88.build.variant=tinyX8
+
+###########################################################################
