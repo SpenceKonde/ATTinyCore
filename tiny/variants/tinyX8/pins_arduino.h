@@ -32,11 +32,11 @@
 
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 
-#define NUM_DIGITAL_PINS            16
-#define NUM_ANALOG_INPUTS           11
-#define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
+#define NUM_DIGITAL_PINS            20
+#define NUM_ANALOG_INPUTS           6
+#define analogInputToDigitalPin(p)  ((p < 6) ? (p) + 14 : -1)
 
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
+#define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    0
@@ -57,13 +57,11 @@ static const uint8_t A2 = 16;
 static const uint8_t A3 = 17;
 static const uint8_t A4 = 18;
 static const uint8_t A5 = 19;
-static const uint8_t A6 = 20;
-static const uint8_t A7 = 21;
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 21) ? (&PCICR) : ((uint8_t *)0))
-#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
-#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 21) ? (&PCMSK1) : ((uint8_t *)0))))
-#define digitalPinToPCMSKbit(p) (((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : ((p) - 14)))
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 19) ? (&PCICR) : ((uint8_t *)0))
+#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : (((p) <= 19) ? 1 : 3)))
+#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 19) ? (&PCMSK1) : (((p) <= 23) ? (&PCMSK3) : ((uint8_t *)0)))))
+#define digitalPinToPCMSKbit(p) (((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : (((p) <= 19) ? ((p) - 14) : ((p) - 20))))
 
 #ifdef ARDUINO_MAIN
 
@@ -78,19 +76,19 @@ static const uint8_t A7 = 21;
 //      (D 0) PD0  2|    |27  PC4 (AI 4)
 //      (D 1) PD1  3|    |26  PC3 (AI 3)
 //      (D 2) PD2  4|    |25  PC2 (AI 2)
-// PWM+ (D 3) PD3  5|    |24  PC1 (AI 1)
+//      (D 3) PD3  5|    |24  PC1 (AI 1)
 //      (D 4) PD4  6|    |23  PC0 (AI 0)
 //            VCC  7|    |22  GND
 //            GND  8|    |21  AREF
 //            PB6  9|    |20  AVCC
 //            PB7 10|    |19  PB5 (D 13)
-// PWM+ (D 5) PD5 11|    |18  PB4 (D 12)
-// PWM+ (D 6) PD6 12|    |17  PB3 (D 11) PWM
+//      (D 5) PD5 11|    |18  PB4 (D 12)
+//      (D 6) PD6 12|    |17  PB3 (D 11)
 //      (D 7) PD7 13|    |16  PB2 (D 10) PWM
 //      (D 8) PB0 14|    |15  PB1 (D 9) PWM
 //                  +----+
+//  Note: For 32pin Packages, PORTA exists. PA0 = D20, PA1 = D21, PA2 = D22, PA3 = D23
 //
-// (PWM+ indicates the additional PWM pins on the ATmega168.)
 
 
 // these arrays map port names (e.g. port B) to the
@@ -98,7 +96,7 @@ static const uint8_t A7 = 21;
 // and writing)
 const uint16_t PROGMEM port_to_mode_PGM[] = {
 	NOT_A_PORT,
-	NOT_A_PORT,
+	(uint16_t) &DDRA,
 	(uint16_t) &DDRB,
 	(uint16_t) &DDRC,
 	(uint16_t) &DDRD,
@@ -106,7 +104,7 @@ const uint16_t PROGMEM port_to_mode_PGM[] = {
 
 const uint16_t PROGMEM port_to_output_PGM[] = {
 	NOT_A_PORT,
-	NOT_A_PORT,
+	(uint16_t) &PORTA,
 	(uint16_t) &PORTB,
 	(uint16_t) &PORTC,
 	(uint16_t) &PORTD,
@@ -114,7 +112,7 @@ const uint16_t PROGMEM port_to_output_PGM[] = {
 
 const uint16_t PROGMEM port_to_input_PGM[] = {
 	NOT_A_PORT,
-	NOT_A_PORT,
+	(uint16_t) &PINA,
 	(uint16_t) &PINB,
 	(uint16_t) &PINC,
 	(uint16_t) &PIND,
@@ -141,6 +139,10 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 	PC,
 	PC,
 	PC,
+	PA, /* 20 */
+	PA,
+	PA,
+	PA,
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
@@ -164,6 +166,10 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 	_BV(3),
 	_BV(4),
 	_BV(5),
+	_BV(0), /* 20, port A */
+	_BV(1),
+	_BV(2),
+	_BV(3),
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
@@ -172,7 +178,6 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
-	// on the ATmega168, digital pins 5 and 6 have hardware pwm
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
@@ -182,9 +187,13 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
-	NOT_ON_TIMER,
 	NOT_ON_TIMER, /* 14 - port C */
 	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER,
+	NOT_ON_TIMER, /* 20 - port A */
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
