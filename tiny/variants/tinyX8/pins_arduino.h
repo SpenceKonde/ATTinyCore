@@ -114,7 +114,7 @@ static const uint8_t A5 = 22;
 //      (D  7) PD7 13|    |16  PB2 (D 10) PWM
 //      (D  8) PB0 14|    |15  PB1 (D  9) PWM
 //                  +----+
-//  Note: For 32pin Packages, PORTA exists. PA0 = D24, PA1 = D25, PA2 = D26, PA3 = D27
+//  Note: For 32pin Packages, PORTA exists. PA0 = D23, PA1 = D24, PA2 = D25, PA3 = D26
 //
 
 
