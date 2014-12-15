@@ -76,6 +76,7 @@ typedef unsigned int word;
 typedef uint8_t boolean;
 typedef uint8_t byte;
 
+void delay(unsigned int ms);
 void delayMicroseconds(unsigned int us);
 void init(void);
 

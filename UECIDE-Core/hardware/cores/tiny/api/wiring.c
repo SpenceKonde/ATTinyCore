@@ -513,8 +513,12 @@ void init(void)
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
   // Ensure the timer is in the same state as power-up
   #if (TIMER_TO_USE_FOR_MILLIS == 0) && defined(WGM01)
+  #ifdef TCCR0B
   TCCR0B = 0;
   TCCR0A = 0;
+  #else
+  TCCR0A = 0;
+  #endif
   // Reset the count to zero
   TCNT0 = 0;
   // Set the output compare registers to zero
@@ -650,7 +654,11 @@ void init(void)
   
   // Millis timer is always processor clock divided by MillisTimer_Prescale_Value (64)
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
-  TCCR0B = (TCCR0B & ~((1<<CS02)|(1<<CS01)|(1<<CS00))) | (MillisTimer_Prescale_Index << CS00);
+   #ifdef TCCR0B
+    TCCR0B = (TCCR0B & ~((1<<CS02)|(1<<CS01)|(1<<CS00))) | (MillisTimer_Prescale_Index << CS00);
+   #else
+    TCCR0A = (TCCR0A & ~((1<<CS02)|(1<<CS01)|(1<<CS00))) | (MillisTimer_Prescale_Index << CS00);
+   #endif
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1)
   TCCR1 = (TCCR1 & ~((1<<CS13)|(1<<CS12)|(1<<CS11)|(1<<CS10))) | (MillisTimer_Prescale_Index << CS10);
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1E)
