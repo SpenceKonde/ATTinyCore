@@ -64,9 +64,9 @@
   Analog reference bit masks.
 */
 // AVCC used as analog reference
-#define DEFAULT (0)
+#define DEFAULT (1)
 // Internal 1.1V voltage reference
-#define INTERNAL (1)
+#define INTERNAL (0)
 
 
 static const uint8_t SS   = 10;

@@ -157,8 +157,41 @@ void delayMicroseconds(unsigned int us)
 	// return = 4 cycles
 }
 
+#if F_CPU == 20000000
+  // 20 MHz / 128 ~= 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B111
+#elif F_CPU == 18432000
+  // 18.432 MHz / 128 ~= 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B111
+#elif F_CPU == 16000000
+  // 16 MHz / 128 = 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B111
+#elif F_CPU == 12000000
+  // 12 MHz / 64 ~= 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B110
+#elif F_CPU == 8000000
+  // 8 MHz / 64 = 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B110
+#elif F_CPU == 1000000
+  // 1 MHz / 8 = 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B011
+#elif F_CPU == 128000
+  // 128 kHz / 2 = 64 KHz -> This is the closest you can get, the prescaler is 2
+  #define ADC_ARDUINO_PRESCALER   B000
+#else
+  #error Add an entry for the selected processor speed.
+#endif
+
 void init(void)
 {
   sei();
+  // Initialize the ADC
+  #if defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER ) && INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+  #if defined(ADCSRA)
+    // set a2d prescale factor
+	ADCSRA = (ADCSRA & ~((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0))) | (ADC_ARDUINO_PRESCALER << ADPS0) | (1<<ADEN);
+    // enable a2d conversions
+    sbi(ADCSRA, ADEN);
+  #endif
+  #endif
 }
-

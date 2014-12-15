@@ -44,6 +44,19 @@ void analogReference(uint8_t mode)
   // fix? Validate the mode?
   analog_reference = mode;
 }
+#if defined(REFS1)
+#define ADMUX_REFS_MASK (0x03)
+#else
+#define ADMUX_REFS_MASK (0x01)
+#endif
+
+#if defined(MUX4)
+#define ADMUX_MUX_MASK (0x1f)
+#elif defined(MUX3)
+#define ADMUX_MUX_MASK (0x0f)
+#else
+#define ADMUX_MUX_MASK (0x07)
+#endif
 
 int analogRead(uint8_t pin)
 {
@@ -58,16 +71,10 @@ int analogRead(uint8_t pin)
   #endif
   
   #if defined(ADMUX)
-  #if defined(MUX4)
-  ADMUX = ((analog_reference & 0x03) << REFS0) | ((pin & 0x1F) << MUX0); //select the channel and reference
-  #elif defined(MUX3)
-  ADMUX = ((analog_reference & 0x03) << REFS0) | ((pin & 0x0F) << MUX0); //select the channel and reference
-  #else
-  ADMUX = ((analog_reference & 0x03) << REFS0) | ((pin & 0x07) << MUX0); //select the channel and reference
-  #endif
-  #endif
+  ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
   #if defined(REFS2)
   ADMUX |= (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
+  #endif
   #endif
   
   #if defined(HAVE_ADC) && HAVE_ADC
@@ -129,6 +136,12 @@ void analogWrite(uint8_t pin, int val)
 		// connect pwm to pin on timer 1, channel A
 		sbi(TCCR1A, COM1A1);
 		cbi(TCCR1A, COM1A0);
+	#ifdef OC1AX 
+		cbi(TCCR1D, OC1AV);
+		cbi(TCCR1D, OC1AU);
+		cbi(TCCR1D, OC1AW);
+		sbi(TCCR1D, OC1AX);
+	#endif
 		OCR1A = val; // set pwm duty
 	} else
 	#endif
@@ -166,6 +179,12 @@ void analogWrite(uint8_t pin, int val)
 		// connect pwm to pin on timer 1, channel B
 		sbi(TCCR1A, COM1B1);
 		cbi(TCCR1A, COM1B0);
+	#ifdef OC1BV
+		sbi(TCCR1D, OC1BV);
+		cbi(TCCR1D, OC1BU);
+		cbi(TCCR1D, OC1BW);
+		cbi(TCCR1D, OC1BX);
+	#endif
 		OCR1B = val; // set pwm duty
 	} else
 	#endif
