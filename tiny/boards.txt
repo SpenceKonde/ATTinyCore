@@ -787,7 +787,7 @@ attiny88_1.bootloader.low_fuses=0x6E
 attiny88_1.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88_1.bootloader.extended_fuses=0xFF
+attiny88_1.bootloader.extended_fuses=0x07
 
 attiny88_1.bootloader.path=empty
 attiny88_1.bootloader.file=empty88at1
@@ -813,7 +813,7 @@ attiny88_8.bootloader.low_fuses=0xEE
 attiny88_8.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88_8.bootloader.extended_fuses=0xFF
+attiny88_8.bootloader.extended_fuses=0x07
 
 attiny88_8.bootloader.path=empty
 attiny88_8.bootloader.file=empty88at8
@@ -840,7 +840,7 @@ attiny88_1_nm.bootloader.low_fuses=0x6E
 attiny88_1_nm.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88_1_nm.bootloader.extended_fuses=0xFF
+attiny88_1_nm.bootloader.extended_fuses=0x07
 
 attiny88_1_nm.bootloader.path=empty
 attiny88_1_nm.bootloader.file=empty88at1
@@ -866,7 +866,7 @@ attiny88_8_nm.bootloader.low_fuses=0xEE
 attiny88_8_nm.bootloader.high_fuses=0xD7
 
 # Self-Programming Disabled; [SELFPRGEN=1]
-attiny88_8_nm.bootloader.extended_fuses=0xFF
+attiny88_8_nm.bootloader.extended_fuses=0x07
 
 attiny88_8_nm.bootloader.path=empty
 attiny88_8_nm.bootloader.file=empty88at8
