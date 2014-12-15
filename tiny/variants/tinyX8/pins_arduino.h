@@ -32,15 +32,42 @@
 
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 
-#define NUM_DIGITAL_PINS            28
+#define NUM_DIGITAL_PINS            17
 #define NUM_ANALOG_INPUTS           6
 #define analogInputToDigitalPin(p)  ((p < 6) ? (p) + 16 : -1)
 
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
 
+
 //Choosing not to initialise saves power and flash. 1 = initialise.
-#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    0
-#define INITIALIZE_SECONDARY_TIMERS               0
+#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
+#define INITIALIZE_SECONDARY_TIMERS               1
+/*
+  The old standby ... millis on Timer 0.
+*/
+#define TIMER_TO_USE_FOR_MILLIS                   0 //Must be timer 0!
+
+/*
+  Where to put the software serial? (Arduino Digital pin numbers)
+*/
+//WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
+#define USE_SOFTWARE_SERIAL						  1
+//Please define the port on which the analog comparator is found.
+#define ANALOG_COMP_DDR						 	  DDRD
+#define ANALOG_COMP_PORT						  PORTD
+#define ANALOG_COMP_PIN						 	  PIND
+#define ANALOG_COMP_AIN0_BIT					  6
+#define ANALOG_COMP_AIN1_BIT					  7
+
+
+/*
+  Analog reference bit masks.
+*/
+// AVCC used as analog reference
+#define DEFAULT (0)
+// Internal 1.1V voltage reference
+#define INTERNAL (1)
+
 
 static const uint8_t SS   = 10;
 static const uint8_t MOSI = 11;
@@ -51,17 +78,17 @@ static const uint8_t SDA = 18;
 static const uint8_t SCL = 19;
 static const uint8_t LED_BUILTIN = 13;
 
-static const uint8_t A0 = 16;
-static const uint8_t A1 = 17;
-static const uint8_t A2 = 18;
-static const uint8_t A3 = 19;
-static const uint8_t A4 = 20;
-static const uint8_t A5 = 21;
+static const uint8_t A0 = 17;
+static const uint8_t A1 = 18;
+static const uint8_t A2 = 19;
+static const uint8_t A3 = 20;
+static const uint8_t A4 = 21;
+static const uint8_t A5 = 22;
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 21) ? (&PCICR) : ((uint8_t *)0))
-#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 23) ? 1 : 3)))
-#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 15) ? (&PCMSK0) : (((p) <= 23) ? (&PCMSK1) : (((p) <= 27) ? (&PCMSK3) : ((uint8_t *)0)))))
-#define digitalPinToPCMSKbit(p) ((p) & 0x7)//(((p) <= 7) ? (p) : (((p) <= 15) ? ((p) - 8) : (((p) <= 23) ? ((p) - 16) : ((p) - 24))))
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 26) ? (&PCICR) : ((uint8_t *)0))
+#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 22) ? 1 : 3)))
+#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 15) ? (&PCMSK0) : (((p) <= 22) ? (&PCMSK1) : (((p) <= 26) ? (&PCMSK3) : ((uint8_t *)0)))))
+#define digitalPinToPCMSKbit(p) (((p) <= 15) ? ((p) & 0x7) : (((p) == 16) ? (7) : (((p) <= 22) ? ((p) - 17) : ((p) - 23))))
 
 #ifdef ARDUINO_MAIN
 
@@ -72,14 +99,14 @@ static const uint8_t A5 = 21;
 // ATMEL ATTINY88
 //
 //                   +-\/-+
-//      (D 22) PC6  1|    |28  PC5 (AI 5)
+//             PC6  1|    |28  PC5 (AI 5)
 //      (D  0) PD0  2|    |27  PC4 (AI 4)
 //      (D  1) PD1  3|    |26  PC3 (AI 3)
 //      (D  2) PD2  4|    |25  PC2 (AI 2)
 //      (D  3) PD3  5|    |24  PC1 (AI 1)
 //      (D  4) PD4  6|    |23  PC0 (AI 0)
 //             VCC  7|    |22  GND
-//             GND  8|    |21  PC7 (D 23)
+//             GND  8|    |21  PC7 (D 16)
 //      (D 14) PB6  9|    |20  AVCC
 //      (D 15) PB7 10|    |19  PB5 (D 13)
 //      (D  5) PD5 11|    |18  PB4 (D 12)
@@ -142,8 +169,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 	PC,
 	PC,
 	PC,
-	PC,
-	PA, /* 24 */
+	PA, /* 23 */
 	PA,
 	PA,
 	PA,
@@ -166,15 +192,14 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 	_BV(5),
 	_BV(6),
 	_BV(7),
-	_BV(0), /* 16, port C */
+	_BV(7), /* 16, port C */
+	_BV(0),
 	_BV(1),
 	_BV(2),
 	_BV(3),
 	_BV(4),
 	_BV(5),
-	_BV(6),
-	_BV(7),
-	_BV(0), /* 24, port A */
+	_BV(0), /* 23, port A */
 	_BV(1),
 	_BV(2),
 	_BV(3),
@@ -204,8 +229,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, /* 24 - port A */
+	NOT_ON_TIMER, /* 23 - port A */
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
