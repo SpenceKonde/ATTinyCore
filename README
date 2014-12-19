@@ -17,7 +17,7 @@ ATtiny85,45,25
 ATtiny861
 ATtiny87/167
 ATtiny2313
-Attiny88 (Alpha. Need testers. Report problems in Issue #22)
+Attiny88 (Now Supported. Report problems in Issue #22)
 
 You can identify the core using the following:
 #define ATTINY_CORE       - Attiny Core
