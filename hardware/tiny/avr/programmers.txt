@@ -1,0 +1,6 @@
+avrispv2.name=AVR ISP v2
+avrispv2.communication=serial
+avrispv2.protocol=avrispv2
+dragon.name=AVR Dragon in ISP mode
+dragon.communication=usb
+dragon.protocol=dragon_isp
