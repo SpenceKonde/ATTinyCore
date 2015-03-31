@@ -1,7 +1,10 @@
-Fork of TCWORLD core. 
-Will be ported to 1.6.x to bring 1.6.x support for 861/167/88, so I can migrate off of 1.0.6. 
+Fork of TCWORLD core, ported to 1.6.0
+
+Motivation was that this core has support for 167/861/88. 
 
 
+
+TCWORLD readme:
 
 
 BETA Arduino 1.0+ core for ATTiny's
