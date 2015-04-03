@@ -2,7 +2,7 @@ Fork of TCWORLD core, ported to 1.6.0
 
 Motivation was that this core has support for 167/861/88. 
 
-For 1.6.0/1.6.1, rename platform.txt, and replace with platform_160_161.txt - 
+For 1.6.2, replace platform.txt with platform_162.txt 
 
 
 
