@@ -272,7 +272,7 @@ attiny861at1.upload.maximum_size=8192
 # Brown-out detection disabled; [BODLEVEL=111]
 
 attiny861at1.bootloader.low_fuses=0x62
-attiny861at1.bootloader.high_fuses=0xDF
+attiny861at1.bootloader.high_fuses=0xD7
 attiny861at1.bootloader.extended_fuses=0xFF
 attiny861at1.bootloader.path=empty
 attiny861at1.bootloader.file=empty861at8.hex
@@ -284,24 +284,23 @@ attiny861at1.build.variant=tinyX61
  
 ###########################################################################
 
-attiny861at18.name=ATtiny861 @ 18.432 MHz  (external oscillator; BOD disabled)
+attiny861at18.name=ATtiny861 @ 16 MHz  (pll clock; BOD disabled)
 
 attiny861at18.upload.using=arduino:arduinoisp
 
 attiny861at18.upload.maximum_size=8192
 
-# Default clock (slowly rising power; long delay to clock; 1 MHz internal)
-# Int. RC Osc. 8 MHz divided by 8; Start-up time PWRDWN/RESET: 6 CK/14 CK + 64 ms; [CKSEL=0010 SUT=10]; default value
+# Default clock (slowly rising power; long delay to clock; 16 MHz PLL)
+# Int. RC Osc doubled by PLL; Start-up time PWRDWN/RESET: 6 CK/14 CK + 64 ms; [CKSEL=0001 SUT=11];
 # Brown-out detection disabled; [BODLEVEL=111]
 
 attiny861at18.bootloader.low_fuses=0xA0
 attiny861at18.bootloader.high_fuses=0xD7
-attiny861at18.bootloader.extended_fuses=0x00
 attiny861at18.bootloader.path=empty
 attiny861at18.bootloader.file=empty861at8.hex
 
 attiny861at18.build.mcu=attiny861
-attiny861at18.build.f_cpu=18432000L
+attiny861at18.build.f_cpu=16000000L
 attiny861at18.build.core=tiny
 attiny861at18.build.variant=tinyX61
 
