@@ -296,6 +296,7 @@ attiny861at18.upload.maximum_size=8192
 
 attiny861at18.bootloader.low_fuses=0xA0
 attiny861at18.bootloader.high_fuses=0xD7
+attiny861at18.bootloader.extended_fuses=0xff
 attiny861at18.bootloader.path=empty
 attiny861at18.bootloader.file=empty861at8.hex
 
