@@ -5,8 +5,14 @@ Motivation was that this core has support for 167/861/88.
 For 1.6.2, replace platform.txt with platform_162.txt 
 
 
+Sync download as zip and extract, or sync via github to your hardware folder, restart the IDE, and rock and roll. 
+
+
+Please see also the TCWorld readme below, bearing in mind that it is dated. 
 
 TCWORLD readme:
+
+
 
 
 BETA Arduino 1.0+ core for ATTiny's
