@@ -223,9 +223,9 @@ ISR(USART1_UDRE_vect)
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
 #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
-  volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
+  ,volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
   volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
   volatile uint8_t *udr,
   uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x)
@@ -244,6 +244,7 @@ HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
   _u2x = u2x;
 }
 #else
+)
 {
   _rx_buffer = rx_buffer;
   _tx_buffer = tx_buffer;
