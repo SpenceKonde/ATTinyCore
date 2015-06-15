@@ -51,7 +51,7 @@ struct ring_buffer
   byte tail;
 };
 
-#if defined(UBRRH) || defined(UBRR0H)
+#if defined(UBRRH) || defined(UBRR0H) || defined(LINCR)
   ring_buffer rx_buffer  =  { { 0 }, 0, 0 };
   ring_buffer tx_buffer  =  { { 0 }, 0, 0 };
 #endif
@@ -244,7 +244,6 @@ HardwareSerial::HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
   _u2x = u2x;
 }
 #else
-  )
 {
   _rx_buffer = rx_buffer;
   _tx_buffer = tx_buffer;
