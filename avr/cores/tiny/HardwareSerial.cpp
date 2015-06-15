@@ -174,9 +174,10 @@ ISR(UART0_UDRE_vect)
 ISR(UART_UDRE_vect)
 #elif defined(USART0_UDRE_vect)
 ISR(USART0_UDRE_vect)
-#elif defined(USART_UDRE_vect)
+#elif defined(USART_UDRE_vec)
 ISR(USART_UDRE_vect)
 #endif
+#if !defined(LIN_TC_vect)
 {
   if (tx_buffer.head == tx_buffer.tail) {
 	// Buffer empty, so disable interrupts
@@ -185,8 +186,7 @@ ISR(USART_UDRE_vect)
 #else
     cbi(UCSRB, UDRIE);
 #endif
-  }
-  else {
+  } else {
     // There is more data in the output buffer. Send the next byte
     unsigned char c = tx_buffer.buffer[tx_buffer.tail];
     tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
@@ -200,6 +200,7 @@ ISR(USART_UDRE_vect)
   #endif
   }
 }
+#endif
 #endif
 
 #ifdef USART1_UDRE_vect
