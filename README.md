@@ -7,6 +7,10 @@ For 1.6.2, replace platform.txt with platform_162.txt
 
 Sync download as zip and extract, or sync via github to your hardware folder, restart the IDE, and rock and roll. 
 
+Changes:
+6/20: A few improvements to support for ATTiny88, fixes for serial in 167, 87, 2313 and 4313. Added 4313 to boards.txt. 
+
+
 
 Please see also the TCWorld readme below, bearing in mind that it is dated. 
 
