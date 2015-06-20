@@ -174,7 +174,7 @@ ISR(UART0_UDRE_vect)
 ISR(UART_UDRE_vect)
 #elif defined(USART0_UDRE_vect)
 ISR(USART0_UDRE_vect)
-#elif defined(USART_UDRE_vec)
+#elif defined(USART_UDRE_vect)
 ISR(USART_UDRE_vect)
 #endif
 #if !defined(LIN_TC_vect)
