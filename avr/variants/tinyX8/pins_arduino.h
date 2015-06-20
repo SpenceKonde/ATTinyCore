@@ -84,6 +84,8 @@ static const uint8_t A2 = 19;
 static const uint8_t A3 = 20;
 static const uint8_t A4 = 21;
 static const uint8_t A5 = 22;
+static const uint8_t A6 = 23;
+static const uint8_t A7 = 24;
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 26) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 22) ? 1 : 3)))
@@ -99,12 +101,12 @@ static const uint8_t A5 = 22;
 // ATMEL ATTINY88
 //
 //                   +-\/-+
-//             PC6  1|    |28  PC5 (AI 5)
-//      (D  0) PD0  2|    |27  PC4 (AI 4)
-//      (D  1) PD1  3|    |26  PC3 (AI 3)
-//      (D  2) PD2  4|    |25  PC2 (AI 2)
-//      (D  3) PD3  5|    |24  PC1 (AI 1)
-//      (D  4) PD4  6|    |23  PC0 (AI 0)
+//      (D27*) PC6  1|    |28  PC5 (A5/D22)
+//      (D  0) PD0  2|    |27  PC4 (A4/D21)
+//      (D  1) PD1  3|    |26  PC3 (A3/D20)
+//      (D  2) PD2  4|    |25  PC2 (A2/D19)
+//      (D  3) PD3  5|    |24  PC1 (A1/D18)
+//      (D  4) PD4  6|    |23  PC0 (A0/D17)
 //             VCC  7|    |22  GND
 //             GND  8|    |21  PC7 (D 16)
 //      (D 14) PB6  9|    |20  AVCC
@@ -114,13 +116,14 @@ static const uint8_t A5 = 22;
 //      (D  7) PD7 13|    |16  PB2 (D 10) PWM
 //      (D  8) PB0 14|    |15  PB1 (D  9) PWM
 //                  +----+
-//  Note: For 32pin Packages, PORTA exists. PA0 = D23, PA1 = D24, PA2 = D25, PA3 = D26
-//
+//  Note: For 32pin Packages, PORTA exists. PA0 = A6/D23, PA1 = A7/D24, PA2 = D25, PA3 = D26
+// * Only available if RSTDSBL fuse programmed, which makes further ISP programming impossible.
 
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
+
 const uint16_t PROGMEM port_to_mode_PGM[] = {
 	NOT_A_PORT,
 	(uint16_t) &DDRA,
@@ -173,6 +176,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 	PA,
 	PA,
 	PA,
+	PC
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
@@ -203,6 +207,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 	_BV(1),
 	_BV(2),
 	_BV(3),
+	_BV(6)
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
@@ -233,6 +238,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
+	NOT_ON_TIMER
 };
 
 #endif
