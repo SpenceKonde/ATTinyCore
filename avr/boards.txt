@@ -15,8 +15,6 @@ menu.clock=Clock
 menu.bod=B.O.D.
 
 attinyx5.name=ATtiny x5 series
-attinyx5.upload.protocol=arduino
-attinyx5.upload.speed=115200
 attinyx5.upload.maximum_size=8192
 attinyx5.upload.maximum_data_size=512
 attinyx5.upload.tool=arduino:avrdude
@@ -76,8 +74,6 @@ attinyx5.menu.bod.4v3.bootloader.high_fuses=0xD4
 attinyx5.build.variant=tinyX5
 
 attinyx4.name=ATtiny x4 series
-attinyx4.upload.protocol=arduino
-attinyx4.upload.speed=115200
 attinyx4.upload.maximum_size=8192
 attinyx4.upload.maximum_data_size=512
 attinyx4.upload.tool=arduino:avrdude
