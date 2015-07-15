@@ -32,8 +32,8 @@ struct ring_buffer;
 class HardwareSerial : public Stream
 {
   private:
-    ring_buffer *_rx_buffer;
-    ring_buffer *_tx_buffer;
+    volatile ring_buffer *_rx_buffer;
+    volatile ring_buffer *_tx_buffer;
     volatile uint8_t *_ubrrh;
     volatile uint8_t *_ubrrl;
     volatile uint8_t *_ucsra;
