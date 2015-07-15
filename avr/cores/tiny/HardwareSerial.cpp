@@ -131,7 +131,7 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
         store_char(c, &rx_buffer);
     }
     if(LINSIR & _BV(LTXOK)){
-      PINA |= _BV(PINA5);
+      //PINA |= _BV(PINA5); //debug
       if (tx_buffer.head == tx_buffer.tail) {
       // Buffer empty, so disable interrupts
         cbi(LINENIR,LENTXOK);
