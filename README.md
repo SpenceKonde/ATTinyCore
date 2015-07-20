@@ -1,44 +1,21 @@
-Fork of TCWORLD core, ported to 1.6.0
+ATTiny Core - x313, x4, x5, x61, x7 and x8
+============
 
-Motivation was that this core has support for 167/861/88. 
+This is a fork of TCWORLD's ATTinyCore, ported to 1.6.x and taking full advantage of the new board menu options. This core supports the following processors:
 
-For 1.6.2, replace platform.txt with platform_162.txt 
-
-
-Sync download as zip and extract, or sync via github to your hardware folder, restart the IDE, and rock and roll. 
-
-Changes:
-6/20: A few improvements to support for ATTiny88, fixes for serial in 167, 87, 2313 and 4313. Added 4313 to boards.txt. 
-
-
-
-Please see also the TCWorld readme below, bearing in mind that it is dated. 
-
-TCWORLD readme:
+* ATtiny2313, 4313 (untested, probably working)
+* ATtiny24, 44, 84 (Working)
+* ATtiny25, 45, 85 (Working)
+* ATtiny261, 461, 861 (probably working)
+* ATTiny87, 167 (Untested)
+* ATTiny48, 88 (Basics work, rest untested)
 
 
-
-
-BETA Arduino 1.0+ core for ATTiny's
-
-Note: Beta testers are needed to try out the core and find any bugs!
-
-The core along with the PCREL patch files can be downloaded in ZIP format here:
-https://github.com/TCWORLD/ATTinyCore/tree/master/Downloads
+Notes from original readme:
+=============
 
 Based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
 
-The core is largely rewritten from the original to bring it inline with the latest version of the IDE and to make the addition of new processors easier by moving all configuration to additional pins_arduino.h files in keeping with the main arduino core.
-It also features an up to date Print class from the standard Arduino core, plus a fixed String class courtesy of the Teensy core.
-
-Currently the following processors are supported:
-
-ATtiny84,44,24
-ATtiny85,45,25
-ATtiny861
-ATtiny87/167
-ATtiny2313
-Attiny88 (Now Supported. Report problems in Issue #22)
 
 You can identify the core using the following:
 #define ATTINY_CORE       - Attiny Core
@@ -56,10 +33,6 @@ The following identify board variants:
 #define ATTINYX7
 #define ATTINYX313
 
-
-
-This core is still in Beta as I haven't fully tested it out yet. I know that the main functions work such as Serial (software), SPI (software), Digital/Analog read/write, millis(), micros(), delay(), delayMicroseconds(), print(), println(). However on some processors, functions such as Tone() are still not fully functional.
-There is also a certain amount of optimisation required to make the compile size smaller for the those chips with severly limited Flash (such as the tiny24).
 
 Also included for the Tiny84 and Tiny85 is a functioning Optiboot bootloader. There are two versions of this:
 > The first is one which is the normal optiboot which can be compiled using the "make attiny84.bat" and "make attiny85.bat" files. This can be hit and miss whether it works due to the fact that the internal oscillator of the ATtiny's is not well calibrated.
