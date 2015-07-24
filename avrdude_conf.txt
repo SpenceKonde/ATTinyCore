@@ -104,12 +104,12 @@ part
          readback_p1     = 0xff;
          readback_p2     = 0xff;
          read_lo         = "  0   0   1   0    0   0   0   0",
-                           "  0   0   0  a12  a11 a10  a9  a8",
+                           "  0   0   0   0  a11 a10  a9  a8",
                            " a7  a6  a5  a4   a3  a2   a1  a0",
                            "  o   o   o   o    o   o   o   o";
 
          read_hi         = "  0   0   1   0    1   0   0   0",
-                           "  0   0   0  a12  a11 a10  a9  a8",
+                           "  0   0   0   0  a11 a10  a9  a8",
                            " a7  a6  a5  a4   a3  a2   a1  a0",
                            "  o   o   o   o    o   o   o   o";
 
@@ -125,7 +125,7 @@ part
 
          writepage       = "  0  1  0  0   1   1   0  0",
                            "  0  0  0  0  a11 a10 a9 a8",
-                           " a7 a6 a5  x   x  x  x  x",
+                           " a7 a6  x  x   x  x  x  x",
                            "  x  x  x  x   x  x  x  x";
 
   mode      = 0x41;
@@ -189,7 +189,7 @@ part
                            "0  0  0  0   0  0  0  a0   o o o o  o o o o";
      ;
   ;
-
+  
 #------------------------------------------------------------
 # ATtiny167
 #------------------------------------------------------------
@@ -217,22 +217,22 @@ part
      chip_erase       = "1 0 1 0  1 1 0 0    1 0 0 x  x x x x",
                         "x x x x  x x x x    x x x x  x x x x";
 
-    timeout     = 200;
-    stabdelay       = 100;
-    cmdexedelay     = 25;
+    timeout      = 200;
+    stabdelay      = 100;
+    cmdexedelay      = 25;
     synchloops      = 32;
-    bytedelay       = 0;
-    pollindex       = 3;
-    pollvalue       = 0x53;
-    predelay        = 1;
-    postdelay       = 1;
+    bytedelay      = 0;
+    pollindex      = 3;
+    pollvalue      = 0x53;
+    predelay      = 1;
+    postdelay      = 1;
     pollmethod      = 0;
 
     pp_controlstack     =
-        0x0E, 0x1E, 0x0E, 0x1E, 0x2E, 0x3E, 0x2E, 0x3E,
-        0x4E, 0x5E, 0x4E, 0x5E, 0x6E, 0x7E, 0x6E, 0x7E,
-        0x06, 0x16, 0x46, 0x56, 0x0A, 0x1A, 0x4A, 0x5A,
-        0x1E, 0x7C, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00;
+            0x0E, 0x1E, 0x0E, 0x1E, 0x2E, 0x3E, 0x2E, 0x3E,
+            0x4E, 0x5E, 0x4E, 0x5E, 0x6E, 0x7E, 0x6E, 0x7E,
+            0x06, 0x16, 0x46, 0x56, 0x0A, 0x1A, 0x4A, 0x5A,
+            0x1E, 0x7C, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00;
     hventerstabdelay    = 100;
     progmodedelay       = 0;
     latchcycles         = 5;
@@ -266,20 +266,20 @@ part
          write           = "1  1  0  0   0  0  0  0    0 0 x x  x x x a8",
                            "a8 a6 a5 a4  a3 a2 a1 a0   i i i i  i i i i";
 
-  loadpage_lo   = "  1   1   0   0      0   0   0   1",
-        "  0   0   0   0      0   0   0   0",
-        "  0   0   0   0      0   0  a1  a0",
-        "  i   i   i   i      i   i   i   i";
+   loadpage_lo   = "  1   1   0   0      0   0   0   1",
+           "  0   0   0   0      0   0   0   0",
+           "  0   0   0   0      0   0  a1  a0",
+           "  i   i   i   i      i   i   i   i";
 
-  writepage = "  1   1   0   0      0   0   1   0",
-        "  0   0   x   x      x   x   x   x",
-        "  0   0  a5  a4     a3  a2   0   0",
-        "  x   x   x   x      x   x   x   x";
+   writepage   = "  1   1   0   0      0   0   1   0",
+           "  0   0   x   x      x   x   x   x",
+           "  0   0  a5  a4     a3  a2   0   0",
+           "  x   x   x   x      x   x   x   x";
 
-  mode      = 0x41;
-  delay     = 10;
-  blocksize = 4;
-  readsize  = 256;
+   mode      = 0x41;
+   delay      = 10;
+   blocksize   = 4;
+   readsize   = 256;
        ;
      memory "flash"
          paged           = yes;
@@ -306,19 +306,19 @@ part
                            "  i   i   i   i    i   i   i   i";
 
          loadpage_hi     = "  0   1   0   0    1   0   0   0",
-                           "  0   0   0   x    x   x   x   x",
-                           "  x   x  a5  a4   a3  a2  a1  a0",
-                           "  i   i   i   i    i   i   i   i";
+                                  "  0   0   0   x    x   x   x   x",
+                                  "  x   x  a5  a4   a3  a2  a1  a0",
+                                  "  i   i   i   i    i   i   i   i";
 
          writepage       = "  0  1  0  0   1   1   0  0",
-                           "  0  0  0  0  a11 a10 a9 a8",
-                           " a7 a6 a5  x   x  x  x  x",
+                           "  0  0  0  a12  a11 a10 a9 a8",
+                           " a7 a6 x  x   x  x  x  x",
                            "  x  x  x  x   x  x  x  x";
 
-  mode      = 0x41;
-  delay     = 10;
-  blocksize = 64;
-  readsize  = 256;
+   mode      = 0x41;
+   delay      = 10;
+   blocksize   = 64;
+   readsize   = 256;
        ;
 #   ATtiny167 has Signature Bytes: 0x1E 0x94 0x87.
      memory "signature"
