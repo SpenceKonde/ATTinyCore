@@ -52,9 +52,9 @@ static const uint8_t A4 = NUM_DIGITAL_PINS+4;
 static const uint8_t A5 = NUM_DIGITAL_PINS+5;
 static const uint8_t A6 = NUM_DIGITAL_PINS+6;
 static const uint8_t A7 = NUM_DIGITAL_PINS+7;
-static const uint8_t A7 = NUM_DIGITAL_PINS+8;
-static const uint8_t A7 = NUM_DIGITAL_PINS+9;
-static const uint8_t A7 = NUM_DIGITAL_PINS+10;
+static const uint8_t A8 = NUM_DIGITAL_PINS+8;
+static const uint8_t A9 = NUM_DIGITAL_PINS+9;
+static const uint8_t A10 = NUM_DIGITAL_PINS+10;
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -104,7 +104,7 @@ static const uint8_t A7 = NUM_DIGITAL_PINS+10;
 
 
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&PCICR) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) >= 3 && (p) <= 10) ? 4 : 5)
 #define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : (((p) >= 0 && (p) <= 2) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (p))
