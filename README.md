@@ -7,7 +7,7 @@ This is a fork of TCWORLD's ATTinyCore, ported to 1.6.x and taking full advantag
 * ATtiny24, 44, 84 (Working)
 * ATtiny25, 45, 85 (Working)
 * ATtiny261, 461, 861 (probably working)
-* ATTiny87, 167 (mostly working)
+* ATTiny87, 167 (mostly/probably working)
 * ATTiny48, 88 (Basics work, rest untested)
 
 
