@@ -1,18 +1,9 @@
-
-###########################################################################
-#
-# Example boards.txt from...
-#
-# http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1236434254/94#94
-# http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1274754985/6#6
-# http://www.arduino.cc/cgi-bin/yabb2/YaBB.pl?num=1274820597/49#49
-#
-###########################################################################
-
+# Overhauled summer 2015 by Dr. Azzy to use 1.6.x menus. 
 
 menu.chip=Chip
 menu.clock=Clock
 menu.bod=B.O.D.
+menu.pinmapping=Pin Mapping
 
 attinyx5.name=ATtiny x5 series
 attinyx5.upload.maximum_size=8192
@@ -62,6 +53,10 @@ attinyx5.menu.clock.8external.bootloader.file=empty/empty_all.hex
 attinyx5.menu.clock.1internal=1 mhz (internal)
 attinyx5.menu.clock.1internal.bootloader.low_fuses=0x62
 attinyx5.menu.clock.1internal.build.f_cpu=1000000L
+attinyx5.menu.clock.1internal.bootloader.file=empty/empty_all.hex
+attinyx5.menu.clock.1internal=1 mhz (internal)
+attinyx5.menu.clock.1internal.bootloader.low_fuses=0xC4
+attinyx5.menu.clock.1internal.build.f_cpu=128000L
 attinyx5.menu.clock.1internal.bootloader.file=empty/empty_all.hex
 attinyx5.menu.bod.disable=B.O.D. Disabled
 attinyx5.menu.bod.disable.bootloader.high_fuses=0xD7
@@ -189,7 +184,6 @@ attinyx61.menu.bod.4v3.bootloader.high_fuses=0xD4
 attinyx61.build.variant=tinyX61
 
 attinyx7.name=ATtiny x7 series
-attinyx7.upload.maximum_size=8192
 attinyx7.upload.maximum_data_size=512
 attinyx7.upload.tool=arduino:avrdude
 attinyx7.bootloader.tool=arduino:avrdude
@@ -236,7 +230,10 @@ attinyx7.menu.bod.2v7=B.O.D. Enabled (2.7v)
 attinyx7.menu.bod.2v7.bootloader.high_fuses=0xD5
 attinyx7.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx7.menu.bod.4v3.bootloader.high_fuses=0xD4
-attinyx7.build.variant=tinyX7
+attinyx7.menu.pinmapping.new=New style (down each side)
+attinyx7.menu.pinmapping.new.build.variant=tinyX7_New
+attinyx7.menu.pinmapping.old=Old style (SCL on 13)
+attinyx7.menu.pinmapping.old.build.variant=tinyX7
 
 attinyx8.name=ATtiny x8 series
 attinyx8.upload.tool=arduino:avrdude
@@ -330,40 +327,13 @@ attinyx313.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx313.menu.bod.4v3.bootloader.high_fuses=0x99
 attinyx313.build.variant=tinyX313
 
-###########################################################################
-
-attiny85at128.name=ATtiny85 @ 128 KHz  (watchdog oscillator; 1.8 V BOD)
-
-# The following do NOT work...
-# attiny85at128.upload.using=avrispv2
-# attiny85at128.upload.using=Pololu USB AVR Programmer
-
-# The following DO work (pick one)...
-attiny85at128.upload.tool=arduino:avrdude
-# attiny85at128.upload.protocol=avrispv2
-# attiny85at128.upload.using=pololu
-
-attiny85at128.upload.maximum_size=8192
-
-# WD. Osc. 128 kHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 0 ms; [CKSEL=0100 SUT=00]
-# Brown-out detection level at VCC=1.8 V; [BODLEVEL=110]
-# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
-# Serial program downloading (SPI) enabled; [SPIEN=0]
-
-attiny85at128.bootloader.tool=avrdude
-attiny85at128.bootloader.low_fuses=0xC4
-attiny85at128.bootloader.high_fuses=0xD6
-attiny85at128.bootloader.extended_fuses=0xFF
-attiny85at128.bootloader.path=empty
-attiny85at128.bootloader.file=empty85at1.hex
-
-attiny85at128.build.mcu=attiny85
-attiny85at128.build.f_cpu=128000L
-attiny85at128.build.core=tiny
-attiny85at128.build.variant=tinyX5
 
  
 ###########################################################################
+
+# BOARDS BELOW HERE ARE UNTESTED AND MAY NOT WORK #
+
+
 
 attiny861at18.name=ATtiny861 @ 18.432 MHz  (external oscillator; BOD disabled)
 
