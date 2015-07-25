@@ -33,15 +33,15 @@
 #define NUM_ANALOG_INPUTS           11
 #define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
 
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
+#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 7 || (p) == 12)
 
 #define SS   10
 #define MOSI 11
 #define MISO 12
 #define SCK  13
 
-static const uint8_t SDA = 4;
-static const uint8_t SCL = 6;
+#define SDA 13
+#define SCL 11
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = NUM_DIGITAL_PINS;
@@ -52,6 +52,9 @@ static const uint8_t A4 = NUM_DIGITAL_PINS+4;
 static const uint8_t A5 = NUM_DIGITAL_PINS+5;
 static const uint8_t A6 = NUM_DIGITAL_PINS+6;
 static const uint8_t A7 = NUM_DIGITAL_PINS+7;
+static const uint8_t A7 = NUM_DIGITAL_PINS+8;
+static const uint8_t A7 = NUM_DIGITAL_PINS+9;
+static const uint8_t A7 = NUM_DIGITAL_PINS+10;
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -207,7 +210,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
-	NOT_ON_TIMER,
+	TIMER0A,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
 	NOT_ON_TIMER,
