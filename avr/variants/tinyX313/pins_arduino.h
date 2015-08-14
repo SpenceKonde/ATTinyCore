@@ -2,7 +2,8 @@
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
-#define ATTINYX313 1
+#define ATTINYX313 1       //backwards compatibility
+#define __AVR_ATtinyX313__ //recommended
 #define USE_SOFTWARE_SPI 1
 
 #include <avr/pgmspace.h>
