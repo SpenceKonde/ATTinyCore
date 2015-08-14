@@ -26,6 +26,7 @@
 #define Pins_Arduino_h
 
 #define ATTINYX4 1
+#define __AVR_ATtinyX4__
 #define USE_SOFTWARE_SPI 1
 
 #include <avr/pgmspace.h>
