@@ -25,7 +25,8 @@
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
-#define ATTINYX8 1
+#define ATTINYX8 1       //backwards compat
+#define __AVR_ATtinyX8__ //recommended
 #define USE_SOFTWARE_SPI 0
 
 #include <avr/pgmspace.h>
