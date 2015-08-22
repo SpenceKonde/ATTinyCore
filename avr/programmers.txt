@@ -1,6 +1,31 @@
-avrispv2.name=AVR ISP v2
-avrispv2.communication=serial
-avrispv2.protocol=avrispv2
-dragon.name=AVR Dragon in ISP mode
-dragon.communication=usb
-dragon.protocol=dragon_isp
+
+
+avrisp.name=AVR ISP (ATtiny Classic)
+avrisp.communication=serial
+avrisp.protocol=stk500v1
+
+#avrispmkii.name=AVRISP mkII (ATtiny Classic)
+#avrispmkii.communication=usb
+#avrispmkii.protocol=stk500v2
+
+#usbtinyisp.name=USBtinyISP (ATtiny Classic)
+#usbtinyisp.protocol=usbtiny
+
+usbasp.name=USBasp (ATtiny Classic)
+usbasp.communication=usb
+usbasp.protocol=usbasp
+usbasp.program.tool=avrdude
+
+#parallel.name=Parallel Programmer (ATtiny Classic)
+#parallel.protocol=dapa
+#parallel.force=true
+# parallel.delay=200
+
+arduinoasisp.name=Arduino as ISP (ATtiny Classic)
+arduinoasisp.communication=serial
+arduinoasisp.protocol=stk500v1
+arduinoasisp.speed=19200
+arduinoasisp.program.protocol=stk500v1
+arduinoasisp.program.speed=19200
+arduinoasisp.program.tool=avrdude
+arduinoasisp.program.extra_params=-P{serial.port} -b{program.speed}
