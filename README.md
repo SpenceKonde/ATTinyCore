@@ -19,6 +19,7 @@ Otherwise, the default avrdude.conf will be used, and it does not provide proper
 ### Installation:
 
 Option 1: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it)
+
 Option 2: Download the github client, and sync this repo to (documents)/arduino/hardware.
 
 This repo is frequently updated, so the second option is recommend if you're comfortable with github, since it will expedite future updates. 
