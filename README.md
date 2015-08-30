@@ -13,7 +13,7 @@ This core supports the following processors:
 * ATTiny87, 167 (mostly/probably working)
 * ATTiny48, 88 (Basics work, rest untested)
 
-*WHEN UPLOADING, YOU MUST SELECT A PROGRAMMER MARKED "ATTINY CLASSIC"*
+*WHEN UPLOADING OR BOOTLOADING, YOU MUST SELECT A PROGRAMMER MARKED "ATTINY CLASSIC"*
 Otherwise, the default avrdude.conf will be used, and it does not provide proper support for many of these chips
 
 ### Installation:
