@@ -481,29 +481,27 @@ void initToneTimer(void)
     initToneTimerInternal();
   #endif
 }
-#if F_CPU == 20000000
-  // 20 MHz / 128 ~= 125 KHz
+#if F_CPU > 12000000L
+  // above 12mhz, prescale by 128, the highest prescaler available
   #define ADC_ARDUINO_PRESCALER   B111
-#elif F_CPU == 18432000
-  // 18.432 MHz / 128 ~= 125 KHz
-  #define ADC_ARDUINO_PRESCALER   B111
-#elif F_CPU == 16000000
-  // 16 MHz / 128 = 125 KHz
-  #define ADC_ARDUINO_PRESCALER   B111
-#elif F_CPU == 12000000
-  // 12 MHz / 64 ~= 125 KHz
-  #define ADC_ARDUINO_PRESCALER   B110
-#elif F_CPU == 8000000
+#elif F_CPU >= 6000000L
+  // 12 MHz / 64 ~= 188 KHz
   // 8 MHz / 64 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   B110
-#elif F_CPU == 1000000
+#elif F_CPU >= 3000000L
+  // 4 MHz / 32 = 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B110
+#elif F_CPU >= 1500000L
+  // 2 MHz / 16 = 125 KHz
+  #define ADC_ARDUINO_PRESCALER   B110
+#elif F_CPU >= 750000L
   // 1 MHz / 8 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   B011
-#elif F_CPU == 128000
+#elif F_CPU < 400000L
   // 128 kHz / 2 = 64 KHz -> This is the closest you can get, the prescaler is 2
   #define ADC_ARDUINO_PRESCALER   B000
-#else
-  #error Add an entry for the selected processor speed.
+#else //speed between 400khz and 750khz
+  #define ADC_ARDUINO_PRESCALER   B010 //prescaler of 4
 #endif
 
 void init(void)
