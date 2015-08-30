@@ -21,11 +21,11 @@ usbasp.program.tool=avrdude
 #parallel.force=true
 # parallel.delay=200
 
-arduinoasisp.name=Arduino as ISP (ATtiny Classic)
+arduinoasisp.name=Arduino/Leo as ISP (ATtiny Classic)
 arduinoasisp.communication=serial
-arduinoasisp.protocol=stk500v1
+arduinoasisp.protocol=arduino
 arduinoasisp.speed=19200
-arduinoasisp.program.protocol=stk500v1
+arduinoasisp.program.protocol=arduino
 arduinoasisp.program.speed=19200
 arduinoasisp.program.tool=avrdude
 arduinoasisp.program.extra_params=-P{serial.port} -b{program.speed}
