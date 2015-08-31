@@ -65,7 +65,7 @@ The following identify board variants:
 
 ```
 
-### Bootloaders - untested
+### Bootloaders - (Untested, boards.txt entries known bad, hence commented out. See #18 )
 
 Also included for the Tiny84 and Tiny85 is a functioning Optiboot bootloader. There are two versions of this:
 > The first is one which is the normal optiboot which can be compiled using the "make attiny84.bat" and "make attiny85.bat" files. This can be hit and miss whether it works due to the fact that the internal oscillator of the ATtiny's is not well calibrated.
