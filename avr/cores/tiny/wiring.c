@@ -490,10 +490,10 @@ void initToneTimer(void)
   #define ADC_ARDUINO_PRESCALER   B110
 #elif F_CPU >= 3000000L
   // 4 MHz / 32 = 125 KHz
-  #define ADC_ARDUINO_PRESCALER   B110
+  #define ADC_ARDUINO_PRESCALER   B101
 #elif F_CPU >= 1500000L
   // 2 MHz / 16 = 125 KHz
-  #define ADC_ARDUINO_PRESCALER   B110
+  #define ADC_ARDUINO_PRESCALER   B100
 #elif F_CPU >= 750000L
   // 1 MHz / 8 = 125 KHz
   #define ADC_ARDUINO_PRESCALER   B011
