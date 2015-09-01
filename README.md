@@ -24,13 +24,18 @@ Option 2: Download the github client, and sync this repo to (documents)/arduino/
 
 This repo is frequently updated, so the second option is recommend if you're comfortable with github, since it will expedite future updates. 
 
+Either way, you want it to look like this:
+
+![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
+
+
 
 You can identify the core using the following:
 
 ```
 
 #define ATTINY_CORE       - Attiny Core
-#define ATTINY_CORE_NM    - No-Millis Attiny Core (untested)
+#define ATTINY_CORE_NM    - No-Millis Attiny Core (probably doesn't work - I have plans to deal with this better)
 
 ```
 
