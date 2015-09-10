@@ -31,7 +31,7 @@ Either way, you want it to look like this:
 
 ### Serial Support
 
-The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN0. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like software serial.
+The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches use it, while lots of sketches use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
 
 Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. 
 
