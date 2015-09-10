@@ -2,16 +2,16 @@ ATTiny Core - x313, x4, x5, x61, x7 and x8 for Arduino 1.6.x
 ============
 Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
 
-All references to the status of various features refer to tests conducted after the fork.  
+All references to the status of various features refer to tests conducted after the fork, and are updated as I feel comfortable declaring them working.  
 
 This core supports the following processors:
 
-* ATtiny2313, 4313 (untested, probably working)
+* ATtiny2313, 4313 (Working)
 * ATtiny24, 44, 84 (Working)
 * ATtiny25, 45, 85 (Working)
-* ATtiny261, 461, 861 (probably working)
-* ATTiny87, 167 (mostly/probably working)
-* ATTiny48, 88 (Basics work, rest untested)
+* ATtiny261, 461, 861 (probably working, lightly tested)
+* ATTiny87, 167 (probably working, lightly tested)
+* ATTiny48, 88 (probably working, lightly tested)
 
 *WHEN UPLOADING OR BOOTLOADING, YOU MUST SELECT A PROGRAMMER MARKED "ATTINY CLASSIC"*
 Otherwise, the default avrdude.conf will be used, and it does not provide proper support for many of these chips
