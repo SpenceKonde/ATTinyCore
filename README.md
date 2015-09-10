@@ -58,7 +58,7 @@ These are used to identify features:
 
 ```
 
-The following identify board variants:
+The following identify board variants (various cores have used both styles of defines, so both are provided here to maximize compatibility):
 
 ```
 #define ATTINYX4 1
