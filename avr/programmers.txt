@@ -3,6 +3,9 @@
 avrisp.name=AVR ISP (ATtiny Classic)
 avrisp.communication=serial
 avrisp.protocol=stk500v1
+avrisp.program.protocol=stk500v1
+avrisp.program.tool=avrdude
+avrisp.program.extra_params=-P{serial.port}
 
 #avrispmkii.name=AVRISP mkII (ATtiny Classic)
 #avrispmkii.communication=usb
@@ -14,7 +17,9 @@ avrisp.protocol=stk500v1
 usbasp.name=USBasp (ATtiny Classic)
 usbasp.communication=usb
 usbasp.protocol=usbasp
+usbasp.program.protocol=usbasp
 usbasp.program.tool=avrdude
+usbasp.program.extra_params=-Pusb
 
 #parallel.name=Parallel Programmer (ATtiny Classic)
 #parallel.protocol=dapa
