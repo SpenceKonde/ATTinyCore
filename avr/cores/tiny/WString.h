@@ -38,7 +38,7 @@
 // modified by Mikal Hart for his FlashString library
 class __FlashStringHelper;
 #ifndef F
-#define F(string_literal) (reinterpret_cast<__FlashStringHelper *>(PSTR(string_literal)))
+#define F(string_literal) (reinterpret_cast<const __FlashStringHelper *>(PSTR(string_literal)))
 #endif
 
 // An inherited class for holding the result of a concatenation.  These
