@@ -281,6 +281,7 @@ attinyx313.bootloader.tool=avrdude
 attinyx313.bootloader.unlock_bits=0x3F
 attinyx313.bootloader.lock_bits=0x3F
 attinyx313.build.core=tiny
+attinyx313.build.board=AVR_ATTINYX313
 attinyx313.bootloader.extended_fuses=0xFF
 attinyx313.menu.chip.4313=ATtiny4313
 attinyx313.menu.chip.4313.build.mcu=attiny4313
