@@ -6,7 +6,7 @@
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
 
 name=ATtiny Classic
-version=1.0.0
+version=1.0.3
 
 # AVR compile variables
 # --------------------- 
@@ -78,7 +78,7 @@ recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 # ------------------------------
 tools.avrdude.path={runtime.tools.avrdude.path}
 tools.avrdude.cmd.path={path}/bin/avrdude
-tools.avrdude.config.path={runtime.hardware.path}/avrdude.conf
+tools.avrdude.config.path={runtime.platform.path}/avrdude.conf
 
 
 tools.avrdude.upload.params.verbose=-v
