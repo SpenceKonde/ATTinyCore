@@ -16,7 +16,7 @@ This core supports the following processors:
 
 ### Installation:
 
-Option 1: Use board manager. The board manager URL is: `http://drazzy.com/package-drazzy.com-index.json`
+Option 1: Use board manager. The board manager URL is: `http://drazzy.com/package_drazzy.com_index.json`
 
 Option 2: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
 
