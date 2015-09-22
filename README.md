@@ -13,25 +13,25 @@ This core supports the following processors:
 * ATTiny87, 167 (probably working, lightly tested)
 * ATTiny48, 88 (probably working, lightly tested)
 
-*WHEN UPLOADING OR BOOTLOADING, YOU MUST SELECT A PROGRAMMER MARKED "ATTINY CLASSIC"*
-Otherwise, the default avrdude.conf will be used, and it does not provide proper support for many of these chips
 
 ### Installation:
 
-Option 1: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it)
+Option 1: Use board manager. The board manager URL is: `http://drazzy.com/package-drazzy.com-index.json`
 
-Option 2: Download the github client, and sync this repo to (documents)/arduino/hardware.
+Option 2: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
 
-This repo is frequently updated, so the second option is recommend if you're comfortable with github, since it will expedite future updates. 
+Option 3: Download the github client, and sync this repo to (documents)/arduino/hardware. 
 
-Either way, you want it to look like this:
+
+
+When using options 2 and 3, you want it to look like this:
 
 ![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
 
 
 ### Serial Support
 
-The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches use it, while lots of sketches use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
+The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
 
 Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. 
 
