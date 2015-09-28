@@ -13,10 +13,12 @@ This core supports the following processors:
 * ATTiny87, 167 (probably working, lightly tested)
 * ATTiny48, 88 (probably working, lightly tested)
 
+**When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny Classic or ATTiny Modern from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
+
 
 ### Installation:
 
-Option 1: Use board manager. The board manager URL is: `http://drazzy.com/package-drazzy.com-index.json`
+Option 1: Use board manager. The board manager URL is: `http://drazzy.com/package_drazzy.com_index.json`
 
 Option 2: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
 
