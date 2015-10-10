@@ -216,8 +216,33 @@ unsigned long micros()
 
 #if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) //Can we just do it the naive way? If so great!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
-#else //Otherwise we have a problem. 
+//Otherwise we have a problem.
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 11) // 5.75 vs real value 5.818 (11mhz) 5.78 (11.059)
+  m=(m << 8) + t;
+  return m+(m<<2)+(m>>1)+(m>>2);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 12) // 5.3125 vs real value 5.333
+  m=(m << 8) + t;
+  return m+(m<<2)+(m>>2)+(m>>4);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 20) // 3.187 vs real value 3.2
+  m=(m << 8) + t;
+  return m+(m<<1)+(m>>2)-(m>>4);
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
+  m=(m << 8) + t;
+  return m+(m<<1)+(m>>1)
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==14745600L) //4.375  vs real value 4.34
+  m=(m << 8) + t;
+  return (m<<2)+(m>>1)-(m>>3);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything
+  m=(m << 8) + t;
+  return (m<<2)+(m>>1)
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==7372800L) //8.625, vs real value 8.68
+  m=(m << 8) + t;
+  return (m<<3)+(m>>2)+(m>>3);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) //for 9mhz, this is a little off, but for 9.21, it's very close!
+  return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+#else
   //return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+  //return ((m << 8) + t) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond();
   //Integer division precludes the above technique. 
   //so we have to get a bit more creative. 
   //We can't just remove the parens, because then it will overflow (MillisTimer_Prescale_Value) times more often than unsigned longs should, so overflows would break everything. 
@@ -231,6 +256,7 @@ unsigned long micros()
   //This works without the loss of precision, but eats an extra 380 bytes of flash
   //return (((long long)((m << 8) + t)) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()); //very disappointing fix, eats an extra 380 bytes of flash because of long long
 #endif
+}
 
 }
 
