@@ -238,6 +238,9 @@ unsigned long micros()
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU==7372800L) //8.625, vs real value 8.68
   m=(m << 8) + t;
   return (m<<3)+(m>>2)+(m>>3);
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==6000000L) //10.625, vs real value 10.67
+  m=(m << 8) + t;
+  return (m<<3)+(m<<1)+(m>>2)+(m>>3);
 #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) //for 9mhz, this is a little off, but for 9.21, it's very close!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
 #else
@@ -369,6 +372,30 @@ void delayMicroseconds(unsigned int us)
 	// we just burned 17 (19) cycles above, remove 4, (4*4=16)
   // us is at least 6 so we can substract 4
 	us -= 4; // = 2 cycles
+#elif F_CPU >= 6000000L
+	// for that unusual 6mhz clock... 
+
+	// for a 1 and 2 microsecond delay, simply return.  the overhead
+	// of the function call takes 14 (16) cycles, which is 2us
+	if (us <= 2) return; //  = 3 cycles, (4 when true)
+
+	// the following loop takes 2/3rd microsecond (4 cycles)
+	// per iteration, so we want to add it to half of itself
+	us +=us>>1;
+	us -= 2; // = 2 cycles
+
+#elif F_CPU >= 4000000L
+	// for that unusual 4mhz clock... 
+
+	// for a 1 and 2 microsecond delay, simply return.  the overhead
+	// of the function call takes 14 (16) cycles, which is 2us
+	if (us <= 2) return; //  = 3 cycles, (4 when true)
+
+	// the following loop takes 1 microsecond (4 cycles)
+	// per iteration, so nothing to do here! \o/
+
+	us -= 2; // = 2 cycles
+
 
 #else
 	// for the 1 MHz internal clock (default settings for common AVR microcontrollers)
