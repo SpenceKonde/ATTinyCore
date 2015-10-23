@@ -33,6 +33,17 @@ External crystal (all except x8 series):
 * 6mhz
 * 4mhz
 
+### Hardware:
+
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
+
+Except for the x5, x4, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
+
+x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
+x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
+SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+
 
 ### Installation:
 
