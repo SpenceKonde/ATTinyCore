@@ -15,6 +15,24 @@ This core supports the following processors:
 
 **When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny Classic or ATTiny Modern from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
 
+### Supported clock speeds:
+
+Internal:
+* 8mhz
+* 1mhz
+* 16mhz (PLL clock,  x5, x61 only)
+* 4 mhz (x313 only)
+* 0.5mhz (x313 only)
+* 128khz 
+
+External crystal (all except x8 series):
+* 20mhz
+* 16mhz
+* 12mhz
+* 8mhz
+* 6mhz
+* 4mhz
+
 
 ### Installation:
 
