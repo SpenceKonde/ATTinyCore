@@ -261,7 +261,6 @@ unsigned long micros()
 #endif
 }
 
-}
 
 
 
