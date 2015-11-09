@@ -63,12 +63,14 @@ extern "C"{
 #if F_CPU < 1000000L
 //Prevent a divide by 0 is 
 #warning Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1.
-static inline unsigned long clockCyclesPerMicrosecond() __attribute__ ((always_inline));
-static inline unsigned long clockCyclesPerMicrosecond()
-{
+//static inline unsigned long clockCyclesPerMicrosecond() __attribute__ ((always_inline));
+//static inline unsigned long clockCyclesPerMicrosecond()
+//{//
 //Inline function will be optimised out.
-  return 1;
-}
+//  return 1;
+//}
+  //WTF were they thinking?! 
+#define clockCyclesPerMicrosecond() 1L
 #else
 #define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
 #endif

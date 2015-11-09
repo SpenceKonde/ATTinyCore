@@ -213,9 +213,61 @@ unsigned long micros()
 #endif
 
   SREG = oldSREG;
-  
+
+
+#if F_CPU < 1000000L
+return ((m << 8) + t) * MillisTimer_Prescale_Value * (1000000L/F_CPU);
+#else
+#if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) //Can we just do it the naive way? If so great!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+//Otherwise we have a problem.
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 11) // 5.75 vs real value 5.818 (11mhz) 5.78 (11.059)
+  m=(m << 8) + t;
+  return m+(m<<2)+(m>>1)+(m>>2);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 12) // 5.3125 vs real value 5.333
+  m=(m << 8) + t;
+  return m+(m<<2)+(m>>2)+(m>>4);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 20) // 3.187 vs real value 3.2
+  m=(m << 8) + t;
+  return m+(m<<1)+(m>>2)-(m>>4);
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
+  m=(m << 8) + t;
+  return m+(m<<1)+(m>>1)
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==14745600L) //4.375  vs real value 4.34
+  m=(m << 8) + t;
+  return (m<<2)+(m>>1)-(m>>3);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything
+  m=(m << 8) + t;
+  return (m<<2)+(m>>1)
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==7372800L) //8.625, vs real value 8.68
+  m=(m << 8) + t;
+  return (m<<3)+(m>>2)+(m>>3);
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==6000000L) //10.625, vs real value 10.67
+  m=(m << 8) + t;
+  return (m<<3)+(m<<1)+(m>>2)+(m>>3);
+#elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) //for 9mhz, this is a little off, but for 9.21, it's very close!
+  return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+#else
+  //return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+  //return ((m << 8) + t) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond();
+  //Integer division precludes the above technique. 
+  //so we have to get a bit more creative. 
+  //We can't just remove the parens, because then it will overflow (MillisTimer_Prescale_Value) times more often than unsigned longs should, so overflows would break everything. 
+  //So what we do here is:
+  //the high part gets divided by cCPuS then multiplied by the prescaler. Then take the low 8 bits plus the high part modulo-cCPuS to correct for the division, then multiply that by the prescaler value first before dividing by cCPuS, and finally add the two together.
+  //return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + ((t+(((m<<8)%clockCyclesPerMicrosecond())) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()));
+  return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + (t * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+  
+  //This doesn't work, and I don't know why:
+  //return ((m*(unsigned long)MillisTimer_Prescale_Value / (unsigned long)clockCyclesPerMicrosecond())<<8)+(((unsigned long)t+((m%11)<<8)) * (unsigned long)MillisTimer_Prescale_Value / (unsigned long)clockCyclesPerMicrosecond());
+  //This works without the loss of precision, but eats an extra 380 bytes of flash
+  //return (((long long)((m << 8) + t)) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()); //very disappointing fix, eats an extra 380 bytes of flash because of long long
+#endif
+  #endif
 }
+
+
+
 
 void delay(unsigned long ms)
 {
@@ -324,6 +376,30 @@ void delayMicroseconds(unsigned int us)
 	// we just burned 17 (19) cycles above, remove 4, (4*4=16)
   // us is at least 6 so we can substract 4
 	us -= 4; // = 2 cycles
+#elif F_CPU >= 6000000L
+	// for that unusual 6mhz clock... 
+
+	// for a 1 and 2 microsecond delay, simply return.  the overhead
+	// of the function call takes 14 (16) cycles, which is 2us
+	if (us <= 2) return; //  = 3 cycles, (4 when true)
+
+	// the following loop takes 2/3rd microsecond (4 cycles)
+	// per iteration, so we want to add it to half of itself
+	us +=us>>1;
+	us -= 2; // = 2 cycles
+
+#elif F_CPU >= 4000000L
+	// for that unusual 4mhz clock... 
+
+	// for a 1 and 2 microsecond delay, simply return.  the overhead
+	// of the function call takes 14 (16) cycles, which is 2us
+	if (us <= 2) return; //  = 3 cycles, (4 when true)
+
+	// the following loop takes 1 microsecond (4 cycles)
+	// per iteration, so nothing to do here! \o/
+
+	us -= 2; // = 2 cycles
+
 
 #else
 	// for the 1 MHz internal clock (default settings for common AVR microcontrollers)

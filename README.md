@@ -15,20 +15,50 @@ This core supports the following processors:
 
 **When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny Classic or ATTiny Modern from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
 
+### Supported clock speeds:
 
-### Installation:
+Internal:
+* 8mhz
+* 1mhz
+* 16mhz (PLL clock,  x5, x61 only)
+* 4 mhz (x313 only)
+* 0.5mhz (x313 only)
+* 128khz 
 
-Option 1: Use board manager. The board manager URL is: `http://drazzy.com/package_drazzy.com_index.json`
+External crystal (all except x8 series):
+* 20mhz
+* 16mhz
+* 12mhz
+* 8mhz
+* 6mhz
+* 4mhz
 
-Option 2: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
 
-Option 3: Download the github client, and sync this repo to (documents)/arduino/hardware. 
+Board Manager Installation
+============
 
+This core can be installed using the board manager. The board manager URL is:
 
+`http://drazzy.com/package_drazzy.com_index.json`
 
-When using options 2 and 3, you want it to look like this:
+1. File -> Preferences, enter the above URL in "Additional Board Manager URLs"
+2. Tools -> Boards -> Board Manager...
+  *If using 1.6.6, close board manager and re-open it (see below)
+3. Select ATTinyCore (Modern) and click "Install". 
 
-![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
+Due to [a bug](https://github.com/arduino/Arduino/issues/3795) in 1.6.6 of the Arduino IDE, new board manager entries are not visible the first time Board Manager is opened after adding a new board manager URL. 
+
+### Hardware:
+
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
+
+Except for the x5, x4, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
+
+* x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
+* x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
+* SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+* SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+
 
 
 ### Serial Support
@@ -36,6 +66,8 @@ When using options 2 and 3, you want it to look like this:
 The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
 
 Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. 
+
+
 
 ### Defines:
 
@@ -79,6 +111,18 @@ The following identify board variants (various cores have used both styles of de
 #define __AVR_ATtinyX313__
 
 ```
+
+Manual Installation
+============
+Option 1: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
+
+Option 2: Download the github client, and sync this repo to (documents)/arduino/hardware. 
+
+
+![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
+
+
+
 
 ### Bootloaders - (Untested, boards.txt entries known bad, hence commented out. See #18 )
 
