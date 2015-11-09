@@ -214,6 +214,10 @@ unsigned long micros()
 
   SREG = oldSREG;
 
+
+#if F_CPU < 1000000L
+return ((m << 8) + t) * MillisTimer_Prescale_Value * (1000000L/F_CPU);
+#else
 #if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) //Can we just do it the naive way? If so great!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
 //Otherwise we have a problem.
@@ -259,6 +263,7 @@ unsigned long micros()
   //This works without the loss of precision, but eats an extra 380 bytes of flash
   //return (((long long)((m << 8) + t)) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()); //very disappointing fix, eats an extra 380 bytes of flash because of long long
 #endif
+  #endif
 }
 
 
