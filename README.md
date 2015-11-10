@@ -18,20 +18,20 @@ This core supports the following processors:
 ### Supported clock speeds:
 
 Internal:
-* 8mhz
-* 1mhz
-* 16mhz (PLL clock,  x5, x61 only)
-* 4 mhz (x313 only)
-* 0.5mhz (x313 only)
-* 128khz 
+* 8 MHz
+* 1 MHz
+* 16 MHz (PLL clock,  x5, x61 only)
+* 4 MHz (x313 only)
+* 0.5 MHz (x313 only)
+* 128 kHz 
 
 External crystal (all except x8 series):
-* 20mhz
-* 16mhz
-* 12mhz
-* 8mhz
-* 6mhz
-* 4mhz
+* 20 MHz
+* 16 MHz
+* 12 MHz
+* 8 MHz
+* 6 MHz
+* 4 MHz
 
 
 Board Manager Installation
