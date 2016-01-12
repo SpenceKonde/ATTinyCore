@@ -79,6 +79,10 @@ recipe.size.regex=^(?:\.text|\.data|\.bootloader)\s+([0-9]+).*
 recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
+## Save hex
+recipe.output.tmp_file={build.project_name}.hex
+recipe.output.save_file={build.project_name}.hex
+
 ## Preprocessor
 preproc.includes.flags=-w -x c++ -M -MG -MP
 recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
