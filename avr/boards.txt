@@ -451,26 +451,6 @@ attinyx313.build.variant=tinyX313
 #attiny84_12.build.variant=tinyX4optiboot
  
 ###########################################################################
-
-#attiny84_12_no.name=Optiboot ATtiny84 @ 12 MHz  (external osc - NO MILLIS!)
-
-#attiny84_12_no.upload.tool=avrdude
-#attiny84_12_no.upload.speed=19200
-#bootloader takes up last 9 pages, so there is a limit on the max size.
-#attiny84_12_no.upload.maximum_size=7616
-
-#attiny84_12_no.bootloader.tool=avrdude
-#attiny84_12_no.bootloader.low_fuses=0xE0
-#attiny84_12_no.bootloader.high_fuses=0xD7
-#attiny84_12_no.bootloader.extended_fuses=0xFE
-#attiny84_12_no.bootloader.path=optiboot
-#attiny84_12_no.bootloader.file=optiboot_attiny84_12.hex
-
-#attiny84_12_no.build.mcu=attiny84
-#attiny84_12_no.build.f_cpu=12000000L
-#attiny84_12_no.build.core=tinyNoMillis
-#attiny84_12_no.build.variant=tinyX4optiboot
-###########################################################################
 #attiny84.name=Optiboot ATtiny84 @ 8 MHz  (internal osc)
 
 #attiny84.upload.tool=avrdude
@@ -532,59 +512,5 @@ attinyx313.build.variant=tinyX313
 #attiny85.build.core=tiny
 #attiny85.build.variant=tinyX5optiboot
 
-###########################################################################
 
-#attiny88_1_nm.name=ATtiny88 @ 1 MHz  (internal oscillator; BOD disabled; No Millis!)
-#attiny88_1_nm.upload.tool=avrdude
-#attiny88_1_nm.upload.maximum_size=8192
-#attiny88_1_nm.upload.protocol=avrispv2
-#attiny88_1_nm.bootloader.tool=avrdude
 
-# Default clock (slowly rising power; long delay to clock; 8 MHz internal)
-# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
-# Divide clock by 8 internally; [CKDIV8=0]
-#attiny88_1_nm.bootloader.low_fuses=0x6E
-
-# Brown-out detection disabled; [BODLEVEL=111]
-# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
-# Serial program downloading (SPI) enabled; [SPIEN=0]
-#attiny88_1_nm.bootloader.high_fuses=0xD7
-
-# Self-Programming Disabled; [SELFPRGEN=1]
-#attiny88_1_nm.bootloader.extended_fuses=0x07
-
-#attiny88_1_nm.bootloader.path=empty
-#attiny88_1_nm.bootloader.file=empty88at1.hex
-#attiny88_1_nm.build.mcu=attiny88
-#attiny88_1_nm.build.f_cpu=1000000L
-#attiny88_1_nm.build.core=tinyNoMillis
-#attiny88_1_nm.build.variant=tinyX8
-
-###########################################################################
-
-#attiny88_8_nm.name=ATtiny88 @ 8 MHz  (internal oscillator; BOD disabled; No Millis!)
-#attiny88_8_nm.upload.tool=avrdude
-#attiny88_8_nm.upload.maximum_size=8192
-#attiny88_8_nm.upload.protocol=avrispv2
-#attiny88_8_nm.bootloader.tool=avrdude
-
-# Default clock (slowly rising power; long delay to clock; 8 MHz internal)
-# Int. RC Osc. 8 MHz; Start-up time PWRDWN/RESET: 6 CK/14 CK + 65 ms; [CKSEL=1110 SUT=10]; default value
-#attiny88_8_nm.bootloader.low_fuses=0xEE
-
-# Brown-out detection disabled; [BODLEVEL=111]
-# Preserve EEPROM memory through the Chip Erase cycle; [EESAVE=0]
-# Serial program downloading (SPI) enabled; [SPIEN=0]
-#attiny88_8_nm.bootloader.high_fuses=0xD7
-
-# Self-Programming Disabled; [SELFPRGEN=1]
-#attiny88_8_nm.bootloader.extended_fuses=0x07
-
-#attiny88_8_nm.bootloader.path=empty
-#attiny88_8_nm.bootloader.file=empty88at8.hex
-#attiny88_8_nm.build.mcu=attiny88
-#attiny88_8_nm.build.f_cpu=8000000L
-#attiny88_8_nm.build.core=tinyNoMillis
-#attiny88_8_nm.build.variant=tinyX8
-
-###########################################################################
