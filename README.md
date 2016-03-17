@@ -1,5 +1,7 @@
 ATTiny Core - x313, x4, x5, x61, x7 and x8 for Arduino 1.6.x
 ============
+
+[![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
 
 All references to the status of various features refer to tests conducted after the fork, and are updated as I feel comfortable declaring them working.  
