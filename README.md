@@ -2,7 +2,13 @@ ATTiny Core - x313, x4, x5, x61, x7 and x8 for Arduino 1.6.x
 ============
 
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
+
+
+Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ , shimniok's ATTiny x41 core, and Rambo's ATtiny 1634 core. 
+
+### Grand Merger
+As of 3/17/2016, my ATTiny Modern core has been merged into this one! It is not yet available via board manager, assuming everything check out okay, this will be released on board manager, and the old core will be deprecated and no longer updated. Please report any new issues. This will allow more programmers to be included without crapping up the list, as well as simplifying life for all involved. 
+
 
 All references to the status of various features refer to tests conducted after the fork, and are updated as I feel comfortable declaring them working.  
 
@@ -14,6 +20,9 @@ This core supports the following processors:
 * ATtiny261, 461, 861 (probably working, lightly tested)
 * ATTiny87, 167 (probably working, lightly tested)
 * ATTiny48, 88 (probably working, lightly tested)
+* ATTiny441, 841 (Should be working, just pulled in from other core)
+* ATTiny1634  (should be working, just pulled in from other core)
+* ATTiny828 (should be working, just pulled in from other core)
 
 **When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny Classic or ATTiny Modern from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
 
