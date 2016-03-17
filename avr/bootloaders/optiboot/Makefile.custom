@@ -1,0 +1,12 @@
+#
+# Makefile for "custom" platforms.   Add your board here.
+#
+
+
+wildfire: TARGET = $@
+wildfire: CHIP = atmega1284p
+wildfire:
+	$(MAKE) $(CHIP) AVR_FREQ=16000000L LED=B5
+	mv $(PROGRAM)_$(CHIP).hex $(PROGRAM)_$(TARGET).hex
+	mv $(PROGRAM)_$(CHIP).lst $(PROGRAM)_$(TARGET).lst
+

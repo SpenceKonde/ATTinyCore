@@ -1,0 +1,85 @@
+# Makefile.isp for Optiboot
+# Bill Westfield (WestfW@yahoo.com)  March, 2013
+# $Id$
+#
+# Instructions:
+#
+# This is a "daughter" Makefile that burns the bootloader using a ISP
+# device programmer.  It is designed to inherit assorted variables from
+# the parent optiboot "Makefile"...  Using a daughter makefile makes
+# certain variable manipulations more obvious.
+#
+# To burn bootloader .hex file, invoke the main Makefile using:
+# make diecimila_isp
+# make lilypad_isp
+# make ng_isp
+# etc...
+
+#
+# Note: inherit paths/etc from parent Makefile.
+#
+
+#---------------------------------------------------------------------------
+
+# enter the parameters for the avrdude isp tool  -b19200
+#
+
+# Inherit avrdude paths from top-level makefile
+AVRDUDE_ROOT ?= $(GCCROOT)
+AVRDUDE_CONF ?= -C$(TOOLROOT)/avr/etc/avrdude.conf
+
+# These are the parameters for a usb-based STK500v2 programmer.
+# Exact type unknown.  (historical Makefile values.)
+#ISPTOOL	   = stk500v2
+#ISPPORT	   =  usb
+#ISPSPEED   = -b 115200
+#
+#
+# These are parameters for using an Arduino with the ArduinoISP sketch
+#  as the programmer.  On a mac, for a particular Uno as programmer.
+ISPTOOL	?= stk500v1
+ISPPORT	?= /dev/tty.usbserial-FTD61T6Q
+ISPSPEED ?= -b19200
+
+
+
+# Not all chips have EFUSE.
+
+ifdef EFUSE
+EFUSE_CMD= -U efuse:w:0x$(EFUSE):m
+endif
+
+#
+# avrdude commands to erase chip, unlock memory, and program fuses.
+#
+ISPFUSES =	-e -u -U lock:w:0x3f:m $(EFUSE_CMD) \
+	 	-U hfuse:w:0x$(HFUSE):m -U lfuse:w:0x$(LFUSE):m
+
+
+#
+# avrdude commands to program the new bootloader, and protect the bootloader
+# space from accidental SPM writes.  Note: "2f" allows boot section to be read
+# by the application, which is different than the arduino default.
+#
+ISPFLASH =	-U flash:w:$(PROGRAM)_$(TARGET).hex -U lock:w:0x2f:m
+
+# There are certain complicated caused by the fact that the default state
+# of a fuse is a "1" rather than a "0", especially with respect to fuse bits
+# that have not been implemented.  Those would normally not be included, but
+# unimplemented fuses still default to being "1"
+#
+# the efuse should really be 0xf8; since, however, only the lower
+# three bits of that byte are used on the atmega168, avrdude gets
+# confused if you specify 1's for the higher bits, see:
+# http://tinker.it/now/2007/02/24/the-tale-of-avrdude-atmega168-and-extended-bits-fuses/
+#
+# similarly, the lock bits should be 0xff instead of 0x3f (to
+# unlock the bootloader section) and 0xcf instead of 0x2f (to
+# lock it), but since the high two bits of the lock byte are
+# unused, avrdude would get confused.
+
+isp: $(PROGRAM)_$(TARGET).hex
+	$(AVRDUDE_ROOT)avrdude $(AVRDUDE_CONF) -c $(ISPTOOL) \
+              -p $(MCU_TARGET) -P $(ISPPORT) $(ISPSPEED) \
+	$(ISPFUSES) \
+	$(ISPFLASH)
