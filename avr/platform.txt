@@ -5,8 +5,8 @@
 # For more info:
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
 
-name=ATtiny Classic
-version=1.0.6
+name=ATtiny Universal
+version=1.1.0
 
 # AVR compile variables
 # --------------------- 
