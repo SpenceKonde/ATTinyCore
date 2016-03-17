@@ -4,6 +4,7 @@ menu.chip=Chip
 menu.clock=Clock
 menu.bod=B.O.D.
 menu.pinmapping=Pin Mapping
+menu.INITIALIZE_SECONDARY_TIMERS=Initialize Secondary Timers
 
 
 
@@ -732,6 +733,9 @@ attinyx313.menu.bod.2v7=B.O.D. Enabled (2.7v)
 attinyx313.menu.bod.2v7.bootloader.high_fuses=0x9B
 attinyx313.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx313.menu.bod.4v3.bootloader.high_fuses=0x99
+attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.0=no
+attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.1=yes
+attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.1.build.extra_flags=-DINITIALIZE_SECONDARY_TIMERS=1
 attinyx313.build.variant=tinyX313
 
 

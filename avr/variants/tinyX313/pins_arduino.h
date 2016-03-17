@@ -34,7 +34,9 @@ static const uint8_t SCL = 16;
 
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
+#ifndef INITIALIZE_SECONDARY_TIMERS
 #define INITIALIZE_SECONDARY_TIMERS              0
+#endif
 /*
   The old standby ... millis on Timer 0.
 */
