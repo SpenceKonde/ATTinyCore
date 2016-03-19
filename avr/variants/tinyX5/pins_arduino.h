@@ -35,7 +35,7 @@
 #define NUM_ANALOG_INPUTS           4
 #define analogInputToDigitalPin(p)  (((p) == 0) ? 5 : (((p) == 1) ? 2 : (((p) == 2) ? 4 :(((p) == 3) ? 3 : -1))))
 
-#define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1)
+#define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1 || (p)==4)
 
 #define SS   3
 #define MOSI 0
@@ -172,7 +172,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 	TIMER0A, /* OC0A */
 	TIMER0B, /* OC0B */
 	NOT_ON_TIMER,
-	NOT_ON_TIMER,
+	NOT_ON_TIMER, 
 	TIMER1B, /*OC1B*/
 	NOT_ON_TIMER,
 };

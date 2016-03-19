@@ -57,7 +57,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
   {
     /* Set the timer to power-up conditions so we start from a known state */
     // Ensure the timer is in the same state as power-up
-    #if (TIMER_TO_USE_FOR_TONE == 0)
+    #if (TIMER_TO_USE_FOR_TONE == 0) 
     TCCR0B = (0<<FOC0A) | (0<<FOC0B) | (0<<WGM02) | (0<<CS02) | (0<<CS01) | (0<<CS00);
     TCCR0A = (0<<COM0A1) | (0<<COM0A0) | (0<<COM0B1) | (0<<COM0B0) | (0<<WGM01) | (0<<WGM00);
     // Reset the count to zero
@@ -75,10 +75,10 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
     TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
     // Clear the Timer0 interrupt flags
     TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
-    #endif
+    #endif //TIMER_TO_USE_FOR_TONE==0
       
       
-    #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1)
+    #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1) //START OF ATTINY 85
     // Turn off Clear on Compare Match, turn off PWM A, disconnect the timer from the output pin, stop the clock
     TCCR1 = (0<<CTC1) | (0<<PWM1A) | (0<<COM1A1) | (0<<COM1A0) | (0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10);
     // Turn off PWM A, disconnect the timer from the output pin, no Force Output Compare Match, no Prescaler Reset
@@ -94,8 +94,8 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
     // Clear the Timer1 interrupt flags
     TIFR |= ((1<<OCF1A) | (1<<OCF1B) | (1<<TOV1));
       
-      
-    #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E)
+      //END OF ATTINY 85
+    #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E) //
     TCCR1A = 0;
     TCCR1B = 0;
     TCCR1C = 0;
@@ -112,7 +112,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
     TIFR |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<OCF1D));
   
   
-    #elif (TIMER_TO_USE_FOR_TONE == 1)
+    #elif (TIMER_TO_USE_FOR_TONE == 1) //Well behaved timer
     // Turn off Input Capture Noise Canceler, Input Capture Edge Select on Falling, stop the clock
     TCCR1B = (0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
     // Disconnect the timer from the output pins, Set Waveform Generation Mode to Normal
@@ -143,7 +143,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       Note: Turn off the clock first to avoid ticks and scratches.
     */	
     #if TIMER_TO_USE_FOR_TONE == 1
-	#if defined(TCCR1)
+	#if defined(TCCR1)//START OF ATTINY 85
 	sbi(TCCR1,CTC1);
     cbi(TCCR1,PWM1A);
     cbi(GTCCR,PWM1B);
@@ -317,24 +317,26 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
         }
       }
 	  #else
-	  #if defined(TCCR1)
-      uint8_t prescalarbits = 0b0001;
-	  #else
-      uint8_t prescalarbits = 0b001;
+	   #if defined(TCCR1)
+       uint8_t prescalarbits = 0b0001;
+       while (ocr > 0xff && prescalarbits < 15) {
+          prescalarbits++;
+          ocr>>=1;
+
+       }
+       OCR1C=ocr-1;
+	   #else
+        uint8_t prescalarbits = 0b001;
+	     if (ocr > 0xffff)
+        {
+         ocr /= 64;
+          prescalarbits = 0b011;
+        }
       #endif
-	  if (ocr > 0xffff)
-      {
-        ocr /= 64;
-	    #if defined(TCCR1)
-        prescalarbits = 0b0111;
-	    #else
-        prescalarbits = 0b011;
-        #endif
-      }
-      #endif
-	  ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above 
+	   ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above 
+      
       OCR1A = ocr;
-	  
+	  #endif
 	  #elif TIMER_TO_USE_FOR_TONE == 0
       uint16_t ocr = F_CPU / frequency / 2;
       uint8_t prescalarbits = 0b001;  // ck/1
@@ -361,6 +363,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       }
 	  ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above 
       OCR0A = ocr;
+
       #endif
 
       /* Does the caller want a specific duration? */
