@@ -6,7 +6,7 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7 and x8 for Arduino 1.6.x
 
 Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ , shimniok's ATTiny x41 core, and Rambo's ATtiny 1634 core. 
 
-### [Installation](Installation.md)Installation 
+### [Installation](Installation.md) 
 
 ### Grand Merger
 As of 3/17/2016, my ATTiny Modern core has been merged into this one! It is not yet available via board manager, but this is planned after further integration and validation of the merged core.
