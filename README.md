@@ -71,6 +71,7 @@ On the following chips, full master/slave I2C functionality is provided in hardw
 * ATtiny x8 (48, 88)
 
 SPI support:
+------------
 
 On the following chips, SPI functionality can be achieved with the hardware USI, using an SPI USI library. 
 * ATtiny x5 (25/45/85)
