@@ -20,9 +20,9 @@ This core supports the following processors:
 * ATtiny261, 461, 861 (probably working, lightly tested)
 * ATTiny87, 167 (probably working, lightly tested)
 * ATTiny48, 88 (probably working, lightly tested)
-* ATTiny441, 841 (With Optiboot bootloader)
-* ATTiny1634  (With Optiboot bootloader)
-* ATTiny828 (With Optiboot bootloader)
+* ATTiny441, 841 (With or without Optiboot bootloader)
+* ATTiny1634  (With or without Optiboot bootloader)
+* ATTiny828 (With or without Optiboot bootloader)
 
 **When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
 
@@ -52,16 +52,63 @@ External crystal (x41, 1634 only, in addition to above):
 * 7.37 MHz
 
 
+I2C support
+===========
+
+On the following chips, I2C functionality can be achieved with the hardware USI, using a library like TinyWireM. This library has the necessary #defines for use with these parts: https://github.com/SpenceKonde/TinyWireM.
+* ATtiny x5 (25/45/85)
+* ATtiny x4 (24/44/84)
+* ATtiny x61 (262/461/861)
+* ATtiny x7 (87/167)
+* ATtiny x313 (2313/4313)
+* ATtiny 1634
+
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. Use https://github.com/orangkucing/WireS for hardware slave functionality, or https://github.com/todbot/SoftI2CMaster for software implementation of I2C master. 
+* ATtiny 828
+* ATtiny x41 (441/841)
+
+On the following chips, full master/slave I2C functionality is provided in hardware allowing use of the normal Wire library:
+* ATtiny x8 (48, 88)
+
+SPI support:
+
+On the following chips, SPI functionality can be achieved with the hardware USI, using an SPI USI library. 
+* ATtiny x5 (25/45/85)
+* ATtiny x4 (24/44/84)
+* ATtiny x61 (262/461/861)
+* ATtiny x7 (87/167)
+* ATtiny x313 (2313/4313)
+* ATtiny 1634
+
+On the following chips, full SPI functionality is provided in hardware allowing use of the normal SPI library:
+* ATtiny 828
+* ATtiny x41 (441/841)
+* ATtiny x8 (48, 88)
+
+Serial Support
+========
+
+On the following chips, full serial (UART) support is provided in hardware, as Serial (and Serial1 for parts with two serial ports):
+* ATtiny x313 (2313/4313)
+* ATtiny x7 (87/167 - LIN support)
+* ATtiny x41 (441/841 - two UARTs)
+* ATtiny 1634 (two UARTs)
+* ATtiny 828
+
+On the following chips, no hardware serial is available, however, a built-in software serial is provided. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
+* ATtiny x5 (25/45/85)
+* ATtiny x4 (24/44/84)
+* ATtiny x61 (261/461/861)
+* ATtiny x8 (48/88)
+
+These cores are compatible with the usual SoftwareSerial library. 
+
+Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. There are two exceptions to this: the ATtiny x41 series, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v) use an external crystal or other clock source.
+
 Status
 ===========
 
-* Optiboot bootloader included, and works on the 441/841 (7.37, 8, 9.216, 11.056, 12, 14.74, 16, 18.43, and 20mhz), and 1634 (7.37, 8, 9.216, 11.056, 12, 14.74 and 16mhz), 828 (8mhz)
-* Board definitions for non-optiboot 441/841 @ 1, 4, 6, 7.37, 8, 9.216, 11.056, 12, 14.74, 16, 18.43, 20mhz, and the 1634 @1, 4, 6, 7.37, 8, 9.216, 11.056, 12, 14.74 and 16mhz, 828 @ 1, 8 mhz (it doesn't support a crystal)
 * Tone is untested on all chips. Please report any problems.
-* SPI (441/841/828), Serial (all), and Serial1 (441/841/1634) work. 
-* I2C/TWI hardware slave on 441/841/828 supported by WireS library: https://github.com/orangkucing/WireS for 441/841/828
-* I2C/TWI software master on 441/841/828 works: https://github.com/todbot/SoftI2CMaster - However, libraries must be adapted. See https://github.com/SpenceKonde/LiquidCrystal_I2C_Tiny for an example
-* USI for 1634 can be used for I2C - use this library for I2C master: https://github.com/SpenceKonde/TinyWireM  - However, libraries must be adapted. See https://github.com/SpenceKonde/LiquidCrystal_I2C_Tiny for an example
 * Optiboot without the LED blink (noLED) for 841 included; this saves 64 bytes of flash (not used by default - modify boards.txt if needed)
 * Optiboot on serial 1 for 841, 1634 included, these are postfixed with "ser1". These must be flashed manually or modify boards.txt. 
 
@@ -157,19 +204,6 @@ Except for the x5, x4, and x313 series, these are only available in surface moun
 * SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
 * SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
 
-
-
-### Serial Support
-
-The ATtiny x41 and 1634 have two hardware UARTs, Serial, and Serial1. 
-
-The ATTiny 828 has one hardware UART, Serial. 
-
-The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
-
-Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. 
-
-In addition, these cores are compatible with the usual software serial library. 
 
 Manual Installation
 ============
