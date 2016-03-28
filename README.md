@@ -6,11 +6,11 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7 and x8 for Arduino 1.6.x
 
 Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ , shimniok's ATTiny x41 core, and Rambo's ATtiny 1634 core. 
 
+### [Installation](Installation.md)Installation 
+
 ### Grand Merger
-As of 3/17/2016, my ATTiny Modern core has been merged into this one! It is not yet available via board manager, assuming everything check out okay, this will be released on board manager, and the old core will be deprecated and no longer updated. Please report any new issues. This will allow more programmers to be included without crapping up the list, as well as simplifying life for all involved. 
+As of 3/17/2016, my ATTiny Modern core has been merged into this one! It is not yet available via board manager, but this is planned after further integration and validation of the merged core.
 
-
-All references to the status of various features refer to tests conducted after the fork, and are updated as I feel comfortable declaring them working.  
 
 This core supports the following processors:
 
@@ -25,6 +25,13 @@ This core supports the following processors:
 * ATTiny828 (With or without Optiboot bootloader)
 
 **When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
+
+### Bootloader Support (ATtiny 841, 828, 1634 only)
+
+The Optiboot bootloader is included for the ATtiny 841, 1634, and 828. This runs at 57600 baud at 8mhz and slower, and  115200 baud above that. By default it uses UART0. Once the bootloader is programmed, the target can be programmed over serial; the bootloader will run after reset, just like on a normal Arduino. 
+
+The ATtiny841 and ATtiny1634 do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, the Watchdog Timer interrupt vector will always point to the start of the program, and cannot be used for other functionality. Under the hood, the bootloader rewrites the reset and WDT interrupt vectors, pointing the WDT vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse).  As a result of this, the Watchdog Timer cannot be used as a software interrupt on these parts, and attempting to do so will cause strange behavior. This does not effect the 828 (it has hardware bootloader support), nor does it effect the 1634 or 841 if they are programmed via ISP, and the watchdog timer can always still be used as a reset source. 
+
 
 ### Supported clock speeds:
 
@@ -51,7 +58,7 @@ External crystal (x41, 1634 only, in addition to above):
 * 9.216 MHz
 * 7.37 MHz
 
-** Warning ** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks); it still reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality (w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. The "stock" micros() executes equally fast at all clock speeds, and just returns wrong values with anything that 64 doesn't divide evenly by.  
+**Warning** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks); it still reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality (w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. The "stock" micros() executes equally fast at all clock speeds, and just returns wrong values with anything that 64 doesn't divide evenly by.  
 
 I2C support
 ------------
@@ -171,36 +178,13 @@ Suitable breakout boards can be purchased from my Tindie shop:
 Caveats  
 ----------
 
-* On the 1634 and 841, when using the Optiboot bootloader, the Watchdog Timer interrupt vector will always point to the start of the program, and cannot be used for other functionality. Because the 1634 and 841 do not have built-in bootloader support, this is achieved with "virtual boot" feature of Optiboot. This bootloader rewrites the reset and WDT interrupt vectors, pointing the WDT vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse). This does not effect the 828 (it has hardware bootloader support), nor does it effect the 1634 or 841 if they are programmed via ISP.
+
 * Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each batch of programming operation. This may be due to bugs in USBAsp firmware, however, people often report worse results after "upgrading". Follow this thread for a project relating to an improved USBAsp firmware: (help wanted - can anyone find the thread?)
 * At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source.
 
 
 
 
-
-Board Manager Installation
-============
-
-This core can be installed using the board manager. The board manager URL is:
-
-`http://drazzy.com/package_drazzy.com_index.json`
-
-1. File -> Preferences, enter the above URL in "Additional Board Manager URLs"
-2. Tools -> Boards -> Board Manager...
-  *If using 1.6.6, close board manager and re-open it (see below)
-3. Select ATtinyCore (Universal) and click "Install". 
-
-Due to [a bug](https://github.com/arduino/Arduino/issues/3795) in 1.6.6 of the Arduino IDE, new board manager entries are not visible the first time Board Manager is opened after adding a new board manager URL. 
-
-Manual Installation
-============
-Option 1: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
-
-Option 2: Download the github client, and sync this repo to (documents)/arduino/hardware. 
-
-
-![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
 
 
 Hardware
