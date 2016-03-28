@@ -51,9 +51,10 @@ External crystal (x41, 1634 only, in addition to above):
 * 9.216 MHz
 * 7.37 MHz
 
+** Warning ** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks); it still reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality (w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. The "stock" micros() executes equally fast at all clock speeds, and just returns wrong values with anything that 64 doesn't divide evenly by.  
 
 I2C support
-===========
+------------
 
 On the following chips, I2C functionality can be achieved with the hardware USI, using a library like TinyWireM. This library has the necessary #defines for use with these parts: https://github.com/SpenceKonde/TinyWireM.
 * ATtiny x5 (25/45/85)
@@ -87,7 +88,7 @@ On the following chips, full SPI functionality is provided in hardware allowing 
 * ATtiny x8 (48, 88)
 
 Serial Support
-========
+-------
 
 On the following chips, full serial (UART) support is provided in hardware, as Serial (and Serial1 for parts with two serial ports):
 * ATtiny x313 (2313/4313)
@@ -110,8 +111,6 @@ Status
 ===========
 
 * Tone is untested on all chips. Please report any problems.
-* Optiboot without the LED blink (noLED) for 841 included; this saves 64 bytes of flash (not used by default - modify boards.txt if needed)
-* Optiboot on serial 1 for 841, 1634 included, these are postfixed with "ser1". These must be flashed manually or modify boards.txt. 
 
 Pin Mapping
 ============
@@ -169,13 +168,13 @@ Suitable breakout boards can be purchased from my Tindie shop:
 
 828: https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
 
-Caveats spec
-============
+Caveats  
+----------
 
 * On the 1634 and 841, when using the Optiboot bootloader, the Watchdog Timer interrupt vector will always point to the start of the program, and cannot be used for other functionality. Because the 1634 and 841 do not have built-in bootloader support, this is achieved with "virtual boot" feature of Optiboot. This bootloader rewrites the reset and WDT interrupt vectors, pointing the WDT vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse). This does not effect the 828 (it has hardware bootloader support), nor does it effect the 1634 or 841 if they are programmed via ISP.
 * Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each batch of programming operation. This may be due to bugs in USBAsp firmware, however, people often report worse results after "upgrading". Follow this thread for a project relating to an improved USBAsp firmware: (help wanted - can anyone find the thread?)
-* At >4v, the speed of the internal oscillator on 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source. A future release may include an 8.1mhz internal RC @5v option, with it's own bootloader. 
-* When using weird clock frequencies (ones with a frequency (in mhz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks); it still reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality (w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For really weird clock speeds (ie, if you add your own), it will be slower still - hundreds of clock cycles - on the plus side, it still gives reasonably accurate numbers back even on exotic clock speeds, ("stock" micros() executes equally fast at all clock speeds, and just returns bogus values with anything that 64 doesn't divide evenly by) 
+* At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source.
+
 
 
 
@@ -190,21 +189,9 @@ This core can be installed using the board manager. The board manager URL is:
 1. File -> Preferences, enter the above URL in "Additional Board Manager URLs"
 2. Tools -> Boards -> Board Manager...
   *If using 1.6.6, close board manager and re-open it (see below)
-3. Select ATTinyCore (Modern) and click "Install". 
+3. Select ATtinyCore (Universal) and click "Install". 
 
 Due to [a bug](https://github.com/arduino/Arduino/issues/3795) in 1.6.6 of the Arduino IDE, new board manager entries are not visible the first time Board Manager is opened after adding a new board manager URL. 
-
-### Hardware:
-
-To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
-
-Except for the x5, x4, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
-
-* x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
-* x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
-* SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
-* SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
-
 
 Manual Installation
 ============
@@ -216,8 +203,28 @@ Option 2: Download the github client, and sync this repo to (documents)/arduino/
 ![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
 
 
+Hardware
+=========
 
-### Defines:
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
+
+Except for the x5, x4, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
+
+* x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
+* x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
+* SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+* SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+
+
+
+
+
+### Internals and advanced functionality:
+
+Optiboot without the LED blink (noLED) for 841 included; this saves 64 bytes of flash (not used by default - modify boards.txt if needed)
+
+Optiboot on serial 1 for 841, 1634 included, these are postfixed with "ser1". These must be flashed manually or modify boards.txt. 
+
 
 
 You can identify the core using the following:
