@@ -28,10 +28,9 @@ This core supports the following processors:
 
 ### Bootloader Support (ATtiny 841, 828, 1634 only)
 
-The Optiboot bootloader is included for the ATtiny 841, 1634, and 828. This runs at 57600 baud at 8mhz and slower, and  115200 baud above that. By default it uses UART0. Once the bootloader is programmed, the target can be programmed over serial; the bootloader will run after reset, just like on a normal Arduino. 
+The Optiboot bootloader is included for the ATtiny 841, 1634, and 828. This runs at 57600 baud at 8mhz and slower, and  115200 baud above that. By default it uses UART0 (bootloaders that use UART1 for devices that have that are included, prefixed with "ser1" - you must flash them manually or modify boards.txt if you wish to use them). Once the bootloader is programmed, the target can be programmed over serial; the bootloader will run after reset, just like on a normal Arduino. 
 
 The ATtiny841 and ATtiny1634 do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, the Watchdog Timer interrupt vector will always point to the start of the program, and cannot be used for other functionality. Under the hood, the bootloader rewrites the reset and WDT interrupt vectors, pointing the WDT vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse).  As a result of this, the Watchdog Timer cannot be used as a software interrupt on these parts, and attempting to do so will cause strange behavior. This does not effect the 828 (it has hardware bootloader support), nor does it effect the 1634 or 841 if they are programmed via ISP, and the watchdog timer can always still be used as a reset source. 
-
 
 ### Supported clock speeds:
 
@@ -205,9 +204,6 @@ Except for the x5, x4, and x313 series, these are only available in surface moun
 
 ### Internals and advanced functionality:
 
-Optiboot without the LED blink (noLED) for 841 included; this saves 64 bytes of flash (not used by default - modify boards.txt if needed)
-
-Optiboot on serial 1 for 841, 1634 included, these are postfixed with "ser1". These must be flashed manually or modify boards.txt. 
 
 
 
