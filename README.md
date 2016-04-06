@@ -162,41 +162,21 @@ For use with Optiboot, the following components and connections are required:
 * Diode between Reset and Vcc (band towards Vcc)
 * 0.1uf capacitor between Reset and DTR of serial adapter
 * 10k resistor between reset and Vcc
-* (optional) LED and series resistor from Arduino pin 2/PB2/physical pin 5 to ground (This is the pin optiboot flashes)
+* (optional) LED and series resistor from Arduino pin 2/PB2 (on 841) or pin 13 (on 1634/828) to ground (This is the pin optiboot flashes to let you know it's running)
 
-An example amenable to home etching can be found at http://drazzy.com/e/boards/boards.php
-
-Suitable breakout boards can be purchased from my Tindie shop:
-
-841: https://www.tindie.com/products/DrAzzy/attiny84184-breakout/ 
-
-1634: https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/
-
-828: https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
-
-Caveats  
-----------
-
-
-* Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each batch of programming operation. This may be due to bugs in USBAsp firmware, however, people often report worse results after "upgrading". Follow this thread for a project relating to an improved USBAsp firmware: (help wanted - can anyone find the thread?)
-* At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source.
-
-
-
-
-
-
-Hardware
-=========
 
 To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
 
-Except for the x5, x4, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
+Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
 
+
+841: https://www.tindie.com/products/DrAzzy/attiny84184-breakout/ 
+1634: https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/
+828: https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
 * x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
 * x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
-* SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
-* SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+* SMD/DIP or DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+* SMD or DIP x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
 
 
 
@@ -250,6 +230,15 @@ The following identify board variants (various cores have used both styles of de
 #define __AVR_ATtiny828__
 
 ```
+
+
+Caveats  
+----------
+
+
+* Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each batch of programming operation. This may be due to bugs in USBAsp firmware, however, people often report worse results after "upgrading". Follow this thread for a project relating to an improved USBAsp firmware: (help wanted - can anyone find the thread?)
+* At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source.
+
 
 
 
