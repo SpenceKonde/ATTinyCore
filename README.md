@@ -3,9 +3,6 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7 and x8 for Arduino 1.6.x
 
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-
-Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ , shimniok's ATTiny x41 core, and Rambo's ATtiny 1634 core. 
-
 ### [Installation](Installation.md) 
 
 ### Grand Merger
@@ -179,55 +176,6 @@ Except for the x5, x4, x61, and x313 series, these are only available in surface
 
 
 
-### Internals and advanced functionality:
-
-
-
-
-You can identify the core using the following:
-
-```
-
-#define ATTINY_CORE       - Attiny Core
-
-```
-
-
-These are used to identify features:
-
-```
-
-#define USE_SOFTWARE_SERIAL    (0 = hardware serial, 1 = software serial
-#define USE_SOFTWARE_SPI       (not defined if hardware spi present)
-#define HAVE_ADC               (1 = has ADC functions)
-
-```
-
-The following identify board variants (various cores have used both styles of defines, so both are provided here to maximize compatibility):
-
-```
-#define ATTINYX4 1
-#define __AVR_ATtinyX4__
-
-#define ATTINYX5 1
-#define __AVR_ATtinyX5__
-
-#define ATTINYX61 1
-#define __AVR_ATtinyX61__
-
-#define ATTINYX7 1
-#define __AVR_ATtinyX7__
-
-#define ATTINYX313 1
-#define __AVR_ATtinyX313__
-
-//no backwards compatibility options since no previously existing cores used the other convention. 
-#define __AVR_ATtinyX41__
-#define __AVR_ATtiny1634__ 
-#define __AVR_ATtiny828__
-
-```
-
 
 Caveats  
 ----------
@@ -237,5 +185,9 @@ Caveats
 * At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source.
 
 
+Acknowledgements
+-----------------
 
-
+This core is based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ 
+The ATtiny841 support is based on shimniok's ATTiny x41 core, and the 1634 support on Rambo's ATtiny 1634 core. 
+And of course - everything is based on the great work of the Arduino development team for creating the Arduino IDE and community which we all use. 
