@@ -113,11 +113,6 @@ These cores are compatible with the usual SoftwareSerial library.
 
 Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. There are two exceptions to this: the ATtiny x41 series, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v) use an external crystal or other clock source.
 
-Status
-===========
-
-* Tone is untested on all chips. Please report any problems.
-
 Pin Mapping
 ============
 
@@ -152,20 +147,22 @@ ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
 
 ```
 
+Full pin mapping diagrams are planned for a future version see #50
 
 Hardware
 ============
 
-For use with Optiboot, the following components and connections are required:
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a 
+
+
+For use with Optiboot, the following additional components and connections are required:
 * Arduino pin 9/PA1/TXD0 to RXI of serial adapter (0/PB0 on 1634)
 * Arduino pin 8/PA2/RXD0 to TXO of serial adapter (1/PA7 on 1634)
 * Diode between Reset and Vcc (band towards Vcc)
 * 0.1uf capacitor between Reset and DTR of serial adapter
-* 10k resistor between reset and Vcc
+* 10k resistor between reset and Vcc (required)
 * (optional) LED and series resistor from Arduino pin 2/PB2 (on 841) or pin 13 (on 1634/828) to ground (This is the pin optiboot flashes to let you know it's running)
 
-
-To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
 
 Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
 
