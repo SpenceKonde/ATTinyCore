@@ -158,16 +158,17 @@ For use with Optiboot, the following additional components and connections are r
 * (optional) LED and series resistor from Arduino pin 2/PB2 (on 841) or pin 13 (on 1634/828) to ground (This is the pin optiboot flashes to let you know it's running)
 
 
+
+### Buy Breakout boards
 Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
-
-
-* 841: https://www.tindie.com/products/DrAzzy/attiny84184-breakout/ 
-* 1634: https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/
-* 828: https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
-* x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
-* x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
-* SMD/DIP or DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
-* SMD or DIP x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+[Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) 
+* 841: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot/ )
+* 1634: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/) [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/ )
+* 828: [Bare boards]( https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) Assembled Boards coming 4/16
+* x61/x7 series (861/167): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) Assembled Boards coming 4/16
+* x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/ ) Assembled Boards coming 4/16
+* SMD/DIP or DIP x5 prototyping board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+* SMD or DIP x4 prototyping board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
 
 
 
