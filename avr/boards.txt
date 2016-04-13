@@ -5,12 +5,8 @@ menu.clock=Clock
 menu.bod=B.O.D.
 menu.pinmapping=Pin Mapping
 menu.INITIALIZE_SECONDARY_TIMERS=Initialize Secondary Timers
+menu.TimerClockSource=Timer 1 Clock (not implemented)
 
-
-
-menu.chip=Chip
-menu.clock=Clock
-menu.bod=B.O.D.
 attinyx41.name=ATtinyx41 
 attinyx41.upload.tool=avrdude
 attinyx41.bootloader.tool=avrdude
@@ -377,6 +373,11 @@ attinyx5.bootloader.lock_bits=0xFF
 attinyx5.build.core=tiny
 attinyx5.build.board=AVR_ATTINYX5
 attinyx5.bootloader.extended_fuses=0xFF
+attinyx5.menu.TimerClockSource.default=CPU
+attinyx5.menu.TimerClockSource.pll=64MHz
+attinyx5.menu.TimerClockSource.pll.build.extra_flags=-DPLLTIMER1
+attinyx5.menu.TimerClockSource.lowpll=32MHz
+attinyx5.menu.TimerClockSource.lowpll.build.extra_flags=-DLOWPLLTIMER1
 attinyx5.menu.chip.85=ATtiny85
 attinyx5.menu.chip.85.build.mcu=attiny85
 attinyx5.menu.chip.85.upload.maximum_size=8192
@@ -516,6 +517,11 @@ attinyx61.bootloader.unlock_bits=0x03
 attinyx61.bootloader.lock_bits=0x03
 attinyx61.build.mcu=attiny861
 attinyx61.build.core=tiny
+attinyx61.menu.TimerClockSource.default=CPU
+attinyx61.menu.TimerClockSource.pll=64MHz
+attinyx61.menu.TimerClockSource.pll.build.extra_flags=-DPLLTIMER1
+attinyx61.menu.TimerClockSource.lowpll=32MHz
+attinyx61.menu.TimerClockSource.lowpll.build.extra_flags=-DLOWPLLTIMER1
 attinyx61.menu.chip.861=ATtiny861
 attinyx61.menu.chip.861.build.mcu=attiny861
 attinyx61.menu.chip.861.upload.maximum_size=8192
