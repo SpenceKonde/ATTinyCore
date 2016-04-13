@@ -53,6 +53,7 @@ static uint8_t tone_pin = 255;
 
 void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
 {
+
   if ( tone_pin == 255 )
   {
     /* Set the timer to power-up conditions so we start from a known state */
@@ -292,7 +293,15 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       /* Set the Output Compare Register (rounding up) */
       
       #if TIMER_TO_USE_FOR_TONE == 1
-	  uint16_t ocr = F_CPU / frequency / 2;
+        #ifdef PLLTIMER1
+  uint16_t ocr = 64000000UL / frequency / 2;
+  #else
+  #ifdef LOWPLLTIMER1
+  uint16_t ocr = 32000000UL / frequency / 2;
+  #else 
+  uint16_t ocr = F_CPU / frequency / 2;
+  #endif
+  #endif
 	  #if defined(TCCR1E)
       uint8_t prescalarbits = 0b0001;
       if (ocr > 256)
@@ -317,7 +326,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
         }
       }
 	  #else
-	   #if defined(TCCR1)
+	   #if defined(TCCR1) //Start FANCY ATtiny85 code
        uint8_t prescalarbits = 0b0001;
        while (ocr > 0xff && prescalarbits < 15) {
           prescalarbits++;
