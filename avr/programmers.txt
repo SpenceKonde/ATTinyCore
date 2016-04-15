@@ -7,8 +7,8 @@ avrispmkii.name=AVRISP mkII (ATtiny)
 avrispmkii.communication=usb
 avrispmkii.protocol=stk500v2
 
-#usbtinyisp.name=USBtinyISP (ATtiny)
-#usbtinyisp.protocol=usbtiny
+usbtinyisp.name=USBtinyISP (ATtiny)
+usbtinyisp.protocol=usbtiny
 
 usbasp.name=USBasp (ATtiny)
 usbasp.communication=usb
