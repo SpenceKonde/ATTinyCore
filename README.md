@@ -1,4 +1,4 @@
-ATTiny Core - 1634, x313, x4, x41, x5, x61, x7 and x8 for Arduino 1.6.x
+ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.x
 ============
 
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -84,6 +84,7 @@ On the following chips, SPI functionality can be achieved with the hardware USI,
 
 On the following chips, full SPI functionality is provided in hardware allowing use of the normal SPI library:
 * ATtiny 828
+* ATtiny x7 (87/167) (it has both a USI and full SPI)
 * ATtiny x41 (441/841)
 * ATtiny x8 (48, 88)
 
