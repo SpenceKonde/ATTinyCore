@@ -30,17 +30,25 @@
 #define UART_SRC UCSR0C
 #define UART_SRL UBRR0L
 #define UART_UDR UDR0
-#else 
+#elif defined(UDR)
 #define UART_SRA UCSRA
 #define UART_SRB UCSRB
 #define UART_SRC UCSRC
 #define UART_SRL UBRRL
 #define UART_UDR UDR
+#else 
+#define LIN_UART
+#define UART_SRA UCSRA
+#define UART_SRB UCSRB
+#define UART_SRC UCSRC
+#define UART_SRL UBRRL
+#define UART_UDR LINDAT
 #endif
 #elif UART == 1
 #if !defined(UDR1)
 #error UART == 1, but no UART1 on device
 #endif
+#warning Using UART1
 # define UART_SRA UCSR1A
 # define UART_SRB UCSR1B
 # define UART_SRC UCSR1C
@@ -56,7 +64,7 @@
 # define UART_SRL UBRR2L
 # define UART_UDR UDR2
 #elif UART == 3
-#if !defined(UDR1)
+#if !defined(UDR3)
 #error UART == 3, but no UART3 on device
 #endif
 # define UART_SRA UCSR3A
@@ -172,6 +180,25 @@
 #define UART_RX_BIT 3
 #endif
 #endif
+
+/*------------------------------------------------------------------------ */
+#if defined(__AVR_ATtiny167__)
+/*------------------------------------------------------------------------ */
+/* LED is on B2 */
+#if !defined(LED)
+#define LED 	A3
+#endif
+#endif
+
+/*------------------------------------------------------------------------ */
+#if defined(__AVR_ATtiny87__)
+/*------------------------------------------------------------------------ */
+/* LED is on B2 */
+#if !defined(LED)
+#define LED 	A3
+#endif
+#endif
+
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny828__)

@@ -228,7 +228,64 @@ endif
 # lock it), but since the high two bits of the lock byte are
 # unused, avrdude would get confused.
 #---------------------------------------------------------------------------
-#
+
+
+
+attiny167at16: TARGET = attiny167
+attiny167at16: MCU_TARGET = attiny167
+attiny167at16: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny167at16: AVR_FREQ ?= 16000000L
+attiny167at16: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167at16: $(PROGRAM)_attiny167at16.hex
+attiny167at16: $(PROGRAM)_attiny167at16.lst
+
+
+attiny167at8: TARGET = attiny167
+attiny167at8: MCU_TARGET = attiny167
+attiny167at8: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
+attiny167at8: AVR_FREQ ?= 8000000L
+attiny167at8: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167at8: $(PROGRAM)_attiny167at8.hex
+attiny167at8: $(PROGRAM)_attiny167at8.lst
+
+
+
+attiny167at12: TARGET = attiny167
+attiny167at12: MCU_TARGET = attiny167
+attiny167at12: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny167at12: AVR_FREQ ?= 12000000L
+attiny167at12: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167at12: $(PROGRAM)_attiny167at12.hex
+attiny167at12: $(PROGRAM)_attiny167at12.lst
+
+
+attiny87at16: TARGET = attiny87
+attiny87at16: MCU_TARGET = attiny87
+attiny87at16: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny87at16: AVR_FREQ ?= 16000000L
+attiny87at16: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at16: $(PROGRAM)_attiny87at16.hex
+attiny87at16: $(PROGRAM)_attiny87at16.lst
+
+
+attiny87at8: TARGET = attiny87
+attiny87at8: MCU_TARGET = attiny87
+attiny87at8: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
+attiny87at8: AVR_FREQ ?= 8000000L
+attiny87at8: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at8: $(PROGRAM)_attiny87at8.hex
+attiny87at8: $(PROGRAM)_attiny87at8.lst
+
+
+
+attiny87at12: TARGET = attiny87
+attiny87at12: MCU_TARGET = attiny87
+attiny87at12: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny87at12: AVR_FREQ ?= 12000000L
+attiny87at12: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at12: $(PROGRAM)_attiny87at12.hex
+attiny87at12: $(PROGRAM)_attiny87at12.lst
+
 
 
 #-----------------------
@@ -242,6 +299,8 @@ attiny1634at12: AVR_FREQ ?= 12000000L
 attiny1634at12: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
 attiny1634at12: $(PROGRAM)_attiny1634at12.hex
 attiny1634at12: $(PROGRAM)_attiny1634at12.lst
+
+
 
 attiny1634at16: TARGET = attiny1634
 attiny1634at16: MCU_TARGET = attiny1634
@@ -258,6 +317,14 @@ attiny1634at8: AVR_FREQ ?= 8000000L
 attiny1634at8: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
 attiny1634at8: $(PROGRAM)_attiny1634at8.hex
 attiny1634at8: $(PROGRAM)_attiny1634at8.lst
+
+attiny1634at81: TARGET = attiny1634
+attiny1634at81: MCU_TARGET = attiny1634
+attiny1634at81: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE'  '-DBAUD_RATE=57600'
+attiny1634at81: AVR_FREQ ?= 8100000L
+attiny1634at81: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny1634at81: $(PROGRAM)_attiny1634at81.hex
+attiny1634at81: $(PROGRAM)_attiny1634at81.lst
 
 attiny1634at737: TARGET = attiny1634
 attiny1634at737: MCU_TARGET = attiny1634
@@ -431,6 +498,14 @@ attiny841at8: AVR_FREQ ?= 8000000L
 attiny841at8: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny841at8: $(PROGRAM)_attiny841at8.hex
 attiny841at8: $(PROGRAM)_attiny841at8.lst
+
+attiny841at81: TARGET = attiny841
+attiny841at81: MCU_TARGET = attiny841
+attiny841at81: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE'  '-DBAUD_RATE=57600'
+attiny841at81: AVR_FREQ ?= 8100000L
+attiny841at81: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny841at81: $(PROGRAM)_attiny841at81.hex
+attiny841at81: $(PROGRAM)_attiny841at81.lst
 #-----------------------
 # ATtiny 841, UART 1
 #-----------------------

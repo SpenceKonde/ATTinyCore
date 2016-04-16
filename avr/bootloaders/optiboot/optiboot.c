@@ -468,13 +468,22 @@ int main(void) {
   UCSRC = _BV(URSEL) | _BV(UCSZ1) | _BV(UCSZ0);  // config USART; 8N1
   UBRRL = (uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
 #else
+  #ifdef LIN_UART
+  //DDRB|=3;
+  LINCR = (1 << LSWRES); 
+  //LINBRRL = (((F_CPU * 10L / 32L / BAUD_RATE) + 5L) / 10L) - 1; 
+  LINBRRL=16;
+  LINBTR = (1 << LDISR) | (8 << LBT0); 
+  LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0); 
+  LINDAT=0;
+  #else
   UART_SRA = _BV(U2X0); //Double speed mode USART0
   UART_SRB = _BV(RXEN0) | _BV(TXEN0);
   UART_SRC = _BV(UCSZ00) | _BV(UCSZ01);
   UART_SRL = (uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
+  #endif
 #endif
 #endif
-
   // Set up watchdog to trigger after 1s
   watchdogConfig(WATCHDOG_1S);
 
@@ -492,9 +501,9 @@ int main(void) {
   /* Flash onboard LED to signal entering of bootloader */
   flash_led(LED_START_FLASHES * 2);
 #endif
-
   /* Forever loop: exits by causing WDT reset */
   for (;;) {
+  //putch('A');
     /* get character from UART */
     ch = getch();
 
@@ -651,8 +660,15 @@ int main(void) {
 
 void putch(char ch) {
 #ifndef SOFT_UART
+#ifndef LIN_UART
   while (!(UART_SRA & _BV(UDRE0)));
-  UART_UDR = ch;
+#else
+  while (!(LINSIR & _BV(LTXOK))){
+  	
+  }
+
+#endif
+UART_UDR = ch;
 #else
   __asm__ __volatile__ (
     "   com %[ch]\n" // ones complement, carry set
@@ -715,9 +731,19 @@ uint8_t getch(void) {
       "r25"
 );
 #else
+#ifndef LIN_UART
   while(!(UART_SRA & _BV(RXC0)))
+  {
     ;
+  }
+
   if (!(UART_SRA & _BV(FE0))) {
+#else
+  while(!(LINSIR & _BV(LRXOK)))
+    {;}
+ if (!(LINSIR & _BV(LFERR))) {
+#endif
+
   	  //LED_PIN |= _BV(LED);
   	  //for (;;){LED_PIN |= _BV(LED);}
       /*
@@ -808,11 +834,19 @@ void watchdogReset() {
 
 void watchdogConfig(uint8_t x) {
 #ifdef WDCE //does it have a Watchdog Change Enable?
+#ifdef WDTCSR
   WDTCSR = _BV(WDCE) | _BV(WDE);
+#else
+  WDTCR= _BV(WDCE) | _BV(WDE);
+#endif
 #else //then it must be one of those newfangled ones that use CCP
   CCP=0xD8; //so write this magic number to CCP
 #endif 
+#ifdef WDTCSR
   WDTCSR = x;
+#else
+  WDTCR= x;
+#endif
 }
 
 void appStart(uint8_t rstFlags) {
