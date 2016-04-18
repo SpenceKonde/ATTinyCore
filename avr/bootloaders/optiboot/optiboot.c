@@ -472,7 +472,7 @@ int main(void) {
   //DDRB|=3;
   LINCR = (1 << LSWRES); 
   //LINBRRL = (((F_CPU * 10L / 32L / BAUD_RATE) + 5L) / 10L) - 1; 
-  LINBRRL=16;
+  LINBRRL=(uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
   LINBTR = (1 << LDISR) | (8 << LBT0); 
   LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0); 
   LINDAT=0;
