@@ -144,6 +144,8 @@
     can then be relocated to any address (such as the bootloader
     NRWW area) at link-time. */
 
+#define BOOTLOADER_SECTION    __attribute__ ((section (".bootloader")))
+
 /* Create common bit definitions. */
 #ifdef ASB
 #define __COMMON_ASB    ASB
@@ -754,7 +756,7 @@
    USHRT_MAX is defined in <limits.h>. */ 
 
 #if defined(__AVR_ATmega161__) || defined(__AVR_ATmega163__) \
-    || defined(__AVR_ATmega323__) || defined(__AVR_ATmega162__)
+    || defined(__AVR_ATmega323__)
 
 /* Alternate: ATmega161/163/323 and 16 bit address */
 #define boot_page_fill(address, data) __boot_page_fill_alternate(address, data)

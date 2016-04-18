@@ -62,9 +62,21 @@ program the bootloader into a chip. "atmega328_isp" for the atmega328,
 for example.  These will set the fuses and lock bits as appropriate as
 well as uploading the bootloader code.
 
-The makefiles default to using a USB programmer, but you can use
-a serial programmer like ArduinoISP by changing the appropriate
-variables when you invoke make:
+ISP Targets in Version 5.0 and later:
+
+The isp targets are now built using a separate "Makefile.isp" makefile,
+which should make modification easier and more obvious.  This also fixes
+the atmega8_isp target problem mentioned below.  The default
+configuration assumes an ArduinoISP setup, but you will probably need to
+update at least the serial port, since those are different for each
+Arduino board and/or system/
+
+
+ISP Targets in Version 4.6 and earlier:
+
+The older makefiles default to using a USB programmer, but you can use a
+serial programmer like ArduinoISP by changing the appropriate variables
+when you invoke make:
 
    make ISPTOOL=stk500v1 ISPPORT=/dev/tty.usbserial-A20e1eAN  \
         ISPSPEED=-b19200 atmega328_isp

@@ -1,10 +1,12 @@
-ATTiny Core - x313, x4, x5, x61, x7 and x8 for Arduino 1.6.x
+ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.x
 ============
-Based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
 
-All references to the status of various features refer to tests conducted after the fork, and are updated as I feel comfortable declaring them working.  
+[![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-This core supports the following processors:
+### [Installation](Installation.md) 
+
+### ATtinyCore Universal
+This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino:
 
 * ATtiny2313, 4313 (Working)
 * ATtiny24, 44, 84 (Working)
@@ -12,120 +14,178 @@ This core supports the following processors:
 * ATtiny261, 461, 861 (probably working, lightly tested)
 * ATTiny87, 167 (probably working, lightly tested)
 * ATTiny48, 88 (probably working, lightly tested)
+* ATTiny441, 841 (With or without Optiboot bootloader)
+* ATTiny1634  (With or without Optiboot bootloader)
+* ATTiny828 (With or without Optiboot bootloader)
 
-**When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny Classic or ATTiny Modern from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
+**When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
+
+### Bootloader Support (ATtiny 841, 828, 1634 only)
+
+The Optiboot bootloader is included for the ATtiny 841, 1634, and 828. This runs at 57600 baud at 8mhz and slower, and  115200 baud above that. By default it uses UART0 (bootloaders that use UART1 for devices that have that are included, prefixed with "ser1" - you must flash them manually or modify boards.txt if you wish to use them). Once the bootloader is programmed, the target can be programmed over serial; the bootloader will run after reset, just like on a normal Arduino. 
+
+The ATtiny841 and ATtiny1634 do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, the Watchdog Timer interrupt vector will always point to the start of the program, and cannot be used for other functionality. Under the hood, the bootloader rewrites the reset and WDT interrupt vectors, pointing the WDT vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse).  As a result of this, the Watchdog Timer cannot be used as a software interrupt on these parts, and attempting to do so will cause strange behavior. This does not effect the 828 (it has hardware bootloader support), nor does it effect the 1634 or 841 if they are programmed via ISP, and the watchdog timer can always still be used as a reset source. 
 
 ### Supported clock speeds:
 
 Internal:
-* 8mhz
-* 1mhz
-* 16mhz (PLL clock,  x5, x61 only)
-* 4 mhz (x313 only)
-* 0.5mhz (x313 only)
-* 128khz 
+* 8 MHz
+* 1 MHz
+* 16 MHz (PLL clock,  x5, x61 only)
+* 4 MHz (x313 only)
+* 0.5 MHz (x313 only)
+* 128 kHz 
 
 External crystal (all except x8 series):
-* 20mhz
-* 16mhz
-* 12mhz
-* 8mhz
-* 6mhz
-* 4mhz
+* 20 MHz
+* 16 MHz
+* 12 MHz
+* 8 MHz
+* 6 MHz
+* 4 MHz
 
+External crystal (x41, 1634 only, in addition to above):
+* 18.43 MHz
+* 14.74 MHz
+* 11.056 MHz
+* 9.216 MHz
+* 7.37 MHz
 
-Board Manager Installation
+**Warning** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks); it still reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality (w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. The "stock" micros() executes equally fast at all clock speeds, and just returns wrong values with anything that 64 doesn't divide evenly by.  
+
+I2C support
+------------
+
+On the following chips, I2C functionality can be achieved with the hardware USI, using a library like TinyWireM. This library has the necessary #defines for use with these parts: https://github.com/SpenceKonde/TinyWireM.
+* ATtiny x5 (25/45/85)
+* ATtiny x4 (24/44/84)
+* ATtiny x61 (262/461/861)
+* ATtiny x7 (87/167)
+* ATtiny x313 (2313/4313)
+* ATtiny 1634
+
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. Use https://github.com/orangkucing/WireS for hardware slave functionality, or https://github.com/todbot/SoftI2CMaster for software implementation of I2C master. 
+* ATtiny 828
+* ATtiny x41 (441/841)
+
+On the following chips, full master/slave I2C functionality is provided in hardware allowing use of the normal Wire library:
+* ATtiny x8 (48, 88)
+
+SPI support:
+------------
+
+On the following chips, SPI functionality can be achieved with the hardware USI, using an SPI USI library. 
+* ATtiny x5 (25/45/85)
+* ATtiny x4 (24/44/84)
+* ATtiny x61 (262/461/861)
+* ATtiny x7 (87/167)
+* ATtiny x313 (2313/4313)
+* ATtiny 1634
+
+On the following chips, full SPI functionality is provided in hardware allowing use of the normal SPI library:
+* ATtiny 828
+* ATtiny x7 (87/167) (it has both a USI and full SPI)
+* ATtiny x41 (441/841)
+* ATtiny x8 (48, 88)
+
+Serial Support
+-------
+
+On the following chips, full serial (UART) support is provided in hardware, as Serial (and Serial1 for parts with two serial ports):
+* ATtiny x313 (2313/4313)
+* ATtiny x7 (87/167 - LIN support)
+* ATtiny x41 (441/841 - two UARTs)
+* ATtiny 1634 (two UARTs)
+* ATtiny 828
+
+On the following chips, no hardware serial is available, however, a built-in software serial is provided. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
+* ATtiny x5 (25/45/85)
+* ATtiny x4 (24/44/84)
+* ATtiny x61 (261/461/861)
+* ATtiny x8 (48/88)
+
+These cores are compatible with the usual SoftwareSerial library. 
+
+Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. There are two exceptions to this: the ATtiny x41 series, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v) use an external crystal or other clock source.
+
+Pin Mapping
 ============
 
-This core can be installed using the board manager. The board manager URL is:
+### ATtiny 441/841
+![x41 pin mapping](http://drazzy.com/e/img/Tiny841.jpg "Arduino Pin Mapping for ATTiny 841 and 441")
+### ATtiny 1634
+![1634 pin mapping](http://drazzy.com/e/img/Tiny1634.jpg "Arduino Pin Mapping for ATTiny 1634")
 
-`http://drazzy.com/package_drazzy.com_index.json`
-
-1. File -> Preferences, enter the above URL in "Additional Board Manager URLs"
-2. Tools -> Boards -> Board Manager...
-  *If using 1.6.6, close board manager and re-open it (see below)
-3. Select ATTinyCore (Modern) and click "Install". 
-
-Due to [a bug](https://github.com/arduino/Arduino/issues/3795) in 1.6.6 of the Arduino IDE, new board manager entries are not visible the first time Board Manager is opened after adding a new board manager URL. 
-
-### Hardware:
-
-To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. 
-
-Except for the x5, x4, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core
-
-* x61/x7 series (861/167): https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/
-* x8 series (48/88): https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/
-* SMD/DIP x5 project board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
-* SMD x4 project board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
-
-
-
-### Serial Support
-
-The ATtiny x4, x5, x61, and x8 chips do not have hardware serial. For these parts, a software serial is included. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
-
-Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. 
-
-
-
-### Defines:
-
-
-You can identify the core using the following:
+### ATtiny 828
 
 ```
 
-#define ATTINY_CORE       - Attiny Core
-#define ATTINY_CORE_NM    - No-Millis Attiny Core (probably doesn't work - I have plans to deal with this better)
+ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
+
+//             16*   26   24   14
+//          17    27   25   15
+//             PC0  PD2  PD0  PB6
+//          PC1  PD3  PD1   PB7
+//             _________________
+// 18 RX  PC2 | *               | PB5   13
+// 19 TX  PC3 |                 | PB4   12
+// 20 *   PC4 |                 | PB3   11
+//        VCC |                 | GND
+//        GND |                 | PB2   10
+// 21 *   PC5 |                 | PB1    9
+// 22 *   PC6 |                 | AVCC
+// 23     PC7 |_________________| PB0    8
+//           PA0  PA2  PA4  PA6 
+//              PA1  PA3  PA5  PA7
+//            0     2    4    6
+//               1     3    5    7
 
 ```
 
+Full pin mapping diagrams are planned for a future version see #50
 
-These are used to identify features:
-
-```
-
-#define USE_SOFTWARE_SERIAL    (0 = hardware serial, 1 = software serial
-#define USE_SOFTWARE_SPI       (not defined if hardware spi present)
-#define HAVE_ADC               (1 = has ADC functions)
-
-```
-
-The following identify board variants (various cores have used both styles of defines, so both are provided here to maximize compatibility):
-
-```
-#define ATTINYX4 1
-#define __AVR_ATtinyX4__
-
-#define ATTINYX5 1
-#define __AVR_ATtinyX5__
-
-#define ATTINYX61 1
-#define __AVR_ATtinyX61__
-
-#define ATTINYX7 1
-#define __AVR_ATtinyX7__
-
-\#define ATTINYX313 1
-#define __AVR_ATtinyX313__
-
-```
-
-Manual Installation
+Hardware
 ============
-Option 1: Download the .zip, extract, and place in the hardware folder inside arduino in your documents folder. (if there is no (documents)/arduino/hardware, create it) 
 
-Option 2: Download the github client, and sync this repo to (documents)/arduino/hardware. 
-
-
-![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a 
 
 
+For use with Optiboot, the following additional components and connections are required:
+* Arduino pin 9/PA1/TXD0 to RXI of serial adapter (0/PB0 on 1634)
+* Arduino pin 8/PA2/RXD0 to TXO of serial adapter (1/PA7 on 1634)
+* Diode between Reset and Vcc (band towards Vcc)
+* 0.1uf capacitor between Reset and DTR of serial adapter
+* 10k resistor between reset and Vcc (required)
+* (optional) LED and series resistor from Arduino pin 2/PB2 (on 841) or pin 13 (on 1634/828) to ground (This is the pin optiboot flashes to let you know it's running)
 
 
-### Bootloaders - (Untested, boards.txt entries known bad, hence commented out. See #18 )
 
-Also included for the Tiny84 and Tiny85 is a functioning Optiboot bootloader. There are two versions of this:
-> The first is one which is the normal optiboot which can be compiled using the "make attiny84.bat" and "make attiny85.bat" files. This can be hit and miss whether it works due to the fact that the internal oscillator of the ATtiny's is not well calibrated.
-> The second is optiboot but it comes with the TinyTuner sketch built in. The bootloader takes up no additional space as the tuning sketch is overwritten by any uploaded program, however it allows the oscillator to be fully calibrated before sketches are downloaded. This is the version supplied (can be recompiled with "make attiny84_tuned.bat" and "make attiny85_tuned.bat" files). See the readme in the tiny\bootloades\optiboot\ folder for more info.
+### Buy Breakout boards
+Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core. Where applicable, all of these assembled boards have the bootloader installed, and all are set to run at the advertised speed (most are available with several speed/voltage combinations). 
+* 841: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot/ )
+* 1634: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/ )
+* 828: [Bare boards]( https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) Assembled Boards coming 4/16
+* x61/x7 series (861/167): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) Assembled Boards coming 4/16
+* x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/ ) Assembled Boards coming 4/16
+* SMD/DIP or DIP x5 prototyping board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+* SMD or DIP x4 prototyping board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+
+
+
+
+
+
+Caveats  
+----------
+
+
+* Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each batch of programming operation. This may be due to bugs in USBAsp firmware, however, people often report worse results after "upgrading". Follow this thread for a project relating to an improved USBAsp firmware: (help wanted - can anyone find the thread?)
+* At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source.
+
+
+Acknowledgements
+-----------------
+
+This core is based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ 
+The ATtiny841 support is based on shimniok's ATTiny x41 core, and the 1634 support on Rambo's ATtiny 1634 core. 
+And of course - everything is based on the great work of the Arduino development team for creating the Arduino IDE and community which we all use. 
