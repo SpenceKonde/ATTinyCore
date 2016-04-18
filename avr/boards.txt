@@ -5,7 +5,7 @@ menu.clock=Clock
 menu.bod=B.O.D.
 menu.pinmapping=Pin Mapping
 menu.INITIALIZE_SECONDARY_TIMERS=Initialize Secondary Timers
-menu.TimerClockSource=Timer 1 Clock (not implemented)
+menu.TimerClockSource=Timer 1 Clock
 
 attinyx41.name=ATtinyx41 
 attinyx41.upload.tool=avrdude
