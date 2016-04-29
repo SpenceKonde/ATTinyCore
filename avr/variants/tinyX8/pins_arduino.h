@@ -34,7 +34,7 @@
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 
 #define NUM_DIGITAL_PINS            17
-#define NUM_ANALOG_INPUTS           6
+#define NUM_ANALOG_INPUTS           8
 #define analogInputToDigitalPin(p)  ((p < 6) ? (p) + 16 : -1)
 
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
@@ -69,6 +69,7 @@
 // Internal 1.1V voltage reference
 #define INTERNAL (0)
 
+#define ANALOG_PINS_SEPARATE
 
 static const uint8_t SS   = 10;
 static const uint8_t MOSI = 11;

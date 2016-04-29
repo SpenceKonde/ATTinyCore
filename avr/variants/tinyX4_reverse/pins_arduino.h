@@ -32,7 +32,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            12
-#define NUM_ANALOG_INPUTS           8
+#define NUM_ANALOG_INPUTS           64
 
 #define analogInputToDigitalPin(p)  (p)
 
@@ -47,15 +47,15 @@ static const uint8_t SDA = 6;
 static const uint8_t SCL = 4;
 
 //Ax constants should not be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-#define ANALOG_PINS_ARE_ADC_NUMBERS 1
-static const uint8_t A0 = NUM_DIGITAL_PINS;
-static const uint8_t A1 = NUM_DIGITAL_PINS+1;
-static const uint8_t A2 = NUM_DIGITAL_PINS+2;
-static const uint8_t A3 = NUM_DIGITAL_PINS+3;
-static const uint8_t A4 = NUM_DIGITAL_PINS+4;
-static const uint8_t A5 = NUM_DIGITAL_PINS+5;
-static const uint8_t A6 = NUM_DIGITAL_PINS+6;
-static const uint8_t A7 = NUM_DIGITAL_PINS+7;
+//#define ANALOG_PINS_ARE_ADC_NUMBERS 1
+static const uint8_t A0 = 0;
+static const uint8_t A1 = 1;
+static const uint8_t A2 = 2;
+static const uint8_t A3 = 3;
+static const uint8_t A4 = 4;
+static const uint8_t A5 = 5;
+static const uint8_t A6 = 6;
+static const uint8_t A7 = 7;
 
 
 //----------------------------------------------------------

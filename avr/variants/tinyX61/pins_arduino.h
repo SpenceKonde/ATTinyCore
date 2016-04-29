@@ -32,7 +32,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            16
-#define NUM_ANALOG_INPUTS           10
+#define NUM_ANALOG_INPUTS           64
 #define analogInputToDigitalPin(p)  ((p < 3) ? (p): (((p) >= 3 && (p) <= 6) ? ((p) + 7) : (((p) >= 7 && (p) <= 9) ? (12 - (p)) : -1)))
 
 #define digitalPinHasPWM(p)          ((p) == 4 || (p) == 6 || (p) == 8)
@@ -46,16 +46,17 @@ static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = NUM_DIGITAL_PINS;
-static const uint8_t A1 = NUM_DIGITAL_PINS+1;
-static const uint8_t A2 = NUM_DIGITAL_PINS+2;
-static const uint8_t A3 = NUM_DIGITAL_PINS+3;
-static const uint8_t A4 = NUM_DIGITAL_PINS+4;
-static const uint8_t A5 = NUM_DIGITAL_PINS+5;
-static const uint8_t A6 = NUM_DIGITAL_PINS+6;
-static const uint8_t A7 = NUM_DIGITAL_PINS+7;
-static const uint8_t A8 = NUM_DIGITAL_PINS+8;
-static const uint8_t A9 = NUM_DIGITAL_PINS+9;
+static const uint8_t A0 = 0;
+static const uint8_t A1 = 1;
+static const uint8_t A2 = 2;
+static const uint8_t A3 = 3;
+static const uint8_t A4 = 4;
+static const uint8_t A5 = 5;
+static const uint8_t A6 = 6;
+static const uint8_t A7 = 7;
+static const uint8_t A8 = 8;
+static const uint8_t A9 = 9;
+static const uint8_t A10 = 10;
 
 //----------------------------------------------------------
 //----------------------------------------------------------
