@@ -43,6 +43,8 @@ extern "C"{
 #define FALLING 2
 #define RISING 3
 
+#define NOT_AN_INTERRUPT -1
+
 // undefine stdlib's abs if encountered
 #ifdef abs
 #undef abs
