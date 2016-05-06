@@ -99,6 +99,8 @@ static const uint8_t A3 = 3;
 // 1 1 0 Internal 2.56V Voltage Reference without external bypass capacitor, disconnected from PB0 (AREF)(1).
 
 
+#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT))
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //----------------------------------------------------------
