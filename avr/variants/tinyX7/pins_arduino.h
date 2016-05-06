@@ -111,7 +111,7 @@ static const uint8_t A10 = 10;
 #define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (p))
 
 
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==11?1: NOT_AN_INTERRUPT)))
+#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==11?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 
