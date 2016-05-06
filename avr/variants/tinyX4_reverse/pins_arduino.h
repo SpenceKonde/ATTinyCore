@@ -111,6 +111,7 @@ static const uint8_t A7 = 7;
 #define digitalPinToPCMSK(p)    ( ((p) <= 7) ? (&PCMSK0) : (((p) <= 10) ? (&PCMSK1) : ((uint8_t *)0)) )
 #define digitalPinToPCMSKbit(p) ( ((p) <= 7) ? (p) : (10 - (p)) )
 
+#define digitalPinToInterrupt(p)  ((p) == 8 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
 
 // ATMEL ATTINY84 / ARDUINO
