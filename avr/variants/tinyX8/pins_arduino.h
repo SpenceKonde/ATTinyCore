@@ -95,7 +95,7 @@ static const uint8_t A7 = 24;
 #define digitalPinToPCMSKbit(p) (((p) <= 15) ? ((p) & 0x7) : (((p) == 16) ? (7) : (((p) <= 22) ? ((p) - 17) : ((p) - 23))))
 
 
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT)))
+#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 
