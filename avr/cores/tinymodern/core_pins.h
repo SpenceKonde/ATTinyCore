@@ -226,7 +226,7 @@
 
 #define CORE_PWM_COUNT      (4)
 
-#define digitalPinToInterrupt(p)  ((p) == 17 ? 0 : ((p)==18?1: NOT_AN_INTERRUPT)))
+#define digitalPinToInterrupt(p)  ((p) == 17 ? 0 : ((p)==18?1: NOT_AN_INTERRUPT))
 
 #endif
 #endif
