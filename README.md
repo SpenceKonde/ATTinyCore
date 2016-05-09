@@ -120,7 +120,7 @@ Pin Mapping
 ### ATtiny 441/841
 ![x41 pin mapping](http://drazzy.com/e/img/PinoutT841.jpg "Arduino Pin Mapping for ATTiny 841 and 441")
 ### ATtiny 1634
-![1634 pin mapping](http://drazzy.com/e/img/Tiny1634.jpg "Arduino Pin Mapping for ATTiny 1634")
+![1634 pin mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATTiny 1634")
 
 ### ATtiny 828
 
@@ -159,6 +159,9 @@ ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
 
 ### ATtiny 87/167
 ![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167.jpg "Arduino Pin Mapping for ATtiny x7 series")
+
+### ATtiny 2313/4313
+![x313 Pin Mapping](http://drazzy.com/e/img/PinoutT4313.jpg "Arduino Pin Mapping for ATtiny x7 series")
 
 
 Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu. 
