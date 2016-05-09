@@ -153,15 +153,15 @@ ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
 
 ### ATtiny 24/44/84
 ![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84.jpg "Arduino Pin Mapping for ATtiny x4 series")
-Both pin mappings are supported
+
 ### ATtiny 261/461/861
 ![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861.jpg "Arduino Pin Mapping for ATtiny x61 series")
 
 ### ATtiny 87/167
 ![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167.jpg "Arduino Pin Mapping for ATtiny x7 series")
-Both pin mappings are supported
 
-Note that two pin mappings are supported by various cores. My core, available from https://github.com/SpenceKonde/ATTinyCore/ allows you to select the desired pinmapping from a submenu. 
+
+Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu. 
 
 Full pin mapping diagrams are planned for a future version see #50
 
