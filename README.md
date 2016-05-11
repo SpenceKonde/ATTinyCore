@@ -152,7 +152,7 @@ ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
 ![x5 pin mapping](http://drazzy.com/e/img/PinoutT85.png "Arduino Pin Mapping for ATtiny x5 series")
 
 ### ATtiny 24/44/84
-![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84..png "Arduino Pin Mapping for ATtiny x4 series")
+![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84.png "Arduino Pin Mapping for ATtiny x4 series")
 
 ### ATtiny 261/461/861
 ![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861.png "Arduino Pin Mapping for ATtiny x61 series")
