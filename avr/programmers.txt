@@ -2,13 +2,16 @@
 avrisp.name=AVR ISP (ATtiny)
 avrisp.communication=serial
 avrisp.protocol=stk500v1
+avrisp.program.tool=avrdude
 
 avrispmkii.name=AVRISP mkII (ATtiny)
 avrispmkii.communication=usb
 avrispmkii.protocol=stk500v2
+avrispmkii.program.tool=avrdude
 
 usbtinyisp.name=USBtinyISP (ATtiny)
 usbtinyisp.protocol=usbtiny
+usbtinyisp.program.tool=avrdude
 
 usbasp.name=USBasp (ATtiny)
 usbasp.communication=usb
