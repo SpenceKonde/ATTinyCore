@@ -629,6 +629,14 @@ attiny828at8: LDSECTIONS  = -Wl,--section-start=.text=0x1E00 -Wl,--section-start
 attiny828at8: $(PROGRAM)_attiny828at8.hex
 attiny828at8: $(PROGRAM)_attiny828at8.lst
 
+
+attiny828at8_5v: TARGET = attiny828
+attiny828at8_5v: MCU_TARGET = attiny828
+attiny828at8_5v: CFLAGS += $(COMMON_OPTIONS) '-DBAUD_RATE=57600'
+attiny828at8_5v: AVR_FREQ ?= 8200000L
+attiny828at8_5v: LDSECTIONS  = -Wl,--section-start=.text=0x1E00 -Wl,--section-start=.version=0x1ffe
+attiny828at8_5v: $(PROGRAM)_attiny828at8_5v.hex
+attiny828at8_5v: $(PROGRAM)_attiny828at8_5v.lst
 # Test platforms
 # Virtual boot block test
 virboot328: TARGET = atmega328

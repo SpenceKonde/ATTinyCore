@@ -34,7 +34,7 @@
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 
 #define NUM_DIGITAL_PINS            17
-#define NUM_ANALOG_INPUTS           6
+#define NUM_ANALOG_INPUTS           8
 #define analogInputToDigitalPin(p)  ((p < 6) ? (p) + 16 : -1)
 
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
@@ -69,6 +69,7 @@
 // Internal 1.1V voltage reference
 #define INTERNAL (0)
 
+#define ANALOG_PINS_SEPARATE
 
 static const uint8_t SS   = 10;
 static const uint8_t MOSI = 11;
@@ -92,6 +93,9 @@ static const uint8_t A7 = 24;
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 22) ? 1 : 3)))
 #define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 15) ? (&PCMSK0) : (((p) <= 22) ? (&PCMSK1) : (((p) <= 26) ? (&PCMSK3) : ((uint8_t *)0)))))
 #define digitalPinToPCMSKbit(p) (((p) <= 15) ? ((p) & 0x7) : (((p) == 16) ? (7) : (((p) <= 22) ? ((p) - 17) : ((p) - 23))))
+
+
+#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 

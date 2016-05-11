@@ -64,6 +64,8 @@ extern "C"{
 #define FALLING 2
 #define RISING 3
 
+#define NOT_AN_INTERRUPT -1
+
 /* rmv or fix
 #if defined(__AVR_ATmega1280__)
 #define INTERNAL1V1 2

@@ -32,7 +32,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            12
-#define NUM_ANALOG_INPUTS           8
+#define NUM_ANALOG_INPUTS           64
 #define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
 
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
@@ -46,14 +46,14 @@ static const uint8_t SDA = 4;
 static const uint8_t SCL = 6;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = NUM_DIGITAL_PINS;
-static const uint8_t A1 = NUM_DIGITAL_PINS+1;
-static const uint8_t A2 = NUM_DIGITAL_PINS+2;
-static const uint8_t A3 = NUM_DIGITAL_PINS+3;
-static const uint8_t A4 = NUM_DIGITAL_PINS+4;
-static const uint8_t A5 = NUM_DIGITAL_PINS+5;
-static const uint8_t A6 = NUM_DIGITAL_PINS+6;
-static const uint8_t A7 = NUM_DIGITAL_PINS+7;
+static const uint8_t A0 = 0;
+static const uint8_t A1 = 1;
+static const uint8_t A2 = 2;
+static const uint8_t A3 = 3;
+static const uint8_t A4 = 4;
+static const uint8_t A5 = 5;
+static const uint8_t A6 = 6;
+static const uint8_t A7 = 7;
 
 
 //----------------------------------------------------------
@@ -109,6 +109,7 @@ static const uint8_t A7 = NUM_DIGITAL_PINS+7;
 #define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
 
+#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
 
 // ATMEL ATTINY84 / ARDUINO

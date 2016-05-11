@@ -72,6 +72,9 @@ static const uint8_t SCL = 16;
 #define digitalPinToPCMSK(p)    (((p) >= 9 && (p) <= 16) ? (&PCMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCMSKbit(p) ((p) - 9)
 
+
+#define digitalPinToInterrupt(p)  ((p) == 5 ? 0 : ((p)==4?1: NOT_AN_INTERRUPT))
+
 #ifdef ARDUINO_MAIN
 // On the Arduino board, digital pins are also used
 // for the analog output (software PWM).  Analog input

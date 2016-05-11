@@ -32,7 +32,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            6
-#define NUM_ANALOG_INPUTS           4
+#define NUM_ANALOG_INPUTS           16
 #define analogInputToDigitalPin(p)  (((p) == 0) ? 5 : (((p) == 1) ? 2 : (((p) == 2) ? 4 :(((p) == 3) ? 3 : -1))))
 
 #define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1 || (p)==4)
@@ -46,10 +46,10 @@ static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = NUM_DIGITAL_PINS;
-static const uint8_t A1 = NUM_DIGITAL_PINS+1;
-static const uint8_t A2 = NUM_DIGITAL_PINS+2;
-static const uint8_t A3 = NUM_DIGITAL_PINS+3;
+static const uint8_t A0 = 0;
+static const uint8_t A1 = 1;
+static const uint8_t A2 = 2;
+static const uint8_t A3 = 3;
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -98,6 +98,8 @@ static const uint8_t A3 = NUM_DIGITAL_PINS+3;
 // An alternative for INTERNAL2V56 is (6) ...
 // 1 1 0 Internal 2.56V Voltage Reference without external bypass capacitor, disconnected from PB0 (AREF)(1).
 
+
+#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 
 //----------------------------------------------------------
 //----------------------------------------------------------

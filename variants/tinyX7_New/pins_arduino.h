@@ -31,7 +31,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            16
-#define NUM_ANALOG_INPUTS           11
+#define NUM_ANALOG_INPUTS           32
 #define analogInputToDigitalPin(p)  (p<8?p:p+5)
 
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 11 || (p) == 14)
@@ -45,17 +45,17 @@
 #define SCL 5
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = NUM_DIGITAL_PINS;
-static const uint8_t A1 = NUM_DIGITAL_PINS+1;
-static const uint8_t A2 = NUM_DIGITAL_PINS+2;
-static const uint8_t A3 = NUM_DIGITAL_PINS+3;
-static const uint8_t A4 = NUM_DIGITAL_PINS+4;
-static const uint8_t A5 = NUM_DIGITAL_PINS+5;
-static const uint8_t A6 = NUM_DIGITAL_PINS+6;
-static const uint8_t A7 = NUM_DIGITAL_PINS+7;
-static const uint8_t A8 = NUM_DIGITAL_PINS+8;
-static const uint8_t A9 = NUM_DIGITAL_PINS+9;
-static const uint8_t A10 = NUM_DIGITAL_PINS+10;
+static const uint8_t A0 = 0;
+static const uint8_t A1 = 1;
+static const uint8_t A2 = 2;
+static const uint8_t A3 = 3;
+static const uint8_t A4 = 4;
+static const uint8_t A5 = 5;
+static const uint8_t A6 = 6;
+static const uint8_t A7 = 7;
+static const uint8_t A8 = 8;
+static const uint8_t A9 = 9;
+static const uint8_t A10 = 10;
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -106,10 +106,11 @@ static const uint8_t A10 = NUM_DIGITAL_PINS+10;
 
 
 #define digitalPinToPCICR(p)    (&PCICR)
-#define digitalPinToPCICRbit(p) (((p) >= 8 ? 0 : 1)
+#define digitalPinToPCICRbit(p) ((p) >= 8 ? 0 : 1)
 #define digitalPinToPCMSK(p)    ((p) >= 8 ?(&PCMSK0) : (&PCMSK1))
 #define digitalPinToPCMSKbit(p) (p&15)
 
+#define digitalPinToInterrupt(p)  ((p) == 14 ? 0 : ((p)==4?1: NOT_AN_INTERRUPT))
 #ifdef ARDUINO_MAIN
 
 // On the Arduino board, digital pins are also used
