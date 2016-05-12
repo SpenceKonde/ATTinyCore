@@ -553,19 +553,21 @@ void initToneTimer(void)
   #endif
 #ifdef PLLTIMER1
 if (!PLLCSR) {
-PLLCSR = (1<<PLLE)
+PLLCSR = (1<<PLLE);
 while (!(PLLCSR&1)) {
 	; //wait for lock
 }
 PLLCSR |= PCKE;
+}
 #endif
 #ifdef LOWPLLTIMER1
 if (!PLLCSR) {
-PLLCSR = (1<<LSM) | (1<<PLLE)
+PLLCSR = (1<<LSM) | (1<<PLLE);
 while (!(PLLCSR&1)) {
 	; //wait for lock
 }
 PLLCSR |= PCKE;
+}
 #endif
   #if INITIALIZE_SECONDARY_TIMERS
   // Prepare the timer for PWM
