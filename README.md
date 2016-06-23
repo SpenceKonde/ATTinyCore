@@ -118,7 +118,7 @@ Pin Mapping
 ============
 
 ### ATtiny 441/841
-![x41 pin mapping](http://drazzy.com/e/img/PinoutT841.jpg "Arduino Pin Mapping for ATTiny 841 and 441")
+![x41 pin mapping](http://drazzy.com/e/products/img/PinoutT841_fixed.png "Arduino Pin Mapping for ATTiny 841 and 441")
 ### ATtiny 1634
 ![1634 pin mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATTiny 1634")
 
