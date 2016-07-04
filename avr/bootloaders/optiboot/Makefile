@@ -499,13 +499,13 @@ attiny841at8: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start
 attiny841at8: $(PROGRAM)_attiny841at8.hex
 attiny841at8: $(PROGRAM)_attiny841at8.lst
 
-attiny841at81: TARGET = attiny841
-attiny841at81: MCU_TARGET = attiny841
-attiny841at81: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE'  '-DBAUD_RATE=57600'
-attiny841at81: AVR_FREQ ?= 8100000L
-attiny841at81: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
-attiny841at81: $(PROGRAM)_attiny841at81.hex
-attiny841at81: $(PROGRAM)_attiny841at81.lst
+attiny841at8_5v: TARGET = attiny841
+attiny841at8_5v: MCU_TARGET = attiny841
+attiny841at8_5v: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE'  '-DBAUD_RATE=57600'
+attiny841at8_5v: AVR_FREQ ?= 8200000L
+attiny841at8_5v: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny841at8_5v: $(PROGRAM)_attiny841at8_5v.hex
+attiny841at8_5v: $(PROGRAM)_attiny841at8_5v.lst
 #-----------------------
 # ATtiny 841, UART 1
 #-----------------------
