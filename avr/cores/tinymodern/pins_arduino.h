@@ -105,7 +105,7 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
         : (((p) <= 10) ? (s3)  /*  9  - 10  ==>  C5 - C4 */  \
         : (((p) <= 13) ? (s4)  /*  11 - 13  ==>  C2 - C0 */  \
         : (((p) <= 16) ? (s5)  /*  14 - 16  ==>  B3 - B1 */  \
-        : (s6))))) \
+        : (s6)))))) \
         : (s6))
 //                                                   s1 b     s2 A     s3 C     s3 C     s5 B
 #define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
