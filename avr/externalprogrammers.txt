@@ -1,5 +1,5 @@
 
-avrisp.name=AVR ISP (ATtiny)
+avrisp.name=AVR ISP
 avrisp.communication=serial
 avrisp.protocol=stk500v1
 avrisp.program.tool=avrdude
@@ -8,15 +8,14 @@ avrisp.program.tool=avrdude
 avrisp.program.extra_params=-P{serial.port}
 
 
-avrispmkii.name=AVRISP mkII (ATtiny)
+avrispmkii.name=AVRISP mkII
 avrispmkii.communication=usb
 avrispmkii.protocol=stk500v2
 avrispmkii.program.protocol=stk500v2
 avrispmkii.program.tool=avrdude
 avrispmkii.program.extra_params=-Pusb
 
-usbtinyisp.name=USBtinyISP (ATtiny)
-usbtinyisp.protocol=usbtiny
+usbtinyisp.name=USBtinyISP
 usbtinyisp.program.tool=avrdude
 usbtinyisp.program.extra_params=
 
@@ -25,12 +24,12 @@ usbasp.communication=usb
 usbasp.protocol=usbasp
 usbasp.program.tool=avrdude
 
-parallel.name=Parallel Programmer (ATtiny)
+parallel.name=Parallel Programmer
 parallel.protocol=dapa
 parallel.force=true
 parallel.delay=200
 
-arduinoasisp.name=Arduino/Leo as ISP (ATtiny )
+arduinoasisp.name=Arduino/Leo as ISP
 arduinoasisp.communication=serial
 arduinoasisp.protocol=arduino
 arduinoasisp.speed=19200
@@ -39,7 +38,7 @@ arduinoasisp.program.speed=19200
 arduinoasisp.program.tool=avrdude
 arduinoasisp.program.extra_params=-P{serial.port} -b{program.speed}
 
-usbtinyisp2.name=USBtinyISP SLOW (ATtiny)
+usbtinyisp2.name=USBtinyISP SLOW
 usbtinyisp2.protocol=usbtiny
 usbtinyisp2.program.tool=avrdude
 usbtinyisp2.program.speed=8
