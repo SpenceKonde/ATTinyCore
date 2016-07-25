@@ -18,7 +18,7 @@ This core supports the following processors - essentially every ATtiny processor
 * ATTiny1634  (With or without Optiboot bootloader)
 * ATTiny828 (With or without Optiboot bootloader)
 
-**When uploading sketches via ISP, due to limitations of the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most parts.**
+**When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
 ### Bootloader Support (ATtiny 841, 828, 1634, 87, 167 only)
 
