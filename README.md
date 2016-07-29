@@ -3,8 +3,7 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.x
 
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-### WARNING: DO NOT DO BOARD MANAGER INSTALL ON ARDUINO 1.6.10 - IT WILL BREAK YOUR AVR BOARDS. 
-Per1234 is investigating this issue - it impacts many third party cores. A fix is expected soon, but in the meantime, I recommend you use version 1.6.9 of the IDE if using this core.  
+### All Eclipse compatibility is gone right now due to changes needed to keep a bug in 1.6.10 of the official IDE from breaking the official boards when installing a custom core. 
 See the discussion here: https://github.com/SpenceKonde/ReleaseScripts/pull/9
 
 ### [Installation](Installation.md) 
