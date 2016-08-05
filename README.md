@@ -1,3 +1,5 @@
+### THIS IS A TEST BRANCH FOR DEVELOPMENT AND TESTING WITH LINK TIME OPTIMIZATION ENABLED. 
+
 ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.x
 ============
 
