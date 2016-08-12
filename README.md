@@ -150,28 +150,31 @@ ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
 //               1     3    5    7
 
 ```
+![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny 828")
 
 ### ATtiny 25/45/85
-![x5 pin mapping](http://drazzy.com/e/img/PinoutT85.png "Arduino Pin Mapping for ATtiny x5 series")
+![x5 pin mapping](http://drazzy.com/e/img/PinoutT85.png "Arduino Pin Mapping for ATtiny 85/45/25")
 
 ### ATtiny 24/44/84
-![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84.png "Arduino Pin Mapping for ATtiny x4 series")
+![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84.png "Arduino Pin Mapping for ATtiny 84/44/24")
 
 ### ATtiny 261/461/861
-![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861.png "Arduino Pin Mapping for ATtiny x61 series")
+![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861.png "Arduino Pin Mapping for ATtiny 861/461/261")
 
 ### ATtiny 87/167
-![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167.jpg "Arduino Pin Mapping for ATtiny x7 series")
+![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167.jpg "Arduino Pin Mapping for ATtiny 167/87")
+
+### ATtiny 88/48
+![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88.jpg "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
+![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88-PU.jpg "Arduino Pin Mapping for ATtiny 88/48 in DIP")
 
 ### ATtiny 2313/4313
-![x313 Pin Mapping](http://drazzy.com/e/img/PinoutT4313.jpg "Arduino Pin Mapping for ATtiny x7 series")
+![x313 Pin Mapping](http://drazzy.com/e/img/PinoutT4313.jpg "Arduino Pin Mapping for ATtiny 4313/2313")
 
 
 Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu. 
 
-Full pin mapping diagrams are planned for a future version see #50
-
-Note that analog pin numbers (ex A0 ) cannot be used with digitalWrite()/digitalRead()/analogWrite() - all pins have a digital pin number. Analog pin number should only be used for analogRead()
+Note that analog pin numbers (ex A0 ) cannot be used with digitalWrite()/digitalRead()/analogWrite() - all pins have a digital pin number. Analog pin number should only be used for analogRead() - this represents a departure from the behavior used in the official AVR boards. This enables us to expose the advanced ADC functionality available on some of the ATtiny parts with minimal impact, as clearly written code is unlikely to fall afoul of this anyway. 
 
 Hardware
 ============
@@ -191,8 +194,10 @@ For use with Optiboot, the following additional components and connections are r
 
 ### Buy Breakout boards
 Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core. Where applicable, all of these assembled boards have the bootloader installed, and all are set to run at the advertised speed (most are available with several speed/voltage combinations). 
-* 841: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot/ )
+* 841: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot/ ) 
+![x41 pin mapping](http://drazzy.com/e/products/img/AZB-4_assembled.jpg "ATtiny841 breakout picture")
 * 1634: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/ )
+![x41 pin mapping](http://drazzy.com/e/products/img/AZB-34_assembled.jpg "ATtiny1634 breakout picture")
 * 828: [Bare boards]( https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) Assembled Boards coming 4/16
 * x61/x7 series (861/167): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) Assembled Boards coming 4/16
 * x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/ ) Assembled Boards coming 4/16
