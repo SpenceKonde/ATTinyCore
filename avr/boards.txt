@@ -8,7 +8,7 @@ menu.pinmapping=Pin Mapping
 menu.INITIALIZE_SECONDARY_TIMERS=Initialize Secondary Timers
 menu.TimerClockSource=Timer 1 Clock
 
-attinyx41.name=ATtinyx41 
+attinyx41.name=ATtiny841/441 (w/out bootloader)
 attinyx41.upload.tool=avrdude
 attinyx41.bootloader.tool=avrdude
 attinyx41.bootloader.unlock_bits=0xFF
@@ -168,7 +168,7 @@ attiny841opti.menu.bod.4v3.bootloader.extended_fuses=0xEC
 attiny841opti.menu.bod.4v3.bootloader.high_fuses=0xD4
 
 
-attiny1634.name=ATtiny1634
+attiny1634.name=ATtiny1634 (w/out bootloader)
 attiny1634.upload.maximum_size=16384
 attiny1634.upload.maximum_data_size=1024
 attiny1634.upload.tool=avrdude
@@ -304,7 +304,7 @@ attiny1634opti.menu.bod.4v3.bootloader.extended_fuses=0x1C
 attiny1634opti.menu.bod.4v3.bootloader.high_fuses=0xD4
 
 
-attiny828.name=ATtiny828
+attiny828.name=ATtiny828(w/out bootloader)
 attiny828.upload.maximum_size=8192
 attiny828.upload.maximum_data_size=512
 attiny828.upload.tool=avrdude
@@ -367,7 +367,7 @@ attiny828opti.menu.bod.4v3.bootloader.extended_fuses=0x5A
 attiny828opti.menu.bod.4v3.bootloader.high_fuses=0xD4
 
 
-attinyx5.name=ATtiny x5 series
+attinyx5.name=ATtiny 85/45/25
 attinyx5.upload.maximum_size=8192
 attinyx5.upload.maximum_data_size=512
 attinyx5.upload.tool=avrdude
@@ -444,7 +444,7 @@ attinyx5.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx5.menu.bod.4v3.bootloader.high_fuses=0xD4
 attinyx5.build.variant=tinyX5
 
-attinyx4.name=ATtiny x4 series
+attinyx4.name=ATtiny 84/44/24
 attinyx4.upload.maximum_size=8192
 attinyx4.upload.maximum_data_size=512
 attinyx4.upload.tool=avrdude
@@ -511,7 +511,7 @@ attinyx4.menu.pinmapping.old.build.variant=tinyX4
 attinyx4.menu.pinmapping.new=Clockwise (like damellis core)
 attinyx4.menu.pinmapping.new.build.variant=tinyX4_reverse
 
-attinyx61.name=ATtiny x61 series
+attinyx61.name=ATtiny 861/461/261
 attinyx61.upload.maximum_size=8192
 attinyx61.upload.maximum_data_size=512
 attinyx61.upload.tool=avrdude
@@ -676,7 +676,7 @@ attiny87opti.menu.pinmapping.new.build.variant=tinyX7_New
 attiny87opti.menu.pinmapping.old=Old style (SCL on 13)
 attiny87opti.menu.pinmapping.old.build.variant=tinyX7
 
-attinyx7.name=ATtiny x7 series
+attinyx7.name=ATtiny 87/167 (w/out bootloader)
 attinyx7.upload.maximum_data_size=512
 attinyx7.upload.tool=avrdude
 attinyx7.build.board=AVR_ATTINYX7
@@ -737,7 +737,7 @@ attinyx7.menu.pinmapping.new.build.variant=tinyX7_New
 attinyx7.menu.pinmapping.old=Old style (SCL on 13)
 attinyx7.menu.pinmapping.old.build.variant=tinyX7
 
-attinyx8.name=ATtiny x8 series
+attinyx8.name=ATtiny 48/88
 attinyx8.upload.tool=avrdude
 attinyx8.build.board=AVR_ATTINYX8
 attinyx8.bootloader.tool=avrdude
@@ -771,7 +771,7 @@ attinyx8.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx8.menu.bod.4v3.bootloader.high_fuses=0xD4
 attinyx8.build.variant=tinyX8
 
-attinyx313.name=ATtiny x313 series
+attinyx313.name=ATtiny 4313/2313
 attinyx313.upload.maximum_size=4096
 attinyx313.upload.maximum_data_size=256
 attinyx313.upload.tool=avrdude
