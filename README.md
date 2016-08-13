@@ -126,31 +126,7 @@ Pin Mapping
 ![1634 pin mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATTiny 1634")
 
 ### ATtiny 828
-
-```
-
-ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
-
-//             16*   26   24   14
-//          17    27   25   15
-//             PC0  PD2  PD0  PB6
-//          PC1  PD3  PD1   PB7
-//             _________________
-// 18 RX  PC2 | *               | PB5   13
-// 19 TX  PC3 |                 | PB4   12
-// 20 *   PC4 |                 | PB3   11
-//        VCC |                 | GND
-//        GND |                 | PB2   10
-// 21 *   PC5 |                 | PB1    9
-// 22 *   PC6 |                 | AVCC
-// 23     PC7 |_________________| PB0    8
-//           PA0  PA2  PA4  PA6 
-//              PA1  PA3  PA5  PA7
-//            0     2    4    6
-//               1     3    5    7
-
-```
-![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny 828")
+![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828x.jpg "Arduino Pin Mapping for ATtiny 828")
 
 ### ATtiny 25/45/85
 ![x5 pin mapping](http://drazzy.com/e/img/PinoutT85.png "Arduino Pin Mapping for ATtiny 85/45/25")
@@ -165,7 +141,7 @@ ATtiny 828 pin mapping. All pin numbers match ADC and PCINT numbers
 ![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167.jpg "Arduino Pin Mapping for ATtiny 167/87")
 
 ### ATtiny 88/48
-![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88.jpg "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
+![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88x.jpg "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
 ![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88-PU.jpg "Arduino Pin Mapping for ATtiny 88/48 in DIP")
 
 ### ATtiny 2313/4313
