@@ -12,9 +12,9 @@ See the discussion here: https://github.com/SpenceKonde/ReleaseScripts/pull/9
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino:
 
 * ATtiny2313, 4313 (Working)
-* ATtiny24, 44, 84 (Working)
-* ATtiny25, 45, 85 (Working)
-* ATtiny261, 461, 861 (probably working, lightly tested)
+* [ATtiny24, 44, 84](extras/ATtiny_x4.md) (Working)
+* [ATtiny25, 45, 85](extras/ATtiny_x4.md)
+* [ATtiny261, 461, 861](extras/ATtiny_x4.md) (probably working, lightly tested)
 * ATTiny87, 167 (with or without Optiboot bootloader. Lightly tested)
 * ATTiny48, 88 (probably working, lightly tested)
 * ATTiny441, 841 (With or without Optiboot bootloader)
