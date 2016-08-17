@@ -42,6 +42,11 @@
 #define MISO 1
 #define SCK  2
 
+#define USI_DDR_PORT DDRB
+#define USCK_DD_PIN DDB2
+#define DO_DD_PIN DDB1
+#define DI_DD_PIN DDB0
+
 static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
