@@ -7,6 +7,7 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.x
 See the discussion here: https://github.com/SpenceKonde/ReleaseScripts/pull/9
 
 ### [Installation](Installation.md) 
+### [Basic Wiring](Wiring.md) 
 
 ### ATtinyCore Universal
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino:
