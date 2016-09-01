@@ -115,28 +115,28 @@ analogReference constants for ATmega168.  These are NOT correct for the ATtiny84
 #define DEFAULT (0)
 
 // 1 0 0 External Voltage Reference at PA0 (AREF) pin, Internal Voltage Reference turned off.
-#define EXTERNAL (%100)
+#define EXTERNAL (0x4)
 
 // 0 0 1 Internal 1.1V Voltage Reference. AREF disconnected
-#define INTERNAL (%001)
+#define INTERNAL (0x01)
 #define INTERNAL1V1 INTERNAL
 
 // 1 0 1 Internal 1.1V Voltage Reference with external bypass capacitor at PA0 (AREF) pin(1).
-#define INTERNAL_AREF (%101)
+#define INTERNAL_AREF (0x05)
 #define INTERNAL1V1_AREF INTERNAL_AREF
 
 
 // 0 1 0 Internal 2.2V Voltage Reference. AREF disconnected
-#define INTERNAL2V2 (%010)
+#define INTERNAL2V2 (0x02)
 
 // 1 1 0 Internal 2.2V Voltage Reference with external bypass capacitor at PA0 (AREF) pin(1).
-#define INTERNAL2V2_AREF (%110)
+#define INTERNAL2V2_AREF (0x06)
 
 // 0 1 1 Internal 4.096V Voltage Reference. AREF disconnected
-#define INTERNAL4V096 (%011)
+#define INTERNAL4V096 (0x03)
 
 // 1 1 1 Internal 4.096 Voltage Reference with external bypass capacitor at PA0 (AREF) pin(1).
-#define INTERNAL4V096_AREF (%111)
+#define INTERNAL4V096_AREF (0x07)
 
 #endif
 
