@@ -116,6 +116,12 @@ ADC Support
 -------
 All of the supported parts except for the x313 series have an Analog to Digital converter on chip. Single-ended ADC inputs can be read using the pin number or the Ax constant. In addition to the single-ended input channels marked on the pinout diagrams, many also support differential ADC input channels. To use these, simply call analogRead() with the appropriate ADC channel number, as if it were a pin. To get the ADC channel number, refer to the datasheet - it is listed in the Register Description section of the chapter on the ADC, under the ADMUX register.
 
+B. O. D. (brown out detect) Configuration option
+--------
+All chips have a menu to select the level of Brown-out Detection, if any, to use. Brown-out detection continuously monitors Vcc, and holds the chip in reset state (BOR) if the applied voltage is below a certain threshold. This is a good idea with slow-rising power supplies or where it is expected that the supply voltage could droop below the required operating voltage for the frequency it is running at (see the speed grade specification for the part you're using) - without BOD enabled, this can put the chip into a hung state until manually reset. However, BOD increases power consumption slightly, and hence may be inappropriate in low power applications. The selected BOD option is configured by the fuses, and as such these settings are applied upon burning bootloader, not upon sketch upload. 
+
+
+
 
 
 Pin Mapping
