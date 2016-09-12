@@ -1,6 +1,9 @@
 ### ATtiny 87/167
 ![x7 pin mapping](http://drazzy.com/e/img/PinoutT167.png "Arduino Pin Mapping for ATtiny x7 series")
 
+### Optiboot Bootloader
+This core includes an Optiboot bootloader for the ATtiny87 and 167. In order to work on the x7 series, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application. As a consequence, the watchdog timer interrupt cannot be used if you're using the Optiboot bootloader (Watchdog reset still works), and the (sketch name)_bootloader.hex file generated via sketch -> Export Compiled Binary won't work. These issues are only relevant when programming through the bootloader. 
+
 ### Tone Support
 Tone() uses timer1. For best results, use pin 11, and 14, as this will use the hardware output compare to generate the square wave instead of using interrupts.
 
