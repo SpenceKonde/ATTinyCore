@@ -2,6 +2,9 @@
 ### ATtiny 828
 ![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny 828")
 
+### Bootloader Support
+The ATtiny828 has hardware bootloader support, and an Optiboot bootloader is included for the ATtiny828. This functionas at 57600 on the hardware serial port; the bootloader is 512b in size leaving 7680b available for user code. Virtual Boot is not used, so there are no restrictions on use of the watchdog timer. Note the issues below involving the clock speed, which may make use of the bootloader difficult in some conditions. As always, the 828 may be used without the bootloader by programming it over ISP. 
+
 ### Clock options
 The ATtiny 828, in the interest of lowering costs, does not provide support for using an external crystal as a clock source, only the internal oscillator (at ~8 or ~1mhz) or an external *clock* source. Note that using an external clock source is not an option in the board drop-down menus, so you cannot set it that way with "burn bootloader" from within the IDE - you must do it manually (this is to prevent new users from accidentally bricking their parts). 
 
