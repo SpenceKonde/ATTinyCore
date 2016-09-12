@@ -12,15 +12,15 @@ See the discussion here: https://github.com/SpenceKonde/ReleaseScripts/pull/9
 ### ATtinyCore Universal
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino:
 
-* ATtiny2313, 4313
+* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md)
 * [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md)
 * [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md)
 * [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) 
-* ATTiny87, 167 (with or without Optiboot bootloader)
-* ATTiny48, 88 
+* [ATTiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot bootloader)
+* [ATTiny48, 88](avr/extras/ATtiny_x8.md)
 * ATTiny441, 841 (With or without Optiboot bootloader)
 * ATTiny1634  (With or without Optiboot bootloader)
-* ATTiny828 (With or without Optiboot bootloader)
+* [ATTiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
 
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
