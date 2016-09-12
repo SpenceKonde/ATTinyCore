@@ -1,6 +1,6 @@
 
-### ATtiny 828
-![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny 828")
+### ATtiny 1634
+![828 Pin Mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at 115200 baud for 12mhz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 15744b available for user code. In order to work on the 1634, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application. As a consequence, the watchdog timer interrupt cannot be used if you're using the Optiboot bootloader (Watchdog reset still works), and the (sketch name)_bootloader.hex file generated via sketch -> Export Compiled Binary won't work. These issues are only relevant when programming through the bootloader. A version of the bootloader that operates on Serial1 is included in the bootloaders folder, though you will have to program it manually or modify boards.txt to use it. 
