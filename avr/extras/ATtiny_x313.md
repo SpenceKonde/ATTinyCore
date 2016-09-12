@@ -14,6 +14,6 @@ There is no hardware I2C peripheral. The USI can be used to provide I2C support 
 There is no hardware SPI peripheral. The USI can be used to provide SPI support with one of the TinySPI libraries
 
 ### UART (Serial) Support
-There is one full hardware Serial port, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. 
+There is one full hardware Serial port, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small. 
 
 ### There is no ADC
