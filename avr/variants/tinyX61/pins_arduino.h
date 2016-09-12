@@ -105,8 +105,9 @@ static const uint8_t A10 = 10;
 #define INTERNAL1V1 INTERNAL
 // 1 1 1 Internal 2.56V Voltage Reference with external bypass capacitor at PB0 (AREF) pin(1).
 #define INTERNAL2V56 (7)
-// An alternative for INTERNAL2V56 is (6) ...
 // 1 1 0 Internal 2.56V Voltage Reference without external bypass capacitor, disconnected from PB0 (AREF)(1).
+#define INTERNAL2V56_NO_CAP (6)
+#define INTERNAL2V56NOBP INTERNAL2V56_NO_CAP
 
 
 //----------------------------------------------------------
