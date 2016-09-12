@@ -96,6 +96,8 @@ static const uint8_t A10 = 10;
 #define EXTERNAL (1)
 // Internal 1.1V voltage reference
 #define INTERNAL (2)
+#define INTERNAL1V1 INTERNAL
+#define INTERNAL2V56 (7)
 
 
 //----------------------------------------------------------
