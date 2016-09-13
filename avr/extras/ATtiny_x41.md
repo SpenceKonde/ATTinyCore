@@ -18,11 +18,3 @@ There is hardware SPI support. Use the normal SPI module.
 
 ### UART (Serial) Support
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation. 
-
-### ADC Reference options
-Note that when using the Internal 1.1v reference, you must not apply an external voltage to AREF pin - this sometimes appears to work, but other times results in unexpected ADC readings. 
-
-* DEFAULT: Vcc
-* EXTERNAL: External voltage applied to AREF pin
-* INTERNAL1V1: Internal 1.1v reference
-* INTERNAL: synonym for INTERNAL1V1
