@@ -40,7 +40,7 @@ Internal:
 * 0.5 MHz (x313 only)
 * 128 kHz 
 
-External crystal (all except x8 series):
+External crystal (all except 828 and x8 series):
 * 20 MHz
 * 16 MHz
 * 12 MHz
