@@ -2,6 +2,18 @@
 ### ATtiny 441/841
 ![x41 Pin Mapping](http://drazzy.com/e/img/PinoutT841.jpg "Arduino Pin Mapping for ATtiny x41")
 
+ Specifications |  .
+------------ | -------------
+Flash (program memory)   | 4096b / 8192b ( 7552b with bootloader)
+RAM  | 256/512 bytes
+EEPROM | 256/512 bytes
+Bootloader | Yes, Optiboot w/Virtual Boot 
+GPIO Pins | 11
+ADC Channels | 12 (including the one on reset), many differential channels
+PWM Channels | 6
+Interfaces | 2x UART, SPI, slave I2C
+Clock options | Internal 1/8mhz, external crystal or clock up to 16mhz
+
 The ATtiny x41 series is a more advanced version of the ATtiny 84. It is pin compatible, though available only in surface mount packages, and offers an incredible array of peripherals, whilest costing only slightly more than an ATtiny 84. 
 
 ### Optiboot Bootloader
