@@ -32,7 +32,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            16
-#define NUM_ANALOG_INPUTS           10
+#define NUM_ANALOG_INPUTS           64
 #define analogInputToDigitalPin(p)  ((p < 3) ? (p): (((p) >= 3 && (p) <= 6) ? ((p) + 7) : (((p) >= 7 && (p) <= 9) ? (12 - (p)) : -1)))
 
 #define digitalPinHasPWM(p)          ((p) == 4 || (p) == 6 || (p) == 8)
@@ -42,20 +42,26 @@
 #define MISO 8
 #define SCK  7
 
+#define USI_DDR_PORT DDRB
+#define USCK_DD_PIN DDB2
+#define DO_DD_PIN DDB0
+#define DI_DD_PIN DDB1
+
 static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = NUM_DIGITAL_PINS;
-static const uint8_t A1 = NUM_DIGITAL_PINS+1;
-static const uint8_t A2 = NUM_DIGITAL_PINS+2;
-static const uint8_t A3 = NUM_DIGITAL_PINS+3;
-static const uint8_t A4 = NUM_DIGITAL_PINS+4;
-static const uint8_t A5 = NUM_DIGITAL_PINS+5;
-static const uint8_t A6 = NUM_DIGITAL_PINS+6;
-static const uint8_t A7 = NUM_DIGITAL_PINS+7;
-static const uint8_t A8 = NUM_DIGITAL_PINS+8;
-static const uint8_t A9 = NUM_DIGITAL_PINS+9;
+static const uint8_t A0 = 0;
+static const uint8_t A1 = 1;
+static const uint8_t A2 = 2;
+static const uint8_t A3 = 3;
+static const uint8_t A4 = 4;
+static const uint8_t A5 = 5;
+static const uint8_t A6 = 6;
+static const uint8_t A7 = 7;
+static const uint8_t A8 = 8;
+static const uint8_t A9 = 9;
+static const uint8_t A10 = 10;
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -99,8 +105,9 @@ static const uint8_t A9 = NUM_DIGITAL_PINS+9;
 #define INTERNAL1V1 INTERNAL
 // 1 1 1 Internal 2.56V Voltage Reference with external bypass capacitor at PB0 (AREF) pin(1).
 #define INTERNAL2V56 (7)
-// An alternative for INTERNAL2V56 is (6) ...
 // 1 1 0 Internal 2.56V Voltage Reference without external bypass capacitor, disconnected from PB0 (AREF)(1).
+#define INTERNAL2V56_NO_CAP (6)
+#define INTERNAL2V56NOBP INTERNAL2V56_NO_CAP
 
 
 //----------------------------------------------------------
@@ -114,6 +121,9 @@ static const uint8_t A9 = NUM_DIGITAL_PINS+9;
 #define digitalPinToPCICRbit(p) ((((p) >= 0 && (p) <= 2) || ((p) >= 10 && (p) <= 14)) ? 4 : 5)
 #define digitalPinToPCMSK(p)    ((((p) >= 0 && (p) <= 2) || ((p) >= 10 && (p) <= 14)) ? (&PCMSK0) : ((((p) >= 3 && (p) <= 9) || ((p) == 15)) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p) (((p) >= 0 && (p) <= 2) ? (p) :(((p) >= 10 && (p) <= 13) ? ((p) - 6) : (((p) == 14) ? (3) : (((p) >= 3 && (p) <= 9) ? (9 - (p)) : (7)))))
+
+
+#define digitalPinToInterrupt(p)  ((p) == 3 ? 0 : ((p)==2?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 

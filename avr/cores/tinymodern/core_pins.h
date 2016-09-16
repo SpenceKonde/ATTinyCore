@@ -59,7 +59,7 @@
 #define CORE_ANALOG_LAST      (CORE_ANALOG_FIRST+CORE_ANALOG_COUNT-1)
 
 #define CORE_INT0_PIN  PIN_B1
-
+#define digitalPinToInterrupt(p)  ((p) == 1 ? 0 : NOT_AN_INTERRUPT)
 // TODO: ATtiny841 Datasheet Table 12-7, TOCCn pins can be assigned various OCnX. Rationale for these choices is that - TOCC0/1 are the primary pins for UART0, while TOCC3/4 are shared with UART1. So might as well make them the least desirable timer. 
 #define CORE_OC0A_PIN  PIN_A4 // TOCC3 
 #define CORE_OC0B_PIN  PIN_A5 // TOCC4 
@@ -156,6 +156,7 @@
 
 #define CORE_PWM_COUNT      (4)
 
+#define digitalPinToInterrupt(p)  ((p) == 11 ? 0 : NOT_AN_INTERRUPT)
 
 #endif
 
@@ -225,6 +226,7 @@
 
 #define CORE_PWM_COUNT      (4)
 
+#define digitalPinToInterrupt(p)  ((p) == 17 ? 0 : ((p)==18?1: NOT_AN_INTERRUPT))
 
 #endif
 #endif

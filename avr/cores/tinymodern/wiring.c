@@ -166,6 +166,10 @@ unsigned long micros()
   return (m<<3)+(m<<1)+(m>>2)+(m>>3);
 #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) //for 9mhz, this is a little off, but for 9.21, it's very close!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU==8200000L)
+  m = (m<<8)+t;
+  return (m<<2)+(m<<1)+m-(m>>2); //7.75 
+  
 #else
   //return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
   //return ((m << 8) + t) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond();

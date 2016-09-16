@@ -98,6 +98,10 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 #define PORT_B_ID 2
 #define PORT_C_ID 3
 
+#define MISO 15
+#define MOSI 16
+#define SCK 12
+
 #define digitalPinToPCX(p,s1,s2,s3,s4,s5,s6) \
     (((p) >= 0) \
         ? (((p) <   1) ? (s1)  /*  0  -  0  ==>  B0      */  \
@@ -105,7 +109,7 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
         : (((p) <= 10) ? (s3)  /*  9  - 10  ==>  C5 - C4 */  \
         : (((p) <= 13) ? (s4)  /*  11 - 13  ==>  C2 - C0 */  \
         : (((p) <= 16) ? (s5)  /*  14 - 16  ==>  B3 - B1 */  \
-        : (s6))))) \
+        : (s6)))))) \
         : (s6))
 //                                                   s1 b     s2 A     s3 C     s3 C     s5 B
 #define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
@@ -122,7 +126,10 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 #define PORT_B_ID 2
 #define PORT_C_ID 3
 #define PORT_D_ID 4
-
+#define SS 16
+#define MISO 25
+#define MOSI 24
+#define SCK 27
 
 
 #define digitalPinToPCICR(p)    (&PCICR)

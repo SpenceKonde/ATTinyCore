@@ -19,6 +19,11 @@
 #define MISO 15
 #define SCK  16
 
+#define USI_DDR_PORT DDRB
+#define USCK_DD_PIN DDB7
+#define DO_DD_PIN DDB6
+#define DI_DD_PIN DDB5
+
 static const uint8_t SDA = 14;
 static const uint8_t SCL = 16;
 
@@ -71,6 +76,9 @@ static const uint8_t SCL = 16;
 #define digitalPinToPCICRbit(p) (5)
 #define digitalPinToPCMSK(p)    (((p) >= 9 && (p) <= 16) ? (&PCMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCMSKbit(p) ((p) - 9)
+
+
+#define digitalPinToInterrupt(p)  ((p) == 5 ? 0 : ((p)==4?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 // On the Arduino board, digital pins are also used
