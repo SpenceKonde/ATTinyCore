@@ -2,7 +2,7 @@
 ### ATtiny 1634
 ![1634 Pin Mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
- Specifications | 
+ Specifications |  .
 ------------ | -------------
 Flash (program memory)   | 16768b ( 15744b with bootloader)
 RAM  | 1024 bytes
