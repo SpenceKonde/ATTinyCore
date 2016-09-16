@@ -2,14 +2,22 @@
 ### ATtiny 1634
 ![1634 Pin Mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
-First Header | Second Header
+ Specifications | 
 ------------ | -------------
-Flash Size   | Content from cell 2
-Content in the first column | Content in the second column
+Flash (program memory)   | 16768b ( 15744b with bootloader)
+RAM  | 1024 bytes
+EEPROM | 256 bytes
+Bootloader | Yes, Optiboot w/Virtual Boot 
+GPIO Pins | 17
+ADC Channels | 12
+PWM Channels | 4
+Interfaces | 2x UART, USI, slave I2C
+Clock options | Internal 1/8mhz, external crystal or clock up to 12mhz
+
 
 
 ### Optiboot Bootloader
-This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at 115200 baud for 12mhz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 15744b available for user code. In order to work on the 1634, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application. As a consequence, the watchdog timer interrupt cannot be used if you're using the Optiboot bootloader (Watchdog reset still works), and the (sketch name)_bootloader.hex file generated via sketch -> Export Compiled Binary won't work. These issues are only relevant when programming through the bootloader. A version of the bootloader that operates on Serial1 is included in the bootloaders folder, though you will have to program it manually or modify boards.txt to use it. 
+This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at 115200 baud for 12mhz or higher, or 57600 when running at lower speeds. In order to work on the 1634, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application. As a consequence, the watchdog timer interrupt cannot be used if you're using the Optiboot bootloader (Watchdog reset still works), and the (sketch name)_bootloader.hex file generated via sketch -> Export Compiled Binary won't work. These issues are only relevant when programming through the bootloader. A version of the bootloader that operates on Serial1 is included in the bootloaders folder, though you will have to program it manually or modify boards.txt to use it. 
 
 ### Internal Oscillator voltage dependence
 The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the slightly more expensive 1634R. +/- 2% is good enough for serial communication. However, this spec is only valid below 4v - above 4v, the oscillator runs significantly faster; enough so that serial communication does not work. This would interfere with uploads using the bootloader - to work around this, a version of Optiboot is included built assuming the slightly higher operating frequency; this will be used if you select the >4.0v operating voltage prior to doing Burn Bootloader. It is recommended to use a crystal when using the serial ports for this reason. 
@@ -30,3 +38,14 @@ Note that when using the Internal 1.1v reference, you must not apply an external
 * EXTERNAL: External voltage applied to AREF pin
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
+
+### Overclocking
+Experience has shown that the ATTiny1634, operating at 5v and room temperature, will typically function at 16mhz without issue, although this is outside of the manufacturer's specification. 
+
+### Purchasing ATTiny1634 Boards
+I sell ATtiny1634 boards through my Tindie store - your purchases support the continued development of this core. 
+
+![Picture of ATTiny1634 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2015-06-21T05:40:17.284Z-T1634AMain3.png.855x570_q85_pad_rcrop.png)
+###[Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/)
+###[Bare Boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/)
+
