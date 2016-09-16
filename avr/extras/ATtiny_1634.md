@@ -2,7 +2,7 @@
 ### ATtiny 1634
 ![1634 Pin Mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
-
+First Header | Second Header
 ------------ | -------------
 Flash Size   | Content from cell 2
 Content in the first column | Content in the second column
