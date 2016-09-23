@@ -32,7 +32,7 @@ There is hardware SPI support. Use the normal SPI module.
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation. 
 
 ### Purchasing ATTiny841 Boards
-I (Spence Konde / Dr. Azzy) sell ATtiny1634 boards through my Tindie store - your purchases support the continued development of this core. 
+I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core. 
 
 ![Picture of ATTiny841 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2015-06-16T05:30:56.533Z-T841RA_Assembled.png.855x570_q85_pad_rcrop.png)
 ###[Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot-assembled/)
