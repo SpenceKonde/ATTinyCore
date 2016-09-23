@@ -178,15 +178,13 @@ For use with Optiboot, the following additional components and connections are r
 ### Buy Breakout boards
 Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core. Where applicable, all of these assembled boards have the bootloader installed, and all are set to run at the advertised speed (most are available with several speed/voltage combinations). 
 * 841: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot/ )
-![x41 pin mapping](http://drazzy.com/e/products/img/AZB-4_assembled.jpg "ATtiny841 breakout picture")
 * 1634: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/ )
-![x41 pin mapping](http://drazzy.com/e/products/img/AZB-34_assembled.jpg "ATtiny1634 breakout picture")
 * 828: [Bare boards]( https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/ )
 * x61 series (861/461/261): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
 * x7 series (167/87): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
 * x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/ ) [Assembled Boards] ( https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/ )
-* SMD/DIP or DIP x5 prototyping board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
-* SMD or DIP x4 prototyping board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
+* SMD/DIP or DIP ATtiny 85 prototyping board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
+* SMD or DIP ATtiny 84 prototyping board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
 
 
 
