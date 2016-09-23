@@ -38,7 +38,8 @@ Despite having 28 ADC input channels, the 828 only has the two basic reference o
 * DEFAULT: Vcc
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
-* 
+
+
 ### Purchasing ATTiny828 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your purchases support the continued development of this core. 
 
