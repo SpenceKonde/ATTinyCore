@@ -2,6 +2,18 @@
 ### ATtiny 828
 ![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny 828")
 
+ Specifications |  .
+------------ | -------------
+Flash (program memory)   | 8192b ( 7680b with bootloader)
+RAM  | 512 bytes
+EEPROM | 512 bytes
+Bootloader | Yes, Optiboot
+GPIO Pins | 27
+ADC Channels | 28 (including the one on reset), many differential channels
+PWM Channels | 4
+Interfaces | UART, SPI, slave I2C
+Clock options | Internal 1/8mhz, external clock (no crystal) up to 20mhz
+
 ### Bootloader Support
 The ATtiny828 has hardware bootloader support, and an Optiboot bootloader is included for the ATtiny828. This functionas at 57600 on the hardware serial port; the bootloader is 512b in size leaving 7680b available for user code. Virtual Boot is not used, so there are no restrictions on use of the watchdog timer. Note the issues below involving the clock speed, which may make use of the bootloader difficult in some conditions. As always, the 828 may be used without the bootloader by programming it over ISP. 
 
@@ -26,3 +38,10 @@ Despite having 28 ADC input channels, the 828 only has the two basic reference o
 * DEFAULT: Vcc
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
+* 
+### Purchasing ATTiny828 Boards
+I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your purchases support the continued development of this core. 
+
+![Picture of ATTiny828 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2016-05-18T04:57:39.963Z-AZB-8_V2_Asy.png.855x570_q85_pad_rcrop.png)
+###[Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
+###[Bare Boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/)
