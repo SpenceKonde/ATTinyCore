@@ -1,6 +1,18 @@
 ### ATtiny 87/167
 ![x7 pin mapping](http://drazzy.com/e/img/PinoutT167.png "Arduino Pin Mapping for ATtiny x7 series")
 
+ Specifications |  .
+------------ | -------------
+Flash (program memory)   | 8096b/16768b ( 7552b/15744b with bootloader)
+RAM  | 512 bytes
+EEPROM | 512 bytes
+Bootloader | Yes, Optiboot w/Virtual Boot 
+GPIO Pins | 15
+ADC Channels | 11
+PWM Channels | 3
+Interfaces | LIN/UART, USI, SPI
+Clock options | Internal 1/8mhz, external crystal or clock up to 12mhz
+
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on the hardware UART/LIN port at 115200 baud for 12 or 16mhz clock speed, and 57600 when running at 8mhz. In order to work on the x7 series, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application. As a consequence, the watchdog timer interrupt cannot be used if you're using the Optiboot bootloader (Watchdog reset still works), and the (sketch name)_bootloader.hex file generated via sketch -> Export Compiled Binary won't work. These issues are only relevant when programming through the bootloader. 
 
