@@ -25,3 +25,10 @@ There is one full hardware Serial port with LIN support, named Serial. It works 
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
 * INTERNAL2V56: Internal 2.56v
+
+### Purchasing ATTiny167 Boards
+I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. 
+
+![Picture of ATTiny167 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2016-04-19T01:35:24.770Z-AZB7_Asy.png.855x570_q85_pad_rcrop.png)
+###[Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
+###[Bare Boards](https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/)
