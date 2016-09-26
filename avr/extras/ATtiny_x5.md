@@ -2,6 +2,20 @@
 ### ATtiny 25/45/85
 ![x5 pin mapping](http://drazzy.com/e/img/PinoutT85.png "Arduino Pin Mapping for ATtiny x5 series")
 
+
+ Specifications |  .
+------------ | -------------
+Flash (program memory)   | 2048b/4096b/8192b
+RAM  | 128/256/512 bytes
+EEPROM | 128/256/512 bytes
+Bootloader | No
+GPIO Pins | 5
+ADC Channels | 4 (including the one on reset)
+PWM Channels | 3
+Interfaces | USI, high speed timer
+Clock options | Internal 1/8mhz, Internal PLL at 16mhz, external crystal or clock up to 20mhz
+
+
 ### PLL Clock
 The ATtiny x5 series parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64mhz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16mhz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
 
