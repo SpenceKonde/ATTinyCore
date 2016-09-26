@@ -2,6 +2,18 @@
 ### ATtiny 261/461/861
 ![x61 pin mapping](http://drazzy.com/e/img/PinoutT861.png "Arduino Pin Mapping for ATtiny x61 series")
 
+Specifications |  .
+------------ | -------------
+Flash (program memory)   | 2048b/4096b/8192b
+RAM  | 128/256/512 bytes
+EEPROM | 128/256/512 bytes
+Bootloader | No
+GPIO Pins | 15
+ADC Channels | 11 (including the one on reset)
+PWM Channels | 3
+Interfaces | USI, high speed timer
+Clock options | Internal 1/8mhz, Internal PLL at 16mhz, external crystal or clock up to 20mhz
+
 The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control. To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32 
 
 ### PLL Clock
