@@ -2,6 +2,18 @@
 ### ATtiny 24/44/84
 ![x4 pin mapping](http://drazzy.com/e/img/PinoutT84.png "Arduino Pin Mapping for ATtiny x4 series")
 
+ Specifications |  .
+------------ | -------------
+Flash (program memory)   | 2048b/4096b/8192b
+RAM  | 128/256/512 bytes
+EEPROM | 128/256/512 bytes
+Bootloader | No
+GPIO Pins | 11
+ADC Channels | 12 (including the one on reset), many differential channels
+PWM Channels | 4
+Interfaces | USI
+Clock options | Internal 1/8mhz, external crystal or clock up to 20mhz
+
 Two pinouts are available - this provides compatibility with cores which use either layout. 
 
 ### Tone Support
