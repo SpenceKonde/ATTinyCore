@@ -1,6 +1,18 @@
 ### ATtiny 2313/4313
 ![x4 pin mapping](http://drazzy.com/e/img/PinoutT4313.png "Arduino Pin Mapping for ATtiny x313 series")
 
+ Specifications |  .
+------------ | -------------
+Flash (program memory)   | 2048b/4096b
+RAM  | 128/256 bytes
+EEPROM | 128/256 bytes
+Bootloader | No
+GPIO Pins | 17
+ADC Channels | None
+PWM Channels | 3
+Interfaces | USI
+Clock options | Internal 0.5/1/4/8mhz, external crystal or clock up to 20mhz
+
 ### Tone Support
 Tone() uses timer1. For best results, use pin 12, and 13, as this will use the hardware output compare to generate the square wave instead of using interrupts. In order to use Tone(), you must select Initialize Secondard Timers: Yes
 
