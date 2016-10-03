@@ -63,33 +63,33 @@
 const uint8_t PROGMEM port_to_mode_PGM[] = 
 {
 	NOT_A_PORT,
-	&DDRA,
-	&DDRB,
-	&DDRC,
+	(uint_8t) &DDRA,
+	(uint_8t) &DDRB,
+	(uint_8t) &DDRC,
 };
 
 const uint8_t PROGMEM port_to_output_PGM[] = 
 {
 	NOT_A_PORT,
-	&PORTA,
-	&PORTB,
-	&PORTC,
+	(uint_8t) &PORTA,
+	(uint_8t) &PORTB,
+	(uint_8t) &PORTC,
 };
 
 const uint8_t PROGMEM port_to_pullup_PGM[] = 
 {
 	NOT_A_PORT,
-	&PUEA,
-	&PUEB,
-	&PUEC,
+	(uint_8t) &PUEA,
+	(uint_8t) &PUEB,
+	(uint_8t) &PUEC,
 };
 
 const uint8_t PROGMEM port_to_input_PGM[] = 
 {
 	NOT_A_PORT,
-	&PINA,
-	&PINB,
-	&PINC,
+	(uint_8t) &PINA,
+	(uint_8t) &PINB,
+	(uint_8t) &PINC,
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
