@@ -65,7 +65,7 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 
 #define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
 
-#if defined(defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__)
+#if defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__)
 #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
 #define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_output_PGM + (P))) )
 #define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_input_PGM + (P))) )
@@ -91,12 +91,12 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define SCK     6
 
 // use ternaries for this to save space. 
-#define digitalPinToPort(P) ( P==11?2:(p<3?2:1))
-#define portOutputRegister(P) (P==1?PORTA:(P?PORTB:NOT_A_PORT))
-#define portInputRegister(P)  (P==1?PINA:(P?PINB:NOT_A_PORT ))
-#define portModeRegister(P)   (P==1?DDRA:(P?DDRB:NOT_A_PORT ))
-#define portPcMaskRegister(P) (P==1?PCMSK0:(P?PCMSK2:NOT_A_PORT ))
-#define portPullupRegister(P) (P==1?PUEA:(P?PUEB:NOT_A_PORT ))
+#define digitalPinToPort(P) (P==11?2:(P<3?2:1))
+#define portOutputRegister(P) (P==1?&PORTA:(P?&PORTB:NOT_A_PORT))
+#define portInputRegister(P)  (P==1?&PINA:(P?&PINB:NOT_A_PORT ))
+#define portModeRegister(P)   (P==1?&DDRA:(P?&DDRB:NOT_A_PORT ))
+#define portPcMaskRegister(P) (P==1?&PCMSK0:(P?&PCMSK2:NOT_A_PORT ))
+#define portPullupRegister(P) (P==1?&PUEA:(P?&PUEB:NOT_A_PORT ))
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
