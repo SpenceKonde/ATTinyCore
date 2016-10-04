@@ -67,11 +67,11 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 
 #if defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__)
 #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
-#define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_output_PGM + (P))) )
-#define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_input_PGM + (P))) )
-#define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_mode_PGM + (P))) )
-#define portPcMaskRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
-#define portPullupRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pullup_PGM + (P))) )
+#define portOutputRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_output_PGM + (P))) )
+#define portInputRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_input_PGM + (P))) )
+#define portModeRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_mode_PGM + (P))) )
+#define portPcMaskRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
+#define portPullupRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_pullup_PGM + (P))) )
 extern const uint8_t PROGMEM port_to_mode_PGM[];
 extern const uint8_t PROGMEM port_to_input_PGM[];
 extern const uint8_t PROGMEM port_to_output_PGM[];
