@@ -63,33 +63,33 @@
 const uint8_t PROGMEM port_to_mode_PGM[] = 
 {
 	NOT_A_PORT,
-	(uint_8t) &DDRA,
-	(uint_8t) &DDRB,
-	(uint_8t) &DDRC,
+	&DDRA,
+	&DDRB,
+	&DDRC
 };
 
 const uint8_t PROGMEM port_to_output_PGM[] = 
 {
 	NOT_A_PORT,
-	(uint_8t) &PORTA,
-	(uint_8t) &PORTB,
-	(uint_8t) &PORTC,
+	&PORTA,
+	&PORTB,
+	&PORTC
 };
 
 const uint8_t PROGMEM port_to_pullup_PGM[] = 
 {
 	NOT_A_PORT,
-	(uint_8t) &PUEA,
-	(uint_8t) &PUEB,
-	(uint_8t) &PUEC,
+	&PUEA,
+	&PUEB,
+	&PUEC
 };
 
 const uint8_t PROGMEM port_to_input_PGM[] = 
 {
 	NOT_A_PORT,
-	(uint_8t) &PINA,
-	(uint_8t) &PINB,
-	(uint_8t) &PINC,
+	&PINA,
+	&PINB,
+	&PINC
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
@@ -178,7 +178,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-
+/*
 const uint8_t PROGMEM port_to_mode_PGM[] = 
 {
   NOT_A_PORT,
@@ -216,7 +216,7 @@ const uint8_t PROGMEM port_to_pcmask_PGM[] =
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
 {
-  PORT_B_ID, /* 0 */
+  PORT_B_ID, //0
   PORT_B_ID,
   PORT_B_ID,
   PORT_A_ID,
@@ -224,12 +224,12 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PORT_A_ID,
   PORT_A_ID,
   PORT_A_ID,
-  PORT_A_ID, /* 8 */
+  PORT_A_ID, //8
   PORT_A_ID,
   PORT_A_ID,
   PORT_B_ID,
 };
-
+*/
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
 {
   _BV(0), /* 0, port B */
