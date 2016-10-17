@@ -63,12 +63,13 @@ void analogReference(uint8_t mode)
 
 int analogRead(uint8_t pin)
 {
-  #if defined( NUM_DIGITAL_PINS ) && !defined(ANALOG_PINS_SEPARATE)
-  if ( pin >= NUM_DIGITAL_PINS ) pin -= NUM_DIGITAL_PINS; // allow for channel or pin numbers
-  #endif
+	
+  // #if defined( NUM_DIGITAL_PINS ) && !defined(ANALOG_PINS_SEPARATE)
+  //if ( pin >= NUM_DIGITAL_PINS ) pin -= NUM_DIGITAL_PINS; // allow for channel or pin numbers
+  //#endif
   
   // fix? Validate pin?
-  if(pin >= NUM_ANALOG_INPUTS) return 0; //Not a valid pin.
+  //if(pin >= NUM_ANALOG_INPUTS) return 0; //Not a valid pin.
   #ifndef ADCSRA
   return digitalRead(analogInputToDigitalPin(pin)) ? 1023 : 0; //No ADC, so read as a digital pin instead.
   #endif
