@@ -6,6 +6,8 @@
 #define __AVR_ATtinyX313__ //recommended
 #define USE_SOFTWARE_SPI 1
 
+#define LED_BUILTIN (13) 
+
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            18

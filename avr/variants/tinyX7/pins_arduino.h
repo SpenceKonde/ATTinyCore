@@ -56,6 +56,7 @@ static const uint8_t A7 = 7;
 static const uint8_t A8 = 8;
 static const uint8_t A9 = 9;
 static const uint8_t A10 = 10;
+#define LED_BUILTIN (4)
 
 //----------------------------------------------------------
 //----------------------------------------------------------

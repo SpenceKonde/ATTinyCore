@@ -56,6 +56,15 @@ static const uint8_t A1 = 1;
 static const uint8_t A2 = 2;
 static const uint8_t A3 = 3;
 
+#define PIN_B0  ( 0)
+#define PIN_B1  ( 1)
+#define PIN_B2  ( 2)
+#define PIN_B3  ( 3)
+#define PIN_B4  ( 4)
+#define PIN_B5  ( 5)
+
+#define LED_BUILTIN  ( 0)
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
