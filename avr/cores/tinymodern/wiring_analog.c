@@ -44,7 +44,7 @@ void analogReference(uint8_t mode)
   analog_reference = mode;
 }
 
-int analogRead(uint8_t pin)
+int analogRead(int8_t pin)
 {
   #if defined( CORE_ANALOG_FIRST )
     if ( pin >= CORE_ANALOG_FIRST ) pin -= CORE_ANALOG_FIRST; // allow for channel or pin numbers
