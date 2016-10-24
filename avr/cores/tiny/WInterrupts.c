@@ -35,7 +35,7 @@
 
 #include "wiring_private.h"
 
-volatile static voidFuncPtr intFunc[NUMBER_EXTERNAL_INTERRUPTS];
+static volatile voidFuncPtr intFunc[NUMBER_EXTERNAL_INTERRUPTS];
 
 #if defined( MCUCR ) && ! defined( EICRA )
   #define EICRA MCUCR
