@@ -43,6 +43,11 @@
 #define MISO 5
 #define SCK  4
 
+#define USI_DDR_PORT DDRA
+#define USCK_DD_PIN DDA4
+#define DO_DD_PIN DDA5
+#define DI_DD_PIN DDA6
+
 static const uint8_t SDA = 6;
 static const uint8_t SCL = 4;
 
@@ -56,7 +61,19 @@ static const uint8_t A4 = 4;
 static const uint8_t A5 = 5;
 static const uint8_t A6 = 6;
 static const uint8_t A7 = 7;
-
+#define PIN_A0  (0)
+#define PIN_A1  ( 1)
+#define PIN_A2  ( 2)
+#define PIN_A3  ( 3)
+#define PIN_A4  ( 4)
+#define PIN_A5  ( 5)
+#define PIN_A6  ( 6)
+#define PIN_A7  ( 7)
+#define PIN_B0  ( 8)
+#define PIN_B1  ( 9)
+#define PIN_B2  ( 10)
+#define PIN_B3  (11)  /* RESET */
+#define LED_BUILTIN (10)
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -98,6 +115,7 @@ static const uint8_t A7 = 7;
 #define EXTERNAL (1)
 // Internal 1.1V voltage reference
 #define INTERNAL (2)
+#define INTERNAL1V1 INTERNAL
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -161,6 +179,8 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PB,
   PB, /* 11 */
 };
+
+
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
 {

@@ -6,6 +6,8 @@
 #define __AVR_ATtinyX313__ //recommended
 #define USE_SOFTWARE_SPI 1
 
+#define LED_BUILTIN (13) 
+
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            18
@@ -18,6 +20,11 @@
 #define MOSI 14
 #define MISO 15
 #define SCK  16
+
+#define USI_DDR_PORT DDRB
+#define USCK_DD_PIN DDB7
+#define DO_DD_PIN DDB6
+#define DI_DD_PIN DDB5
 
 static const uint8_t SDA = 14;
 static const uint8_t SCL = 16;

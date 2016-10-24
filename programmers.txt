@@ -24,6 +24,7 @@ usbasp.name=USBasp (ATtiny)
 usbasp.communication=usb
 usbasp.protocol=usbasp
 usbasp.program.tool=avrdude
+usbasp.program.extra_params=
 
 parallel.name=Parallel Programmer (ATtiny)
 parallel.protocol=dapa

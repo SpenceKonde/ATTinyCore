@@ -56,6 +56,25 @@ static const uint8_t A7 = 7;
 static const uint8_t A8 = 8;
 static const uint8_t A9 = 9;
 static const uint8_t A10 = 10;
+#define LED_BUILTIN (3)
+
+#define PIN_A0  ( 0)
+#define PIN_A1  ( 1)
+#define PIN_A2  ( 2)
+#define PIN_A3  ( 3)
+#define PIN_A3  ( 4)
+#define PIN_A3  ( 5)
+#define PIN_A3  ( 6)
+#define PIN_A3  ( 7)
+#define PIN_B0  ( 8)
+#define PIN_B1  ( 9)
+#define PIN_B2  ( 10)
+#define PIN_B3  ( 11)
+#define PIN_B4  ( 12)
+#define PIN_B5  ( 13)
+#define PIN_B6  ( 14)
+#define PIN_B7  ( 15)
+
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -96,6 +115,8 @@ static const uint8_t A10 = 10;
 #define EXTERNAL (1)
 // Internal 1.1V voltage reference
 #define INTERNAL (2)
+#define INTERNAL1V1 INTERNAL
+#define INTERNAL2V56 (7)
 
 
 //----------------------------------------------------------

@@ -48,6 +48,7 @@
 #define PIN_B1  ( 1)
 #define PIN_B2  ( 2)
 #define PIN_B3  (11)  /* RESET */
+#define LED_BUILTIN (2)
 
 #define CORE_DIGITAL_FIRST    (0)
 #define CORE_DIGITAL_LAST     (11)
@@ -122,6 +123,8 @@
 #define PIN_B1  (16)
 #define PIN_C3  (17)  /* RESET */
 
+#define LED_BUILTIN (13)
+
 #define CORE_DIGITAL_FIRST    (0)
 #define CORE_DIGITAL_LAST     (17)
 #define CORE_DIGITAL_COUNT    (CORE_DIGITAL_LAST-CORE_DIGITAL_FIRST+1)
@@ -190,6 +193,8 @@
 #define PIN_D1  (25)
 #define PIN_D2  (26)  /* RESET */
 #define PIN_D3  (27)
+
+#define LED_BUILTIN (13)
 
 #define CORE_DIGITAL_FIRST    (0)
 #define CORE_DIGITAL_LAST     (27)

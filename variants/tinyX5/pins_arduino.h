@@ -42,6 +42,11 @@
 #define MISO 1
 #define SCK  2
 
+#define USI_DDR_PORT DDRB
+#define USCK_DD_PIN DDB2
+#define DO_DD_PIN DDB1
+#define DI_DD_PIN DDB0
+
 static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
@@ -50,6 +55,15 @@ static const uint8_t A0 = 0;
 static const uint8_t A1 = 1;
 static const uint8_t A2 = 2;
 static const uint8_t A3 = 3;
+
+#define PIN_B0  ( 0)
+#define PIN_B1  ( 1)
+#define PIN_B2  ( 2)
+#define PIN_B3  ( 3)
+#define PIN_B4  ( 4)
+#define PIN_B5  ( 5)
+
+#define LED_BUILTIN  ( 0)
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -95,9 +109,9 @@ static const uint8_t A3 = 3;
 #define INTERNAL1V1 INTERNAL
 // 1 1 1 Internal 2.56V Voltage Reference with external bypass capacitor at PB0 (AREF) pin(1).
 #define INTERNAL2V56 (7)
-// An alternative for INTERNAL2V56 is (6) ...
 // 1 1 0 Internal 2.56V Voltage Reference without external bypass capacitor, disconnected from PB0 (AREF)(1).
-
+#define INTERNAL2V56_NO_CAP (6)
+#define INTERNAL2V56NOBP INTERNAL2V56_NO_CAP
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 

@@ -48,13 +48,6 @@
 #define TIMER2B 6
 
 //changed it to uint16_t to uint8_t
-extern const uint8_t PROGMEM port_to_mode_PGM[];
-extern const uint8_t PROGMEM port_to_input_PGM[];
-extern const uint8_t PROGMEM port_to_output_PGM[];
-extern const uint8_t PROGMEM port_to_pcmask_PGM[];
-#if defined(__AVR_ATtinyX41__) || defined(__AVR_ATtiny1634__) || defined( __AVR_ATtiny828__ )
-extern const uint8_t PROGMEM port_to_pullup_PGM[];
-#endif
 extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
 // extern const uint8_t PROGMEM digital_pin_to_bit_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
@@ -65,17 +58,28 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 // 
 // These perform slightly better as macros compared to inline functions
 //
-#define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
-#define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
 //#define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )
 #define analogInPinToBit(P) (P)
 
 // in the following lines modified pgm_read_word in pgm_read_byte, word doesn't work on attiny45
-#define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_output_PGM + (P))) )
-#define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_input_PGM + (P))) )
-#define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_mode_PGM + (P))) )
-#define portPcMaskRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
 
+#define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
+
+#if defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__)
+#define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
+#define portOutputRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_output_PGM + (P))) )
+#define portInputRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_input_PGM + (P))) )
+#define portModeRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_mode_PGM + (P))) )
+#define portPcMaskRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_pcmask_PGM + (P))) )
+#define portPullupRegister(P) ( (volatile uint8_t *)(uint16_t)( pgm_read_byte( port_to_pullup_PGM + (P))) )
+extern const uint8_t PROGMEM port_to_mode_PGM[];
+extern const uint8_t PROGMEM port_to_input_PGM[];
+extern const uint8_t PROGMEM port_to_output_PGM[];
+extern const uint8_t PROGMEM port_to_pcmask_PGM[];
+extern const uint8_t PROGMEM port_to_pullup_PGM[];
+#endif
+
+#endif
 
 #if defined(__AVR_ATtinyX41__)
 
@@ -86,6 +90,13 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 #define MOSI    4
 #define SCK     6
 
+// use ternaries for this to save space. 
+#define digitalPinToPort(P) (P==11?2:(P<3?2:1))
+#define portOutputRegister(P) (P==1?&PORTA:(P?&PORTB:NOT_A_PORT))
+#define portInputRegister(P)  (P==1?&PINA:(P?&PINB:NOT_A_PORT ))
+#define portModeRegister(P)   (P==1?&DDRA:(P?&DDRB:NOT_A_PORT ))
+#define portPcMaskRegister(P) (P==1?&PCMSK0:(P?&PCMSK2:NOT_A_PORT ))
+#define portPullupRegister(P) (P==1?&PUEA:(P?&PUEB:NOT_A_PORT ))
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
@@ -98,6 +109,10 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 #define PORT_B_ID 2
 #define PORT_C_ID 3
 
+#define MISO 15
+#define MOSI 16
+#define SCK 12
+
 #define digitalPinToPCX(p,s1,s2,s3,s4,s5,s6) \
     (((p) >= 0) \
         ? (((p) <   1) ? (s1)  /*  0  -  0  ==>  B0      */  \
@@ -105,7 +120,7 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
         : (((p) <= 10) ? (s3)  /*  9  - 10  ==>  C5 - C4 */  \
         : (((p) <= 13) ? (s4)  /*  11 - 13  ==>  C2 - C0 */  \
         : (((p) <= 16) ? (s5)  /*  14 - 16  ==>  B3 - B1 */  \
-        : (s6))))) \
+        : (s6)))))) \
         : (s6))
 //                                                   s1 b     s2 A     s3 C     s3 C     s5 B
 #define digitalPinToPCICR(p)    digitalPinToPCX( p, &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  &GIMSK,  NULL )
@@ -122,7 +137,10 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 #define PORT_B_ID 2
 #define PORT_C_ID 3
 #define PORT_D_ID 4
-
+#define SS 16
+#define MISO 25
+#define MOSI 24
+#define SCK 27
 
 
 #define digitalPinToPCICR(p)    (&PCICR)
@@ -134,11 +152,3 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 
 #endif
 
-
-
-
-#if defined(__AVR_ATtinyX41__) || defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__)
-#define portPullupRegister(P) ( (volatile uint8_t *)( pgm_read_byte( port_to_pullup_PGM + (P))) )
-#endif
-
-#endif

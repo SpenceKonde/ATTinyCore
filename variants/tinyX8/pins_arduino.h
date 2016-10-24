@@ -68,6 +68,7 @@
 #define DEFAULT (1)
 // Internal 1.1V voltage reference
 #define INTERNAL (0)
+#define INTERNAL1V1 INTERNAL
 
 #define ANALOG_PINS_SEPARATE
 
