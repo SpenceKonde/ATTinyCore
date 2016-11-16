@@ -144,10 +144,10 @@ Pin Mapping
 ![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84.png "Arduino Pin Mapping for ATtiny 84/44/24")
 
 ### ATtiny 261/461/861
-![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861.png "Arduino Pin Mapping for ATtiny 861/461/261")
+![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861_a.png "Arduino Pin Mapping for ATtiny 861/461/261")
 
 ### ATtiny 87/167
-![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167.jpg "Arduino Pin Mapping for ATtiny 167/87")
+![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167_a.jpg "Arduino Pin Mapping for ATtiny 167/87")
 
 ### ATtiny 88/48
 ![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88x.jpg "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
