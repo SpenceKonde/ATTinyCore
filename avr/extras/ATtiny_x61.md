@@ -1,6 +1,6 @@
 
 ### ATtiny 261/461/861
-![x61 pin mapping](http://drazzy.com/e/img/PinoutT861.png "Arduino Pin Mapping for ATtiny x61 series")
+![x61 pin mapping](http://drazzy.com/e/img/PinoutT861_a.png "Arduino Pin Mapping for ATtiny x61 series")
 
 Specifications |  .
 ------------ | -------------
