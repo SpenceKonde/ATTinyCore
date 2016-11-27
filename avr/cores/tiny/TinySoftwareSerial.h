@@ -26,7 +26,7 @@ struct soft_ring_buffer
 };
 
 extern "C"{
-  void uartDelay() __attribute__ ((naked));
+  void uartDelay() __attribute__ ((naked,used)); //used attribute needed to prevent LTO from throwing it out. 
   uint8_t getch();
   void store_char(unsigned char c, soft_ring_buffer *buffer);
 }
