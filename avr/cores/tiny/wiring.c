@@ -619,18 +619,22 @@ void init(void)
   #endif
   #if defined(TIMSK)
   // Disable all Timer0 interrupts
-  TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
+  TIMSK = 0; //safer - the bootloader may have made a mess of this. 
+  // TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)); 
   // Clear the Timer0 interrupt flags
-  TIFR |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
+  TIFR |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0)); 
+  
   #elif defined(TIMSK1)
   #ifdef OCIE0B
   // Disable all Timer0 interrupts
-  TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
+  //TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
   // Clear the Timer0 interrupt flags
+  TIMSK0=0;
   TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
   #else
   // Disable all Timer0 interrupts
-  TIMSK0 &= ~((1<<OCIE0A) | (1<<TOIE0));
+  //TIMSK0 &= ~((1<<OCIE0A) | (1<<TOIE0));
+  TIMSK0=0;
   // Clear the Timer0 interrupt flags
   TIFR0 |= ((1<<OCF0A) | (1<<TOV0));
   #endif
@@ -652,7 +656,8 @@ void init(void)
   #endif
   #elif defined(TIMSK1)
   // Disable all Timer0 interrupts
-  TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
+  TIMSK0=0;
+  //TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
   // Clear the Timer0 interrupt flags
   TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
   #if defined(TICIE0)
@@ -690,7 +695,8 @@ void init(void)
   OCR1A = 0;
   OCR1B = 0;
   // Disable all Timer1 interrupts
-  TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<OCIE1D));
+  TIMSK=0;
+  //TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<OCIE1D));
   // Clear the Timer1 interrupt flags
   TIFR |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<OCF1D));
   
@@ -707,12 +713,14 @@ void init(void)
   OCR1B = 0;
   // Disable all Timer1 interrupts
   #if defined(TIMSK)
-  TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
+  TIMSK=0;
+  //TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
   // Clear the Timer1 interrupt flags
   TIFR |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<ICF1));
   #elif defined(TIMSK1)
   // Disable all Timer1 interrupts
-  TIMSK1 &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
+  TIMSK1=0;
+  //TIMSK1 &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
   // Clear the Timer1 interrupt flags
   TIFR1 |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<ICF1));
   #endif
