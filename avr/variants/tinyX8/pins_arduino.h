@@ -70,7 +70,7 @@
 #define INTERNAL (0)
 #define INTERNAL1V1 INTERNAL
 
-#define ANALOG_PINS_SEPARATE
+//#define ANALOG_PINS_SEPARATE
 
 static const uint8_t SS   = 10;
 static const uint8_t MOSI = 11;
