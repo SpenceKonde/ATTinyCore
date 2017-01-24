@@ -188,12 +188,18 @@ unsigned long micros()
 #endif
 }
 
+static void __empty() {
+	// Empty
+}
+void yield(void) __attribute__ ((weak, alias("__empty")));
+
 void delay(unsigned long ms)
 {
   uint16_t start = (uint16_t)micros();
 
   while (ms > 0) {
-    if (((uint16_t)micros() - start) >= 1000) {
+  	yield();
+    while (((uint16_t)micros() - start) >= 1000) {
       ms--;
       start += 1000;
     }
