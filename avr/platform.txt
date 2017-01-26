@@ -79,6 +79,9 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
 ## Save hex
+recipe.hooks.savehex.presavehex.1.pattern.windows={runtime.platform.path}/delete_merged_output.bat {build.export_merged_output} "{build.path}\{build.project_name}.with_bootloader.hex"
+recipe.hooks.savehex.presavehex.1.pattern.linux={runtime.platform.path}/delete_merged_output.sh {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
+recipe.hooks.savehex.presavehex.1.pattern.macosx={runtime.platform.path}/delete_merged_output.sh {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
 recipe.output.tmp_file={build.project_name}.hex
 recipe.output.save_file={build.project_name}.hex
 
