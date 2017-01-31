@@ -127,11 +127,11 @@ static const uint8_t A10 = 10;
 
 
 #define digitalPinToPCICR(p)    (&PCICR)
-#define digitalPinToPCICRbit(p) ((p) >= 8 ? 0 : 1)
-#define digitalPinToPCMSK(p)    ((p) >= 8 ?(&PCMSK0) : (&PCMSK1))
+#define digitalPinToPCICRbit(p) ((p) >= 8 ? 1 : 0)
+#define digitalPinToPCMSK(p)    ((p) >= 8 ?(&PCMSK1) : (&PCMSK0))
 #define digitalPinToPCMSKbit(p) (p&15)
 
-#define digitalPinToInterrupt(p)  ((p) == 14 ? 0 : ((p)==4?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)  ((p) == 14 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
 #ifdef ARDUINO_MAIN
 
 // On the Arduino board, digital pins are also used
@@ -144,10 +144,10 @@ static const uint8_t A10 = 10;
 // RX   (D  0) PA0  1|    |20  PB0 (D  8)
 // TX   (D  1) PA1  2|    |19  PB1 (D  9)
 //     *(D  2) PA2  3|    |18  PB2 (D 10)
-//      (D  3) PA3  4|    |17  PB3 (D 11)*
+// INT1 (D  3) PA3  4|    |17  PB3 (D 11)*
 //            AVCC  5|    |16  GND
 //            AGND  6|    |15  VCC
-// INT1 (D  4) PA4  7|    |14  PB4 (D 12)
+//      (D  4) PA4  7|    |14  PB4 (D 12)
 //      (D  5) PA5  8|    |13  PB5 (D 13)
 //      (D  6) PA6  9|    |12  PB6 (D 14)* INT0
 //      (D  7) PA7 10|    |11  PB7 (D 15)
