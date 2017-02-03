@@ -58,16 +58,7 @@
  * _Nbr_16timers indicates how many 16 bit timers are available.
  */
 
-// Architecture specific include
-#if defined(ARDUINO_ARCH_AVR)
 #include "avr/ServoTimers.h"
-#elif defined(ARDUINO_ARCH_SAM)
-#include "sam/ServoTimers.h"
-#elif defined(ARDUINO_ARCH_SAMD)
-#include "samd/ServoTimers.h"
-#else
-#error "This library only supports boards with an AVR, SAM or SAMD processor."
-#endif
 
 #define Servo_VERSION           2     // software version of this library
 
