@@ -215,6 +215,9 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 #else 
 #ifdef USICR
  
+tinySPI::tinySPI() 
+{
+}
 
 uint8_t tinySPI::reversebit=0;
 uint8_t tinySPI::initialized=0;
@@ -314,7 +317,8 @@ void tinySPI::end(void)
     USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
 }
 
-tinySPI SPI = tinySPI();                //instantiate a tinySPI object
+tinySPI SPI = tinySPI();                //instantiate a tinySPI objec
+
 
 #endif
 #endif

@@ -374,11 +374,11 @@ class tinySPI
   tinySPI();
   static uint8_t reverse(uint8_t x);
   static void begin();
-  inline static void beginTransaction(SPISettings settings);
-  inline static uint8_t transfer(uint8_t data);
-  inline static uint16_t transfer16(uint16_t data);
-  inline static void transfer(void *buf, size_t count);
-  inline static void endTransaction(void);
+  static void beginTransaction(SPISettings settings);
+  static uint8_t transfer(uint8_t data);
+  static uint16_t transfer16(uint16_t data);
+  static void transfer(void *buf, size_t count);
+  static void endTransaction(void);
   static void end();
 
   // This function is deprecated.  New applications should use
