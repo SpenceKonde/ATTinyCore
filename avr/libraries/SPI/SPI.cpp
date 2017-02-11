@@ -22,6 +22,8 @@
 #ifdef SPDR //Then we have hardware SPI, let's use it:
 
 
+#include "SPI.h"
+
 SPIClass SPI;
 
 uint8_t SPIClass::initialized = 0;
@@ -208,6 +210,7 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
     interruptMode = 0;
   SREG = sreg;
 }
+
 
 #else 
 #ifdef USICR
