@@ -1,17 +1,26 @@
-/*
- * Copyright (c) 2010 by Cristian Maglie <c.maglie@arduino.cc>
- * Copyright (c) 2014 by Paul Stoffregen <paul@pjrc.com> (Transaction API)
- * Copyright (c) 2014 by Matthijs Kooijman <matthijs@stdin.nl> (SPISettings AVR)
- * Copyright (c) 2014 by Andrew J. Kroll <xxxajk@gmail.com> (atomicity fixes)
- * SPI Master library for arduino.
- *
- * This file is free software; you can redistribute it and/or modify
- * it under the terms of either the GNU General Public License version 2
- * or the GNU Lesser General Public License version 2.1, both as
- * published by the Free Software Foundation.
- */
+/*-------------------------------------------------------------------------*
+ * tinySPI.h - Arduino hardware SPI master library for ATtiny24/44/84,     *
+ * ATtiny25/45/85, and Attiny2313/4313.                                    *
+ *                                                                         *
+ * Original version of tinyISP by Jack Christensen 24Oct2013               *
+ *                                                                         *
+ * Added support for Attiny24/25, and Attiny2313/4313                      *
+ * by Leonardo Miliani 28Nov2014                                           *                          
+ *                                                                         *
+ * CC BY-SA-NC:                                                            *
+ * This work is licensed under the Creative Commons Attribution-           *
+ * ShareAlike- Not Commercial 4.0 Unported License. To view a copy of this *
+ * license, visit                                                          *
+ * http://creativecommons.org/licenses/by-sa/4.0/ or send a                *
+ * letter to Creative Commons, 171 Second Street, Suite 300,               *
+ * San Francisco, California, 94105, USA.                                  *
+ *-------------------------------------------------------------------------*/
 
 #include "SPI.h"
+
+
+#ifdef SPDR //Then we have hardware SPI, let's use it:
+
 
 SPIClass SPI;
 
@@ -29,7 +38,15 @@ void SPIClass::begin()
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
   if (!initialized) {
     // Set SS to high so a connected chip will be "deselected" by default
-    digitalWrite(SS, HIGH);
+    uint8_t port = digitalPinToPort(SS);
+    uint8_t bit = digitalPinToBitMask(SS);
+    volatile uint8_t *reg = portModeRegister(port);
+
+    // if the SS pin is not already configured as an output
+    // then set it high (to enable the internal pull-up resistor)
+    if(!(*reg & bit)){
+      digitalWrite(SS, HIGH);
+    }
 
     // When the SS pin is set as OUTPUT, it can be used as
     // a general purpose output port (it doesn't influence
@@ -191,3 +208,110 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
     interruptMode = 0;
   SREG = sreg;
 }
+
+#else 
+#ifdef USICR
+ 
+
+uint8_t tinySPI::reversebit=0;
+uint8_t tinySPI::initialized=0;
+
+void tinySPI::begin(void)
+{
+    USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
+    USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
+    USI_DDR_PORT |= _BV(USCK_DD_PIN);   //set the USCK pin as output
+    USI_DDR_PORT |= _BV(DO_DD_PIN);     //set the DO pin as output
+    USI_DDR_PORT &= ~_BV(DI_DD_PIN);    //set the DI pin as input
+    initialized++;
+}
+
+void tinySPI::setDataMode(uint8_t spiDataMode)
+{
+    if (spiDataMode == SPI_MODE1)
+        USICR |= _BV(USICS0);
+    else
+        USICR &= ~_BV(USICS0);
+}
+
+byte tinySPI::reverse (byte x){
+ byte result;
+ asm("mov __tmp_reg__, %[in] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* shift out high bit to carry */
+  "ror %[out] \n\t"  /* rotate carry __tmp_reg__to low bit (eventually) */
+  "lsl __tmp_reg__  \n\t"   /* 2 */
+  "ror %[out] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* 3 */
+  "ror %[out] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* 4 */
+  "ror %[out] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* 5 */
+  "ror %[out] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* 6 */
+  "ror %[out] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* 7 */
+  "ror %[out] \n\t"
+  "lsl __tmp_reg__  \n\t"   /* 8 */
+  "ror %[out] \n\t"
+  : [out] "=r" (result) : [in] "r" (x));
+  return(result);
+}
+
+uint8_t tinySPI::transfer(uint8_t spiData)
+{
+    USIDR = (reversebit?spiData:reverse(spiData));
+    USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
+        while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+    }
+    return USIDR;
+}
+
+
+uint16_t tinySPI::transfer16(uint16_t data) {
+ union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } in, out;
+ in.val = data;
+ USIDR = in.msb;
+ USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
+ ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
+  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+ }
+ out.msb = USIDR; 
+ USIDR = in.lsb;
+ USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
+ ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
+  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+ }
+ out.lsb = USIDR;
+ return out.val;
+}
+
+void tinySPI::transfer(void *buf, size_t count) {
+ if (count == 0) return;
+ uint8_t *p = (uint8_t *)buf;
+ USIDR = *p;
+ while (--count > 0) {
+  uint8_t out = *(p + 1);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
+   while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+  }
+  uint8_t in = USIDR;
+  USIDR = out;
+  *p++ = in;
+ }
+ ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
+  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+ }
+ *p = USIDR;
+}
+
+
+void tinySPI::end(void)
+{
+    USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
+}
+
+tinySPI SPI = tinySPI();                //instantiate a tinySPI object
+
+#endif
+#endif
