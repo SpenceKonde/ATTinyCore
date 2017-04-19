@@ -214,7 +214,7 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 
 #else 
 #ifdef USICR
- 
+
 tinySPI::tinySPI() 
 {
 }
@@ -226,7 +226,7 @@ void tinySPI::begin(void)
 {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
     USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
-    USI_DDR_PORT |= _BV(USCK_DD_PIN);   //set the USCK pin as output
+    USI_SCK_PORT |= _BV(USCK_DD_PIN);   //set the USCK pin as output
     USI_DDR_PORT |= _BV(DO_DD_PIN);     //set the DO pin as output
     USI_DDR_PORT &= ~_BV(DI_DD_PIN);    //set the DI pin as input
     initialized++;
@@ -240,6 +240,13 @@ void tinySPI::setDataMode(uint8_t spiDataMode)
         USICR &= ~_BV(USICS0);
 }
 
+void tinySPI::setClockDivider(uint8_t clockDiv)
+{
+  // CD - this routine currently does nothing as clock dividers for the
+  //      software driven USI SPI bus are ignored for this first cut
+  uint8_t dummy; // Nothing routine (needed so not optimised away)
+}
+  
 byte tinySPI::reverse (byte x){
  byte result;
  asm("mov __tmp_reg__, %[in] \n\t"
@@ -268,7 +275,7 @@ uint8_t tinySPI::transfer(uint8_t spiData)
     USIDR = (reversebit?spiData:reverse(spiData));
     USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-        while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+        while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
     }
     return USIDR;
 }
@@ -280,13 +287,13 @@ uint16_t tinySPI::transfer16(uint16_t data) {
  USIDR = in.msb;
  USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
  }
  out.msb = USIDR; 
  USIDR = in.lsb;
  USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
  }
  out.lsb = USIDR;
  return out.val;
@@ -299,14 +306,14 @@ void tinySPI::transfer(void *buf, size_t count) {
  while (--count > 0) {
   uint8_t out = *(p + 1);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-   while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+   while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
   }
   uint8_t in = USIDR;
   USIDR = out;
   *p++ = in;
  }
  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC);
+  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
  }
  *p = USIDR;
 }
