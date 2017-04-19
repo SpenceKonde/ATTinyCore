@@ -344,9 +344,38 @@ extern SPIClass SPI;
 
 
 #else 
+
 #ifdef USICR //if we have a USI instead, use that
+
+//SPI data modes
 #define SPI_MODE0 0x00
 #define SPI_MODE1 0x04
+
+// CD - Following is currently ignored, but needed for some devices that use SPI libraries
+//      Future version may use these values for delays in the software driven tinySPI USI code
+#define SPI_CLOCK_DIV4 0x00
+#define SPI_CLOCK_DIV16 0x01
+#define SPI_CLOCK_DIV64 0x02
+#define SPI_CLOCK_DIV128 0x03
+#define SPI_CLOCK_DIV2 0x04
+#define SPI_CLOCK_DIV8 0x05
+#define SPI_CLOCK_DIV32 0x06
+
+// Settings for default USI based SPI bus for different chips
+#if defined(__AVR_ATtiny1634__)
+
+#define USI_DDR_PORT DDRB
+#define USI_SCK_PORT DDRC
+#define USCK_DD_PIN DDC1
+#define DO_DD_PIN DDB2
+#define DI_DD_PIN DDB1
+
+#else
+
+#error Need to set the USI PORT/PIN defines for your ATtiny
+
+#endif
+
 class SPISettings {
 public:
   SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode) {
@@ -363,10 +392,6 @@ private:
   uint8_t usicr;
   friend class tinySPI;
 };
-
-//SPI data modes
-#define SPI_MODE0 0x00
-#define SPI_MODE1 0x04
 
 class tinySPI
 {
@@ -386,10 +411,10 @@ class tinySPI
   inline static void setBitOrder(uint8_t bitOrder) {reversebit=bitOrder;}
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  inline static void setDataMode(uint8_t dataMode);
+  static void setDataMode(uint8_t dataMode);
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  inline static void setClockDivider(uint8_t clockDiv);
+  static void setClockDivider(uint8_t clockDiv);
   // These undocumented functions should not be used.  SPI.transfer()
   // polls the hardware flag which is automatically cleared as the
   // AVR responds to SPI's interrupt
