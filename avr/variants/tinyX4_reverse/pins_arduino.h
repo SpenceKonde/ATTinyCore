@@ -69,11 +69,11 @@ static const uint8_t A7 = 7;
 #define PIN_A5  ( 5)
 #define PIN_A6  ( 6)
 #define PIN_A7  ( 7)
-#define PIN_B0  ( 8)
+#define PIN_B0  ( 10)
 #define PIN_B1  ( 9)
-#define PIN_B2  ( 10)
+#define PIN_B2  ( 8)
 #define PIN_B3  (11)  /* RESET */
-#define LED_BUILTIN (10)
+#define LED_BUILTIN (8)
 
 //----------------------------------------------------------
 //----------------------------------------------------------
