@@ -59,6 +59,10 @@ Link-time Optimization (LTO) support
 ------------
 In version 1.1.2 and later, this core supports Link Time Optimization (lto). This can substantially reduce the compiled size of your sketch. Version 1.6.13 or later of the official AVR boards package (included with 1.6.11 and later of the IDE) is required for this functionality. Link time optimization can be enabled from the option in the tools menu.
 
+Makefile Support
+------------
+For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with https://github.com/sudar/Arduino-Makefile - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
+
 I2C support
 ------------
 
@@ -132,29 +136,29 @@ Pin Mapping
 ### ATtiny 441/841
 ![x41 pin mapping](http://drazzy.com/e/products/img/PinoutT841_fixed.png "Arduino Pin Mapping for ATTiny 841 and 441")
 ### ATtiny 1634
-![1634 pin mapping](http://drazzy.com/e/img/PinoutT1634.jpg "Arduino Pin Mapping for ATTiny 1634")
+![1634 pin mapping](http://drazzy.com/e/img/PinoutT1634a.jpg "Arduino Pin Mapping for ATTiny 1634")
 
 ### ATtiny 828
 ![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828x.jpg "Arduino Pin Mapping for ATtiny 828")
 
 ### ATtiny 25/45/85
-![x5 pin mapping](http://drazzy.com/e/img/PinoutT85.png "Arduino Pin Mapping for ATtiny 85/45/25")
+![x5 pin mapping](http://drazzy.com/e/img/PinoutT85a.jpg "Arduino Pin Mapping for ATtiny 85/45/25")
 
 ### ATtiny 24/44/84
-![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84.png "Arduino Pin Mapping for ATtiny 84/44/24")
+![x4 Pin Mapping](http://drazzy.com/e/img/PinoutT84a.jpg "Arduino Pin Mapping for ATtiny 84/44/24")
 
 ### ATtiny 261/461/861
-![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861_a.png "Arduino Pin Mapping for ATtiny 861/461/261")
+![x61 Pin Mapping](http://drazzy.com/e/img/PinoutT861.jpg "Arduino Pin Mapping for ATtiny 861/461/261")
 
 ### ATtiny 87/167
-![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167_a.jpg "Arduino Pin Mapping for ATtiny 167/87")
+![x7 Pin Mapping](http://drazzy.com/e/img/PinoutT167a.jpg "Arduino Pin Mapping for ATtiny 167/87")
 
 ### ATtiny 88/48
 ![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88x.jpg "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
 ![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88-PU.jpg "Arduino Pin Mapping for ATtiny 88/48 in DIP")
 
 ### ATtiny 2313/4313
-![x313 Pin Mapping](http://drazzy.com/e/img/PinoutT4313.jpg "Arduino Pin Mapping for ATtiny 4313/2313")
+![x313 Pin Mapping](http://drazzy.com/e/img/PinoutT4313a.jpg "Arduino Pin Mapping for ATtiny 4313/2313")
 
 
 Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu. 

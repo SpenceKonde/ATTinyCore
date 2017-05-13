@@ -2,11 +2,14 @@
 
 This library allows an Arduino board to control RC (hobby) servo motors.
 
+This library has been modified to add support for additional ATTiny processors. 
+
 For more information about this library please visit us at
 http://www.arduino.cc/en/Reference/Servo
 
 == License ==
 
+Copyright (c) 2017 Spence Konde.
 Copyright (c) 2013 Arduino LLC. All right reserved.
 Copyright (c) 2009 Michael Margolis.  All right reserved.
 

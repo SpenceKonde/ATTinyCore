@@ -136,7 +136,7 @@ static const uint8_t A10 = 10;
 
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) ((((p) >= 0 && (p) <= 2) || ((p) >= 10 && (p) <= 14)) ? 4 : 5)
+#define digitalPinToPCICRbit(p) (((p) >= 6 && (p) <= 9) ? 4 : 5)
 #define digitalPinToPCMSK(p)    ((((p) >= 0 && (p) <= 2) || ((p) >= 10 && (p) <= 14)) ? (&PCMSK0) : ((((p) >= 3 && (p) <= 9) || ((p) == 15)) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p) (((p) >= 0 && (p) <= 2) ? (p) :(((p) >= 10 && (p) <= 13) ? ((p) - 6) : (((p) == 14) ? (3) : (((p) >= 3 && (p) <= 9) ? (9 - (p)) : (7)))))
 

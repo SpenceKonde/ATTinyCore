@@ -1261,5 +1261,53 @@ __attribute__((always_inline)) static inline uint8_t Timer1_IsOverflowSet( void 
 #define TIMER1_OVF_vect TIM1_OVF_vect
 #endif
 
+#if defined( TIM2_COMPA_vect ) && ! defined( TIMER2_COMPA_vect )
+#define TIMER2_COMPA_vect TIM2_COMPA_vect
+#endif
+
+#if defined( TIM2_COMPB_vect ) && defined( TIMER2_COMPB_vect )
+#define TIMER2_COMPB_vect TIM2_COMPB_vect
+#endif
+
+#if defined( TIM2_OVF_vect ) && defined( TIMER2_OVF_vect )
+#define TIMER2_OVF_vect TIM2_OVF_vect
+#endif
+
+
+#if !defined( TIM0_COMPA_vect ) && ! defined( TIMER0_COMPA_vect )
+#define TIM0_COMPA_vect TIMER0_COMPA_vect
+#endif
+
+#if !defined( TIM0_COMPB_vect ) && ! defined( TIMER0_COMPB_vect )
+#define TIM0_COMPB_vect TIMER0_COMPB_vect
+#endif
+
+#if !defined( TIM0_OVF_vect ) && defined( TIMER0_OVF_vect )
+#define TIM0_OVF_vect TIMER0_OVF_vect
+#endif
+
+#if !defined( TIM1_COMPA_vect ) && defined( TIMER1_COMPA_vect )
+#define TIM1_COMPA_vect TIMER1_COMPA_vect
+#endif
+
+#if !defined( TIM1_COMPB_vect ) && defined( TIMER1_COMPB_vect )
+#define TIM1_COMPB_vect TIMER1_COMPB_vect
+#endif
+
+#if !defined( TIM1_OVF_vect ) && defined( TIMER1_OVF_vect )
+#define TIM1_OVF_vect TIMER1_OVF_vect
+#endif
+
+#if !defined( TIM2_COMPA_vect ) && defined( TIMER2_COMPA_vect )
+#define TIM2_COMPA_vect TIMER2_COMPA_vect
+#endif
+
+#if !defined( TIM2_COMPB_vect ) && defined( TIMER2_COMPB_vect )
+#define TIM2_COMPB_vect TIMER2_COMPB_vect
+#endif
+
+#if !defined( TIM2_OVF_vect ) && defined( TIMER2_OVF_vect )
+#define TIM2_OVF_vect TIMER2_OVF_vect
+#endif
 
 #endif
