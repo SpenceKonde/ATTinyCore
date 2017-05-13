@@ -86,8 +86,8 @@ attinyx4.menu.bod.2v7=B.O.D. Enabled (2.7v)
 attinyx4.menu.bod.2v7.bootloader.high_fuses=0xD5
 attinyx4.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx4.menu.bod.4v3.bootloader.high_fuses=0xD4
-attinyx4.menu.pinmapping.new=Clockwise (like damellis core)
-attinyx4.menu.pinmapping.new.build.variant=tinyX4_reverse
+attinyx4.menu.pinmapping.anew=Clockwise (like damellis core)
+attinyx4.menu.pinmapping.anew.build.variant=tinyX4_reverse
 attinyx4.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and x41-series)
 attinyx4.menu.pinmapping.old.build.variant=tinyX4
 
