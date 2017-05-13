@@ -39,7 +39,30 @@ void SPIClass::begin()
   uint8_t sreg = SREG;
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
   if (!initialized) {
-    // Set SS to high so a connected chip will be "deselected" by default
+ 
+    #ifdef  REMAP
+    uint8_t SS_pin=0;
+
+    if (REMAP & 1<<SPIMAP) {
+      pinMode(SCK_REMAP, OUTPUT);
+      pinMode(MOSI_REMAP, OUTPUT);
+      SS_pin=SS_REMAP;
+    } else {
+      pinMode(SCK, OUTPUT);
+      pinMode(MOSI, OUTPUT);
+      SS_pin=SS;
+    }    
+    uint8_t port = digitalPinToPort(SS_pin);
+    uint8_t bit = digitalPinToBitMask(SS_pin);
+    volatile uint8_t *reg = portModeRegister(port);
+
+    // if the SS pin is not already configured as an output
+    // then set it high (to enable the internal pull-up resistor)
+    if(!(*reg & bit)){
+      digitalWrite(SS_pin, HIGH);
+    }
+    pinMode(SS_pin, OUTPUT);
+    #else 
     uint8_t port = digitalPinToPort(SS);
     uint8_t bit = digitalPinToBitMask(SS);
     volatile uint8_t *reg = portModeRegister(port);
@@ -49,17 +72,17 @@ void SPIClass::begin()
     if(!(*reg & bit)){
       digitalWrite(SS, HIGH);
     }
+       // Set SS to high so a connected chip will be "deselected" by default
+
+    
 
     // When the SS pin is set as OUTPUT, it can be used as
     // a general purpose output port (it doesn't influence
     // SPI operations).
-    pinMode(SS, OUTPUT);
 
     // Warning: if the SS pin ever becomes a LOW INPUT then SPI
     // automatically switches to Slave, so the data direction of
     // the SS pin MUST be kept as OUTPUT.
-    SPCR |= _BV(MSTR);
-    SPCR |= _BV(SPE);
 
     // Set direction register for SCK and MOSI pin.
     // MISO pin automatically overrides to INPUT.
@@ -67,8 +90,12 @@ void SPIClass::begin()
     // clocking in a single bit since the lines go directly
     // from "input" to SPI control.
     // http://code.google.com/p/arduino/issues/detail?id=888
+    pinMode(SS, OUTPUT);
     pinMode(SCK, OUTPUT);
     pinMode(MOSI, OUTPUT);
+    #endif
+    SPCR |= _BV(MSTR);
+    SPCR |= _BV(SPE);
   }
   initialized++; // reference count
   SREG = sreg;

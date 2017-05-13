@@ -89,6 +89,10 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define MISO    5
 #define MOSI    4
 #define SCK     6
+#define MOSI_REMAP 7
+#define MISO_REMAP 10
+#define SCK_REMAP 9
+#define SS_REMAP 8
 
 // use ternaries for this to save space. 
 #define digitalPinToPort(P) (P==11?2:(P<3?2:1))
