@@ -19,6 +19,7 @@
   Modified 2012 by Todd Krein (todd@krein.org) to implement repeated starts
 */
 
+
 #include <math.h>
 #include <stdlib.h>
 #include <inttypes.h>
@@ -27,6 +28,7 @@
 #include <compat/twi.h>
 #include "Arduino.h" // for digitalWrite
 
+#ifdef TWDR
 #ifndef cbi
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #endif
@@ -543,3 +545,4 @@ ISR(TWI_vect)
   }
 }
 
+#endif
