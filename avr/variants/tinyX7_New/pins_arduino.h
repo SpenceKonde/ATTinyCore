@@ -41,6 +41,13 @@
 #define MISO 2
 #define SCK  5
 
+
+#define USI_DDR_PORT DDRB
+#define USI_SCK_PORT DDRB
+#define USCK_DD_PIN DDA2
+#define DO_DD_PIN DDA1
+#define DI_DD_PIN DDA0
+
 #define SDA 4
 #define SCL 5
 

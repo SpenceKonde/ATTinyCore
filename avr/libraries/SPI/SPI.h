@@ -362,19 +362,7 @@ extern SPIClass SPI;
 #define SPI_CLOCK_DIV32 0x06
 
 // Settings for default USI based SPI bus for different chips
-#if defined(__AVR_ATtiny1634__)
 
-#define USI_DDR_PORT DDRB
-#define USI_SCK_PORT DDRC
-#define USCK_DD_PIN DDC1
-#define DO_DD_PIN DDB2
-#define DI_DD_PIN DDB1
-
-#else
-
-#error Need to set the USI PORT/PIN defines for your ATtiny
-
-#endif
 
 class SPISettings {
 public:

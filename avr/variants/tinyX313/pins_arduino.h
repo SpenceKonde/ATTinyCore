@@ -22,6 +22,7 @@
 #define SCK  16
 
 #define USI_DDR_PORT DDRB
+#define USI_SCK_PORT DDRB
 #define USCK_DD_PIN DDB7
 #define DO_DD_PIN DDB6
 #define DI_DD_PIN DDB5

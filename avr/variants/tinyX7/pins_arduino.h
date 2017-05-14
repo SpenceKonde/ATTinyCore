@@ -40,7 +40,11 @@
 #define MOSI 11
 #define MISO 12
 #define SCK  13
-
+#define USI_DDR_PORT DDRB
+#define USI_SCK_PORT DDRB
+#define USCK_DD_PIN DDA2
+#define DO_DD_PIN DDA1
+#define DI_DD_PIN DDA0
 #define SDA 13
 #define SCL 11
 
