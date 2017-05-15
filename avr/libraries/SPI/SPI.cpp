@@ -345,7 +345,105 @@ void tinySPI::transfer(void *buf, size_t count) {
  *p = USIDR;
 }
 
+static void tinySPI::beginTransaction(SPISettings settings) {
+    if (interruptMode > 0) {
+      uint8_t sreg = SREG;
+      noInterrupts();
 
+      #ifdef SPI_AVR_EIMSK
+      if (interruptMode == 1) {
+        interruptSave = SPI_AVR_EIMSK;
+        SPI_AVR_EIMSK &= ~interruptMask;
+        SREG = sreg;
+      } else
+      #endif
+      {
+        interruptSave = sreg;
+      }
+    }
+    USICR = settings.usicr;
+    reversebit=settings.reverse;
+  }
+
+static void tinySPI::endTransaction(void) {
+  if (interruptMode > 0) {
+    #ifdef SPI_AVR_EIMSK
+    uint8_t sreg = SREG;
+    #endif
+    noInterrupts();
+    #ifdef SPI_AVR_EIMSK
+    if (interruptMode == 1) {
+      SPI_AVR_EIMSK = interruptSave;
+      SREG = sreg;
+    } else
+    #endif
+    {
+      SREG = interruptSave;
+    }
+  }
+}
+#ifdef INT0
+#define SPI_INT0_MASK  (1<<INT0)
+#endif
+#ifdef INT1
+#define SPI_INT1_MASK  (1<<INT1)
+#endif
+#ifdef INT2
+#define SPI_INT2_MASK  (1<<INT2)
+#endif
+
+void tinySPI::usingInterrupt(uint8_t interruptNumber)
+{
+  uint8_t mask = 0;
+  uint8_t sreg = SREG;
+  noInterrupts(); // Protect from a scheduler and prevent transactionBegin
+  switch (interruptNumber) {
+  #ifdef SPI_INT0_MASK
+  case 0: mask = SPI_INT0_MASK; break;
+  #endif
+  #ifdef SPI_INT1_MASK
+  case 1: mask = SPI_INT1_MASK; break;
+  #endif
+  #ifdef SPI_INT2_MASK
+  case 2: mask = SPI_INT2_MASK; break;
+  #endif
+  default:
+    interruptMode = 2;
+    break;
+  }
+  interruptMask |= mask;
+  if (!interruptMode)
+    interruptMode = 1;
+  SREG = sreg;
+}
+
+void tinySPI::notUsingInterrupt(uint8_t interruptNumber)
+{
+  // Once in mode 2 we can't go back to 0 without a proper reference count
+  if (interruptMode == 2)
+    return;
+  uint8_t mask = 0;
+  uint8_t sreg = SREG;
+  noInterrupts(); // Protect from a scheduler and prevent transactionBegin
+  switch (interruptNumber) {
+  #ifdef SPI_INT0_MASK
+  case 0: mask = SPI_INT0_MASK; break;
+  #endif
+  #ifdef SPI_INT1_MASK
+  case 1: mask = SPI_INT1_MASK; break;
+  #endif
+  #ifdef SPI_INT2_MASK
+  case 2: mask = SPI_INT2_MASK; break;
+  #endif
+  default:
+    break;
+    // this case can't be reached
+  }
+  interruptMask &= ~mask;
+  if (!interruptMask)
+    interruptMode = 0;
+  SREG = sreg;
+}
 void tinySPI::end(void)
 {
     USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
