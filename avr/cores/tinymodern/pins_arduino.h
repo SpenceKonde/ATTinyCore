@@ -122,6 +122,24 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define DO_DD_PIN DDB2
 #define DI_DD_PIN DDB1
 
+
+#  define DDR_USI DDRB
+#  define PORT_USI PORTB
+#  define PIN_USI PINB
+#  define DDR_USI_CL DDRC
+#  define PORT_USI_CL PORTC
+#  define PIN_USI_CL PINC
+#  define PORT_USI_SDA PORTB1
+#  define PORT_USI_SCL PORTC1
+#  define PIN_USI_SDA PINB1
+#  define PIN_USI_SCL PINC1
+#  define USI_START_VECTOR USI_START_vect
+#  define USI_OVERFLOW_VECTOR USI_OVF_vect
+#ifndef USI_START_COND_INT
+#  define USI_START_COND_INT USISIF
+#endif
+
+
 #define digitalPinToPCX(p,s1,s2,s3,s4,s5,s6) \
     (((p) >= 0) \
         ? (((p) <   1) ? (s1)  /*  0  -  0  ==>  B0      */  \

@@ -74,48 +74,8 @@
 #define USI_TWI_MISSING_START_CON 0x07 // Generated Start Condition not detected on bus
 #define USI_TWI_MISSING_STOP_CON 0x08  // Generated Stop Condition not detected on bus
 
-// Device dependant defines
-#if __GNUC__
-#include "usi_io.h"
-#else //__GNUC__
-#if defined(__AT90Mega169__) || defined(__ATmega169__) || defined(__AT90Mega165__) || defined(__ATmega165__)           \
-    || defined(__ATmega325__) || defined(__ATmega3250__) || defined(__ATmega645__) || defined(__ATmega6450__)          \
-    || defined(__ATmega329__) || defined(__ATmega3290__) || defined(__ATmega649__) || defined(__ATmega6490__)
-#define DDR_USI DDRE
-#define PORT_USI PORTE
-#define PIN_USI PINE
-#define PORT_USI_SDA PORTE5
-#define PORT_USI_SCL PORTE4
-#define PIN_USI_SDA PINE5
-#define PIN_USI_SCL PINE4
-#endif
 
-#if defined(__ATtiny25__) || defined(__ATtiny45__) || defined(__ATtiny85__) || defined(__AT90Tiny26__)                 \
-    || defined(__ATtiny26__)
-#define DDR_USI DDRB
-#define PORT_USI PORTB
-#define PIN_USI PINB
-#define PORT_USI_SDA PORTB0
-#define PORT_USI_SCL PORTB2
-#define PIN_USI_SDA PINB0
-#define PIN_USI_SCL PINB2
-#endif
-
-#if defined(__AT90Tiny2313__) || defined(__ATtiny2313__)
-#define DDR_USI DDRB
-#define PORT_USI PORTB
-#define PIN_USI PINB
-#define PORT_USI_SDA PORTB5
-#define PORT_USI_SCL PORTB7
-#define PIN_USI_SDA PINB5
-#define PIN_USI_SCL PINB7
-#endif
-#ifndef DDR_USI_CL
-#define DDR_USI_CL DDR_USI
-#define PORT_USI_CL PORT_USI
-#define PIN_USI_CL PIN_USI
-#endif
-#endif //__GNUC__
+#include "pins_arduino.h"
 
 // General defines
 #define TRUE 1
