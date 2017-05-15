@@ -361,6 +361,9 @@ extern SPIClass SPI;
 #define SPI_CLOCK_DIV8 0x05
 #define SPI_CLOCK_DIV32 0x06
 
+//This implementation does have transaction:
+#define SPI_HAS_TRANSACTION 1
+
 // Settings for default USI based SPI bus for different chips
 
 
