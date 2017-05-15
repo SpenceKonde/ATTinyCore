@@ -35,6 +35,16 @@
 #define MSBFIRST 1
 #endif
 
+// define SPI_AVR_EIMSK for AVR boards with external interrupt pins
+#if defined(EIMSK)
+  #define SPI_AVR_EIMSK  EIMSK
+#elif defined(GICR)
+  #define SPI_AVR_EIMSK  GICR
+#elif defined(GIMSK)
+  #define SPI_AVR_EIMSK  GIMSK
+#endif
+
+
 #ifdef SPDR //Then we have hardware SPI, let's use it:
 
 // SPI_HAS_TRANSACTION means SPI has beginTransaction(), endTransaction(),
@@ -80,15 +90,6 @@
 #define SPI_MODE_MASK 0x0C  // CPOL = bit 3, CPHA = bit 2 on SPCR
 #define SPI_CLOCK_MASK 0x03  // SPR1 = bit 1, SPR0 = bit 0 on SPCR
 #define SPI_2XCLOCK_MASK 0x01  // SPI2X = bit 0 on SPSR
-
-// define SPI_AVR_EIMSK for AVR boards with external interrupt pins
-#if defined(EIMSK)
-  #define SPI_AVR_EIMSK  EIMSK
-#elif defined(GICR)
-  #define SPI_AVR_EIMSK  GICR
-#elif defined(GIMSK)
-  #define SPI_AVR_EIMSK  GIMSK
-#endif
 
 class SPISettings {
 public:
@@ -363,7 +364,7 @@ extern SPIClass SPI;
 
 //This implementation does have transaction:
 #define SPI_HAS_TRANSACTION 1
-
+#define SPI_HAS_NOTUSINGINTERRUPT 1
 // Settings for default USI based SPI bus for different chips
 
 
@@ -378,8 +379,10 @@ public:
 private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
     __attribute__((__always_inline__)) {
-    usicr=(bitOrder==SPI_MODE1)?0x1E:0x1A;
+    usicr=(dataMode==SPI_MODE1)?0x1E:0x1A;
+    reverse=bitOrder;
   }
+  uint8_t reverse;
   uint8_t usicr;
   friend class tinySPI;
 };
@@ -405,19 +408,18 @@ class tinySPI
   static void setDataMode(uint8_t dataMode);
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  static void setClockDivider(uint8_t clockDiv);
-  // These undocumented functions should not be used.  SPI.transfer()
-  // polls the hardware flag which is automatically cleared as the
-  // AVR responds to SPI's interrupt
-  //inline static void attachInterrupt() { SPCR |= _BV(SPIE); }
-  //inline static void detachInterrupt() { SPCR &= ~_BV(SPIE); }
+  static void setClockDivider(uint8_t clockDiv); //Not yet implemented
+ 
+ 
+  static void usingInterrupt(uint8_t interruptNumber);
+  static void notUsingInterrupt(uint8_t interruptNumber);
 
 private:
   static uint8_t initialized;
   static uint8_t reversebit;
-  //static uint8_t interruptMode; // 0=none, 1=mask, 2=global
-  //static uint8_t interruptMask; // which interrupts to mask
-  //static uint8_t interruptSave; // temp storage, to restore state
+  static uint8_t interruptMode; // 0=none, 1=mask, 2=global
+  static uint8_t interruptMask; // which interrupts to mask
+  static uint8_t interruptSave; // temp storage, to restore state
 };
 
 extern tinySPI SPI;
