@@ -249,6 +249,9 @@ tinySPI::tinySPI()
 uint8_t tinySPI::reversebit=0;
 uint8_t tinySPI::initialized=0;
 
+uint8_t tinySPI::interruptMode = 0;
+uint8_t tinySPI::interruptMask = 0;
+uint8_t tinySPI::interruptSave = 0;
 void tinySPI::begin(void)
 {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
