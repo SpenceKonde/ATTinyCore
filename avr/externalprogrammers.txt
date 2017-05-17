@@ -44,3 +44,8 @@ usbtinyisp2.protocol=usbtiny
 usbtinyisp2.program.tool=avrdude
 usbtinyisp2.program.speed=8
 usbtinyisp2.program.extra_params=-B{program.speed}
+
+dragon.name=AVR Dragon ISP mode
+dragon.communication=usb
+dragon.protocol=dragon_isp
+dragon.program.tool=avrdude
