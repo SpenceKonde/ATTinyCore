@@ -39,8 +39,8 @@
 #define digitalPinHasPWM(p)         ((p) == 5 || (p) == 6 || (p) == 7 || (p) == 8)
 
 #define SS   3
-#define MOSI 6
-#define MISO 5
+#define MOSI 5
+#define MISO 6
 #define SCK  4
 
 
