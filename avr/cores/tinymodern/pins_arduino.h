@@ -113,8 +113,8 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define PORT_B_ID 2
 #define PORT_C_ID 3
 
-#define MISO 15
-#define MOSI 16
+#define MISO 16
+#define MOSI 15
 #define SCK 12
 #define USI_DDR_PORT DDRB
 #define USI_SCK_PORT DDRC
