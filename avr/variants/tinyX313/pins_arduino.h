@@ -17,8 +17,8 @@
 #define digitalPinHasPWM(p)         ((p) == 7 || (p) == 11 || (p) == 12 || (p) == 13)
 
 #define SS   10
-#define MOSI 14
-#define MISO 15
+#define MOSI 15
+#define MISO 14
 #define SCK  16
 
 #define USI_DDR_PORT DDRB
