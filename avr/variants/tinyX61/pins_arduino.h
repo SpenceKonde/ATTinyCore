@@ -38,8 +38,8 @@
 #define digitalPinHasPWM(p)          ((p) == 4 || (p) == 6 || (p) == 8)
 
 #define SS   6
-#define MOSI 9
-#define MISO 8
+#define MOSI 8
+#define MISO 9
 #define SCK  7
 
 #define USI_DDR_PORT DDRB
