@@ -66,7 +66,8 @@ For those who prefer to compile with a makefile instead of the IDE, sketches can
 I2C support
 ------------
 
-On the following chips, I2C functionality can be achieved with the hardware USI, using a library like TinyWireM. This library has the necessary #defines for use with these parts: https://github.com/SpenceKonde/TinyWireM.
+On the following chips, I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the Wire library. 
+
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (262/461/861)
@@ -74,17 +75,17 @@ On the following chips, I2C functionality can be achieved with the hardware USI,
 * ATtiny x313 (2313/4313)
 * ATtiny 1634
 
-On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. Use https://github.com/orangkucing/WireS for hardware slave functionality, or https://github.com/todbot/SoftI2CMaster for software implementation of I2C master. 
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. Use https://github.com/orangkucing/WireS for hardware slave functionality, or https://github.com/todbot/SoftI2CMaster for software implementation of I2C master. Support for this within the Wire library is planned for a future release (#133)
 * ATtiny 828
 * ATtiny x41 (441/841)
 
-On the following chips, full master/slave I2C functionality is provided in hardware allowing use of the normal Wire library:
+On the following chips, full master/slave I2C functionality is provided in hardware and the Wire library uses it:
 * ATtiny x8 (48, 88)
 
 SPI support:
 ------------
 
-On the following chips, SPI functionality can be achieved with the hardware USI, using an SPI USI library. 
+On the following chips, SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the **USI does not have MISO/MOSI, it has DI/DO**; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common).  
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (262/461/861)
@@ -92,9 +93,9 @@ On the following chips, SPI functionality can be achieved with the hardware USI,
 * ATtiny x313 (2313/4313)
 * ATtiny 1634
 
-On the following chips, full SPI functionality is provided in hardware allowing use of the normal SPI library:
+On the following chips, full SPI functionality is provided in hardware, and works identically to SPI on Atmega chips:
 * ATtiny 828
-* ATtiny x7 (87/167) (it has both a USI and full SPI)
+* ATtiny x7 (87/167) (it has both a USI and full SPI, but the SPI library will use the SPI hardware)
 * ATtiny x41 (441/841)
 * ATtiny x8 (48, 88)
 
@@ -103,20 +104,25 @@ Serial Support
 
 On the following chips, full serial (UART) support is provided in hardware, as Serial (and Serial1 for parts with two serial ports):
 * ATtiny x313 (2313/4313)
-* ATtiny x7 (87/167 - LIN support)
+* ATtiny x7 (87/167 - LIN support, including a very fancy baud rate generator)
 * ATtiny x41 (441/841 - two UARTs)
 * ATtiny 1634 (two UARTs)
 * ATtiny 828
 
-On the following chips, no hardware serial is available, however, a built-in software serial is provided. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs); the serial is named Serial, to maximize code-compatibility. TX is AIN0, RX is AIN1. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
+On the following chips, **no hardware serial is available**, however, a built-in software serial named Serial is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** - be aware that a Serial.begin() will make these pins unusable for other purposes. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (261/461/861)
 * ATtiny x8 (48/88)
 
-These cores are compatible with the usual SoftwareSerial library. 
+This core is also fully compatible with the usual SoftwareSerial library. 
 
-Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. There are two exceptions to this: the ATtiny x41 series, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v) use an external crystal or other clock source.
+**Warning: Internal oscillator and Serial**
+Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. 
+
+There is an exception to this: the ATtiny x41 series, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications - though it is often possible to experimentally . The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v) use an external crystal.**
+
+A tuning sketch is planned for a future version of this core. (#139)
 
 ADC Support
 -------
@@ -200,7 +206,7 @@ Caveats
 ----------
 
 
-* Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each batch of programming operation. This may be due to bugs in USBAsp firmware - See this thread on the Arduino forums for information on updated USBAsp firmware: http://forum.arduino.cc/index.php?topic=363772 (Links to the new firmware are on pages 5~6 of that thread - the beginning is largely a discussion of the inadequacies of the existing firmware)
+* Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible. ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each programming operation. This may be due to bugs in USBAsp firmware - See this thread on the Arduino forums for information on updated USBAsp firmware: http://forum.arduino.cc/index.php?topic=363772 (Links to the new firmware are on pages 5~6 of that thread - the beginning is largely a discussion of the inadequacies of the existing firmware)
 * At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that neither serial (and hence the bootloader) does not work. It is recommended to run at 3.3v if using internal RC oscillator as a clock source - however, for these chips, a workaround is provided. This takes the form of a bootloader compiled assuming the chip is running a little fast, so that UART communication will work, and a matching board definition that tries to compensate by assuming the chip is running at 8.2mhz instead of 8. If you wish to handle tuning of the oscillator in your sketch (this means that serial won't work and timing will be off until you do something about it), you can use the 5v workaround as the bootloader but compile assuming 8mhz - select that option when you burn bootloader, but not when compiling and uploading. (New feature added in version 1.1.2)
 
 Acknowledgements
