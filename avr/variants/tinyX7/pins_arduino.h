@@ -48,6 +48,23 @@
 #define SDA 13
 #define SCL 11
 
+
+#  define DDR_USI DDRB
+#  define PORT_USI PORTB
+#  define PIN_USI PINB
+#  define PORT_USI_SDA PORTB0
+#  define PORT_USI_SCL PORTB2
+#  define PIN_USI_SDA PINB0
+#  define PIN_USI_SCL PINB2
+#  define USI_START_VECTOR USI_START_vect
+#  define USI_OVERFLOW_VECTOR USI_OVF_vect
+#  define DDR_USI_CL DDR_USI
+#  define PORT_USI_CL PORT_USI
+#  define PIN_USI_CL PIN_USI
+#ifndef USI_START_COND_INT
+#  define USI_START_COND_INT USISIF
+#endif
+
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = 0;
 static const uint8_t A1 = 1;

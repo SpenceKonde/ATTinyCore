@@ -47,6 +47,21 @@
 #define USCK_DD_PIN DDB2
 #define DO_DD_PIN DDB0
 #define DI_DD_PIN DDB1
+#  define DDR_USI DDRB
+#  define PORT_USI PORTB
+#  define PIN_USI PINB
+#  define PORT_USI_SDA PB0
+#  define PORT_USI_SCL PB2
+#  define PIN_USI_SDA PINB0
+#  define PIN_USI_SCL PINB2
+#  define USI_START_VECTOR USI_START_vect
+#  define USI_OVERFLOW_VECTOR USI_OVF_vect
+#  define DDR_USI_CL DDR_USI
+#  define PORT_USI_CL PORT_USI
+#  define PIN_USI_CL PIN_USI
+#ifndef USI_START_COND_INT
+#  define USI_START_COND_INT USISIF
+#endif
 
 static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
