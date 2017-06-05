@@ -46,11 +46,7 @@ void analogReference(uint8_t mode)
 
 int analogRead(int8_t pin)
 {
-  #if defined( CORE_ANALOG_FIRST )
-    if ( pin >= CORE_ANALOG_FIRST ) pin -= CORE_ANALOG_FIRST; // allow for channel or pin numbers
-  #endif
-
-  // fix? Validate pin?
+  pin&=127; //This should be called with an A# constant (channel number + 128), or a channel number. 
 
   ADC_SetVoltageReference( analog_reference );
   ADC_SetInputChannel( pin );
