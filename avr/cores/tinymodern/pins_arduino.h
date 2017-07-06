@@ -102,6 +102,8 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define portPcMaskRegister(P) (P==1?&PCMSK0:(P?&PCMSK2:NOT_A_PORT ))
 #define portPullupRegister(P) (P==1?&PUEA:(P?&PUEB:NOT_A_PORT ))
 
+#define analogInputToDigitalPin(p)  ((p < 9) ? 10 -(p): (p==9)?11:(11-(p)))
+
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
 #define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
@@ -159,6 +161,7 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define digitalPinToPCMSKbit(p) digitalPinToPCX( p, p,       8-p,     14-p,    13-p,    17-p,    0    )
 
 
+#define analogInputToDigitalPin(p)  ((p < 6) ? 5 -(p):(22-(p)))
 
 #endif
 
@@ -172,6 +175,8 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define MOSI 24
 #define SCK 27
 
+
+#define analogInputToDigitalPin(p)  (p)
 
 #define digitalPinToPCICR(p)    (&PCICR)
 #define digitalPinToPCICRbit(p) (1<<(p>>3))

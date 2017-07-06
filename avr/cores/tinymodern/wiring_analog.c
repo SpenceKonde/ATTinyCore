@@ -46,10 +46,11 @@ void analogReference(uint8_t mode)
 
 int analogRead(int8_t pin)
 {
-  #if defined( CORE_ANALOG_FIRST )
-    if ( pin >= CORE_ANALOG_FIRST ) pin -= CORE_ANALOG_FIRST; // allow for channel or pin numbers
-  #endif
+  //#if defined( CORE_ANALOG_FIRST )
+  //  if ( pin >= CORE_ANALOG_FIRST ) pin -= CORE_ANALOG_FIRST; // allow for channel or pin numbers
+  //#endif
 
+  if (pin & 128) {pin=pin&127;}
   // fix? Validate pin?
 
   ADC_SetVoltageReference( analog_reference );
