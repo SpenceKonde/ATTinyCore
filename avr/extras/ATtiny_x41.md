@@ -23,7 +23,7 @@ This core includes an Optiboot bootloader for the ATtiny841, operating on the ha
 The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the slightly more expensive 1634R. +/- 2% is good enough for serial communication. However, this spec is only valid below 4v - above 4v, the oscillator runs significantly faster; enough so that serial communication does not work. This would interfere with uploads using the bootloader - to work around this, a version of Optiboot is included built assuming the slightly higher operating frequency; this will be used if you select the >4.0v operating voltage prior to doing Burn Bootloader. It is recommended to use a crystal when using the serial ports above 3.3v for this reason. 
 
 ### I2C Support
-There is no I2C master functionality implemented in hardware, so SoftI2CMaster or similar library is required to act as an I2C master. I2C slave functionality is also available in hardware (use WireS library)
+There is no I2C master functionality implemented in hardware. As of version 1.1.3, the included Wire.h library will use a software implementation to provide I2C master functionality, and the hardware I2C slave for slave functionality, and can be used as a drop-in replacement for Wire.h with the caveat that clock speed cannot be set. 
 
 ### SPI Support
 There is hardware SPI support. Use the normal SPI module. 
@@ -35,5 +35,5 @@ There are two hardware serial ports, Serial and Serial1. It works the same as Se
 I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core. 
 
 ![Picture of ATTiny841 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2015-06-16T05:30:56.533Z-T841RA_Assembled.png.855x570_q85_pad_rcrop.png)
-###[Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot-assembled/)
-###[Bare Boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout-wserial-header-bare-board/)
+### [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot-assembled/)
+### [Bare Boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout-wserial-header-bare-board/)
