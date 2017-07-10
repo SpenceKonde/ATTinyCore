@@ -1,6 +1,7 @@
 
 ### ATtiny 441/841
 ![x41 Pin Mapping](http://drazzy.com/e/products/img/PinoutT841_fixed.png "Arduino Pin Mapping for ATtiny x41")
+
  Specifications |  .
 ------------ | -------------
 Flash (program memory)   | 4096b / 8192b ( 7552b with bootloader)
