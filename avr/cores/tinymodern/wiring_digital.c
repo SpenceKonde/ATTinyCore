@@ -35,6 +35,9 @@
 #if defined(__AVR_ATtinyX41__ ) || defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny828__)
 void pinMode(uint8_t pin, uint8_t mode)
 {
+  #ifndef __AVR_ATtiny828__
+  if (pin&64) {pin=analogInputToDigitalPin(pin&63);}
+  #endif
   uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *reg, *out, *pue;
@@ -72,6 +75,9 @@ void pinMode(uint8_t pin, uint8_t mode)
 
 void pinMode(uint8_t pin, uint8_t mode)
 {
+  #ifndef __AVR_ATtiny828__
+  if (pin&64) {pin=analogInputToDigitalPin(pin&63);}
+  #endif
   uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *reg, *out;
@@ -173,6 +179,9 @@ __attribute__((always_inline)) static inline void turnOffPWM( uint8_t pin )
 
 void digitalWrite(uint8_t pin, uint8_t val)
 {
+  #ifndef __AVR_ATtiny828__
+  if (pin&64) {pin=analogInputToDigitalPin(pin&63);}
+  #endif
   uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out, *pue;
@@ -204,6 +213,9 @@ void digitalWrite(uint8_t pin, uint8_t val)
 
 void digitalWrite(uint8_t pin, uint8_t val)
 {
+  #ifndef __AVR_ATtiny828__
+  if (pin&64) {pin=analogInputToDigitalPin(pin&63);}
+  #endif
   uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out;
@@ -232,6 +244,7 @@ void digitalWrite(uint8_t pin, uint8_t val)
 
 int digitalRead(uint8_t pin)
 {
+  if (pin&128) {pin=analogInputToDigitalPin(pin&127);}
 	uint8_t bit = digitalPinToBitMask(pin);
 	uint8_t port = digitalPinToPort(pin);
 

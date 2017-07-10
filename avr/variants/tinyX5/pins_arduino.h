@@ -71,10 +71,10 @@ static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = 0;
-static const uint8_t A1 = 1;
-static const uint8_t A2 = 2;
-static const uint8_t A3 = 3;
+static const uint8_t A0 = 0x80 & 0;
+static const uint8_t A1 = 0x80 & 1;
+static const uint8_t A2 = 0x80 & 2;
+static const uint8_t A3 = 0x80 & 3;
 
 #define PIN_B0  ( 0)
 #define PIN_B1  ( 1)
