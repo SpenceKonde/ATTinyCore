@@ -49,9 +49,9 @@ int analogRead(int8_t pin)
   //#if defined( CORE_ANALOG_FIRST )
   //  if ( pin >= CORE_ANALOG_FIRST ) pin -= CORE_ANALOG_FIRST; // allow for channel or pin numbers
   //#endif
-
-  if (pin & 128) {pin=pin&127;}
-  // fix? Validate pin?
+  #ifndef __AVR_ATtiny828__
+  if (pin & 64) {pin=pin&63;}
+  #endif
 
   ADC_SetVoltageReference( analog_reference );
   ADC_SetInputChannel( pin );
