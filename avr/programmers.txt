@@ -52,3 +52,17 @@ dragon.protocol=dragon_isp
 dragon.program.tool=avrdude
 usbtinyisp2.program.extra_params=-Pusb
 
+ponyser.name=Ponyser Programmer (ATTinyCore)
+
+ponyser.communication=serial
+
+ponyser.protocol=ponyser
+
+ponyser.program.tool=avrdude
+
+ponyser.program.protocol=ponyser
+
+ponyser.program.tool=avrdude
+
+ponyser.program.extra_params=-P{serial.port}
+
