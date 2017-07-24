@@ -66,17 +66,17 @@
 #endif
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = 0x80 & 0;
-static const uint8_t A1 = 0x80 & 1;
-static const uint8_t A2 = 0x80 & 2;
-static const uint8_t A3 = 0x80 & 3;
-static const uint8_t A4 = 0x80 & 4;
-static const uint8_t A5 = 0x80 & 5;
-static const uint8_t A6 = 0x80 & 6;
-static const uint8_t A7 = 0x80 & 7;
-static const uint8_t A8 = 0x80 & 8;
-static const uint8_t A9 = 0x80 & 9;
-static const uint8_t A10 = 0x80 & 10;
+static const uint8_t A0 = 0x80 | 0;
+static const uint8_t A1 = 0x80 | 1;
+static const uint8_t A2 = 0x80 | 2;
+static const uint8_t A3 = 0x80 | 3;
+static const uint8_t A4 = 0x80 | 4;
+static const uint8_t A5 = 0x80 | 5;
+static const uint8_t A6 = 0x80 | 6;
+static const uint8_t A7 = 0x80 | 7;
+static const uint8_t A8 = 0x80 | 8;
+static const uint8_t A9 = 0x80 | 9;
+static const uint8_t A10 = 0x80 | 10;
 #define LED_BUILTIN (4)
 
 //----------------------------------------------------------
