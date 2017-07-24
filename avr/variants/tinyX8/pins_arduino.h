@@ -81,14 +81,14 @@ static const uint8_t SDA = 21;
 static const uint8_t SCL = 22;
 static const uint8_t LED_BUILTIN = 13;
 
-static const uint8_t A0 = 0x80 & 0;
-static const uint8_t A1 = 0x80 & 1;
-static const uint8_t A2 = 0x80 & 2;
-static const uint8_t A3 = 0x80 & 3;
-static const uint8_t A4 = 0x80 & 4;
-static const uint8_t A5 = 0x80 & 5;
-static const uint8_t A6 = 0x80 & 6;
-static const uint8_t A7 = 0x80 & 7;
+static const uint8_t A0 = 0x80 | 0;
+static const uint8_t A1 = 0x80 | 1;
+static const uint8_t A2 = 0x80 | 2;
+static const uint8_t A3 = 0x80 | 3;
+static const uint8_t A4 = 0x80 | 4;
+static const uint8_t A5 = 0x80 | 5;
+static const uint8_t A6 = 0x80 | 6;
+static const uint8_t A7 = 0x80 | 7;
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 26) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 22) ? 1 : 3)))
