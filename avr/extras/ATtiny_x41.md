@@ -46,7 +46,7 @@ The names of interrupt vectors used in the 841 and 441 are:
 INT0_vect
 PCINT0_vect
 PCINT1_vect
-WDT_vect
+WDT_vect   (note: this is unavailable when using Optiboot. The IDE will not warn you about this)
 TIMER1_CAPT_vect
 TIMER1_COMPA_vect
 TIMER1_COMPB_vect
