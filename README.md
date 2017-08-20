@@ -20,6 +20,8 @@ This core supports the following processors - essentially every ATtiny processor
 * [ATTiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
 * [ATTiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
 
+Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
+
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
 **When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using a chip with a bootloader** 
@@ -55,7 +57,9 @@ External crystal (x41, 1634 only, in addition to above):
 * 9.216 MHz
 * 7.37 MHz
 
-**Warning** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. Millis() is not effected, only micros() and delay() (where it doesn't matter for this core, since it still returns correct results). The "stock" micros() executes equally fast at all clock speeds, but returns wrong values with anything that 64 doesn't divide evenly by.
+**Warning** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. Millis() is not effected, only micros() and delay(). 
+
+This differs from the behavior of official Arduino boards - the "stock" micros() executes equally fast at all clock speeds, but returns wrong values with anything that 64 doesn't divide evenly by.
 
 Link-time Optimization (LTO) support
 ------------
