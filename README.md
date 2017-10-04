@@ -72,7 +72,7 @@ For those who prefer to compile with a makefile instead of the IDE, sketches can
 I2C support
 ------------
 
-On the following chips, I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the Wire library. 
+On the following chips, I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core.  
 
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
@@ -81,7 +81,7 @@ On the following chips, I2C functionality can be achieved with the hardware USI.
 * ATtiny x313 (2313/4313)
 * ATtiny 1634
 
-On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. Use https://github.com/orangkucing/WireS for hardware slave functionality, or https://github.com/todbot/SoftI2CMaster for software implementation of I2C master. Support for this within the Wire library is planned for a future release (#133)
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library. 
 * ATtiny 828
 * ATtiny x41 (441/841)
 
