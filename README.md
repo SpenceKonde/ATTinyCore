@@ -115,7 +115,7 @@ On the following chips, full serial (UART) support is provided in hardware, as S
 * ATtiny 1634 (two UARTs)
 * ATtiny 828
 
-On the following chips, **no hardware serial is available**, however, a built-in software serial named Serial is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** - be aware that a Serial.begin() will make these pins unusable for other purposes. This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
+On the following chips, **no hardware serial is available**, however, a built-in software serial named Serial is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (261/461/861)
