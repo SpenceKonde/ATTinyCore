@@ -231,24 +231,62 @@ endif
 
 
 
+
+attiny167at18: TARGET = attiny167
+attiny167at18: MCU_TARGET = attiny167
+attiny167at18: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny167at18: AVR_FREQ ?= 18432000L
+attiny167at18: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny167at18: $(PROGRAM)_attiny167_18432000L.hex
+attiny167at18: $(PROGRAM)_attiny167_18432000L.lst
+
 attiny167at16: TARGET = attiny167
 attiny167at16: MCU_TARGET = attiny167
 attiny167at16: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
 attiny167at16: AVR_FREQ ?= 16000000L
-attiny167at16: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
-attiny167at16: $(PROGRAM)_attiny87_16000000L.hex
-attiny167at16: $(PROGRAM)_attiny87_16000000L.lst
+attiny167at16: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny167at16: $(PROGRAM)_attiny167_16000000L.hex
+attiny167at16: $(PROGRAM)_attiny167_16000000L.lst
 
+attiny167at14: TARGET = attiny167
+attiny167at14: MCU_TARGET = attiny167
+attiny167at14: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny167at14: AVR_FREQ ?= 14745600L
+attiny167at14: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny167at14: $(PROGRAM)_attiny167_14745600L.hex
+attiny167at14: $(PROGRAM)_attiny167_14745600L.lst
+
+attiny167at11: TARGET = attiny167
+attiny167at11: MCU_TARGET = attiny167
+attiny167at11: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny167at11: AVR_FREQ ?= 11059200L
+attiny167at11: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny167at11: $(PROGRAM)_attiny167_11059200L.hex
+attiny167at11: $(PROGRAM)_attiny167_11059200L.lst
+
+attiny167at9: TARGET = attiny167
+attiny167at9: MCU_TARGET = attiny167
+attiny167at9: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
+attiny167at9: AVR_FREQ ?= 9216000L
+attiny167at9: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny167at9: $(PROGRAM)_attiny167_9216000L.hex
+attiny167at9: $(PROGRAM)_attiny167_9216000L.lst
 
 attiny167at8: TARGET = attiny167
 attiny167at8: MCU_TARGET = attiny167
 attiny167at8: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
 attiny167at8: AVR_FREQ ?= 8000000L
-attiny167at8: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167at8: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny167at8: $(PROGRAM)_attiny167_8000000L.hex
 attiny167at8: $(PROGRAM)_attiny167_8000000L.lst
 
-
+attiny167at7: TARGET = attiny167
+attiny167at7: MCU_TARGET = attiny167
+attiny167at7: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
+attiny167at7: AVR_FREQ ?= 7372800L
+attiny167at7: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny167at7: $(PROGRAM)_attiny167_7372800L.hex
+attiny167at7: $(PROGRAM)_attiny167_7372800L.lst
 
 attiny167at12: TARGET = attiny167
 attiny167at12: MCU_TARGET = attiny167
@@ -258,6 +296,13 @@ attiny167at12: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-star
 attiny167at12: $(PROGRAM)_attiny167_12000000L.hex
 attiny167at12: $(PROGRAM)_attiny167_12000000L.lst
 
+attiny87at18: TARGET = attiny87
+attiny87at18: MCU_TARGET = attiny87
+attiny87at18: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny87at18: AVR_FREQ ?= 18432000L
+attiny87at18: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at18: $(PROGRAM)_attiny87_18432000L.hex
+attiny87at18: $(PROGRAM)_attiny87_18432000L.lst
 
 attiny87at16: TARGET = attiny87
 attiny87at16: MCU_TARGET = attiny87
@@ -267,6 +312,29 @@ attiny87at16: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start
 attiny87at16: $(PROGRAM)_attiny87_16000000L.hex
 attiny87at16: $(PROGRAM)_attiny87_16000000L.lst
 
+attiny87at14: TARGET = attiny87
+attiny87at14: MCU_TARGET = attiny87
+attiny87at14: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny87at14: AVR_FREQ ?= 14745600L
+attiny87at14: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at14: $(PROGRAM)_attiny87_14745600L.hex
+attiny87at14: $(PROGRAM)_attiny87_14745600L.lst
+
+attiny87at11: TARGET = attiny87
+attiny87at11: MCU_TARGET = attiny87
+attiny87at11: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny87at11: AVR_FREQ ?= 11059200L
+attiny87at11: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at11: $(PROGRAM)_attiny87_11059200L.hex
+attiny87at11: $(PROGRAM)_attiny87_11059200L.lst
+
+attiny87at9: TARGET = attiny87
+attiny87at9: MCU_TARGET = attiny87
+attiny87at9: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
+attiny87at9: AVR_FREQ ?= 9216000L
+attiny87at9: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at9: $(PROGRAM)_attiny87_9216000L.hex
+attiny87at9: $(PROGRAM)_attiny87_9216000L.lst
 
 attiny87at8: TARGET = attiny87
 attiny87at8: MCU_TARGET = attiny87
@@ -276,6 +344,13 @@ attiny87at8: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=
 attiny87at8: $(PROGRAM)_attiny87_8000000L.hex
 attiny87at8: $(PROGRAM)_attiny87_8000000L.lst
 
+attiny87at7: TARGET = attiny87
+attiny87at7: MCU_TARGET = attiny87
+attiny87at7: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DBAUD_RATE=57600'
+attiny87at7: AVR_FREQ ?= 7372800L
+attiny87at7: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87at7: $(PROGRAM)_attiny87_7372800L.hex
+attiny87at7: $(PROGRAM)_attiny87_7372800L.lst
 
 
 attiny87at12: TARGET = attiny87
