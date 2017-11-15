@@ -180,7 +180,7 @@ Note that analog pin numbers (ex A0 ) cannot be used with digitalWrite()/digital
 Hardware
 ============
 
-To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a 
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a regulator, the ones specified for the regulator are typically sufficient for this. If the power supply rail is shared with higher power devices that will be switched on and off during operation, larger capacitors may be necessary. 
 
 
 For use with Optiboot, the following additional components and connections are required:
