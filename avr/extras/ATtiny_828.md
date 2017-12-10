@@ -24,10 +24,10 @@ The ATtiny 828, in the interest of lowering costs, does not provide support for 
 The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the slightly more expensive 828R. +/- 2% is good enough for serial communication. However, this spec is only valid below 4v - above 4v, the oscillator runs significantly faster; enough so that serial communication does not work. This would interfere with uploads using the bootloader - to work around this, a version of Optiboot is included built assuming the slightly higher operating frequency; this will be used if you select the >4.0v operating voltage prior to doing Burn Bootloader. 
 
 ### I2C Support
-There is no I2C master functionality implemented in hardware - you must use a software implementation like SoftI2CMaster for I2C master. I2C slave functionality is available in hardware (use WireS library)
+Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire library.
 
 ### SPI Support
-There is full Hardware SPI supply. Use the normal SPI library. 
+There is full Hardware SPI support
 
 ### UART (Serial) Support
 There is one hardware serial port, Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. 
