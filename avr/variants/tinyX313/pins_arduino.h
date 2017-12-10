@@ -99,7 +99,7 @@ static const uint8_t SCL = 16;
 #define digitalPinToPCMSKbit(p) ((p) - 9)
 
 
-#define digitalPinToInterrupt(p)  ((p) == 5 ? 0 : ((p)==4?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)  ((p) == 5 ? 1 : ((p)==4?0: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 // On the Arduino board, digital pins are also used
