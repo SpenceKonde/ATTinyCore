@@ -348,7 +348,7 @@ void tinySPI::transfer(void *buf, size_t count) {
  *p = USIDR;
 }
 
-static void tinySPI::beginTransaction(SPISettings settings) {
+void tinySPI::beginTransaction(SPISettings settings) {
     if (interruptMode > 0) {
       uint8_t sreg = SREG;
       noInterrupts();
@@ -368,7 +368,7 @@ static void tinySPI::beginTransaction(SPISettings settings) {
     reversebit=settings.reverse;
   }
 
-static void tinySPI::endTransaction(void) {
+void tinySPI::endTransaction(void) {
   if (interruptMode > 0) {
     #ifdef SPI_AVR_EIMSK
     uint8_t sreg = SREG;
