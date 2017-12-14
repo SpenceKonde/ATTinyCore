@@ -352,15 +352,13 @@ extern SPIClass SPI;
 #define SPI_MODE0 0x00
 #define SPI_MODE1 0x04
 
-// CD - Following is currently ignored, but needed for some devices that use SPI libraries
-//      Future version may use these values for delays in the software driven tinySPI USI code
-#define SPI_CLOCK_DIV4 0x00
-#define SPI_CLOCK_DIV16 0x01
-#define SPI_CLOCK_DIV64 0x02
-#define SPI_CLOCK_DIV128 0x03
-#define SPI_CLOCK_DIV2 0x04
-#define SPI_CLOCK_DIV8 0x05
-#define SPI_CLOCK_DIV32 0x06
+#define SPI_CLOCK_DIV2       2
+#define SPI_CLOCK_DIV4       4
+#define SPI_CLOCK_DIV8       8
+#define SPI_CLOCK_DIV16     16
+#define SPI_CLOCK_DIV32     32
+#define SPI_CLOCK_DIV64     64
+#define SPI_CLOCK_DIV128   128
 
 //This implementation does have transaction:
 #define SPI_HAS_TRANSACTION 1
@@ -379,11 +377,13 @@ public:
 private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
     __attribute__((__always_inline__)) {
-    usicr=(dataMode==SPI_MODE1)?0x1E:0x1A;
-    reverse=bitOrder;
+    usicr = (dataMode == SPI_MODE1) ? 0x1E : 0x1A;
+    msb1st = bitOrder;
+    clockdiv = F_CPU / clock;
   }
-  uint8_t reverse;
+  uint8_t msb1st;
   uint8_t usicr;
+  uint8_t clockdiv;
   friend class tinySPI;
 };
 
@@ -391,7 +391,6 @@ class tinySPI
 {
  public:
   tinySPI();
-  static uint8_t reverse(uint8_t x);
   static void begin();
   static void beginTransaction(SPISettings settings);
   static uint8_t transfer(uint8_t data);
@@ -402,13 +401,13 @@ class tinySPI
 
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  inline static void setBitOrder(uint8_t bitOrder) {reversebit=bitOrder;}
+  inline static void setBitOrder(uint8_t bitOrder) {msb1st = bitOrder;}
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
   static void setDataMode(uint8_t dataMode);
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  static void setClockDivider(uint8_t clockDiv); //Not yet implemented
+  static void setClockDivider(uint8_t clockDiv);
  
  
   static void usingInterrupt(uint8_t interruptNumber);
@@ -416,7 +415,9 @@ class tinySPI
 
 private:
   static uint8_t initialized;
-  static uint8_t reversebit;
+  static uint8_t msb1st;
+  static uint8_t clockdiv;
+  static uint8_t (*clockoutfn)(uint8_t,uint8_t);
   static uint8_t interruptMode; // 0=none, 1=mask, 2=global
   static uint8_t interruptMask; // which interrupts to mask
   static uint8_t interruptSave; // temp storage, to restore state
