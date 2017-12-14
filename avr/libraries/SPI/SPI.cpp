@@ -372,11 +372,15 @@ void tinySPI::setClockDivider(uint8_t div)
 
 uint8_t tinySPI::transfer(uint8_t spiData)
 {
-    uint8_t retval = clockoutfn((msb1st ? spiData : reverse(spiData)), clockdiv);
-    return msb1st ? retval : reverse(retval);
+    if (msb1st) {
+        return clockoutfn(spiData, clockdiv);
+    } else {
+        return reverse(clockoutfn(reverse(spiData), clockdiv));
+    }
 }
 
-uint16_t tinySPI::transfer16(uint16_t data) {
+uint16_t tinySPI::transfer16(uint16_t data)
+{
     union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } tmp;
     tmp.val = data;
     if (msb1st) {
