@@ -349,24 +349,21 @@ static uint8_t clockoutUSI(uint8_t data, uint8_t div)
     // Low speed, do not disable interrupts.
     for (byte i = 0; i < 16; ++i) {
         USICR = tmp; // compiles to out, one cycle
-        _delay_loop_1(div); // div calculated by setClockDvider.
+        _delay_loop_1(div); // div calculated by SPISettings.
     }
     return USIDR;
 }
 
-void tinySPI::setClockDivider(uint8_t div)
+void tinySPI::dispatchClockout(uint8_t div, bool slow)
 {
-    if (div <= 2) {
+    if (slow) {
+        clockoutfn = clockoutUSI;
+    } else if (div <= 2) {
         clockoutfn = clockoutUSI2;
     } else if (div <= 4) {
         clockoutfn = clockoutUSI4;
-    } else if (div <= 8) {
-        clockoutfn = clockoutUSI8;
     } else {
-        clockoutfn = clockoutUSI;
-        // clockdiv is only relevant for this case.
-        // formula obtained by cycle counting.
-        clockdiv = (div - 10) / 6;
+        clockoutfn = clockoutUSI8;
     }
 }
 
@@ -428,7 +425,7 @@ void tinySPI::beginTransaction(SPISettings settings) {
     }
     USICR = settings.usicr;
     msb1st = settings.msb1st ;
-    setClockDivider(settings.clockdiv);
+    dispatchClockout(settings.clockdiv, settings.slow);
   }
 
 void tinySPI::endTransaction(void) {

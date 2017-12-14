@@ -379,11 +379,26 @@ private:
     __attribute__((__always_inline__)) {
     usicr = (dataMode == SPI_MODE1) ? 0x1E : 0x1A;
     msb1st = bitOrder;
-    clockdiv = F_CPU / clock;
+    calcClockdiv(clock, clockdiv, slow);
   }
+
+  static void calcClockdiv(uint32_t clock, uint8_t& clockdiv, bool& slow) {
+    clockdiv = F_CPU / clock;
+    if (clockdiv > 8) {
+      // Slow mode, convert clockdiv into delay loop count.
+      // Calculated inline to allow compile-time evaluation.
+      clockdiv = (clockdiv - 10) / 6;
+      slow = true;
+    } else {
+      // Fast mode, clockdiv applies as-is.
+      slow = false;
+    }
+  }
+
   uint8_t msb1st;
   uint8_t usicr;
   uint8_t clockdiv;
+  bool slow;
   friend class tinySPI;
 };
 
@@ -401,19 +416,25 @@ class tinySPI
 
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  inline static void setBitOrder(uint8_t bitOrder) {msb1st = bitOrder;}
+  static void setBitOrder(uint8_t bitOrder) {msb1st = bitOrder;}
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
   static void setDataMode(uint8_t dataMode);
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  static void setClockDivider(uint8_t clockDiv);
- 
- 
+  static void setClockDivider(uint8_t div) {
+      bool slow;
+      SPISettings::calcClockdiv((uint32_t)(div)*F_CPU, clockdiv, slow);
+      dispatchClockout(clockdiv, slow);
+  }
+
+
   static void usingInterrupt(uint8_t interruptNumber);
   static void notUsingInterrupt(uint8_t interruptNumber);
 
 private:
+  static void dispatchClockout(uint8_t clockDiv, bool slow);
+
   static uint8_t initialized;
   static uint8_t msb1st;
   static uint8_t clockdiv;
