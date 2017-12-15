@@ -249,7 +249,7 @@ tinySPI::tinySPI()
 }
 
 USI_impl::ClockOut tinySPI::clockoutfn = 0;
-uint8_t tinySPI::clockdiv = 0;
+uint8_t tinySPI::delay = 0;
 uint8_t tinySPI::msb1st = 0;
 uint8_t tinySPI::initialized = 0;
 
@@ -275,9 +275,9 @@ void tinySPI::setDataMode(uint8_t spiDataMode)
         USICR &= ~_BV(USICS0);
 }
 
-USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* div_out)
+USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay)
 {
-    return dispatchClockout(div, div_out);
+    return dispatchClockout(div, delay);
 }
 
 static byte reverse (byte x){
@@ -339,14 +339,14 @@ uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
         USIDR = data;
         for (byte i = 0; i < 16; ++i) {
             USICR = tmp; // compiles to out, one cycle
-            _delay_loop_1(2); // 7 cycles
+            _delay_loop_1(1); // 7 cycles, 1 cycle overhead on first bit
         }
     }
     return USIDR;
 }
 
 __attribute__((optimize ("Os")))
-uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t div)
+uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t delay)
 {
     uint8_t tmp = USICR | _BV(USITC);
     // Low speed, do not disable interrupts.
@@ -354,7 +354,7 @@ uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t div)
     USIDR = data;
     for (byte i = 0; i < 16; ++i) {
         USICR = tmp; // compiles to out, one cycle
-        _delay_loop_1(div); // div calculated by SPISettings.
+        _delay_loop_1(delay); // delay calculated by SPISettings.
     }
     return USIDR;
 }
@@ -362,9 +362,9 @@ uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t div)
 uint8_t tinySPI::transfer(uint8_t spiData)
 {
     if (msb1st) {
-        return clockoutfn(spiData, clockdiv);
+        return clockoutfn(spiData, delay);
     } else {
-        return reverse(clockoutfn(reverse(spiData), clockdiv));
+        return reverse(clockoutfn(reverse(spiData), delay));
     }
 }
 
@@ -373,11 +373,11 @@ uint16_t tinySPI::transfer16(uint16_t data)
     union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } tmp;
     tmp.val = data;
     if (msb1st) {
-        tmp.msb = clockoutfn(tmp.msb, clockdiv);
-        tmp.lsb = clockoutfn(tmp.lsb, clockdiv);
+        tmp.msb = clockoutfn(tmp.msb, delay);
+        tmp.lsb = clockoutfn(tmp.lsb, delay);
     } else {
-        tmp.lsb = reverse(clockoutfn(reverse(tmp.lsb), clockdiv));
-        tmp.msb = reverse(clockoutfn(reverse(tmp.msb), clockdiv));
+        tmp.lsb = reverse(clockoutfn(reverse(tmp.lsb), delay));
+        tmp.msb = reverse(clockoutfn(reverse(tmp.msb), delay));
     }
     return tmp.val;
 }
@@ -390,7 +390,7 @@ void tinySPI::transfer(void* _buf, size_t count) {
         }
     }
     for (uint8_t i = 0; i < count; ++i) {
-        buf[i] = clockoutfn(buf[i], clockdiv);
+        buf[i] = clockoutfn(buf[i], delay);
     }
     if (!msb1st) {
         for (uint8_t i = 0; i < count; ++i) {
@@ -417,7 +417,7 @@ void tinySPI::beginTransaction(SPISettings settings) {
     }
     USICR = settings.usicr;
     msb1st = settings.msb1st ;
-    clockdiv = settings.clockdiv;
+    delay = settings.delay;
     clockoutfn = settings.clockoutfn;
   }
 

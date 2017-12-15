@@ -367,15 +367,15 @@ extern SPIClass SPI;
 
 namespace USI_impl {
     using ClockOut = uint8_t (*)(uint8_t,uint8_t);
-    uint8_t clockoutUSI(uint8_t data, uint8_t div);
-    uint8_t clockoutUSI2(uint8_t data, uint8_t div);
-    uint8_t clockoutUSI4(uint8_t data, uint8_t div);
-    uint8_t clockoutUSI8(uint8_t data, uint8_t div);
+    uint8_t clockoutUSI(uint8_t data, uint8_t delay);
+    uint8_t clockoutUSI2(uint8_t data, uint8_t delay);
+    uint8_t clockoutUSI4(uint8_t data, uint8_t delay);
+    uint8_t clockoutUSI8(uint8_t data, uint8_t delay);
 
     __attribute__((always_inline))
-    inline ClockOut dispatchClockout(uint8_t div, uint8_t* div_out)
+    inline ClockOut dispatchClockout(uint8_t div, uint8_t* delay)
     {
-      *div_out = 0;
+      *delay = 0;
       if (div <= 2) {
           return clockoutUSI2;
       } else if (div <= 4) {
@@ -385,12 +385,14 @@ namespace USI_impl {
       } else {
         // Slow mode, convert clockdiv into delay loop count.
         // Calculated inline to allow compile-time evaluation.
-        *div_out = (div - 10) / 6;
+        *delay = ((uint16_t)div*100 - 780) / 59;
+        // Round it to nearest integer.
+        *delay = *delay < 10 ? 1 : (*delay + 5) / 10;
         return clockoutUSI;
       }
     }
 
-    ClockOut dispatchClockout_slow(uint8_t div, uint8_t* div_out)
+    ClockOut dispatchClockout_slow(uint8_t div, uint8_t* delay)
     __attribute__((warning("SPI clock is not a runtime constant, increasing code size a lot.")));
 }
 
@@ -411,15 +413,15 @@ private:
     }
     msb1st = bitOrder;
     if (__builtin_constant_p(clock)) {
-      clockoutfn = USI_impl::dispatchClockout(F_CPU / clock, &clockdiv);
+      clockoutfn = USI_impl::dispatchClockout(F_CPU / clock, &delay);
     } else {
-      clockoutfn = USI_impl::dispatchClockout_slow(F_CPU / clock, &clockdiv);
+      clockoutfn = USI_impl::dispatchClockout_slow(F_CPU / clock, &delay);
     }
   }
 
   uint8_t msb1st;
   uint8_t usicr;
-  uint8_t clockdiv;
+  uint8_t delay;
   USI_impl::ClockOut clockoutfn;
   friend class tinySPI;
 };
@@ -446,9 +448,9 @@ class tinySPI
   // beginTransaction() to configure SPI settings.
   static void setClockDivider(uint8_t div) {
       if (__builtin_constant_p(div)) {
-        clockoutfn = USI_impl::dispatchClockout(div, &clockdiv);
+        clockoutfn = USI_impl::dispatchClockout(div, &delay);
       } else {
-        clockoutfn = USI_impl::dispatchClockout_slow(div, &clockdiv);
+        clockoutfn = USI_impl::dispatchClockout_slow(div, &delay);
       }
   }
 
@@ -458,7 +460,7 @@ class tinySPI
 private:
   static uint8_t initialized;
   static uint8_t msb1st;
-  static uint8_t clockdiv;
+  static uint8_t delay;
   static USI_impl::ClockOut clockoutfn;
   static uint8_t interruptMode; // 0=none, 1=mask, 2=global
   static uint8_t interruptMask; // which interrupts to mask
