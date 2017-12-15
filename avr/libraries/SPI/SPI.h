@@ -412,10 +412,12 @@ private:
         usicr |= _BV(USICS0);
     }
     msb1st = bitOrder;
+    // Round up.
+    uint8_t div = F_CPU / clock + (F_CPU % clock ? 1 : 0);
     if (__builtin_constant_p(clock)) {
-      clockoutfn = USI_impl::dispatchClockout(F_CPU / clock, &delay);
+      clockoutfn = USI_impl::dispatchClockout(div, &delay);
     } else {
-      clockoutfn = USI_impl::dispatchClockout_slow(F_CPU / clock, &delay);
+      clockoutfn = USI_impl::dispatchClockout_slow(div, &delay);
     }
   }
 
