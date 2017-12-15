@@ -306,10 +306,10 @@ static byte reverse (byte x){
 __attribute__((optimize (3, "unroll-all-loops")))
 uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 {
-    USIDR = data;
-    USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
     uint8_t tmp = USICR | _BV(USITC);
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { // ensure a consistent clock period
+        USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
+        USIDR = data;
         for (byte i = 0; i < 16; ++i) {
             USICR = tmp; // compiles to out, one cycle
         }
@@ -320,9 +320,9 @@ uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 __attribute__((optimize (3, "unroll-all-loops")))
 uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
 {
-    USIDR = data;
-    USISR = _BV(USIOIF);
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { // ensure a consistent clock period
+        USISR = _BV(USIOIF);
+        USIDR = data;
         for (byte i = 0; i < 16; ++i) {
             USICR |= _BV(USITC); // compiles to sbi, two cycles
         }
@@ -333,10 +333,10 @@ uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
 __attribute__((optimize (3, "unroll-all-loops")))
 uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
 {
-    USIDR = data;
-    USISR = _BV(USIOIF);
     uint8_t tmp = USICR | _BV(USITC);
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { // ensure a consistent clock period
+        USISR = _BV(USIOIF);
+        USIDR = data;
         for (byte i = 0; i < 16; ++i) {
             USICR = tmp; // compiles to out, one cycle
             _delay_loop_1(2); // 7 cycles
@@ -348,10 +348,10 @@ uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
 __attribute__((optimize ("Os")))
 uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t div)
 {
-    USIDR = data;
-    USISR = _BV(USIOIF);
     uint8_t tmp = USICR | _BV(USITC);
     // Low speed, do not disable interrupts.
+    USISR = _BV(USIOIF);
+    USIDR = data;
     for (byte i = 0; i < 16; ++i) {
         USICR = tmp; // compiles to out, one cycle
         _delay_loop_1(div); // div calculated by SPISettings.
