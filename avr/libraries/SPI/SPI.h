@@ -405,7 +405,10 @@ public:
 private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
     __attribute__((always_inline)) {
-    usicr = (dataMode == SPI_MODE1) ? 0x1E : 0x1A;
+    usicr = _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
+    if (dataMode == SPI_MODE1) {
+        usicr |= _BV(USICS0);
+    }
     msb1st = bitOrder;
     if (__builtin_constant_p(clock)) {
       clockoutfn = USI_impl::dispatchClockout(F_CPU / clock, &clockdiv);
