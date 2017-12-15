@@ -248,7 +248,7 @@ tinySPI::tinySPI()
 {
 }
 
-uint8_t (*tinySPI::clockoutfn)(uint8_t,uint8_t) = 0;
+USI_impl::ClockOut tinySPI::clockoutfn = 0;
 uint8_t tinySPI::clockdiv = 0;
 uint8_t tinySPI::msb1st = 0;
 uint8_t tinySPI::initialized = 0;
@@ -275,6 +275,11 @@ void tinySPI::setDataMode(uint8_t spiDataMode)
         USICR &= ~_BV(USICS0);
 }
 
+USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* div_out)
+{
+    return dispatchClockout(div, div_out);
+}
+
 static byte reverse (byte x){
  byte result;
  asm("mov __tmp_reg__, %[in] \n\t"
@@ -299,7 +304,7 @@ static byte reverse (byte x){
 }
 
 __attribute__((optimize (3, "unroll-all-loops")))
-static uint8_t clockoutUSI2(uint8_t data, uint8_t)
+uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 {
     USIDR = data;
     USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
@@ -313,7 +318,7 @@ static uint8_t clockoutUSI2(uint8_t data, uint8_t)
 }
 
 __attribute__((optimize (3, "unroll-all-loops")))
-static uint8_t clockoutUSI4(uint8_t data, uint8_t)
+uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
 {
     USIDR = data;
     USISR = _BV(USIOIF);
@@ -326,7 +331,7 @@ static uint8_t clockoutUSI4(uint8_t data, uint8_t)
 }
 
 __attribute__((optimize (3, "unroll-all-loops")))
-static uint8_t clockoutUSI8(uint8_t data, uint8_t)
+uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
 {
     USIDR = data;
     USISR = _BV(USIOIF);
@@ -341,7 +346,7 @@ static uint8_t clockoutUSI8(uint8_t data, uint8_t)
 }
 
 __attribute__((optimize ("Os")))
-static uint8_t clockoutUSI(uint8_t data, uint8_t div)
+uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t div)
 {
     USIDR = data;
     USISR = _BV(USIOIF);
@@ -352,19 +357,6 @@ static uint8_t clockoutUSI(uint8_t data, uint8_t div)
         _delay_loop_1(div); // div calculated by SPISettings.
     }
     return USIDR;
-}
-
-void tinySPI::dispatchClockout(uint8_t div, bool slow)
-{
-    if (slow) {
-        clockoutfn = clockoutUSI;
-    } else if (div <= 2) {
-        clockoutfn = clockoutUSI2;
-    } else if (div <= 4) {
-        clockoutfn = clockoutUSI4;
-    } else {
-        clockoutfn = clockoutUSI8;
-    }
 }
 
 uint8_t tinySPI::transfer(uint8_t spiData)
@@ -425,7 +417,8 @@ void tinySPI::beginTransaction(SPISettings settings) {
     }
     USICR = settings.usicr;
     msb1st = settings.msb1st ;
-    dispatchClockout(settings.clockdiv, settings.slow);
+    clockdiv = settings.clockdiv;
+    clockoutfn = settings.clockoutfn;
   }
 
 void tinySPI::endTransaction(void) {

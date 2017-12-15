@@ -365,6 +365,34 @@ extern SPIClass SPI;
 #define SPI_HAS_NOTUSINGINTERRUPT 1
 // Settings for default USI based SPI bus for different chips
 
+namespace USI_impl {
+    using ClockOut = uint8_t (*)(uint8_t,uint8_t);
+    uint8_t clockoutUSI(uint8_t data, uint8_t div);
+    uint8_t clockoutUSI2(uint8_t data, uint8_t div);
+    uint8_t clockoutUSI4(uint8_t data, uint8_t div);
+    uint8_t clockoutUSI8(uint8_t data, uint8_t div);
+
+    __attribute__((always_inline))
+    inline ClockOut dispatchClockout(uint8_t div, uint8_t* div_out)
+    {
+      *div_out = 0;
+      if (div <= 2) {
+          return clockoutUSI2;
+      } else if (div <= 4) {
+          return clockoutUSI4;
+      } else if (div <= 8) {
+          return clockoutUSI8;
+      } else {
+        // Slow mode, convert clockdiv into delay loop count.
+        // Calculated inline to allow compile-time evaluation.
+        *div_out = (div - 10) / 6;
+        return clockoutUSI;
+      }
+    }
+
+    ClockOut dispatchClockout_slow(uint8_t div, uint8_t* div_out)
+    __attribute__((warning("SPI clock is not a runtime constant, increasing code size a lot.")));
+}
 
 class SPISettings {
 public:
@@ -376,29 +404,20 @@ public:
   }
 private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
-    __attribute__((__always_inline__)) {
+    __attribute__((always_inline)) {
     usicr = (dataMode == SPI_MODE1) ? 0x1E : 0x1A;
     msb1st = bitOrder;
-    calcClockdiv(clock, clockdiv, slow);
-  }
-
-  static void calcClockdiv(uint32_t clock, uint8_t& clockdiv, bool& slow) {
-    clockdiv = F_CPU / clock;
-    if (clockdiv > 8) {
-      // Slow mode, convert clockdiv into delay loop count.
-      // Calculated inline to allow compile-time evaluation.
-      clockdiv = (clockdiv - 10) / 6;
-      slow = true;
+    if (__builtin_constant_p(clock)) {
+      clockoutfn = USI_impl::dispatchClockout(F_CPU / clock, &clockdiv);
     } else {
-      // Fast mode, clockdiv applies as-is.
-      slow = false;
+      clockoutfn = USI_impl::dispatchClockout_slow(F_CPU / clock, &clockdiv);
     }
   }
 
   uint8_t msb1st;
   uint8_t usicr;
   uint8_t clockdiv;
-  bool slow;
+  USI_impl::ClockOut clockoutfn;
   friend class tinySPI;
 };
 
@@ -423,22 +442,21 @@ class tinySPI
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
   static void setClockDivider(uint8_t div) {
-      bool slow;
-      SPISettings::calcClockdiv((uint32_t)(div)*F_CPU, clockdiv, slow);
-      dispatchClockout(clockdiv, slow);
+      if (__builtin_constant_p(div)) {
+        clockoutfn = USI_impl::dispatchClockout(div, &clockdiv);
+      } else {
+        clockoutfn = USI_impl::dispatchClockout_slow(div, &clockdiv);
+      }
   }
-
 
   static void usingInterrupt(uint8_t interruptNumber);
   static void notUsingInterrupt(uint8_t interruptNumber);
 
 private:
-  static void dispatchClockout(uint8_t clockDiv, bool slow);
-
   static uint8_t initialized;
   static uint8_t msb1st;
   static uint8_t clockdiv;
-  static uint8_t (*clockoutfn)(uint8_t,uint8_t);
+  static USI_impl::ClockOut clockoutfn;
   static uint8_t interruptMode; // 0=none, 1=mask, 2=global
   static uint8_t interruptMask; // which interrupts to mask
   static uint8_t interruptSave; // temp storage, to restore state
