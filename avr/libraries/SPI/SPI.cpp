@@ -250,7 +250,7 @@ tinySPI::tinySPI()
 
 USI_impl::ClockOut tinySPI::clockoutfn = 0;
 uint8_t tinySPI::delay = 0;
-uint8_t tinySPI::msb1st = 0;
+uint8_t tinySPI::msb1st = MSBFIRST;
 uint8_t tinySPI::initialized = 0;
 
 uint8_t tinySPI::interruptMode = 0;

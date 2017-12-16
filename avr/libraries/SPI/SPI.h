@@ -402,7 +402,7 @@ public:
     init_AlwaysInline(clock, bitOrder, dataMode);
   }
   SPISettings() {
-    init_AlwaysInline(4000000, MSBFIRST, SPI_MODE0);
+    init_AlwaysInline(F_CPU / 16, MSBFIRST, SPI_MODE0);
   }
 private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
