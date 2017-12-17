@@ -306,13 +306,21 @@ static byte reverse (byte x){
 __attribute__((optimize (3, "unroll-all-loops")))
 uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 {
-    uint8_t tmp = USICR | _BV(USITC);
+    // Unlike other clockout methods, this one cannot rely on the
+    // "external" clock source (USICS1) because it is two slow.
+    // Instead, it uses software strobe explicitly.
+    uint8_t usicr = USICR;
+    uint8_t strobe1 = _BV(USIWM0) | _BV(USITC);
+    uint8_t strobe2 = _BV(USIWM0) | _BV(USITC) | _BV(USICLK);
     USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
     USIDR = data;
-    for (byte i = 0; i < 16; ++i) {
-        USICR = tmp; // compiles to out, one cycle
+    for (byte i = 0; i < 8; ++i) {
+        USICR = strobe1; // Compiles to out, one cycle
+        USICR = strobe2;
     }
-    return USIDR;
+    uint8_t retval = USIDR;
+    USICR = usicr;
+    return retval;
 }
 
 __attribute__((optimize (3, "unroll-all-loops")))
