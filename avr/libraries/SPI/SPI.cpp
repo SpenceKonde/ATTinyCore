@@ -303,20 +303,64 @@ static byte reverse (byte x){
   return(result);
 }
 
-__attribute__((optimize (3, "unroll-all-loops")))
 uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 {
     // Unlike other clockout methods, this one cannot rely on the
-    // "external" clock source (USICS1) because it is two slow.
-    // Instead, it uses software strobe explicitly.
+    // "external" clock source (USICS1) because it is too slow and
+    // glitches. Instead, it uses software strobe explicitly.
+    uint8_t strobe1;
+    uint8_t strobe2;
+    // Use asm to prevent instruction reordering.
+    asm volatile ("ldi %[strobe1], %[value1] \n\t"
+                  "ldi %[strobe2], %[value2] \n\t"
+                  : [strobe1] "=r" (strobe1),
+                    [strobe2] "=r" (strobe2)
+                  : [value1] "M" (_BV(USIWM0) | _BV(USITC)),
+                    [value2] "M" (_BV(USIWM0) | _BV(USITC) | _BV(USICLK)));
     uint8_t usicr = USICR;
-    uint8_t strobe1 = _BV(USIWM0) | _BV(USITC);
-    uint8_t strobe2 = _BV(USIWM0) | _BV(USITC) | _BV(USICLK);
+    bool mode1 = usicr & _BV(USICS0);
     USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
     USIDR = data;
-    for (byte i = 0; i < 8; ++i) {
-        USICR = strobe1; // Compiles to out, one cycle
-        USICR = strobe2;
+    if (!mode1) {
+        asm volatile("out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     :: [usicr] "I" (_SFR_IO_ADDR(USICR)),
+                        [strobe1] "r" (strobe1),
+                        [strobe2] "r" (strobe2));
+    } else {
+        asm volatile("out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     :: [usicr] "I" (_SFR_IO_ADDR(USICR)),
+                        [strobe1] "r" (strobe1),
+                        [strobe2] "r" (strobe2));
     }
     uint8_t retval = USIDR;
     USICR = usicr;
