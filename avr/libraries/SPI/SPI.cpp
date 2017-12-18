@@ -242,16 +242,21 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 #else 
 #ifdef USICR
 
+#include <util/delay_basic.h>
+
 tinySPI::tinySPI() 
 {
 }
 
-uint8_t tinySPI::reversebit=0;
-uint8_t tinySPI::initialized=0;
+USI_impl::ClockOut tinySPI::clockoutfn = 0;
+uint8_t tinySPI::delay = 0;
+uint8_t tinySPI::msb1st = MSBFIRST;
+uint8_t tinySPI::initialized = 0;
 
 uint8_t tinySPI::interruptMode = 0;
 uint8_t tinySPI::interruptMask = 0;
 uint8_t tinySPI::interruptSave = 0;
+
 void tinySPI::begin(void)
 {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
@@ -264,20 +269,24 @@ void tinySPI::begin(void)
 
 void tinySPI::setDataMode(uint8_t spiDataMode)
 {
-    if (spiDataMode == SPI_MODE1)
+    if (spiDataMode == SPI_MODE1) {
         USICR |= _BV(USICS0);
-    else
+    } else {
         USICR &= ~_BV(USICS0);
+    }
+    if (spiDataMode == SPI_MODE2 || spiDataMode == SPI_MODE3) {
+        digitalWrite(SCK, HIGH);
+    } else {
+        digitalWrite(SCK, LOW);
+    }
 }
 
-void tinySPI::setClockDivider(uint8_t clockDiv)
+USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay)
 {
-  // CD - this routine currently does nothing as clock dividers for the
-  //      software driven USI SPI bus are ignored for this first cut
-  uint8_t dummy; // Nothing routine (needed so not optimised away)
+    return dispatchClockout(div, delay);
 }
-  
-byte tinySPI::reverse (byte x){
+
+static byte reverse (byte x){
  byte result;
  asm("mov __tmp_reg__, %[in] \n\t"
   "lsl __tmp_reg__  \n\t"   /* shift out high bit to carry */
@@ -300,55 +309,142 @@ byte tinySPI::reverse (byte x){
   return(result);
 }
 
-uint8_t tinySPI::transfer(uint8_t spiData)
+uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 {
-    USIDR = (reversebit?spiData:reverse(spiData));
-    USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-        while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
+    // Unlike other clockout methods, this one cannot rely on the
+    // "external" clock source (USICS1) because it is too slow and
+    // glitches. Instead, it uses software strobe explicitly.
+    uint8_t strobe1 = _BV(USIWM0) | _BV(USITC);
+    uint8_t strobe2 = _BV(USIWM0) | _BV(USITC) | _BV(USICLK);
+    uint8_t usicr = USICR;
+    bool mode1 = usicr & _BV(USICS0);
+    USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
+    USIDR = data;
+    // Use asm to prevent instruction reordering.
+    if (!mode1) {
+        asm volatile("out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     :: [usicr] "I" (_SFR_IO_ADDR(USICR)),
+                        [strobe1] "r" (strobe1),
+                        [strobe2] "r" (strobe2));
+    } else {
+        asm volatile("out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     :: [usicr] "I" (_SFR_IO_ADDR(USICR)),
+                        [strobe1] "r" (strobe1),
+                        [strobe2] "r" (strobe2));
+    }
+    uint8_t retval = USIDR;
+    USICR = usicr;
+    return retval;
+}
+
+__attribute__((optimize (3, "unroll-all-loops")))
+uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
+{
+    USISR = _BV(USIOIF);
+    USIDR = data;
+    for (byte i = 0; i < 16; ++i) {
+        USICR |= _BV(USITC); // compiles to sbi, two cycles
     }
     return USIDR;
 }
 
-
-uint16_t tinySPI::transfer16(uint16_t data) {
- union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } in, out;
- in.val = data;
- USIDR = in.msb;
- USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
- ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
- }
- out.msb = USIDR; 
- USIDR = in.lsb;
- USISR = _BV(USIOIF);                //clear counter and counter overflow interrupt flag
- ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
- }
- out.lsb = USIDR;
- return out.val;
+__attribute__((optimize (3, "unroll-all-loops")))
+uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
+{
+    uint8_t tmp = USICR | _BV(USITC);
+    USISR = _BV(USIOIF);
+    USIDR = data;
+    for (byte i = 0; i < 16; ++i) {
+        USICR = tmp; // compiles to out, one cycle
+        _delay_loop_1(1); // 7 cycles, 1 cycle overhead on first bit
+    }
+    return USIDR;
 }
 
-void tinySPI::transfer(void *buf, size_t count) {
- if (count == 0) return;
- uint8_t *p = (uint8_t *)buf;
- USIDR = *p;
- while (--count > 0) {
-  uint8_t out = *(p + 1);
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-   while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
-  }
-  uint8_t in = USIDR;
-  USIDR = out;
-  *p++ = in;
- }
- ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { //ensure a consistent clock period
-  while ( !(USISR & _BV(USIOIF)) ) USICR |= _BV(USITC); // CD - need to add clockDiv based delays?
- }
- *p = USIDR;
+__attribute__((optimize ("Os")))
+uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t delay)
+{
+    uint8_t tmp = USICR | _BV(USITC);
+    USISR = _BV(USIOIF);
+    USIDR = data;
+    for (byte i = 0; i < 16; ++i) {
+        USICR = tmp; // compiles to out, one cycle
+        _delay_loop_1(delay); // delay calculated by SPISettings.
+    }
+    return USIDR;
 }
 
-static void tinySPI::beginTransaction(SPISettings settings) {
+uint8_t tinySPI::transfer(uint8_t spiData)
+{
+    if (msb1st) {
+        return clockoutfn(spiData, delay);
+    } else {
+        return reverse(clockoutfn(reverse(spiData), delay));
+    }
+}
+
+uint16_t tinySPI::transfer16(uint16_t data)
+{
+    union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } tmp;
+    tmp.val = data;
+    if (msb1st) {
+        tmp.msb = clockoutfn(tmp.msb, delay);
+        tmp.lsb = clockoutfn(tmp.lsb, delay);
+    } else {
+        tmp.lsb = reverse(clockoutfn(reverse(tmp.lsb), delay));
+        tmp.msb = reverse(clockoutfn(reverse(tmp.msb), delay));
+    }
+    return tmp.val;
+}
+
+void tinySPI::transfer(void* _buf, size_t count) {
+    uint8_t* buf = (uint8_t*)_buf;
+    if (!msb1st) {
+        for (uint8_t i = 0; i < count; ++i) {
+            buf[i] = reverse(buf[i]);
+        }
+    }
+    for (uint8_t i = 0; i < count; ++i) {
+        buf[i] = clockoutfn(buf[i], delay);
+    }
+    if (!msb1st) {
+        for (uint8_t i = 0; i < count; ++i) {
+            buf[i] = reverse(buf[i]);
+        }
+    }
+}
+
+void tinySPI::beginTransaction(SPISettings settings) {
     if (interruptMode > 0) {
       uint8_t sreg = SREG;
       noInterrupts();
@@ -365,10 +461,17 @@ static void tinySPI::beginTransaction(SPISettings settings) {
       }
     }
     USICR = settings.usicr;
-    reversebit=settings.reverse;
+    msb1st = settings.msb1st ;
+    delay = settings.delay;
+    clockoutfn = settings.clockoutfn;
+    if (settings.cpol) {
+        digitalWrite(SCK, HIGH);
+    } else {
+        digitalWrite(SCK, LOW);
+    }
   }
 
-static void tinySPI::endTransaction(void) {
+void tinySPI::endTransaction(void) {
   if (interruptMode > 0) {
     #ifdef SPI_AVR_EIMSK
     uint8_t sreg = SREG;

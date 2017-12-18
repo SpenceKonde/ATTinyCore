@@ -350,23 +350,53 @@ extern SPIClass SPI;
 
 //SPI data modes
 #define SPI_MODE0 0x00
-#define SPI_MODE1 0x04
+#define SPI_MODE1 0x01
+#define SPI_MODE2 0x02
+#define SPI_MODE3 0x03
 
-// CD - Following is currently ignored, but needed for some devices that use SPI libraries
-//      Future version may use these values for delays in the software driven tinySPI USI code
-#define SPI_CLOCK_DIV4 0x00
-#define SPI_CLOCK_DIV16 0x01
-#define SPI_CLOCK_DIV64 0x02
-#define SPI_CLOCK_DIV128 0x03
-#define SPI_CLOCK_DIV2 0x04
-#define SPI_CLOCK_DIV8 0x05
-#define SPI_CLOCK_DIV32 0x06
+#define SPI_CLOCK_DIV2       2
+#define SPI_CLOCK_DIV4       4
+#define SPI_CLOCK_DIV8       8
+#define SPI_CLOCK_DIV16     16
+#define SPI_CLOCK_DIV32     32
+#define SPI_CLOCK_DIV64     64
+#define SPI_CLOCK_DIV128   128
 
 //This implementation does have transaction:
 #define SPI_HAS_TRANSACTION 1
 #define SPI_HAS_NOTUSINGINTERRUPT 1
 // Settings for default USI based SPI bus for different chips
 
+namespace USI_impl {
+    using ClockOut = uint8_t (*)(uint8_t,uint8_t);
+    uint8_t clockoutUSI(uint8_t data, uint8_t delay);
+    uint8_t clockoutUSI2(uint8_t data, uint8_t delay);
+    uint8_t clockoutUSI4(uint8_t data, uint8_t delay);
+    uint8_t clockoutUSI8(uint8_t data, uint8_t delay);
+
+    __attribute__((always_inline))
+    inline ClockOut dispatchClockout(uint8_t div, uint8_t* delay)
+    {
+      *delay = 0;
+      if (div <= 2) {
+          return clockoutUSI2;
+      } else if (div <= 4) {
+          return clockoutUSI4;
+      } else if (div <= 8) {
+          return clockoutUSI8;
+      } else {
+        // Slow mode, convert clockdiv into delay loop count.
+        // Calculated inline to allow compile-time evaluation.
+        *delay = ((uint16_t)div*100 - 780) / 59;
+        // Round it to nearest integer.
+        *delay = *delay < 10 ? 1 : (*delay + 5) / 10;
+        return clockoutUSI;
+      }
+    }
+
+    ClockOut dispatchClockout_slow(uint8_t div, uint8_t* delay)
+    __attribute__((warning("SPI clock is not a runtime constant, increasing code size a lot.")));
+}
 
 class SPISettings {
 public:
@@ -374,16 +404,31 @@ public:
     init_AlwaysInline(clock, bitOrder, dataMode);
   }
   SPISettings() {
-    init_AlwaysInline(4000000, MSBFIRST, SPI_MODE0);
+    init_AlwaysInline(F_CPU / 16, MSBFIRST, SPI_MODE0);
   }
 private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
-    __attribute__((__always_inline__)) {
-    usicr=(dataMode==SPI_MODE1)?0x1E:0x1A;
-    reverse=bitOrder;
+    __attribute__((always_inline)) {
+    usicr = _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
+    if (dataMode == SPI_MODE1 || dataMode == SPI_MODE3) {
+        usicr |= _BV(USICS0);
+    }
+    msb1st = bitOrder;
+    cpol = dataMode == SPI_MODE2 || dataMode == SPI_MODE3;
+    // Round up.
+    uint8_t div = F_CPU / clock + (F_CPU % clock ? 1 : 0);
+    if (__builtin_constant_p(clock)) {
+      clockoutfn = USI_impl::dispatchClockout(div, &delay);
+    } else {
+      clockoutfn = USI_impl::dispatchClockout_slow(div, &delay);
+    }
   }
-  uint8_t reverse;
+
+  uint8_t msb1st;
+  uint8_t cpol;
   uint8_t usicr;
+  uint8_t delay;
+  USI_impl::ClockOut clockoutfn;
   friend class tinySPI;
 };
 
@@ -391,7 +436,6 @@ class tinySPI
 {
  public:
   tinySPI();
-  static uint8_t reverse(uint8_t x);
   static void begin();
   static void beginTransaction(SPISettings settings);
   static uint8_t transfer(uint8_t data);
@@ -402,21 +446,28 @@ class tinySPI
 
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  inline static void setBitOrder(uint8_t bitOrder) {reversebit=bitOrder;}
+  static void setBitOrder(uint8_t bitOrder) {msb1st = bitOrder;}
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
   static void setDataMode(uint8_t dataMode);
   // This function is deprecated.  New applications should use
   // beginTransaction() to configure SPI settings.
-  static void setClockDivider(uint8_t clockDiv); //Not yet implemented
- 
- 
+  static void setClockDivider(uint8_t div) {
+      if (__builtin_constant_p(div)) {
+        clockoutfn = USI_impl::dispatchClockout(div, &delay);
+      } else {
+        clockoutfn = USI_impl::dispatchClockout_slow(div, &delay);
+      }
+  }
+
   static void usingInterrupt(uint8_t interruptNumber);
   static void notUsingInterrupt(uint8_t interruptNumber);
 
 private:
   static uint8_t initialized;
-  static uint8_t reversebit;
+  static uint8_t msb1st;
+  static uint8_t delay;
+  static USI_impl::ClockOut clockoutfn;
   static uint8_t interruptMode; // 0=none, 1=mask, 2=global
   static uint8_t interruptMask; // which interrupts to mask
   static uint8_t interruptSave; // temp storage, to restore state

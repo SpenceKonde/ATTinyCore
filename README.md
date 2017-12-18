@@ -91,19 +91,19 @@ On the following chips, full master/slave I2C functionality is provided in hardw
 SPI support:
 ------------
 
-On the following chips, SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the **USI does not have MISO/MOSI, it has DI/DO**; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common).  
+On the following chips, full SPI functionality is provided in hardware, and works identically to SPI on Atmega chips:
+* ATtiny 828
+* ATtiny x7 (87/167) (it has both a USI and full SPI, but the SPI library will use the SPI hardware)
+* ATtiny x41 (441/841)
+* ATtiny x8 (48, 88)
+
+On the following chips, SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the **USI does not have MISO/MOSI, it has DI/DO**; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). Clock dividers 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness. Also, interrupts are not disabled during data transfer as SPI clock doesn't need to be precise in most cases. If you use long interrupt routines or require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK`.
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (262/461/861)
 * ATtiny x7 (87/167)
 * ATtiny x313 (2313/4313)
 * ATtiny 1634
-
-On the following chips, full SPI functionality is provided in hardware, and works identically to SPI on Atmega chips:
-* ATtiny 828
-* ATtiny x7 (87/167) (it has both a USI and full SPI, but the SPI library will use the SPI hardware)
-* ATtiny x41 (441/841)
-* ATtiny x8 (48, 88)
 
 Serial Support
 -------
