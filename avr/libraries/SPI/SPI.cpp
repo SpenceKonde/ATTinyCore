@@ -269,10 +269,16 @@ void tinySPI::begin(void)
 
 void tinySPI::setDataMode(uint8_t spiDataMode)
 {
-    if (spiDataMode == SPI_MODE1)
+    if (spiDataMode == SPI_MODE1) {
         USICR |= _BV(USICS0);
-    else
+    } else {
         USICR &= ~_BV(USICS0);
+    }
+    if (spiDataMode == SPI_MODE2 || spiDataMode == SPI_MODE3) {
+        digitalWrite(SCK, HIGH);
+    } else {
+        digitalWrite(SCK, LOW);
+    }
 }
 
 USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay)
@@ -458,6 +464,11 @@ void tinySPI::beginTransaction(SPISettings settings) {
     msb1st = settings.msb1st ;
     delay = settings.delay;
     clockoutfn = settings.clockoutfn;
+    if (settings.cpol) {
+        digitalWrite(SCK, HIGH);
+    } else {
+        digitalWrite(SCK, LOW);
+    }
   }
 
 void tinySPI::endTransaction(void) {

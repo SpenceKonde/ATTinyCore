@@ -350,7 +350,9 @@ extern SPIClass SPI;
 
 //SPI data modes
 #define SPI_MODE0 0x00
-#define SPI_MODE1 0x04
+#define SPI_MODE1 0x01
+#define SPI_MODE2 0x02
+#define SPI_MODE3 0x03
 
 #define SPI_CLOCK_DIV2       2
 #define SPI_CLOCK_DIV4       4
@@ -408,10 +410,11 @@ private:
   void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
     __attribute__((always_inline)) {
     usicr = _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
-    if (dataMode == SPI_MODE1) {
+    if (dataMode == SPI_MODE1 || dataMode == SPI_MODE3) {
         usicr |= _BV(USICS0);
     }
     msb1st = bitOrder;
+    cpol = dataMode == SPI_MODE2 || dataMode == SPI_MODE3;
     // Round up.
     uint8_t div = F_CPU / clock + (F_CPU % clock ? 1 : 0);
     if (__builtin_constant_p(clock)) {
@@ -422,6 +425,7 @@ private:
   }
 
   uint8_t msb1st;
+  uint8_t cpol;
   uint8_t usicr;
   uint8_t delay;
   USI_impl::ClockOut clockoutfn;
