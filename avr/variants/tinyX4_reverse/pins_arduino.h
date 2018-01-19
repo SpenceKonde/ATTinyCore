@@ -146,7 +146,7 @@ static const uint8_t A7 = 0x80 | 7;
 // PCICR = Pin Change Interrupt Control Register
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) ( ((p) <= 7) ? PCIE0 : PCIE1 )
-#define digitalPinToPCMSK(p)    ( ((p) <= 7) ? (&PCMSK0) : (((p) <= 10) ? (&PCMSK1) : ((uint8_t *)0)) )
+#define digitalPinToPCMSK(p)    ( ((p) <= 7) ? (&PCMSK0) : (((p) <= 10) ? (&PCMSK1) : ((uint8_t *)NULL)) )
 #define digitalPinToPCMSKbit(p) ( ((p) <= 7) ? (p) : (10 - (p)) )
 
 #define digitalPinToInterrupt(p)  ((p) == 8 ? 0 : NOT_AN_INTERRUPT)
