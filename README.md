@@ -22,9 +22,15 @@ This core supports the following processors - essentially every ATtiny processor
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
+### Quick Gotcha list:
+
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
 **When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using a chip with a bootloader** 
+
+**When using analogRead(), use the A# constant to refer to the pin, not the digital pin number**
+
+**You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins.**
 
 ### Bootloader Support (ATtiny 841, 828, 1634, 87, 167 only)
 
