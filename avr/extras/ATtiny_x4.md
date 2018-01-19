@@ -17,7 +17,7 @@ Clock options | Internal 1/8mhz, external crystal or clock up to 20mhz
 Two pinouts are available - this provides compatibility with cores which use either layout. 
 
 ### Tone Support
-Tone() uses timer1. For best results, use pin 6 and 8 (2 and 4 with alternate pinout - PA6 and PB1), as this will use the hardware output compare to generate the square wave instead of using interrupts. 
+Tone() uses timer1. For best results, use pin 6 and 5 (4 and 5 with alternate pinout - PA6 and PA5), as this will use the hardware output compare to generate the square wave instead of using interrupts. 
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core.
