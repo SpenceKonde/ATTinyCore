@@ -22,6 +22,8 @@ This core supports the following processors - essentially every ATtiny processor
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
+This core does NOT support ATtiny x14/x17/x18 or other chips with the "PIC-like" peripherals that have come out since the microchip merger. A very large amount of work would be required to support these parts. See #170 for details. 
+
 ### Quick Gotcha list:
 
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
