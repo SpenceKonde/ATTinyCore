@@ -50,7 +50,7 @@ dragon.name=AVR Dragon ISP mode (ATTinyCore)
 dragon.communication=usb
 dragon.protocol=dragon_isp
 dragon.program.tool=avrdude
-usbtinyisp2.program.extra_params=-Pusb
+dragon.program.extra_params=-Pusb
 
 ponyser.name=Ponyser Programmer (ATTinyCore)
 
