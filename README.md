@@ -146,7 +146,9 @@ B. O. D. (brown out detect) Configuration option
 --------
 All chips have a menu to select the level of Brown-out Detection, if any, to use. Brown-out detection continuously monitors Vcc, and holds the chip in reset state (BOR) if the applied voltage is below a certain threshold. This is a good idea with slow-rising power supplies or where it is expected that the supply voltage could droop below the required operating voltage for the frequency it is running at (see the speed grade specification for the part you're using) - without BOD enabled, this can put the chip into a hung state until manually reset. However, BOD increases power consumption slightly, and hence may be inappropriate in low power applications. The selected BOD option is configured by the fuses, and as such these settings are applied upon burning bootloader, not upon sketch upload. 
 
-
+Memory Lock Bits, disabling Reset
+-------------
+ATTinyCore will never set lock bits automatically, nor will it set fuses to disable reset or ISP programming. The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the lockbits. 
 
 
 
