@@ -86,6 +86,7 @@ class HardwareSerial : public Stream
     virtual void flush(void);
     virtual size_t write(uint8_t);
     using Print::write; // pull in write(str) and write(buf, size) from Print
+    operator bool() { return true; }
 };
 
 #if (defined(UBRRH) || defined(UBRR0H)) && ! DEFAULT_TO_TINY_DEBUG_SERIAL
