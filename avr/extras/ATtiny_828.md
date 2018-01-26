@@ -32,6 +32,12 @@ There is full Hardware SPI support
 ### UART (Serial) Support
 There is one hardware serial port, Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. 
 
+To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels 
+```
+UCSRB &=~(1<<TXEN); // disable TX 
+UCSRB &=~(1<<RXEN); // disable RX
+```
+
 ### ADC Reference options
 Despite having 28 ADC input channels, the 828 only has the two basic reference options. 
 

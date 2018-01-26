@@ -34,6 +34,13 @@ There is hardware SPI support. Use the normal SPI module.
 ### UART (Serial) Support
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation. 
 
+To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSRB1 instead)
+```
+UCSRB0 &=~(1<<TXEN0); // disable TX 
+UCSRB0 &=~(1<<RXEN0); // disable RX
+```
+
+
 ### Purchasing ATTiny841 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core. 
 

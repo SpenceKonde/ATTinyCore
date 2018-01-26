@@ -28,4 +28,10 @@ There is no hardware SPI peripheral. The USI can be used to provide SPI support 
 ### UART (Serial) Support
 There is one full hardware Serial port, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small. 
 
+To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels 
+```
+UCSRB &=~(1<<TXEN); // disable TX 
+UCSRB &=~(1<<RXEN); // disable RX
+```
+
 ### There is no ADC

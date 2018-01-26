@@ -31,6 +31,12 @@ There is no hardware SPI peripheral. The USI can be used to provide SPI support 
 ### UART (Serial) Support
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation. 
 
+To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSRB1 instead)
+```
+UCSRB0 &=~(1<<TXEN0); // disable TX 
+UCSRB0 &=~(1<<RXEN0); // disable RX
+```
+
 ### ADC Reference options
 Note that when using the Internal 1.1v reference, you must not apply an external voltage to AREF pin - this sometimes appears to work, but other times results in unexpected ADC readings. 
 
