@@ -381,12 +381,11 @@ uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
 __attribute__((optimize (3, "unroll-all-loops")))
 uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
 {
-    uint8_t tmp = USICR | _BV(USITC);
     USISR = _BV(USIOIF);
     USIDR = data;
     for (byte i = 0; i < 16; ++i) {
-        USICR = tmp; // compiles to out, one cycle
-        _delay_loop_1(1); // 7 cycles, 1 cycle overhead on first bit
+        USICR |= _BV(USITC); // compiles to sbi, two cycles
+        USICR &= ~_BV(USITC); // compiles to cbi, two cycles, effectively nop
     }
     return USIDR;
 }
