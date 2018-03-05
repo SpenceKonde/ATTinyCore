@@ -34,6 +34,8 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins.**
 
+**All ATTiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. **
+
 ### Bootloader Support (ATtiny 841, 828, 1634, 87, 167 only)
 
 The Optiboot bootloader is included for the ATtiny 841, 1634, 828 and x7 series (87 and 167). This runs at 57600 baud at 8mhz and slower, and  115200 baud above that. By default it uses UART0 or the LIN/UART as appropriate (bootloaders that use UART1 for devices that have a second UART are included, prefixed with "ser1" - you must flash them manually or modify boards.txt if you wish to use them). Once the bootloader is programmed, the target can be programmed over serial; the bootloader will run after reset, just like on a normal Arduino. The standard DTR reset circuit is highly recommended. 
