@@ -464,7 +464,8 @@ class tinySPI
   static void notUsingInterrupt(uint8_t interruptNumber);
 
 private:
-  static uint8_t initialized;
+  static void applySettings(SPISettings settings);
+
   static uint8_t msb1st;
   static uint8_t delay;
   static USI_impl::ClockOut clockoutfn;
