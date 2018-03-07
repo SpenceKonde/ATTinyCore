@@ -251,7 +251,6 @@ tinySPI::tinySPI()
 USI_impl::ClockOut tinySPI::clockoutfn = 0;
 uint8_t tinySPI::delay = 0;
 uint8_t tinySPI::msb1st = MSBFIRST;
-uint8_t tinySPI::initialized = 0;
 
 uint8_t tinySPI::interruptMode = 0;
 uint8_t tinySPI::interruptMask = 0;
@@ -264,7 +263,7 @@ void tinySPI::begin(void)
     USI_SCK_PORT |= _BV(USCK_DD_PIN);   //set the USCK pin as output
     USI_DDR_PORT |= _BV(DO_DD_PIN);     //set the DO pin as output
     USI_DDR_PORT &= ~_BV(DI_DD_PIN);    //set the DI pin as input
-    initialized++;
+    applySettings(SPISettings());
 }
 
 void tinySPI::setDataMode(uint8_t spiDataMode)
@@ -443,6 +442,18 @@ void tinySPI::transfer(void* _buf, size_t count) {
     }
 }
 
+void tinySPI::applySettings(SPISettings settings) {
+    USICR = settings.usicr;
+    msb1st = settings.msb1st ;
+    delay = settings.delay;
+    clockoutfn = settings.clockoutfn;
+    if (settings.cpol) {
+        digitalWrite(SCK, HIGH);
+    } else {
+        digitalWrite(SCK, LOW);
+    }
+}
+
 void tinySPI::beginTransaction(SPISettings settings) {
     if (interruptMode > 0) {
       uint8_t sreg = SREG;
@@ -459,15 +470,7 @@ void tinySPI::beginTransaction(SPISettings settings) {
         interruptSave = sreg;
       }
     }
-    USICR = settings.usicr;
-    msb1st = settings.msb1st ;
-    delay = settings.delay;
-    clockoutfn = settings.clockoutfn;
-    if (settings.cpol) {
-        digitalWrite(SCK, HIGH);
-    } else {
-        digitalWrite(SCK, LOW);
-    }
+    applySettings(settings);
   }
 
 void tinySPI::endTransaction(void) {
