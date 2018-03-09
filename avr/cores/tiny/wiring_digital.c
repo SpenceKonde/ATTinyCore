@@ -31,7 +31,7 @@
 
 void pinMode(uint8_t pin, uint8_t mode)
 {
-	if (pin&128) {pin=analogInputToDigitalPin(pin&127);}
+	if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
 	uint8_t bit = digitalPinToBitMask(pin);
 	uint8_t port = digitalPinToPort(pin);
 	volatile uint8_t *reg, *out;
@@ -118,7 +118,7 @@ static void turnOffPWM(uint8_t timer)
 
 void digitalWrite(uint8_t pin, uint8_t val)
 {
-	if (pin&128) {pin=analogInputToDigitalPin(pin&127);}
+	if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
 	uint8_t timer = digitalPinToTimer(pin);
 	uint8_t bit = digitalPinToBitMask(pin);
 	uint8_t port = digitalPinToPort(pin);
@@ -147,7 +147,7 @@ void digitalWrite(uint8_t pin, uint8_t val)
 
 int digitalRead(uint8_t pin)
 {
-	if (pin&128) {pin=analogInputToDigitalPin(pin&127);}
+	if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
 	uint8_t timer = digitalPinToTimer(pin);
 	uint8_t bit = digitalPinToBitMask(pin);
 	uint8_t port = digitalPinToPort(pin);
