@@ -233,3 +233,5 @@ Acknowledgements
 This core is based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/ 
 The ATtiny841 support is based on shimniok's ATTiny x41 core, and the 1634 support on Rambo's ATtiny 1634 core. 
 And of course - everything is based on the great work of the Arduino development team for creating the Arduino IDE and community which we all use. 
+
+The pinout diagrams are created by MCUdude (hansibull on Arduino forums), who maintains a number of excellent cores for supporting common ATmega processors - http://github.com/MCUdude
