@@ -1,6 +1,6 @@
 Supported IDE versions
 ============
-ATtinyCore (Universal) works with all versions of the official IDE (from arduino.cc ) from version 1.6.3 onwards. For board manager installation, 1.6.4 or later is required. Due to serious bugs, 1.6.6, 1.6.7, 1.6.8, and 1.6.10 are not recommended. Version 1.8.3 is recommended.
+ATtinyCore (Universal) works with all versions of the official IDE (from arduino.cc ) from version 1.6.3 onwards. For board manager installation, 1.6.4 or later is required. Due to serious bugs, 1.6.6, 1.6.7, 1.6.8, and 1.6.10 are not recommended. Version 1.8.5 is recommended.
 
 Board Manager Installation
 ============
