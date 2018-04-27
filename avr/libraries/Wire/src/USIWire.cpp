@@ -56,6 +56,10 @@ void USIWire::begin(void) {
 }
 
 void USIWire::begin(uint8_t address) {
+  BufferIndex = 0;
+  BufferLength = 0;
+
+  transmitting = 0;
   USI_TWI_Slave_Initialise(address);
 }
 
