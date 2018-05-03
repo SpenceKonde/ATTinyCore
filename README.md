@@ -142,7 +142,15 @@ A tuning sketch is planned for a future version of this core. (#139)
 
 ADC Support
 -------
-All of the supported parts except for the x313 series have an Analog to Digital converter on chip. **Single-ended ADC inputs can be read using the ADC channel number or the Ax constant (they can NOT be read using the digital pin number)**. In addition to the single-ended input channels marked on the pinout diagrams, many also support differential ADC input channels. To use these, simply call analogRead() with the appropriate ADC channel number. To get the ADC channel number, refer to the datasheet - it is listed in the Register Description section of the chapter on the ADC, under the ADMUX register.
+All of the supported parts except for the x313 series have an Analog to Digital converter on chip. **Single-ended ADC inputs can be read using the ADC channel number or the Ax constant (they can NOT be read using the digital pin number)**. In addition to the single-ended input channels marked on the pinout diagrams, many also support differential ADC input channels. To use these, simply call analogRead() with the appropriate ADC channel number. To get the ADC channel number, refer to the datasheet - it is listed in the Register Description section of the chapter on the ADC, under the ADMUX register.''
+
+Timers and PWM
+-------
+All of the supported parts have hardware PWM (timer with output compare functionality) on at least one pin. See the part-specific documentation pages for a chart showing which pins have PWM. In addition to PWM, the on-chip timers are also used for millis() (and other timekeeping functions) and tone() - as well as by many libraries to achieve other functionality. Typically, a timer can only be used for one purpose at a time. 
+
+On all supported parts, timekeeping functions are on timer0. On all parts except the tiny841/441 tone() is on timer1; on 841/441, in version 1.1.6 and later, tone() is on timer2 to improve compatibility (on 1.1.5 and earlier, tone() is on timer1 on all parts). This means that reconfiguring timer0 by manipulating it's registers will break millis() and delay(). Using tone() will prevent PWM from working on PWM pins controlled by timer1 (timer2 for 841/441), and manipulating it's registers will break tone(). Because tone() is now on timer2 on the 841/441, you can use tone() at the same time as other libraries that use timer1 (such as Servo, TimerOne, and many others). 
+
+Most of the ATTiny parts only have two timers. The attiny841 has a third timer - but be aware that it's timer2 is very different from the timer2 on the atmega328p and most other atmega parts - the '841 has a second 16-bit timer (identical to timer1), while the atmega parts usually have an 8-bit asynchronous timer. This means that libraries designed to use timer2 on the usual Arduino boards (ex, ServoTimer2) cannot be used with the 841.
 
 B. O. D. (brown out detect) Configuration option
 --------
