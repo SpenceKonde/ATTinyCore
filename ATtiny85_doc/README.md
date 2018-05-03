@@ -1,5 +1,9 @@
 # Doc for ATtint85
 
+<p align="center">
+<img src="https://goo.gl/7cxEmm" width="500">
+</p>
+
 Follow those steps for use the Arduino as ISP:  
 - Load the sketch "ArduinoISP" on your Arduino  
 - Connect the Arduino with "ArduinoISP" to the ATtiny85. Use the schematic in this folder.  
