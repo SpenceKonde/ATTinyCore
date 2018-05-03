@@ -743,7 +743,7 @@ void init(void)
   //#if !defined(__AVR_ATtiny85__)
  // sbi(TCCR1, PWM1A); //for the tiny 85, Timer0 is used instead.
   //#endif
-  //sbi(GTCCR, PWM1B);
+  sbi(GTCCR, PWM1B);
   OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1E)
   sbi(TCCR1C, PWM1D);
