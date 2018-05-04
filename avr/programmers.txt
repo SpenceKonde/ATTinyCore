@@ -53,16 +53,17 @@ dragon.program.tool=avrdude
 dragon.program.extra_params=-Pusb
 
 ponyser.name=Ponyser Programmer (ATTinyCore)
-
 ponyser.communication=serial
-
 ponyser.protocol=ponyser
-
 ponyser.program.tool=avrdude
-
 ponyser.program.protocol=ponyser
-
 ponyser.program.tool=avrdude
-
 ponyser.program.extra_params=-P{serial.port}
+
+stk500.name=Atmel STK500 development board (ATTinyCore)
+stk500.communication=serial
+stk500.protocol=stk500
+stk500.program.protocol=stk500
+stk500.program.tool=avrdude
+stk500.program.extra_params=-P{serial.port}
 
