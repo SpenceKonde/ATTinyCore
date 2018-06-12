@@ -67,6 +67,8 @@ External crystal (in addition to above, x41, 1634 only in 1.1.4 and earlier, all
 * 9.216 MHz
 * 7.37 MHz
 
+All available clock options for the selected processor will be shown in the Tools -> Clock menu.
+
 **Warning** When using weird clock frequencies (ones with a frequency (in MHz) by which 64 cannot be divided evenly), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. Millis() is not effected, only micros() and delay(). 
 
 This differs from the behavior of official Arduino boards - the "stock" micros() executes equally fast at all clock speeds, but returns wrong values with anything that 64 doesn't divide evenly by.
@@ -154,7 +156,9 @@ Most of the ATTiny parts only have two timers. The attiny841 has a third timer -
 
 B. O. D. (brown out detect) Configuration option
 --------
-All chips have a menu to select the level of Brown-out Detection, if any, to use. Brown-out detection continuously monitors Vcc, and holds the chip in reset state (BOR) if the applied voltage is below a certain threshold. This is a good idea with slow-rising power supplies or where it is expected that the supply voltage could droop below the required operating voltage for the frequency it is running at (see the speed grade specification for the part you're using) - without BOD enabled, this can put the chip into a hung state until manually reset. However, BOD increases power consumption slightly, and hence may be inappropriate in low power applications. The selected BOD option is configured by the fuses, and as such these settings are applied upon burning bootloader, not upon sketch upload. 
+Brown-out detection continuously monitors Vcc, and holds the chip in reset state (BOR) if the applied voltage is below a certain threshold. This is a good idea with slow-rising power supplies or where it is expected that the supply voltage could droop below the required operating voltage for the frequency it is running at (see the speed grade specification for the part you're using) - without BOD enabled, this can put the chip into a hung state until manually reset. However, BOD increases power consumption slightly, and hence may be inappropriate in low power applications. 
+
+The BOD voltage trigger level can be chosed from the tools -> BOD menu. The ATTiny 441, 841, and 1634 support independently configuring the BOD mode (active, sampled, disabled) for active and sleep modes (see the applicable datasheet for details). These are configured via the Tools -> BOD Mode (sleep) and Tools -> BOD Mode (active) menus.  The selected BOD option is configured by the fuses, so after changing these, you must do burn bootloader to set the fuses. 
 
 Memory Lock Bits, disabling Reset
 -------------
