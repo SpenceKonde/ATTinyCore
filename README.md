@@ -42,16 +42,18 @@ The Optiboot bootloader is included for the ATtiny 841, 1634, 828 and x7 series 
 
 The ATtiny841, ATtiny1634, and the ATtiny x7 series do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, the Watchdog Timer interrupt vector will always point to the start of the program, and cannot be used for other functionality. Under the hood, the bootloader rewrites the reset and WDT interrupt vectors, pointing the WDT vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse).  As a result of this, the Watchdog Timer cannot be used as a software interrupt on these parts, and attempting to do so will cause strange behavior - however, it can still be used to reset the chip. This does not effect the 828 (it has hardware bootloader support), nor does it effect the 1634 or 841 if they are programmed via ISP.
 
-### Changing the ATtiny clock speed
+### Changing the ATtiny clock speed and other settings
 
 Changing the ATtiny clock speed, B.O.D. settings etc. is made easy: After the [Installation](Installation.md), in the menu “Tools” there will appear extra submenus where we can set several ATtiny properties: 
 
-* Tools > Save EEPROM:
-* Tools > Timer 1 clock:
-* Tools > LTO:
-* Tools > B.O.D Level:
-* Tools > Chip:
-* Tools > Clock: 
+* Tools > Save EEPROM: (Boards without bootloader only - controls whether EEPROM is erased during a chip erase cycle)
+* Tools > Timer 1 clock: (ATTiny85 only - allows timer1 to be clocked off the PLL for higher frequency PWM)
+* Tools > LTO: (Link Time Optimization makes sketches smaller, but requires AVR boards 1.6.11 or later)
+* Tools > B.O.D Level: (trigger voltage for Brown Out Detection - below this voltage, chip will be held in reset)
+* Tools > Chip: (Select the part being used)
+* Tools > Clock:  (Select the desired clock speed)
+* Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
+* Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
 
 ### Supported clock speeds:
 
