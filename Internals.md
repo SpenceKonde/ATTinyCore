@@ -19,6 +19,7 @@ These are used to identify features:
 #define USE_SOFTWARE_SERIAL    (0 = hardware serial, 1 = software serial
 #define USE_SOFTWARE_SPI       (not defined if hardware spi present)
 #define HAVE_ADC               (1 = has ADC functions)
+#define DISABLE_UART           (1 = disables HW serial buffers and interrupts)
 
 ```
 
