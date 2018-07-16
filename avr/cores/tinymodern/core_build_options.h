@@ -56,6 +56,12 @@
 
 #define DEFAULT_TO_TINY_DEBUG_SERIAL              0
 
+/*=============================================================================
+  Disable HW serial support completely, freeing up flash and RAM
+=============================================================================*/
+
+#define DISABLE_UART                              0
+
 
 // missing defines (?)
 #if !defined(PCINT0)
