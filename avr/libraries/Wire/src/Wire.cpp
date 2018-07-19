@@ -609,10 +609,10 @@ USIWire Wire = USIWire();
 #include <string.h>
 
 #if defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__)
-#define SCL_PIN 4
-#define SCL_PORT PORTA
-#define SDA_PIN 6
-#define SDA_PORT PORTA
+#define SCL_PIN 0
+#define SCL_PORT PORTB
+#define SDA_PIN 1
+#define SDA_PORT PORTB
 #elif defined(__AVR_ATtiny828__)
 #define SCL_PIN 3
 #define SCL_PORT PORTD
