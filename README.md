@@ -22,7 +22,7 @@ This core supports the following processors - essentially every ATtiny processor
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
-This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the "PIC-like" peripherals that have come out since the microchip merger. A very large amount of work would be required to support these parts. See [#174](https://github.com/SpenceKonde/ATTinyCore/issues/174) for details.
+This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the "xMega-like" peripherals. A very large amount of work would be required to support these parts. See [#174](https://github.com/SpenceKonde/ATTinyCore/issues/174) for details. It looks like the Arduino team is planning to release an official board based on a part with similar peripherals; after this is done, work could begin on porting that to the similar ATTiny parts.
 
 ### Quick Gotcha list:
 
