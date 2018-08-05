@@ -292,7 +292,7 @@ attiny167at12: TARGET = attiny167
 attiny167at12: MCU_TARGET = attiny167
 attiny167at12: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
 attiny167at12: AVR_FREQ ?= 12000000L
-attiny167at12: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167at12: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny167at12: $(PROGRAM)_attiny167_12000000L.hex
 attiny167at12: $(PROGRAM)_attiny167_12000000L.lst
 
@@ -501,7 +501,7 @@ attiny1634at147ser1: $(PROGRAM)_attiny1634at147ser1.lst
 
 attiny841at184: TARGET = attiny841
 attiny841at184: MCU_TARGET = attiny841
-attiny841at184: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE' '-DUART=1'
+attiny841at184: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE'
 attiny841at184: AVR_FREQ ?= 18432000L
 attiny841at184: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny841at184: $(PROGRAM)_attiny841at184.hex
