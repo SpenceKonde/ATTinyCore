@@ -97,7 +97,7 @@ extern const uint8_t WIRE_BUFFER_LENGTH;
 // WIRE_HAS_END means Wire has end()
 #define WIRE_HAS_END 1
 
-class USIWire {
+class TwoWire {
   private:
     static uint8_t *Buffer;
     static uint8_t BufferIndex;
@@ -105,7 +105,7 @@ class USIWire {
 
     static uint8_t transmitting;
   public:
-    USIWire();
+    TwoWire();
     void begin();
     void begin(uint8_t);
     void begin(int);
@@ -136,7 +136,7 @@ class USIWire {
     inline size_t write(unsigned int n) { return write((uint8_t)n); }
     inline size_t write(int n) { return write((uint8_t)n); }
 };
-extern USIWire Wire;
+extern TwoWire Wire;
 #endif
 #else
 #if defined(TWSD) && !defined(__AVR_ATtiny1634__)
