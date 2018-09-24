@@ -32,7 +32,7 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **When using analogRead(), use the A# constant to refer to the pin, not the digital pin number.** Analog channel number (see table in datasheet entry for ADMUX register) can also be used - unlike the official core, you can use analogRead() with the differential ADC channels (for example). 
 
-**When using I2C on anything other than the ATTiny88** you must use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. You should use external pullups anyway, as the internal pullups on the AVR microcontrollers are weaker than the I2C spec recommends.
+**When using I2C on anything other than the ATTiny88** you **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. That said, you should always ensure than an external pullup is present, even on devices with real hardware I2C (like the t88 and atmega devices) - while it often will work with the internal pullups, they are not as strong as the I2C spec requires. 
 
 **You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** To refer to pins by port and bit, use PIN_xn (ex, PIN_B2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used
 
@@ -108,7 +108,7 @@ On the following chips, I2C functionality can be achieved with the hardware USI.
 * ATtiny x313 (2313/4313)
 * ATtiny 1634
 
-On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library. 
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library. Be aware that this is currently a bit of a flash-hog; there are plans to improve this in a future release ( #226 ).
 * ATtiny 828
 * ATtiny x41 (441/841)
 
