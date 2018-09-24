@@ -90,6 +90,7 @@ extern TwoWire Wire;
 #ifndef USIWire_h
 #define USIWire_h
 #include <inttypes.h>
+#include <stdio.h> // for size_t
 // Buffer sizes are defined in USI_TWI_Slave/USI_TWI_Slave.h
 extern const uint8_t WIRE_BUFFER_LENGTH;
 #define BUFFER_LENGTH (WIRE_BUFFER_LENGTH)
