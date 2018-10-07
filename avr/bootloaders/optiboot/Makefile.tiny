@@ -152,7 +152,7 @@ attiny841: TARGET = attiny841
 attiny841: MCU_TARGET = attiny841
 attiny841: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE' $(UART_CMD)
 attiny841: AVR_FREQ ?= 8000000L
-attiny841: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny841: LDSECTIONS  ?= -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny841: $(PROGRAM)_attiny841.hex
 ifndef PRODUCTION
 attiny841: $(PROGRAM)_attiny841.lst
@@ -251,7 +251,7 @@ ifndef PRODUCTION
 endif
 
 attiny841at110ser1:
-	$(MAKE) attiny841	 AVR_FREQ=11059200L UART=1
+	$(MAKE) attiny841	 AVR_FREQ=11059200L UART=1 
 	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_11059200L_ser1.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_11059200L_ser1.lst
@@ -306,24 +306,24 @@ endif
 #-----------------------
 
 attiny841at20noLED:
-	$(MAKE) attiny841	 AVR_FREQ=20000000L LED_START_FLASHES=0
-	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_$@.hex
+	$(MAKE) attiny841	 AVR_FREQ=20000000L LED_START_FLASHES=0  LDSECTIONS  = -Wl,--section-start=.text=0x1dc0 -Wl,--section-start=.version=0x1ffe
+	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_20000000L_noLED.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_20000000L_noLED.lst
 endif
 
 attiny841at16noLED:
-	$(MAKE) attiny841	 AVR_FREQ=16000000L LED_START_FLASHES=0
-	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_$@.hex
+	$(MAKE) attiny841	 AVR_FREQ=16000000L LED_START_FLASHES=0 LDSECTIONS  = -Wl,--section-start=.text=0x1dc0 -Wl,--section-start=.version=0x1ffe
+	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_16000000L_noLED.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_16000000L_noLED.lst
 endif
 
 attiny841at8noLED:
-	$(MAKE) attiny841	 AVR_FREQ=8000000L  BAUD_RATE=57600 LED_START_FLASHES=0
-	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_$@.hex
+	$(MAKE) attiny841	 AVR_FREQ=8000000L  BAUD_RATE=57600 LED_START_FLASHES=0 LDSECTIONS  = -Wl,--section-start=.text=0x1dc0 -Wl,--section-start=.version=0x1ffe
+	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_8000000L_noLED.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_8000000L_noLED.lst
 endif
 
 #--------------------------------
@@ -486,6 +486,32 @@ ifndef PRODUCTION
 endif
 
 
+#-----------------------
+# ATtiny 841, UART 0, no LED
+# There's no noLED definitions for 1634 because the larger page size
+# on the 1634 means that you don't gain any usable flash from it. 
+#-----------------------
+
+attiny441at20noLED:
+	$(MAKE) attiny441	 AVR_FREQ=20000000L LED_START_FLASHES=0  LDSECTIONS  = -Wl,--section-start=.text=0x0dc0 -Wl,--section-start=.version=0x0ffe
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_20000000L_noLED.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_20000000L_noLED.lst
+endif
+
+attiny441at16noLED:
+	$(MAKE) attiny441	 AVR_FREQ=16000000L LED_START_FLASHES=0 LDSECTIONS  = -Wl,--section-start=.text=0x0dc0 -Wl,--section-start=.version=0x0ffe
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_16000000L_noLED.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_16000000L_noLED.lst
+endif
+
+attiny441at8noLED:
+	$(MAKE) attiny441	 AVR_FREQ=8000000L  BAUD_RATE=57600 LED_START_FLASHES=0 LDSECTIONS  = -Wl,--section-start=.text=0x0dc0 -Wl,--section-start=.version=0x0ffe
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_8000000L_noLED.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_8000000L_noLED.lst
+endif
 
 #-------------------
 # ATtiny828 - only one speed since it doesn't support crystal. 
@@ -507,16 +533,16 @@ endif
 
 attiny828at8: 
 	$(MAKE) attiny828at8 AVR_FREQ=8000000L BAUD_RATE=57600
-	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_8000000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_8000000L.lst
 endif
 
 attiny828at8_5v: 
 	$(MAKE) attiny828at8 AVR_FREQ=8200000L BAUD_RATE=57600
-	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_8000000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_8000000L.lst
 endif
 
 
