@@ -22,58 +22,58 @@ endif
 #-----------------------
 attiny1634at12:
 	"$(MAKE)" attiny1634	AVR_FREQ=12000000L
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_12000000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_12000000L.lst
 endif
 
 attiny1634at16:
 	"$(MAKE)" attiny1634	AVR_FREQ=16000000L
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_16000000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_16000000L.lst
 endif
 
 attiny1634at8:
 	"$(MAKE)" attiny1634	AVR_FREQ=8000000L BAUD_RATE=57600
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8000000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8000000L.lst
 endif
 
 attiny1634at8_5v:
 	"$(MAKE)" attiny1634	AVR_FREQ=8200000L BAUD_RATE=57600
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8200000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8200000L.lst
 endif
 
 attiny1634at737:
 	"$(MAKE)" attiny1634	AVR_FREQ=7372800L BAUD_RATE=57600
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_7372800L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_7372800L.lst
 endif
 
 attiny1634at921:
 	"$(MAKE)" attiny1634	AVR_FREQ=9216000L  BAUD_RATE=57600
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_9216000L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_9216000L.lst
 endif
 
 attiny1634at110:
 	"$(MAKE)" attiny1634	AVR_FREQ=11059200L
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_11059200L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_11059200L.lst
 endif
 
 attiny1634at147:
 	"$(MAKE)" attiny1634	AVR_FREQ=14745600L
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_14745600L.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_14745600L.lst
 endif
 
 
@@ -84,58 +84,58 @@ endif
 
 attiny1634at12ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=12000000L UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_12000000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_12000000L_ser1.lst
 endif
 
 attiny1634at16ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=16000000L UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_16000000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_16000000L_ser1.lst
 endif
 
 attiny1634at8ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=8000000L BAUD_RATE=57600 UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8000000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8000000L_ser1.lst
 endif
 
 attiny1634at8_5vser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=8200000L BAUD_RATE=57600 UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8200000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8200000L_ser1.lst
 endif
 
 attiny1634at737ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=7372800L BAUD_RATE=57600 UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_7372800L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_7372800L_ser1.lst
 endif
 
 attiny1634at921ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=9216000L  BAUD_RATE=57600 UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_9216000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_9216000L_ser1.lst
 endif
 
 attiny1634at110ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=11059200L UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_11059200L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_11059200L_ser1.lst
 endif
 
 attiny1634at147ser1:
 	"$(MAKE)" attiny1634	AVR_FREQ=14745600L UART=1
-	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_$@.hex
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_14745600L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_$@.lst
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_14745600L_ser1.lst
 endif
 
 
@@ -152,7 +152,7 @@ attiny841: TARGET = attiny841
 attiny841: MCU_TARGET = attiny841
 attiny841: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE' $(UART_CMD)
 attiny841: AVR_FREQ ?= 8000000L
-attiny841: LDSECTIONS  ?= -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny841: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny841: $(PROGRAM)_attiny841.hex
 ifndef PRODUCTION
 attiny841: $(PROGRAM)_attiny841.lst
@@ -573,6 +573,133 @@ attiny87: $(PROGRAM)_attiny87.hex
 ifndef PRODUCTION
 attiny87: $(PROGRAM)_attiny87.lst
 endif
+
+attiny167at184:
+	$(MAKE) attiny167	 AVR_FREQ=18432000L
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_18432000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_18432000L.lst
+endif
+
+attiny167at147:
+	$(MAKE) attiny167	 AVR_FREQ=14745600L
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_14745600L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_14745600L.lst
+endif
+
+attiny167at110:
+	$(MAKE) attiny167	 AVR_FREQ=11059200L
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_11059200L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_11059200L.lst
+endif
+
+attiny167at921:
+	$(MAKE) attiny167	 AVR_FREQ=9216000L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_9216000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_9216000L.lst
+endif
+
+attiny167at737:
+	$(MAKE) attiny167	 AVR_FREQ=7372800L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_7372800L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_7372800L.lst
+endif
+
+attiny167at20:
+	$(MAKE) attiny167	 AVR_FREQ=20000000L
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_20000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_20000000L.lst
+endif
+
+attiny167at16:
+	$(MAKE) attiny167	 AVR_FREQ=16000000L
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_16000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_16000000L.lst
+endif
+
+attiny167at12:
+	$(MAKE) attiny167	 AVR_FREQ=12000000L
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_12000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_12000000L.lst
+endif
+
+attiny167at8:
+	$(MAKE) attiny167	 AVR_FREQ=8000000L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny167.hex $(PROGRAM)_attiny167_8000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny167.lst $(PROGRAM)_attiny167_8000000L.lst
+endif
+
+attiny87at184:
+	$(MAKE) attiny87	 AVR_FREQ=18432000L
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_18432000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_18432000L.lst
+endif
+
+attiny87at147:
+	$(MAKE) attiny87	 AVR_FREQ=14745600L
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_14745600L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_14745600L.lst
+endif
+
+attiny87at110:
+	$(MAKE) attiny87	 AVR_FREQ=11059200L
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_11059200L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_11059200L.lst
+endif
+
+attiny87at921:
+	$(MAKE) attiny87	 AVR_FREQ=9216000L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_9216000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_9216000L.lst
+endif
+
+attiny87at737:
+	$(MAKE) attiny87	 AVR_FREQ=7372800L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_7372800L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_7372800L.lst
+endif
+
+attiny87at20:
+	$(MAKE) attiny87	 AVR_FREQ=20000000L
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_20000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_20000000L.lst
+endif
+
+attiny87at16:
+	$(MAKE) attiny87	 AVR_FREQ=16000000L
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_16000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_16000000L.lst
+endif
+
+attiny87at12:
+	$(MAKE) attiny87	 AVR_FREQ=12000000L
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_12000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_12000000L.lst
+endif
+
+attiny87at8:
+	$(MAKE) attiny87	 AVR_FREQ=8000000L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny87.hex $(PROGRAM)_attiny87_8000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny87.lst $(PROGRAM)_attiny87_8000000L.lst
+endif
+
 
 
 #--------------------------------
