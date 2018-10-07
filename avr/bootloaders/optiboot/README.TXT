@@ -2,16 +2,22 @@ This directory contains the Optiboot small bootloader for AVR
 microcontrollers, somewhat modified specifically for the Arduino
 environment.
 
-Optiboot is more fully described here: http://code.google.com/p/optiboot/
+Optiboot is more fully described here: http://github.com/Optiboot/optiboot
 and is the work of Peter Knight (aka Cathedrow), building on work of Jason P
-Kyle, Spiff, and Ladyada.  Arduino-specific modification are by Bill
-Westfield (aka WestfW)
+Kyle, Spiff, and Ladyada.  More recent maintenance and modifications are by
+Bill Westfield (aka WestfW)
 
 Arduino-specific issues are tracked as part of the Arduino project
-at http://code.google.com/p/arduino
+at http://github.com/arduino/Arduino
 
+
+Most of the information in this file is superceeded by the wiki content at
+https://github.com/Optiboot/optiboot/wiki
+
+It's till here "just in case."
 
 ------------------------------------------------------------
+
 Building optiboot for Arduino.
 
 Production builds of optiboot for Arduino are done on a Mac in "unix mode"

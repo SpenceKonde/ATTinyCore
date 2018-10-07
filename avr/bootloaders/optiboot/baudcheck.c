@@ -11,6 +11,10 @@
  * writes the desired output...
  *
  * Note that the C-style comments are stripped by the C preprocessor.
+ *
+ * Copyright 2013-2015 by Bill Westfield.
+ * This software is licensed under version 2 of the Gnu Public Licence.
+ * See optiboot.c for details.
  */
 
 /*
@@ -19,14 +23,20 @@
  */
 bpsx=BAUD_RATE
 bps=${bpsx/L/}
+bps=${bps/U/}
 fcpux=F_CPU
 fcpu=${fcpux/L/}
+fcpu=${fcpu/U/}
 
 // echo f_cpu = $fcpu, baud = $bps
 /*
  * Compute the divisor
  */
+#ifdef SINGLESPEED
+BAUD_SETTING=$(( ( ($fcpu + $bps * 8) / (($bps * 16))) - 1 ))
+#else
 BAUD_SETTING=$(( ( ($fcpu + $bps * 4) / (($bps * 8))) - 1 ))
+#endif
 // echo baud setting = $BAUD_SETTING
 
 /*
@@ -34,15 +44,19 @@ BAUD_SETTING=$(( ( ($fcpu + $bps * 4) / (($bps * 8))) - 1 ))
  * And the error.  Since we're all integers, we have to calculate
  * the tenths part of the error separately.
  */
+#ifdef SINGLESPEED
+BAUD_ACTUAL=$(( ($fcpu/(16 * (($BAUD_SETTING)+1))) ))
+#else
 BAUD_ACTUAL=$(( ($fcpu/(8 * (($BAUD_SETTING)+1))) ))
-BAUD_ERROR=$(( (( 100*($bps - $BAUD_ACTUAL) ) / $bps) ))
-ERR_TS=$(( ((( 1000*($bps - $BAUD_ACTUAL) ) / $bps) - $BAUD_ERROR * 10) ))
+#endif
+BAUD_ERROR=$(( (( 100*($BAUD_ACTUAL - $bps) ) / $bps) ))
+ERR_TS=$(( ((( 1000*($BAUD_ACTUAL - $bps) ) / $bps) - $BAUD_ERROR * 10) ))
 ERR_TENTHS=$(( ERR_TS > 0 ? ERR_TS: -ERR_TS ))
 
 /*
  * Print a nice message containing the info we've calculated
  */
-echo BAUD RATE CHECK: Desired: $bps,  Real: $BAUD_ACTUAL, UBRRL = $BAUD_SETTING, Error=$BAUD_ERROR.$ERR_TENTHS\%
+echo BAUD RATE CHECK: Desired: $bps,  Real: $BAUD_ACTUAL, UBRRL = $BAUD_SETTING, Difference=$BAUD_ERROR.$ERR_TENTHS\%
 
 
 

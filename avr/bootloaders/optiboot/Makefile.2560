@@ -1,0 +1,60 @@
+#
+# Makefile for 2560 AVR chips
+#
+# * Copyright 2013-2015 by Bill Westfield, Marek Wodzinski.  Part of Optiboot.
+# * This software is licensed under version 2 of the Gnu Public Licence.
+# * See optiboot.c for details.
+
+# Chip level targets
+#
+HELPTEXT += "target atmega2560    - ATmega2560p (100pin, 256k)\n"
+atmega2560: TARGET = atmega2560
+atmega2560: MCU_TARGET = atmega2560
+atmega2560: CFLAGS += $(COMMON_OPTIONS) -DBIGBOOT
+atmega2560: AVR_FREQ ?= 16000000L
+atmega2560: LDSECTIONS  = -Wl,--section-start=.text=0x3fc00 -Wl,--section-start=.version=0x3fffe
+atmega2560: CFLAGS += $(UART_CMD)
+atmega2560: $(PROGRAM)_atmega2560.hex
+ifndef PRODUCTION
+atmega2560: $(PROGRAM)_atmega2560.lst
+endif
+
+
+atmega2560_isp: atmega2560
+atmega2560_isp: TARGET = atmega2560
+atmega2560_isp: MCU_TARGET = atmega2560
+# 1024 byte boot, JTAG disabled
+atmega2560_isp: HFUSE ?= DE
+# Full Swing xtal (16MHz) 16KCK/14CK+65ms
+atmega2560_isp: LFUSE ?= F7
+# 2.7V brownout
+atmega2560_isp: EFUSE ?= FD
+atmega2560_isp: isp
+
+#
+# Board-level targets
+#
+
+# Arduino/Geniuno MEGA 256 has a minimum boot size of 1024 bytes, so enable extra functions
+#
+HELPTEXT += "target mega2560      - Arduino MEGA2560 board, 2560ADK\n"
+mega2560: TARGET = $@
+mega2560: CHIP = atmega2560
+mega2560:
+	"$(MAKE)" $(CHIP) AVR_FREQ=16000000L
+	mv $(PROGRAM)_$(CHIP).hex $(PROGRAM)_$(TARGET).hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_$(CHIP).lst $(PROGRAM)_$(TARGET).lst
+endif
+
+mega2560_isp: mega256
+mega2560_isp: TARGET = mega2560
+mega2560_isp: MCU_TARGET = atmega2560
+# 1024 byte boot, JTAG disabled
+mega2560_isp: HFUSE ?= DE
+# Full swing xtal (16MHz) 16KCK/14CK+65ms
+mega2560_isp: LFUSE ?= F7
+# 2.7V brownout
+mega2560_isp: EFUSE ?= FD
+mega2560_isp: isp
+

@@ -1,0 +1,43 @@
+# 
+# Support for the Atmel Xplained mini eval boards that are mostly
+#   compatible with Arduino.  (168pb, 328p, and 328pb chips.)
+#
+# Currently these all masquerade as 168 or 328p, because the IDE
+#  does not yet have compiler support for the -pb variants.
+#
+# These boards have an mEDBG debug chip that:
+#   1) means that optiboot can only be programmed via Atmel Studio
+#   2) prevents optiboot from working at 115200bps.
+#   3) provides 16MHz (at 5V) via Xin on the chip.
+#  
+# 
+#
+HELPTEXT += "target xplained168pb - Atmel Xplained Mini 168pb Eval board\n"
+xplained168pb: TARGET = $@
+xplained168pb: CHIP = atmega168
+xplained168pb:
+	"$(MAKE)" $(CHIP) AVR_FREQ=16000000L BAUD_RATE=57600
+	mv $(PROGRAM)_$(CHIP).hex $(PROGRAM)_$(TARGET).hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_$(CHIP).lst $(PROGRAM)_$(TARGET).lst
+endif
+
+HELPTEXT += "target xplained328pb - Atmel Xplained Mini 328pb Eval board\n"
+xplained328pb: TARGET = $@
+xplained328pb: CHIP = atmega328
+xplained328pb:
+	"$(MAKE)" $(CHIP) AVR_FREQ=16000000L BAUD_RATE=57600
+	mv $(PROGRAM)_$(CHIP).hex $(PROGRAM)_$(TARGET).hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_$(CHIP).lst $(PROGRAM)_$(TARGET).lst
+endif
+
+HELPTEXT += "target xplained328p  - Atmel Xplained Mini 328p Eval board\n"
+xplained328p: TARGET = $@
+xplained328p: CHIP = atmega328
+xplained328p:
+	"$(MAKE)" $(CHIP) AVR_FREQ=16000000L BAUD_RATE=57600
+	mv $(PROGRAM)_$(CHIP).hex $(PROGRAM)_$(TARGET).hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_$(CHIP).lst $(PROGRAM)_$(TARGET).lst
+endif
