@@ -34,6 +34,8 @@
 #define NUM_ANALOG_INPUTS           32
 #define analogInputToDigitalPin(p)  (p<8?p:p+5)
 
+#define ADC_TEMPERATURE 11
+
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 11 || (p) == 14)
 
 #define SS   6
