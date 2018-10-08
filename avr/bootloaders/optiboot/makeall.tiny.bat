@@ -78,3 +78,67 @@ call omake attiny1634at20ser1
 call omake attiny1634at16ser1
 call omake attiny1634at12ser1
 call omake attiny1634at8ser1
+
+
+call omake attiny828at8
+call omake attiny828at8_5v
+
+call omake attiny85at184
+call omake attiny85at147
+call omake attiny85at110
+call omake attiny85at921
+call omake attiny85at737
+call omake attiny85at20
+call omake attiny85at16
+call omake attiny85at12
+call omake attiny85at8
+ 
+call omake attiny45at184
+call omake attiny45at147
+call omake attiny45at110
+call omake attiny45at921
+call omake attiny45at737
+call omake attiny45at20
+call omake attiny45at16
+call omake attiny45at12
+call omake attiny45at8
+
+call omake attiny84at184
+call omake attiny84at147
+call omake attiny84at110
+call omake attiny84at921
+call omake attiny84at737
+call omake attiny84at20
+call omake attiny84at16
+call omake attiny84at12
+call omake attiny84at8
+ 
+call omake attiny44at184
+call omake attiny44at147
+call omake attiny44at110
+call omake attiny44at921
+call omake attiny44at737
+call omake attiny44at20
+call omake attiny44at16
+call omake attiny44at12
+call omake attiny44at8
+
+call omake attiny861at184
+call omake attiny861at147
+call omake attiny861at110
+call omake attiny861at921
+call omake attiny861at737
+call omake attiny861at20
+call omake attiny861at16
+call omake attiny861at12
+call omake attiny861at8
+ 
+call omake attiny461at184
+call omake attiny461at147
+call omake attiny461at110
+call omake attiny461at921
+call omake attiny461at737
+call omake attiny461at20
+call omake attiny461at16
+call omake attiny461at12
+call omake attiny461at8

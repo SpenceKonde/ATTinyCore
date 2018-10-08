@@ -625,8 +625,17 @@ int main(void) {
 
 #if LED_START_FLASHES > 0
   // Set up Timer 1 for timeout counter
+#if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__)
+  TCCR1B = 0x0E; //div 8196 - we could divide by less since it's a 10-bit counter, but why? 
+#elif defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
+  TCCR1 = 0x0E; //div 8196 - it's an 8-bit timer. 
+#elif defined(__AVR_ATtiny43__)
+  #error "LED flash for Tiny43 not yet supported"
+#else
   TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
 #endif
+#endif
+
 
 #ifndef SOFT_UART
   #if defined(__AVR_ATmega8__) || defined (__AVR_ATmega8515__) ||	\
@@ -1056,9 +1065,18 @@ void verifySpace() {
 #if LED_START_FLASHES > 0
 void flash_led(uint8_t count) {
   do {
-    TCNT1 = -(F_CPU/(1024*16));
-    TIFR1 = _BV(TOV1);
-    while(!(TIFR1 & _BV(TOV1)));
+  	#if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
+  		TCNT1 = -(F_CPU/(8196*16));
+    	TIFR = _BV(TOV1);
+    	while(!(TIFR & _BV(TOV1)));
+	#elif defined(__AVR_ATtiny43__)
+  		#error "LED flash for Tiny43 not yet supported"
+	#else
+  		TCNT1 = -(F_CPU/(1024*16));
+    	TIFR1 = _BV(TOV1);
+    	while(!(TIFR1 & _BV(TOV1)));
+	#endif
+    
 #if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||	\
     defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||	\
     defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||	\
