@@ -66,8 +66,8 @@
 #  define USI_START_COND_INT USISIF
 #endif
 
-static const uint8_t SDA = 0;
-static const uint8_t SCL = 2;
+static const uint8_t SDA = 7;
+static const uint8_t SCL = 9;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = 0x80 | 0;
