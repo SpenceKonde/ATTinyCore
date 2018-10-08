@@ -1,4 +1,9 @@
-/* STK500 constants list, from AVRDUDE */
+/* STK500 constants list, from AVRDUDE
+ *
+ * Trivial set of constants derived from Atmel App Note AVR061
+ * Not copyrighted.  Released to the public domain.
+ */
+
 #define STK_OK              0x10
 #define STK_FAILED          0x11  // Not used
 #define STK_UNKNOWN         0x12  // Not used
@@ -37,3 +42,8 @@
 #define STK_READ_OSCCAL     0x76  // 'v'
 #define STK_READ_FUSE_EXT   0x77  // 'w'
 #define STK_READ_OSCCAL_EXT 0x78  // 'x'
+#define STK_SW_MAJOR        0x81  // ' '
+#define STK_SW_MINOR        0x82  // ' '
+
+/* AVR raw commands sent via STK_UNIVERSAL */
+#define AVR_OP_LOAD_EXT_ADDR  0x4d

@@ -14,11 +14,16 @@
 # make lilypad_isp
 # make ng_isp
 # etc...
-
+#
 #
 # Note: inherit paths/etc from parent Makefile.
 #
-
+#---------------------------------------------------------------------------
+# 
+# * Copyright 2013-2015 by Bill Westfield.  Part of Optiboot.
+# * This software is licensed under version 2 of the Gnu Public Licence.
+# * See optiboot.c for details.
+# 
 #---------------------------------------------------------------------------
 
 # enter the parameters for the avrdude isp tool  -b19200

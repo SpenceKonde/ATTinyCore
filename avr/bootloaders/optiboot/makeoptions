@@ -1,0 +1,37 @@
+#!/bin/bash
+make clean
+#
+
+# don't build most of the targets already in makeall
+
+# The "big three" standard bootloaders.
+# These need to be built AFTER the platforms, or they'll get renamed
+make atmega8
+make virboot8
+make atmega168
+make atmega328
+make virboot328
+
+make atmega328 BIGBOOT=1
+make atmega328 SUPPORT_EEPROM=1 LED_START_FLASHES=0 LED_START_ON=1
+make atmega328 BAUD_RATE=19200
+make atmega328 SOFT_UART=1
+make atmega328 LED_START_FLASHES=20
+
+make atmega1284 UART=1 LED=A1
+
+echo --------------------------------------------------
+echo        Expected to fail  !!!!
+echo --------------------------------------------------
+
+# too big
+make atmega328 SUPPORT_EEPROM=1
+# no such port
+make atmega328 LED=J1
+# no such led
+make atmega328 LED=fred
+make atmega328 UART=1
+#
+#invalid bit rates
+make atmega328 BAUD_RATE=300
+make atmega328 BAUD_RATE=3000000
