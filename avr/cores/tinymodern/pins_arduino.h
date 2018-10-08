@@ -77,6 +77,7 @@ extern const uint8_t PROGMEM port_to_input_PGM[];
 extern const uint8_t PROGMEM port_to_output_PGM[];
 extern const uint8_t PROGMEM port_to_pcmask_PGM[];
 extern const uint8_t PROGMEM port_to_pullup_PGM[];
+
 #endif
 
 #endif
@@ -93,6 +94,9 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define MISO_REMAP 10
 #define SCK_REMAP 7
 #define SS_REMAP 8
+
+
+#define ADC_TEMPERATURE 12
 
 // use ternaries for this to save space. 
 #define digitalPinToPort(P) (P==11?2:(P<3?2:1))
@@ -127,6 +131,8 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define DO_DD_PIN DDB2
 #define DI_DD_PIN DDB1
 
+
+#define ADC_TEMPERATURE 30
 
 #  define DDR_USI DDRB
 #  define PORT_USI PORTB
@@ -175,6 +181,8 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define MOSI 24
 #define SCK 27
 
+          
+#define ADC_TEMPERATURE 30
 
 #define analogInputToDigitalPin(p)  (p)
 
