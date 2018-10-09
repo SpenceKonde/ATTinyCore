@@ -13,17 +13,17 @@ GPIO Pins | 5
 ADC Channels | 4 (including the one on reset)
 PWM Channels | 3
 Interfaces | USI, high speed timer
-Clock options | Internal 1/8mhz, Internal PLL at 16mhz, external crystal or clock up to 20mhz
+Clock options | Internal 1/8MHz, Internal PLL at 16MHz, external crystal or clock up to 20MHz
 
 
 ### PLL Clock
-The ATtiny x5 series parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64mhz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16mhz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
+The ATtiny x5 series parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64mhz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
 
 ### Timer1 Clock Source option
-The ATtiny x5 series parts are equipped with a special high speed 8-bit timer, Timer1 (this is very different from the traditional 16-bit timer1 used on the atmega328p and almost every other chip in the 8-bit AVR product line). This timer can be clocked off the system clock (default), OR from the PLL at 64 mhz or 32mhz - this is then fed into the prescaler, which can prescale it by any power of two from 1 to 16384. Changing this option will impact the frequency of PWM output on Pin 3. See chapter 12 of the datasheet for more information on the high speed timer.
+The ATtiny x5 series parts are equipped with a special high speed 8-bit timer, Timer1 (this is very different from the traditional 16-bit timer1 used on the atmega328p and almost every other chip in the 8-bit AVR product line). This timer can be clocked off the system clock (default), OR from the PLL at 64 MHz or 32MHz - this is then fed into the prescaler, which can prescale it by any power of two from 1 to 16384. When opperating below 2.7v, the 64MHz PLL clock source option should not be used and may result in bad behavior. Changing this option will impact the frequency of PWM output on Pin 3, as well as the maximum frequency possible with tone(). See chapter 12 of the datasheet for more information on the high speed timer.
 
 ### Tone Support
-Tone() uses timer1. For best results, use pin 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range. If timer1 is set to use the PLL clock (provided this is done using the menu option, not manually), Tone will figure this out and output the requested frequency. With timer1 running off the PLL @ 64mhz, tone() should be able to output a 32mhz signal on pin 4!
+Tone() uses timer1. For best results, use pin 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range. If timer1 is set to use the PLL clock (provided this is done using the menu option, not manually), Tone will figure this out and output the requested frequency. With timer1 running off the PLL @ 64MHz, tone() should be able to output a 32MHz signal on pin 4!
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core.
