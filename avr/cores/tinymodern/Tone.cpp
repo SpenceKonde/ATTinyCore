@@ -172,7 +172,7 @@ static volatile uint8_t tone_timer_pin_mask;
 static uint8_t tone_pin = 255;
 
 
-void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
+void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 {
   tonetimer_(ocr_t)             ocr;
   tonetimer_(prescale_value_t)  csv;

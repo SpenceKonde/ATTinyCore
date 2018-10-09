@@ -51,7 +51,7 @@ static volatile uint8_t tone_timer_pin_mask;
 static uint8_t tone_pin = 255;
 
 
-void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
+void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 {
 
   if ( tone_pin == 255 )
@@ -294,12 +294,12 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       
       #if TIMER_TO_USE_FOR_TONE == 1
         #ifdef PLLTIMER1
-  uint16_t ocr = 64000000UL / frequency / 2;
+  uint32_t ocr = 64000000UL / frequency / 2;
   #else
   #ifdef LOWPLLTIMER1
-  uint16_t ocr = 32000000UL / frequency / 2;
+  uint32_t ocr = 32000000UL / frequency / 2;
   #else 
-  uint16_t ocr = F_CPU / frequency / 2;
+  uint32_t ocr = F_CPU / frequency / 2;
   #endif
   #endif
 	  #if defined(TCCR1E)
@@ -347,7 +347,7 @@ void tone( uint8_t _pin, unsigned int frequency, unsigned long duration )
       OCR1A = ocr;
 	  #endif
 	  #elif TIMER_TO_USE_FOR_TONE == 0
-      uint16_t ocr = F_CPU / frequency / 2;
+      uint32_t ocr = F_CPU / frequency / 2;
       uint8_t prescalarbits = 0b001;  // ck/1
       if (ocr > 256)
       {
