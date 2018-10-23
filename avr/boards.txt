@@ -643,6 +643,7 @@ attinyx61.bootloader.unlock_bits=0xFF
 attinyx61.bootloader.lock_bits=0xFF
 attinyx61.bootloader.file=empty/empty_all.hex
 attinyx61.build.export_merged_output=false
+attinyx61.build.core=tiny
 attinyx61.menu.LTO.disable=Disabled
 attinyx61.menu.LTO.disable.ltocflags=
 attinyx61.menu.LTO.disable.ltoelfflags=
