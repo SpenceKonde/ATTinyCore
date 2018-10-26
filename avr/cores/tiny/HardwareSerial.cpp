@@ -30,7 +30,8 @@
 
 // this next line disables the entire HardwareSerial.cpp,
 // this is so I can support Attiny series and any other chip without a uart
-#if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL
+// (If DISABLE_UART is set, HW serial is disabled, skipping this file and freeing up memory.)
+#if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL && !DISABLE_UART
 
 #include "HardwareSerial.h"
 
