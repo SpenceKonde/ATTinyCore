@@ -6,7 +6,7 @@
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
 
 name=ATTinyCore 
-version=1.2.1
+version=1.2.2
 
 # AVR compile variables
 # --------------------- 
