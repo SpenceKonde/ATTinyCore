@@ -35,7 +35,7 @@
 
 #define ADC_TEMPERATURE 8
 
-#define NUM_DIGITAL_PINS            17
+#define NUM_DIGITAL_PINS            28
 #define NUM_ANALOG_INPUTS           8
 #define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 17 : -1)
 
