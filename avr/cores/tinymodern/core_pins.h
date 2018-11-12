@@ -59,6 +59,9 @@
 #define CORE_ANALOG_COUNT     (12)
 #define CORE_ANALOG_LAST      (CORE_ANALOG_FIRST+CORE_ANALOG_COUNT-1)
 
+#define NUM_DIGITAL_PINS            12
+#define NUM_ANALOG_INPUTS           12
+
 #define CORE_INT0_PIN  PIN_B1
 #define digitalPinToInterrupt(p)  ((p) == 1 ? 0 : NOT_AN_INTERRUPT)
 // TODO: ATtiny841 Datasheet Table 12-7, TOCCn pins can be assigned various OCnX. Rationale for these choices is that - TOCC0/1 are the primary pins for UART0, while TOCC3/4 are shared with UART1. So might as well make them the least desirable timer. 
@@ -134,6 +137,10 @@
 #define CORE_ANALOG_COUNT     (13) // 12 + internal temperature sensor
 #define CORE_ANALOG_LAST      (CORE_ANALOG_FIRST+CORE_ANALOG_COUNT-1)
 
+
+#define NUM_DIGITAL_PINS            18
+#define NUM_ANALOG_INPUTS           18
+
 #define CORE_INT0_PIN  PIN_C2
 
 #define CORE_OC0A_PIN  PIN_C0
@@ -204,6 +211,9 @@
 #define CORE_ANALOG_FIRST     (0)
 #define CORE_ANALOG_COUNT     (28)
 #define CORE_ANALOG_LAST      (CORE_ANALOG_FIRST+CORE_ANALOG_COUNT-1)
+
+#define NUM_DIGITAL_PINS            28
+#define NUM_ANALOG_INPUTS           28
 
 #define CORE_INT0_PIN  PIN_C1
 #define CORE_INT1_PIN  PIN_C2
