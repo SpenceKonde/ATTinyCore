@@ -32,7 +32,7 @@
 #include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            12
-#define NUM_ANALOG_INPUTS           64
+#define NUM_ANALOG_INPUTS           8
 #define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
 
 #define ADC_TEMPERATURE 34
