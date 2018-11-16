@@ -80,11 +80,11 @@ External crystal (all except 828 and x8 series):
 * 4 MHz
 
 External crystal (in addition to above, x41, 1634 only in 1.1.4 and earlier, all chips except x8 and 828 on 1.1.5 and later):
-* 18.43 MHz
-* 14.74 MHz
-* 11.056 MHz
+* 18.432 MHz
+* 14.7456 MHz
+* 11.0592 MHz
 * 9.216 MHz
-* 7.37 MHz
+* 7.3728 MHz
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 
