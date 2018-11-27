@@ -58,6 +58,42 @@
  * _Nbr_16timers indicates how many 16 bit timers are available.
  */
 
+#ifdef __AVR_ATtinyX5__
+
+#define Servo_VERSION           2     // software version of this library
+#define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo  
+#define MAX_PULSE_WIDTH      2400 
+#define MAX_SERVOS              5
+#define INVALID_SERVO         255 
+
+class Servo
+{
+public:
+  Servo();
+  ~Servo();
+  uint8_t attach(uint8_t pin);              // attach the given pin to the next free channel, returns channel number or 0 if failure
+  uint8_t attach(uint8_t pin, uint16_t newMin, uint16_t newMax); // as above but also sets min and max values for writes.
+  void detach();
+
+  void write(uint16_t value);               // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds
+  void writeMicroseconds(uint16_t value);   // Write pulse width in microseconds
+  uint16_t read();                          // returns current pulse width as an angle between 0 and 180 degrees
+  uint16_t readMicroseconds();              // returns current pulse width in microseconds for this servo
+  bool attached();                          // return true if this servo is attached, otherwise false
+
+private:
+
+   //private variables
+   uint8_t  servoIndex;                  // Our ID number that we get from the ServoSequencer after we register with it
+   uint16_t min;                          // minimum pulse length that corresponds to the angle of 0 degrees
+   uint16_t max;                          // maximum pulse length that corresponds to the angle of 180 degrees
+
+   //our own map function, so that we don't have to get it from some library
+};
+
+
+#else
+
 #include "avr/ServoTimers.h"
 
 #define Servo_VERSION           2     // software version of this library
@@ -99,5 +135,6 @@ private:
    int8_t min;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH    
    int8_t max;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH   
 };
+#endif //end of non-8-bit avr servo header
 
 #endif
