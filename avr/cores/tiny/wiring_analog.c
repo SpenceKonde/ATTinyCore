@@ -151,16 +151,19 @@ void analogWrite(uint8_t pin, int val)
 		// connect pwm to pin on timer 1, channel A
 		cbi(TCCR1C,COM1A1S);
 		sbi(TCCR1C,COM1A0S);
+		//sbi(TCCR1A,PWM1A);
 		OCR1A = val; // set pwm duty
 	} else if (timer == TIMER1B){
 		// connect pwm to pin on timer 1, channel A
 		cbi(TCCR1C,COM1B1S);
 		sbi(TCCR1C,COM1B0S);
+		//sbi(TCCR1A,PWM1B);
 		OCR1B = val; // set pwm duty
 	} else if (timer == TIMER1D){
 		// connect pwm to pin on timer 1, channel A
 		cbi(TCCR1C,COM1D1);
 		sbi(TCCR1C,COM1D0);
+		//sbi(TCCR1A,PWM1D);
 		OCR1D = val; // set pwm duty
 	} else
 	#endif
