@@ -26,7 +26,7 @@
 
 #include "Servo.h"
 
-#ifdef __AVR_ATtinyX5__
+#if (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
 
 
     #define TCNTn   TCNT1
@@ -419,7 +419,9 @@ void ServoSequencer::servoTimerSetup()
 {
     //set up the timer prescaler based on which timer was selected and our F_CPU clock
     setupTimerPrescaler();
-
+    #ifdef __AVR_ATtinyX61__
+    TCCR1A=0;
+    #endif
     // Enable Output Compare Match Interrupt
     TIMSK |= (1 << OCIEnx);
 
@@ -461,6 +463,7 @@ void ServoSequencer::setupTimerPrescaler()
         #error "PLL Timer source not compatible with Servo, turn it off."
     #endif
     //reset the Timer Counter Control Register to its reset value
+  #if defined(__AVR_ATtinyX5__)
     TCCR1 = 0;
 
     #if F_CPU == 8000000L
@@ -486,6 +489,34 @@ void ServoSequencer::setupTimerPrescaler()
     #else
         #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85. "
     #endif
+  #elif defined(__AVR_ATtinyX61__)
+    TCCR1B = 0;
+
+    #if F_CPU == 8000000L
+        //set counter1 prescaler to 64
+        //our F_CPU is 8mhz so this makes each timer tick be 8 microseconds long
+        //TCCR1 &= ~(1<< CS13); //clear
+        //TCCR1 |=  (1<< CS12); //set
+        //TCCR1 |=  (1<< CS11); //set
+        //TCCR1 |=  (1<< CS10); //set
+        TCCR1B=7;
+    #elif F_CPU == 16000000L //16MHz
+        //TCCR1|=(1<<CS13)
+        TCCR1B=8;
+
+    #elif F_CPU == 1000000L
+        //set counter1 prescaler to 8
+        //our F_CPU is 1mhz so this makes each timer tick be 8 microseconds long
+        //TCCR1 &= ~(1<< CS13); //clear
+        //TCCR1 |=  (1<< CS12); //set
+        //TCCR1 &= ~(1<< CS11); //clear
+        //TCCR1 &= ~(1<< CS10); //clear
+        TCCR1B=4;
+    #else
+        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861. "
+    #endif
+
+  #endif
 }//end setupTimerPrescaler
 
 
@@ -544,7 +575,17 @@ void ServoSequencer::timerCompareMatchISR()
         //if this servo is enabled set the pin high
         if( servoRegistry[servoIndex].enabled == true )
         {
+          #if defined(__AVR_ATtinyX5__)
             PORTB |= (1 << servoRegistry[servoIndex].pin);
+          #elif defined(__AVR_ATtinyX61__)
+            uint8_t bit = digitalPinToBitMask(servoRegistry[servoIndex].pin);
+            uint8_t port = digitalPinToPort(servoRegistry[servoIndex].pin);
+            volatile uint8_t *out;
+            out = portOutputRegister(port);
+            *out|=bit;
+          #else 
+            #error "Unsupported part - how did execution get here?"
+          #endif
         }
         else
         {
@@ -593,7 +634,17 @@ void ServoSequencer::timerCompareMatchISR()
         //if this servo is enabled set the pin low
         if( servoRegistry[servoIndex].enabled == true )
         {
+          #if defined(__AVR_ATtinyX5__)
             PORTB &= ~(1 << servoRegistry[servoIndex].pin);
+          #elif defined(__AVR_ATtinyX61__)
+            uint8_t bit = digitalPinToBitMask(servoRegistry[servoIndex].pin);
+            uint8_t port = digitalPinToPort(servoRegistry[servoIndex].pin);
+            volatile uint8_t *out;
+            out = portOutputRegister(port);
+            *out&=~bit;
+          #else 
+            #error "Unsupported part - how did execution get here?"
+          #endif
         }
         else
         {
@@ -657,7 +708,7 @@ void ServoSequencer::timerCompareMatchISR()
 //
 // RETURNS:     Nothing
 //=============================================================================
-ISR(TIM1_COMPA_vect)
+ISR(TIMER1_COMPA_vect)
 {
     ServoSequencer::timerCompareMatchISR();
 }//end ISR TIM0_COMPA_vect
@@ -753,15 +804,12 @@ uint8_t Servo::attach(uint8_t pin)
     if(servoIndex == INVALID_SERVO)
     {
       //We got an invalid servo number. That means the servo sequencer is full and can't handle any more servos.
-      return 0;
+      return INVALID_SERVO;
     }
   }
 
-
-    //LIMITATION: this servo class only works with PORTB, which is the only port
-    //on the attiny45 and attiny85
-
     //valid pin values are between 0 and 5, inclusive.
+  #if defined(__AVR_ATtinyX5__)
     if( pin <= 5 )
     {
         DDRB |= (1<<pin); //set pin as output
@@ -770,6 +818,22 @@ uint8_t Servo::attach(uint8_t pin)
         //enable the servo to start outputing the pwm wave
         ServoSequencer::enableDisableServo(servoIndex, true);
     }
+
+  #elif defined(__AVR_ATtinyX61__)
+    if (pin <= 16) {
+      uint8_t bit = digitalPinToBitMask(pin);
+      uint8_t port = digitalPinToPort(pin);
+      volatile uint8_t *reg;
+      if (port == NOT_A_PIN) return INVALID_SERVO;
+      reg = portModeRegister(port);
+      *reg |= bit;
+      ServoSequencer::setServoPin(servoIndex, pin);
+      //enable the servo to start outputing the pwm wave
+      ServoSequencer::enableDisableServo(servoIndex, true);
+    }
+  #else 
+    #error "This part isn't supported - how did execution get here?"
+  #endif
     else
     {
         //bad pin value. do nothing.
