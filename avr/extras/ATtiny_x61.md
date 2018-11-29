@@ -4,10 +4,10 @@
 
 Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with optiboot)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
-Bootloader | No
+Bootloader | Yes, Optiboot w/virtualboot
 GPIO Pins | 15
 ADC Channels | 11 (including the one on reset)
 PWM Channels | 3
@@ -16,6 +16,11 @@ Clock options | Internal 1/8mhz, Internal PLL at 16mhz, external crystal or cloc
 Packages | DIP-20, SOIC-20, MLF-32
 
 The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control. To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32 
+
+### Optiboot Bootloader
+This core includes an Optiboot bootloader for the ATtiny861/461, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or7552b available for user code. In order to work on the 84, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+
+Programming the ATTiny861/461 via ISP without the bootloader is fully supported; the 261 is supported only for ISP programming. 
 
 ### PLL Clock
 The ATtiny x61 series parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64mhz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16mhz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
@@ -41,7 +46,7 @@ ACSR &=~(1<<ACIE);
 ACSR |=~(1<<ACD);
 ```
 ### Servo Support
-As of version 1.2.2, the builtin Servo library supports the Tinyx5 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial). This  On prior versions, a third party library must be used. The servo library will disable all PWM channels (as timer1 is the only timer capable of hardware PWM). 
+As of version 1.2.2, the builtin Servo library supports the Tinyx61 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial). This  On prior versions, a third party library must be used. The servo library will disable all PWM channels (as timer1 is the only timer capable of hardware PWM). 
 
 ### ADC Reference options
 * DEFAULT: Vcc
