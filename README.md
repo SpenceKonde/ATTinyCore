@@ -11,14 +11,15 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.5 and
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino. Click the processor name for part-specific information:
 
 * [ATtiny2313, 4313](avr/extras/ATtiny_x313.md)
-* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md)
-* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md)
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) 
+* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot bootloader)
+* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot bootloader)
+* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
 * [ATTiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot bootloader)
-* [ATTiny48, 88](avr/extras/ATtiny_x8.md)
+* [ATTiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot bootloader)
 * [ATTiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot bootloader)
 * [ATTiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
 * [ATTiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
+* [ATtiny43](avr/extras/ATtiny_43.md) (Experimental, currently in github version only)
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
@@ -30,7 +31,7 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
-**When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using a chip with a bootloader** 
+**When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader** 
 
 **When using analogRead(), use the A# constant to refer to the pin, not the digital pin number.** Analog channel number (see table in datasheet entry for ADMUX register) can also be used - unlike the official core, you can use analogRead() with the differential ADC channels (for example). 
 
