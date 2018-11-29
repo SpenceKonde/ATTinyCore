@@ -275,15 +275,21 @@ void yield(void) __attribute__ ((weak, alias("__empty")));
 
 void delay(unsigned long ms)
 {
+  #if (F_CPU>=1000000L)
   uint16_t start = (uint16_t)micros();
 
   while (ms > 0) {
     yield();
-    while (((uint16_t)micros() - start) >= 1000) {
+    while (((uint16_t)micros() - start) >= 1000 && ms) {
       ms--;
       start += 1000;
     }
   }
+  #else
+  uint32_t start = millis();
+  while((millis() - start) < ms)  /* NOP */yield();
+  return;
+  #endif
 }
 
 /* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
@@ -409,7 +415,6 @@ void delayMicroseconds(unsigned int us)
 
 #else
 	// for the 1 MHz internal clock (default settings for common AVR microcontrollers)
-
 	// the overhead of the function calls is 14 (16) cycles
 	if (us <= 16) return; //= 3 cycles, (4 when true)
 	if (us <= 25) return; //= 3 cycles, (4 when true), (must be at least 25 if we want to substract 22)
