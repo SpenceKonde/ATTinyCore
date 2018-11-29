@@ -443,6 +443,9 @@ static void initToneTimerInternal(void)
   cbi(TCCR0A, WGM01);
   cbi(TCCR0B, WGM02);
   TCCR0B |= (ToneTimer_Prescale_Index << CS00);
+  #elif defined(__AVR_ATtiny43__)
+  TCCR1A = 3; //WGM 10=1, WGM11=1
+  TCCR1B = 3; //prescaler of 64
   #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1)
   TCCR1 &= ~((1<<CS13) | (1<<CS12) | (1<<CS11) | (1<<CS10)); //stop the clock to configure
   // Use the Tone Timer for fast PWM as phase correct not supported by this timer
@@ -513,7 +516,9 @@ void initToneTimer(void)
   TIMSK &= ~((1<<OCIE1A) | (1<<OCIE1B) | (1<<TOIE1));
   // Clear the Timer1 interrupt flags
   TIFR |= ((1<<OCF1A) | (1<<OCF1B) | (1<<TOV1));
-  
+  #elif (TIMER_TO_USE_FOR_TONE==1) && defined (__AVR_ATtiny43__)
+  TCCR1A = 0; //WGM 10=1, WGM11=1
+  TCCR1B = 0; //prescaler of 64
   
   #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E)
   TCCR1A = 0;

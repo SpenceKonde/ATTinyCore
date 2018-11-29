@@ -84,7 +84,21 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
     #endif //TIMER_TO_USE_FOR_TONE==0
       
-      
+    #elif defined(__AVR_ATtiny43__)
+    TCCR1B = (0<<FOC1A) | (0<<FOC1B) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+    TCCR1A = (0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<WGM11) | (0<<WGM10);
+    // Reset the count to zero
+
+    TCNT1 = 0;
+    // Set the output compare registers to zero
+    OCR1A = 0;
+    OCR1B = 0;
+    // Disable all Timer0 interrupts
+    TIMSK1 &= ~((1<<OCIE1B) | (1<<OCIE1A) | (1<<TOIE1));
+    // Clear the Timer0 interrupt flags
+    TIFR1 |= ((1<<OCF1B) | (1<<OCF1A) | (1<<TOV1));
+
+
     #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1) //START OF ATTINY 85
     // Turn off Clear on Compare Match, turn off PWM A, disconnect the timer from the output pin, stop the clock
     TCCR1 = (0<<CTC1) | (0<<PWM1A) | (0<<COM1A1) | (0<<COM1A0) | (0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10);
@@ -149,6 +163,12 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       Clock Select = No clock source (Timer/Counter stopped).
       Note: Turn off the clock first to avoid ticks and scratches.
     */	
+    #if defined(__AVR_ATtiny43__)
+
+  cbi(TCCR1A,WGM00);
+  sbi(TCCR1A,WGM01);
+  cbi(TCCR1B,WGM02);
+    #else
     #if TIMER_TO_USE_FOR_TONE == 1
 	#if defined(TCCR1)//START OF ATTINY 85
 	sbi(TCCR1,CTC1);
@@ -165,6 +185,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 	sbi(TCCR0A,WGM01);
 	cbi(TCCR0B,WGM02);
     #endif
+  #endif
 
     /* If the tone pin can be driven directly from the timer */
 
@@ -447,6 +468,10 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     else
     {
       /* To be on the safe side, turn off all interrupts */
+      #if defined (__AVR_ATtiny43__)
+      TIMSK1 |= (1<<OCIE0A);
+      TIMSK1 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
+      #else
       #if (TIMER_TO_USE_FOR_TONE == 1)
       #if defined (TIMSK)
       TIMSK |= (1<<OCIE1A);
@@ -470,6 +495,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
       #endif
       #endif
+      #endif
 
       /* Clock is stopped.  Counter is zero.  The only thing left to do is turn off the output. */
       digitalWrite( _pin, 0 );
@@ -484,7 +510,12 @@ void noTone( uint8_t _pin )
         && ((tone_pin == _pin) || (_pin == 255)) )
   {
     // Turn off all interrupts
-    #if (TIMER_TO_USE_FOR_TONE == 1)
+    #if defined(__AVR_ATtiny43__)
+    TIMSK1 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
+    TCCR1B &= ~((1<<CS02) | (1<<CS01) | (1<<CS00)); //stop the clock
+
+    #else
+    #if (TIMER_TO_USE_FOR_TONE == 1) 
     #if defined (TIMSK)
     TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B));
     #if defined(ICIE1)
@@ -515,7 +546,7 @@ void noTone( uint8_t _pin )
     #elif (TIMER_TO_USE_FOR_TONE == 1)
     TCCR1B &= ~((1<<CS12) | (1<<CS11) | (1<<CS10)); //stop the clock
     #endif
-
+    #endif
     // Set the output low
     if ( tone_timer_pin_register != NULL )
     {
