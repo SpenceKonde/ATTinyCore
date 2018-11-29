@@ -12,6 +12,7 @@ GPIO Pins | 15
 ADC Channels | 4
 PWM Channels | 4
 Interfaces | USI
+Special features | On-chip boost converter
 Clock options | Internal 1/4/8MHz
 
 The ATtiny43 is a very unusual microcontroller - the featureset is unremarkable, inferior to just about anything else in the ATtiny product line - except for one thing: A built-in boost converter that allows it to run off of just ~1.1v (startup - it will keep running as low as 0.7v) - so you can run a project off a single alkaline battery. It generates ~3v while in active mode, and can provide up to 30mA for peripherals. When using the boost converter, you must run at 4MHz or less. See the datasheet for details of the layout, external components required, and further details of the boost converter operation.
