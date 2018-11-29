@@ -47,18 +47,18 @@
 #define MISO 4
 #define SCK  6
 
-#define USI_DDR_PORT DDRA
-#define USI_SCK_PORT DDRA
-#define USCK_DD_PIN DDA4
-#define DO_DD_PIN DDA5
-#define DI_DD_PIN DDA6
-#  define DDR_USI DDRA
-#  define PORT_USI PORTA
-#  define PIN_USI PINA
-#  define PORT_USI_SDA PORTA6
-#  define PORT_USI_SCL PORTA4
-#  define PIN_USI_SDA PINA6
-#  define PIN_USI_SCL PINA4
+#define USI_DDR_PORT DDBA
+#define USI_SCK_PORT DDBA
+#define USCK_DD_PIN DDB6
+#define DO_DD_PIN DDB5
+#define DI_DD_PIN DDB4
+#  define DDR_USI DDRB
+#  define PORT_USI PORTB
+#  define PIN_USI PINB
+#  define PORT_USI_SDA PORTB4
+#  define PORT_USI_SCL PORTB6
+#  define PIN_USI_SDA PINB4
+#  define PIN_USI_SCL PINB6
 #  define USI_START_VECTOR USI_START_vect
 #  define USI_OVERFLOW_VECTOR USI_OVF_vect
 #  define DDR_USI_CL DDR_USI
@@ -77,24 +77,24 @@ static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
 static const uint8_t A2 = 0x80 | 2;
 static const uint8_t A3 = 0x80 | 3;
-static const uint8_t A4 = 0x80 | 4;
-static const uint8_t A5 = 0x80 | 5;
-static const uint8_t A6 = 0x80 | 6;
-static const uint8_t A7 = 0x80 | 7;
 
-#define PIN_A0  (10)
+#define PIN_A0  ( 8)
 #define PIN_A1  ( 9)
-#define PIN_A2  ( 8)
-#define PIN_A3  ( 7)
-#define PIN_A4  ( 6)
-#define PIN_A5  ( 5)
-#define PIN_A6  ( 4)
-#define PIN_A7  ( 3)
+#define PIN_A2  (10)
+#define PIN_A3  (11)
+#define PIN_A4  (12)
+#define PIN_A5  (13)
+#define PIN_A6  (14)
+#define PIN_A7  (15) /* RESET */
 #define PIN_B0  ( 0)
 #define PIN_B1  ( 1)
 #define PIN_B2  ( 2)
-#define PIN_B3  (11)  /* RESET */
-#define LED_BUILTIN (2)
+#define PIN_B3  ( 3)
+#define PIN_B0  ( 4)
+#define PIN_B1  ( 5)
+#define PIN_B2  ( 6)
+#define PIN_B3  ( 7) 
+#define LED_BUILTIN (13)
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -123,8 +123,8 @@ static const uint8_t A7 = 0x80 | 7;
 #define ANALOG_COMP_DDR						 	  DDRA
 #define ANALOG_COMP_PORT						  PORTA
 #define ANALOG_COMP_PIN						 	  PINA
-#define ANALOG_COMP_AIN0_BIT					  1
-#define ANALOG_COMP_AIN1_BIT					  2
+#define ANALOG_COMP_AIN0_BIT					  4
+#define ANALOG_COMP_AIN1_BIT					  5
 
 
 /*
@@ -132,10 +132,8 @@ static const uint8_t A7 = 0x80 | 7;
 */
 // VCC used as analog reference, disconnected from PA0 (AREF)
 #define DEFAULT (0)
-// External voltage reference at PA0 (AREF) pin, internal reference turned off
-#define EXTERNAL (1)
 // Internal 1.1V voltage reference
-#define INTERNAL (2)
+#define INTERNAL (1)
 #define INTERNAL1V1 INTERNAL
 
 //----------------------------------------------------------
@@ -145,24 +143,27 @@ static const uint8_t A7 = 0x80 | 7;
 
 
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) >= 3 && (p) <= 10) ? 4 : 5)
-#define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p) (((p) >= 0 && (p) <= 7) ? 5 : 4)
+#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 7) ? (&PCMSK1) : ((p) <= 15) ? (&PCMSK0) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSKbit(p) ((p)&0x07);
 
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
+#define digitalPinToInterrupt(p)  ((p) == 7 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
 
-// ATMEL ATTINY84 / ARDUINO
+// ATMEL ATTINY43 / ARDUINO
 //
 //                           +-\/-+
-//                     VCC  1|    |14  GND
-//             (D  0)  PB0  2|    |13  PA0  (D 10)        AREF
-//             (D  1)  PB1  3|    |12  PA1  (D  9) 
-//             (D 11)  PB3  4|    |11  PA2  (D  8) 
-//  PWM  INT0  (D  2)  PB2  5|    |10  PA3  (D  7) 
-//  PWM        (D  3)  PA7  6|    |9   PA4  (D  6) 
-//  PWM        (D  4)  PA6  7|    |8   PA5  (D  5)        PWM
+//             (D  0)  PB0  1|    |13  PA7  (D 15)        RESET
+//  PWM        (D  1)  PB1  2|    |12  PA6  (D 14) 
+//  PWM        (D  2)  PB3  3|    |11  PA5  (D 13) 
+//             (D  3)  PB2  4|    |10  PA4  (D 12) 
+//  PWM        (D  4)  PB7  5|    |9   PA3  (D 11) 
+//  PWM        (D  5)  PB7  6|    |9   PA2  (D 10) 
+//             (D  6)  PB7  7|    |9   PA1  (D  9) 
+//       INT0  (D  7)  PB7  8|    |9   PA0  (D  8) 
+//                     Vcc  9|    |9   VBat
+//                    Gnd  10|    |8   LSW
 //                           +----+
 
 // these arrays map port names (e.g. port B) to the
@@ -194,15 +195,19 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PB, /* 0 */
   PB,
   PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
   PA,
   PA,
   PA,
+  PA, 
   PA,
   PA,
-  PA, /* 8 */
   PA,
-  PA,
-  PB, /* 11 */
+  PA 
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
@@ -210,23 +215,27 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
-  _BV(7), /* 3 port B */
-  _BV(6),
-  _BV(5),
+  _BV(3), 
   _BV(4),
-  _BV(3),
-  _BV(2), 
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(0), /* 0, port B */
   _BV(1),
-  _BV(0),
-  _BV(3),
+  _BV(2),
+  _BV(3), 
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7)
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
 {
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
   TIMER0A, /* OC0A */
   TIMER0B, /* OC0B */
+  NOT_ON_TIMER,
   TIMER1A, /* OC1A */
   TIMER1B, /* OC1B */
   NOT_ON_TIMER,
@@ -236,6 +245,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER
 };
 
 #endif
