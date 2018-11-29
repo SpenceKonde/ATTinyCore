@@ -5,16 +5,20 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with bootloader)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
-Bootloader | No
+Bootloader | Yes, Optiboot w/virtualboot
 GPIO Pins | 5
 ADC Channels | 4 (including the one on reset)
 PWM Channels | 3
 Interfaces | USI, high speed timer
 Clock options | Internal 1/8MHz, Internal PLL at 16MHz, external crystal or clock up to 20MHz
 
+### Optiboot Bootloader
+This core includes an Optiboot bootloader for the ATtiny85/45, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or7552b available for user code. In order to work on the 85/45, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+
+Programming the ATTiny85/45 via ISP without the bootloader is fully supported; the 24 is supported only for ISP programming. 
 
 ### PLL Clock
 The ATtiny x5 series parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64mhz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
