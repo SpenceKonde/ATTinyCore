@@ -6,10 +6,10 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 4096b/8192b
+Flash (program memory)   | 4096b/8192b (3456b/7552b with optiboot)
 RAM  | 256/512 bytes
 EEPROM | 64 bytes
-Bootloader | No
+Bootloader |  Yes, Optiboot w/virtualboot
 GPIO Pins | 27
 ADC Channels | 8
 PWM Channels | 4
@@ -18,6 +18,10 @@ Clock options | Internal 1/8mhz, external clock (no crystal) up to 20mhz
 
 The ATtiny x8 series is intended as a low cost option compatible with the popular ATmega x8 series. As such, they have a nearly identical pinout (with a couple of extra GPIO pins in the TQFP version). Although these have the full hardware I2C and SPI peripherals, they lack both a hardware serial port and the option to use a crystal as a clock source. 
 
+### Optiboot Bootloader
+This core includes an Optiboot bootloader for the ATtiny88/48, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or7552b available for user code. In order to work on the 88, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+
+Programming the ATTiny88/48 via ISP without the bootloader is fully supported
 
 ### Clock options
 The ATtiny x8 series of microcontrollers, in the interest of lowering costs, does not provide support for using an external crystal as a clock source, only the internal oscillator (at ~8 or ~1mhz) or an external *clock* source. The internal oscillator is only factory calibrated to +/- 10%, so for timing critical tasks, other arrangements (or a different chip) must be used. Note that using an external clock source is not an option in the board drop-down menus, so you cannot set it that way with "burn bootloader" from within the IDE - you must do it manually (this is to prevent new users from accidentally bricking their parts).
