@@ -4,3 +4,4 @@
 * Universal Servo library now supports Tinyx5 and Tinyx61. This should cover everything people want to drive servos with. 
 * Added missing #defines like NUM_DIGITAL_PINS from some parts. 
 * Improved part-specific documentation. 
+* Support for ATTiny43, which has builtin boost converter and can run off of a single AA battery
