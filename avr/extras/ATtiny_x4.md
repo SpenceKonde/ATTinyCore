@@ -4,10 +4,10 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with optiboot)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
-Bootloader | No
+Bootloader | Yes, Optiboot w/virtualboot
 GPIO Pins | 11
 ADC Channels | 12 (including the one on reset), many differential channels
 PWM Channels | 4
@@ -15,6 +15,11 @@ Interfaces | USI
 Clock options | Internal 1/8mhz, external crystal or clock up to 20mhz
 
 Two pinouts are available - this provides compatibility with cores which use either layout. 
+
+### Optiboot Bootloader
+This core includes an Optiboot bootloader for the ATtiny84/44, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or7552b available for user code. In order to work on the 84, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+
+Programming the ATTiny84/44 via ISP without the bootloader is fully supported; the 24 is supported only for ISP programming. 
 
 ### Tone Support
 Tone() uses timer1. For best results, use pin 6 and 5 (4 and 5 with alternate pinout - PA6 and PA5), as this will use the hardware output compare to generate the square wave instead of using interrupts. 
