@@ -5,3 +5,4 @@
 * Added missing #defines like NUM_DIGITAL_PINS from some parts. 
 * Improved part-specific documentation. 
 * Support for ATTiny43, which has builtin boost converter and can run off of a single AA battery
+* Fix delay at extremely low clock speeds (under 1MHz)
