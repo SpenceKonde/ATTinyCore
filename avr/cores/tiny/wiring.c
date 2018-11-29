@@ -610,6 +610,10 @@ PLLCSR |= PCKE;
 
 void init(void)
 {
+  #if defined(__AVR_ATtiny43__) && F_CPU==4000000L
+  CLKPR=128; //CLKPCE
+  CLKPR=1; //prescale by 2 for 4MHz
+  #endif
 
   // In case the bootloader left our millis timer in a bad way
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
