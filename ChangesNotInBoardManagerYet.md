@@ -6,3 +6,4 @@
 * Improved part-specific documentation. 
 * Support for ATTiny43, which has builtin boost converter and can run off of a single alkaline battery
 * Fix delay at extremely low clock speeds (under 1MHz)
+* Pinout image corrections
