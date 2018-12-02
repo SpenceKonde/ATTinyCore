@@ -30,6 +30,8 @@ compiler.ar.cmd=avr-{ltoarcmd}ar
 compiler.ar.flags=rcs
 compiler.objcopy.cmd=avr-objcopy
 compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
+compiler.objdump.cmd=avr-objdump
+compiler.objdump.flags=--disassemble --source --line-numbers --demangle --section=.text
 compiler.elf2hex.flags=-O ihex -R .eeprom
 compiler.elf2hex.cmd=avr-objcopy
 compiler.ldflags=
@@ -71,6 +73,13 @@ recipe.objcopy.eep.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.obj
 
 ## Create hex
 recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} {compiler.elf2hex.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
+
+## Save disassembler listing
+recipe.hooks.objcopy.postobjcopy.1.pattern.windows=cmd /C "{compiler.path}{compiler.objdump.cmd}" {compiler.objdump.flags} "{build.path}/{build.project_name}.elf" > "{build.path}/{build.project_name}.lst"
+recipe.hooks.objcopy.postobjcopy.1.pattern.linux=chmod +x "{runtime.platform.path}/create_disassembler_listing.sh"
+recipe.hooks.objcopy.postobjcopy.1.pattern.macos=chmod +x "{runtime.platform.path}/create_disassembler_listing.sh"
+recipe.hooks.objcopy.postobjcopy.2.pattern.linux="{runtime.platform.path}/create_disassembler_listing.sh" "{compiler.path}{compiler.objdump.cmd}" "{compiler.objdump.flags}" "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.lst"
+recipe.hooks.objcopy.postobjcopy.2.pattern.macos="{runtime.platform.path}/create_disassembler_listing.sh" "{compiler.path}{compiler.objdump.cmd}" "{compiler.objdump.flags}" "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.lst"
 
 ## Compute size
 recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
