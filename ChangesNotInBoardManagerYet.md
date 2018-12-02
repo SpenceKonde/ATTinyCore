@@ -7,6 +7,7 @@
 * Support for ATTiny43, which has builtin boost converter and can run off of a single alkaline battery
 * Fix delay at extremely low clock speeds (under 1MHz)
 * Pinout image corrections
-* Master Only / Slave Only / Both menu for x41 and 828 to try to save space with I2C. It's still a hog for master (this helps a little) but it helps a lot for slave. 
+* Master Only / Slave Only / Both menu for x41 and 828 to try to save space with I2C (pending)
 * Removed two unused I2C related files
 * Added support for new clockwise pinout for x41 series and menu options for it. 
+* Output assembler listing
