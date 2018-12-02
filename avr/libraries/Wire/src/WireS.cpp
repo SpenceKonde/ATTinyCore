@@ -31,7 +31,7 @@
  
  *==============================================================================================================*/
 
-#if (defined(__AVR_ATtiny1634__) || defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny828__) || defined(__AVR_ATtiny40__) || defined(__AVR_ATtiny20__)) && !defined(WIRE_MASTER_ONLY)
+#if (/*defined(__AVR_ATtiny1634__) ||*/ defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny828__) || defined(__AVR_ATtiny40__) || defined(__AVR_ATtiny20__)) && !defined(WIRE_MASTER_ONLY)
 
 #include <avr/io.h>
 #include "WireS.h"
