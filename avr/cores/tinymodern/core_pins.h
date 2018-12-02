@@ -34,6 +34,8 @@
 
 #if defined( __AVR_ATtinyX41__ )
 
+#ifdef OLD_PINOUT
+
 #define PIN_A0  (10)
 #define PIN_A1  ( 9)
 #define PIN_A2  ( 8)
@@ -46,7 +48,23 @@
 #define PIN_B1  ( 1)
 #define PIN_B2  ( 2)
 #define PIN_B3  (11)  /* RESET */
-#define LED_BUILTIN (2)
+#else
+
+#define PIN_A0  ( 0)
+#define PIN_A1  ( 1)
+#define PIN_A2  ( 2)
+#define PIN_A3  ( 3)
+#define PIN_A4  ( 4)
+#define PIN_A5  ( 5)
+#define PIN_A6  ( 6)
+#define PIN_A7  ( 7)
+#define PIN_B0  ( 9)
+#define PIN_B1  ( 10)
+#define PIN_B2  ( 8)
+#define PIN_B3  (11)  /* RESET */
+#endif
+
+#define LED_BUILTIN (PIN_B2)
 
 #define CORE_DIGITAL_FIRST    (0)
 #define CORE_DIGITAL_LAST     (11)
@@ -60,8 +78,8 @@
 #define NUM_DIGITAL_PINS            12
 #define NUM_ANALOG_INPUTS           12
 
-#define CORE_INT0_PIN  PIN_B1
-#define digitalPinToInterrupt(p)  ((p) == 1 ? 0 : NOT_AN_INTERRUPT)
+#define CORE_INT0_PIN  PIN_B2
+#define digitalPinToInterrupt(p)  ((p) == CORE_INT0_PIN ? 0 : NOT_AN_INTERRUPT)
 // TODO: ATtiny841 Datasheet Table 12-7, TOCCn pins can be assigned various OCnX. Rationale for these choices is that - TOCC0/1 are the primary pins for UART0, while TOCC3/4 are shared with UART1. So might as well make them the least desirable timer. 
 #define CORE_OC0A_PIN  PIN_A4 // TOCC3 
 #define CORE_OC0B_PIN  PIN_A5 // TOCC4 

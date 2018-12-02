@@ -140,7 +140,7 @@ class TwoWire {
 extern TwoWire Wire;
 #endif
 #else
-#if defined(TWSD) && !defined(__AVR_ATtiny1634__)
+#if defined(TWSD) && !defined(__AVR_ATtiny1634__) 
 #ifndef TWSWire_h
 #define TWSWire_h
 #include <stdint.h>
@@ -149,11 +149,11 @@ extern TwoWire Wire;
 // WIRE_HAS_END means Wire has end()
 #define WIRE_HAS_END 1
 
-class TWSWire {
+class TwoWire {
 private:
 	bool slaveMode;
 public:
-	TWSWire();
+	TwoWire();
 	void begin();
 	void begin(uint8_t);
 	void begin(int);
@@ -183,7 +183,7 @@ public:
 	inline size_t write(unsigned int n) { return write((uint8_t)n); }
 	inline size_t write(int n) { return write((uint8_t)n); }
 };
-extern TWSWire Wire;
+extern TwoWire Wire;
 #endif // TWSWire_h
 #else
 #error No Wire support on unknown board

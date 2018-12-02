@@ -12,7 +12,7 @@ menu.INITIALIZE_SECONDARY_TIMERS=Initialize Secondary Timers
 menu.TimerClockSource=Timer 1 Clock
 menu.LTO=LTO (1.6.11+ only)
 menu.bootUART=Bootloader UART
-
+menu.wiremode=Wire Modes
 
 
 
@@ -109,7 +109,7 @@ attinyx4.menu.pinmapping.anew.build.variant=tinyX4_reverse
 attinyx4.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and x41-series)
 attinyx4.menu.pinmapping.old.build.variant=tinyX4
 
-attinyx4opti.name=ATtiny44/84 (optiboot)
+attinyx4opti.nae=ATtiny44/84 (optiboot)
 attinyx4opti.upload.tool=avrdude
 attinyx4opti.upload.protocol=arduino
 attinyx4opti.upload.speed=19200
@@ -936,7 +936,17 @@ attinyx41.menu.bodpd.enabled=B.O.D. Enabled
 attinyx41.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attinyx41.menu.bodpd.sampled=B.O.D. Sampled Mode
 attinyx41.menu.bodpd.sampled.bootloader.bodpd_bits=01
-
+attinyx41.build.extra_flags={build.pinmap} {build.wiremode}
+attinyx41.menu.pinmapping.anew=Clockwise (like Rev. D boards)
+attinyx41.menu.pinmapping.anew.build.pinmap=-DNEW_PINOUT
+attinyx41.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and Rev. C boards)
+attinyx41.menu.pinmapping.old.build.pinmap=-DOLD_PINOUT
+attinyx41.menu.wiremode.amaster=Master Only
+attinyx41.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
+attinyx41.menu.wiremode.slave=Slave Only
+attinyx41.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
+attinyx41.menu.wiremode.both=Both (uses more flash)
+attinyx41.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
 
 attinyx41opti.name=ATtiny441/841 (Optiboot)
 attinyx41opti.upload.protocol=arduino
@@ -1042,6 +1052,17 @@ attinyx41opti.menu.bodpd.enabled=B.O.D. Enabled
 attinyx41opti.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attinyx41opti.menu.bodpd.sampled=B.O.D. Sampled Mode
 attinyx41opti.menu.bodpd.sampled.bootloader.bodpd_bits=01
+attinyx41opti.build.extra_flags={build.pinmap} {build.wiremode}
+attinyx41opti.menu.pinmapping.anew=Clockwise (like Rev. D boards)
+attinyx41opti.menu.pinmapping.anew.build.pinmap=-DNEW_PINOUT
+attinyx41opti.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and Rev. C boards)
+attinyx41opti.menu.pinmapping.old.build.pinmap=-DOLD_PINOUT
+attinyx41opti.menu.wiremode.amaster=Master Only
+attinyx41opti.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
+attinyx41opti.menu.wiremode.slave=Slave Only
+attinyx41opti.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
+attinyx41opti.menu.wiremode.both=Both (uses more flash)
+attinyx41opti.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
 
 attiny43.name=ATtiny43
 attiny43.upload.maximum_size=4096
@@ -1143,6 +1164,12 @@ attiny828.menu.bodpd.enabled=B.O.D. Enabled
 attiny828.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attiny828.menu.bodpd.sampled=B.O.D. Sampled Mode
 attiny828.menu.bodpd.sampled.bootloader.bodpd_bits=01
+attiny828.menu.wiremode.amaster=Master Only
+attiny828.menu.wiremode.amaster.build.extra_flags=-DWIRE_MASTER_ONLY
+attiny828.menu.wiremode.slave=Slave Only
+attiny828.menu.wiremode.slave.build.extra_flags=-DWIRE_SLAVE_ONLY
+attiny828.menu.wiremode.both=Both (uses more flash)
+attiny828.menu.wiremode.both.build.extra_flags=-DWIRE_BOTH
 
 
 attiny828opti.name=ATtiny828 (Optiboot)
@@ -1194,6 +1221,13 @@ attiny828opti.menu.bodpd.enabled=B.O.D. Enabled
 attiny828opti.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attiny828opti.menu.bodpd.sampled=B.O.D. Sampled Mode
 attiny828opti.menu.bodpd.sampled.bootloader.bodpd_bits=01
+attiny828opti.menu.wiremode.amaster=Master Only
+attiny828opti.menu.wiremode.amaster.build.extra_flags=-DWIRE_MASTER_ONLY
+attiny828opti.menu.wiremode.slave=Slave Only
+attiny828opti.menu.wiremode.slave.build.extra_flags=-DWIRE_SLAVE_ONLY
+attiny828opti.menu.wiremode.both=Both (uses more flash)
+attiny828opti.menu.wiremode.both.build.extra_flags=-DWIRE_BOTH
+
 
 
 attiny1634.name=ATtiny1634 (No bootloader)
