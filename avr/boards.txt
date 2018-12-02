@@ -109,7 +109,7 @@ attinyx4.menu.pinmapping.anew.build.variant=tinyX4_reverse
 attinyx4.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and x41-series)
 attinyx4.menu.pinmapping.old.build.variant=tinyX4
 
-attinyx4opti.nae=ATtiny44/84 (optiboot)
+attinyx4opti.name=ATtiny44/84 (optiboot)
 attinyx4opti.upload.tool=avrdude
 attinyx4opti.upload.protocol=arduino
 attinyx4opti.upload.speed=19200
