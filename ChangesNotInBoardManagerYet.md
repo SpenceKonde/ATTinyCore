@@ -12,3 +12,4 @@
 * Removed two unused I2C related files
 * Added support for new clockwise pinout for x41 series and menu options for it. 
 * Output assembler listing
+* Correct issue with "export compiled binary" on Linux/MacOS 
