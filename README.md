@@ -93,6 +93,11 @@ All available clock options for the selected processor will be shown in the Tool
 
 This differs from the behavior of official Arduino boards - the "stock" micros() executes equally fast at all clock speeds, but returns wrong values with anything that 64 doesn't divide evenly by.
 
+
+Assembler Listing generation  
+------------
+In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder. 
+
 Link-time Optimization (LTO) support
 ------------
 In version 1.1.2 and later, this core supports Link Time Optimization (lto). This can substantially reduce the compiled size of your sketch. Version 1.6.13 or later of the official AVR boards package (included with 1.6.11 and later of the IDE) is required for this functionality. Link time optimization can be enabled from the option in the tools menu.
