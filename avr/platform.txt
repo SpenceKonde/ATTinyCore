@@ -88,13 +88,13 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
 ## Save hex
-recipe.hooks.savehex.presavehex.1.pattern.windows={runtime.platform.path}/delete_merged_output.bat {build.export_merged_output} "{build.path}\{build.project_name}.with_bootloader.hex"
+recipe.hooks.savehex.presavehex.1.pattern.windows="{runtime.platform.path}/delete_merged_output.bat" {build.export_merged_output} "{build.path}\{build.project_name}.with_bootloader.hex"
 recipe.hooks.savehex.presavehex.2.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.lst" "{sketch_path}"
-recipe.hooks.savehex.presavehex.1.pattern.linux=chmod +x {runtime.platform.path}/delete_merged_output.sh
-recipe.hooks.savehex.presavehex.2.pattern.linux={runtime.platform.path}/delete_merged_output.sh {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
+recipe.hooks.savehex.presavehex.1.pattern.linux=chmod +x "{runtime.platform.path}/delete_merged_output.sh"
+recipe.hooks.savehex.presavehex.2.pattern.linux="{runtime.platform.path}/delete_merged_output.sh" {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
 recipe.hooks.savehex.presavehex.3.pattern.linux=cp "{build.path}/{build.project_name}.lst" "{sketch_path}"
-recipe.hooks.savehex.presavehex.1.pattern.macosx=chmod +x {runtime.platform.path}/delete_merged_output.sh
-recipe.hooks.savehex.presavehex.2.pattern.macosx={runtime.platform.path}/delete_merged_output.sh {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
+recipe.hooks.savehex.presavehex.1.pattern.macosx=chmod +x "{runtime.platform.path}/delete_merged_output.sh"
+recipe.hooks.savehex.presavehex.2.pattern.macosx="{runtime.platform.path}/delete_merged_output.sh" {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
 recipe.hooks.savehex.presavehex.3.pattern.linux=cp "{build.path}/{build.project_name}.lst" "{sketch_path}"
 
 recipe.output.tmp_file={build.project_name}.hex
