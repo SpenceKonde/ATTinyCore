@@ -90,10 +90,10 @@ static const uint8_t A3 = 0x80 | 3;
 #define PIN_B1  ( 1)
 #define PIN_B2  ( 2)
 #define PIN_B3  ( 3)
-#define PIN_B0  ( 4)
-#define PIN_B1  ( 5)
-#define PIN_B2  ( 6)
-#define PIN_B3  ( 7) 
+#define PIN_B4  ( 4)
+#define PIN_B5  ( 5)
+#define PIN_B6  ( 6)
+#define PIN_B7  ( 7) 
 #define LED_BUILTIN (13)
 
 //----------------------------------------------------------
