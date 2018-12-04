@@ -68,7 +68,7 @@ Internal:
 * 8 MHz
 * 1 MHz
 * 16 MHz (PLL clock,  x5, x61 only)
-* 4 MHz (x313 only)
+* 4 MHz (x313, 43 only)
 * 0.5 MHz (x313 only)
 * 128 kHz 
 
