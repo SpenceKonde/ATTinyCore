@@ -29,7 +29,7 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 ### Quick Gotcha list:
 
-**Some users have reported issues using the Windows Store version of the IDE, such as compiler segfaults. These represent a defect in the Windows Store version of the IDE. We recommend use with the normal desktop version of the IDE only. 
+**Some users have reported issues using the Windows Store version of the IDE, such as compiler segfaults. These represent a defect in the Windows Store version of the IDE. We recommend use with the normal desktop version of the IDE only (for Windows, both installer and .zip packages should work)** Note that all windows testing is conducted with the .zip version since multiple versions of the installer package version cannot coexist, and I need to test backwards compatibility. 
 
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
