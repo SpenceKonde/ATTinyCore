@@ -29,6 +29,8 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 ### Quick Gotcha list:
 
+**Some users have reported issues using the Windows Store version of the IDE, such as compiler segfaults. These represent a defect in the Windows Store version of the IDE. We recommend use with the normal desktop version of the IDE only. 
+
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
 **When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader** 
