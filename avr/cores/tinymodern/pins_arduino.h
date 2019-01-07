@@ -143,7 +143,7 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) > 7) ? PCIE1 : PCIE0)
 #define digitalPinToPCMSK(p)    (((p)  < 8) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK0) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) <8 ) ? (p) : ((p==8?2:(p==11?3:(p==9?1:0))))
+#define digitalPinToPCMSKbit(p) (((p) <8 ) ? (p) : ((p==8?2:(p==11?3:(p==9?1:0)))))
 #endif
 
 #if defined(__AVR_ATtiny1634__)
