@@ -50,8 +50,8 @@
 #define USI_DDR_PORT DDRB
 #define USI_SCK_PORT DDRB
 #define USCK_DD_PIN DDB2
-#define DO_DD_PIN DDB0
-#define DI_DD_PIN DDB1
+#define DO_DD_PIN DDB1
+#define DI_DD_PIN DDB0
 #  define DDR_USI DDRB
 #  define PORT_USI PORTB
 #  define PIN_USI PINB
