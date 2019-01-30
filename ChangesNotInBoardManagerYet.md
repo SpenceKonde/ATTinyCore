@@ -6,3 +6,4 @@
 * Added defines for DDAn on x313 - the io.h defines for these were misspelled (didn't match other DDRx registers or datasheet) (#280)
 * Remove entry from avrdude.conf that would cause some versions of avrdude to reject the configuration file (found & fixed during internal testing)
 * Fix issue with DI/DO pin defines on tiny x61 series (#282)
+* Improved readme documentation. 
