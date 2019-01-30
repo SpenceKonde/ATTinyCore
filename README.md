@@ -31,6 +31,8 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **There is a bug in the compiler toolchain included with AVR board packages 1.6.22 and 1.6.23 (included with IDE 1.8.7 and 1.8.8, or if you upgrade AVR board package** The symptom of this is a segmentation fault reported when compiling correct code. Until Atmel and/or the Arduino developers come up with a fix, the only workaround is to use Board Manager to downgrade the official AVR board package to 1.6.21. 
 
+**Windows store version sometimes experiences strange issues. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version. 
+
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
 **When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader** 
