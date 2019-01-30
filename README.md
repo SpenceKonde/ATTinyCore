@@ -92,6 +92,7 @@ External crystal (all except 828, 43 and x8 series):
 * 4 MHz
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
+Options marked with a * are "UART frequencies", used to get perfect match to common UART baud rates. These are not available for chips without a UART in versions of ATTinyCore older than 1.1.5. 
 
 **Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. millis() is not effected, only micros() and delay(). 
 
@@ -100,7 +101,7 @@ This differs from the behavior of official Arduino core - the "stock" micros() e
 
 Assembler Listing generation  
 ------------
-In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder. 
+In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. 
 
 Link-time Optimization (LTO) support
 ------------
@@ -121,7 +122,7 @@ On the following chips, I2C functionality can be achieved with the hardware USI.
 * ATtiny x313 (2313/4313)
 * ATtiny 1634
 
-On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library. Be aware that this is currently a bit of a flash-hog; there are plans to improve this in a future release ( #226 ).
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library. In versions prior to 1.2.2, USI on these devices is a flash-hog; this has been greatly improved in 1.2.2.
 * ATtiny 828
 * ATtiny x41 (441/841)
 
@@ -155,7 +156,7 @@ On the following chips, full serial (UART) support is provided in hardware, as S
 * ATtiny 1634 (two UARTs)
 * ATtiny 828
 
-On the following chips, **no hardware serial is available**, however, a built-in software serial named Serial is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
+On the following chips, **no hardware serial is available**, however, a built-in software serial named `Serial` is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial.
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (261/461/861)
@@ -232,7 +233,7 @@ Note that analog pin numbers (ex A0 ) cannot be used with digitalWrite()/digital
 Hardware
 ============
 
-To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though, when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a regulator, the ones specified for the regulator are typically sufficient for this. If the power supply rail is shared with higher power devices that will be switched on and off during operation, larger capacitors may be necessary. 
+To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a regulator, the ones specified for the regulator are typically sufficient for this. If the power supply rail is shared with higher power devices that will be switched on and off during operation, larger capacitors may be necessary. 
 
 
 For use with Optiboot, the following additional components and connections are required:
