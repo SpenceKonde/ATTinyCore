@@ -31,7 +31,7 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **There is a bug in the compiler toolchain included with AVR board packages 1.6.22 and 1.6.23 (included with IDE 1.8.7 and 1.8.8, or if you upgrade AVR board package** The symptom of this is a segmentation fault reported when compiling correct code. Until Atmel and/or the Arduino developers come up with a fix, the only workaround is to use Board Manager to downgrade the official AVR board package to 1.6.21. 
 
-**Windows store version sometimes experiences strange issues. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version. 
+**Windows store version sometimes experiences strange issues**. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version. 
 
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
@@ -43,9 +43,11 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the commpiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_xn (ex, PIN_B2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used
 
-**All ATTiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5 series) the datasheet doesn't mention these - but I've had problems when it was omitted on a t85.**
+**All ATTiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5 series) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.**
 
 **For low power applications, before entering sleep, remember to turn off the ADC (ADCSRA&=(~(1<<ADEN))) - otherwise it will waste ~270uA**
+
+**When using the WDT as a reset source and NOT using a bootloader** rembember that after reset the WDT will be enabled with minimum timeout. The very first thing your application must do upon restart is reset the WDT (`wdt_reset()`), clear WDRF flag in MCUSR (`MCUSR&=~(1<<WDRF)`) and then turn off or configure the WDT for your desired settings. If using the Optiboot bootloader, this is already done for you by thr bootloader.  
 
 ### Bootloader Support (ATtiny 441/841, 44/84, 45/85, 461/861, 48/88, 828, 1634, 87, 167 only)
 
