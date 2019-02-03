@@ -2,6 +2,7 @@
 
 1.2.3:
 * Fix problem with macro for finding PCINT bits with new pinout of ATTiny841 (this would among other things cause SoftwareSerial library to fail to compile) (#279)
+* Fix problem with macros for tiny841/441 when old pinout is used. 
 * Fixed Wire.end() not turning off pullup resistors on USI devices (#278)
 * Added defines for DDAn on x313 - the io.h defines for these were misspelled (didn't match other DDRx registers or datasheet) (#280)
 * Remove entry from avrdude.conf that would cause some versions of avrdude to reject the configuration file (found & fixed during internal testing)
