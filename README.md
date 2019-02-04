@@ -23,7 +23,7 @@ This core supports the following processors - essentially every ATtiny processor
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
-**1.2.0 adds a lot of new bootloader related features. There are sure to be bugs. Please report them using the github "issues" feature or in Microcontrollers section of Arduino forum**
+**1.2.0 and later adds a lot of new bootloader related features. There are sure to be bugs. Please report them using the github "issues" feature or in Microcontrollers section of Arduino forum. 1.2.0 and 1.2.2 have serious bugs; it is recommended to upgrade to 1.2.3 for best results**
 
 This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the "xMega-like" peripherals. A very large amount of work would be required to support these parts. See [#174](https://github.com/SpenceKonde/ATTinyCore/issues/174) for details. It looks like the Arduino team is planning to release an official board based on a part with similar peripherals; after this is done, work could begin on porting that to the similar ATTiny parts.
 
