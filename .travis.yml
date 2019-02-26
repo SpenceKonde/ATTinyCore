@@ -1,0 +1,46 @@
+# This file is used to configure the Travis CI tests of ATTinyCore
+
+env:
+  global:
+    # The Arduino IDE will be installed at APPLICATION_FOLDER/arduino
+    - APPLICATION_FOLDER="${HOME}/arduino-ide"
+    - SKETCHBOOK_FOLDER="${HOME}/Arduino"
+
+
+before_install:
+  # Install the script used to simplify use of Travis CI for testing Arduino projects
+  - source "${TRAVIS_BUILD_DIR}/avr/travis-ci/arduino-ci-script/arduino-ci-script.sh"
+
+  # These functions can be used to get verbose output for debugging the script
+  # set_script_verbosity can be set to values from 0 - 2 (verbosity off - maximum verbosity)
+  # - set_script_verbosity 2
+  # Setting set_verbose_output_during_compilation to true is the same as File > Preferences > Show verbose output during > compilation (check) in the Arduino IDE
+  #- set_verbose_output_during_compilation "true"
+
+  - set_application_folder "$APPLICATION_FOLDER"
+  - set_sketchbook_folder "$SKETCHBOOK_FOLDER"
+
+  # Install ATTinyCore from the repository
+  - install_package
+
+  # Check for common issues with the bundled libraries and their example sketches
+  - check_library_structure "${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" 1
+
+  # Check for common issues with library.properties files
+  - check_library_properties "${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" 1
+
+  # Install the Arduino IDE
+  - install_ide "newest"
+
+  # Check for common issues with keywords.txt files (must be done after installing the IDE to check the reference links)
+  - check_keywords_txt "${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" 1
+
+
+script:
+  -
+
+
+notifications:
+  email:
+    on_success: always
+    on_failure: always
