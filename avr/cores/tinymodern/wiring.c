@@ -151,13 +151,13 @@ unsigned long micros()
   return m+(m<<1)+(m>>2)-(m>>4);
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
   m=(m << 8) + t;
-  return m+(m<<1)+(m>>1)
+  return m+(m<<1)+(m>>1);
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU==14745600L) //4.375  vs real value 4.34
   m=(m << 8) + t;
   return (m<<2)+(m>>1)-(m>>3);
 #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything
   m=(m << 8) + t;
-  return (m<<2)+(m>>1)
+  return (m<<2)+(m>>1);
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU==7372800L) //8.625, vs real value 8.68
   m=(m << 8) + t;
   return (m<<3)+(m>>2)+(m>>3);
