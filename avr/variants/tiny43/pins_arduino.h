@@ -145,8 +145,8 @@ static const uint8_t A3 = 0x80 | 3;
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) >= 0 && (p) <= 7) ? 5 : 4)
-#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 7) ? (&PCMSK1) : ((p) <= 15) ? (&PCMSK0) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) ((p)&0x07);
+#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 7) ? (&PCMSK1) : ((p) <= 15) ? (&PCMSK0) : ((uint8_t *)NULL))
+#define digitalPinToPCMSKbit(p) ((p)&0x07)
 
 #define digitalPinToInterrupt(p)  ((p) == 7 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
