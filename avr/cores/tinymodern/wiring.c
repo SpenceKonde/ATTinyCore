@@ -285,6 +285,39 @@ void delayMicroseconds(unsigned int us)
   // us is at least 10 so we can substract 7
 	us -= 7; // 2 cycles
 
+#elif F_CPU >= 18432000L
+  // for a one-microsecond delay, simply return.  the overhead
+  // of the function call takes 17 (19) cycles, which is aprox. 1us
+  __asm__ __volatile__ (
+    "nop" "\n\t"
+    "nop" "\n\t"
+    "nop" "\n\t"
+    "nop"); //just waiting 4 cycles
+
+  if (us <= 1) return; //  = 3 cycles, (4 when true)
+
+  // the following loop takes nearly 1/5 (0.217%) of a microsecond (4 cycles)
+  // per iteration, so execute it five times for each microsecond of
+  // delay requested.
+  us = (us << 2) + us; // x5 us, = 7 cycles
+
+  // user wants to wait longer than 9us - here we can use approximation with multiplication
+  if (us > 36) { // 3 cycles
+    // Since the loop is not accurately 1/5 of a microsecond we need
+    // to multiply us by 0,9216 (18.432 / 20)
+    us = (us >> 1) + (us >> 2) + (us >> 3) + (us >> 4); // x0.9375 us, = 20 cycles (TODO: the cycle count needs to be validated)
+
+    // account for the time taken in the preceeding commands.
+    // we just burned 45 (47) cycles above, remove 12, (12*4=48) (TODO: calculate real number of cycles burned)
+    // additionaly, since we are not 100% precise (we are slower), subtract a bit more to fit for small values
+    // us is at least 46, so we can substract 18
+    us -= 19; // 2 cycles
+  } else { 
+    // account for the time taken in the preceeding commands.
+    // we just burned 30 (32) cycles above, remove 8, (8*4=32)
+    // us is at least 10, so we can substract 8
+    us -= 8; // 2 cycles
+  }
 #elif F_CPU >= 16000000L
 	// for the 16 MHz clock on most Arduino boards
 
@@ -300,33 +333,7 @@ void delayMicroseconds(unsigned int us)
 	// account for the time taken in the preceeding commands.
 	// we just burned 19 (21) cycles above, remove 5, (5*4=20)
   // us is at least 8 so we can substract 5
-	us -= 5; // = 2 cycles,
-
-#elif F_CPU >= 14745600L
-	// For 14.7456MHz clock in high speed serial systems
-	// Each cycle ~ 0.0678us or about 14.75 cycles per millisecond
-
-	// for 1 microsecond delay, simply return.  the overhead
-	// of the function call takes 14 (16) cycles, which is 0.95us
-	if (us <= 1) return; //  = 3 cycles, (4 when true)
-
-	// each loop is ~0.27us, 3.6873 times around for each 1µs
-	us += (us<<1)+(us>>1)+(us>>3)+(us>>4); // x3.6875
-	// "us" variable now represents loops, not microseconds
-	if (us <= 10) return; // 3 cycles. 2us delays will be a little short
-
-	// correct loop count for processing of instructions
-	//
-	// 14 cycles for function call
-	// 3 cycles for if statement
-	// 9 cycles for shifts
-	// 4 for adds
-	// 1 for assignment
-	// 3 for if statement
-	// 4 cycles for return from this function
-	// = 38 cycles to this point, 38cycles * 0.0678us/cycle = 2.5764us
-	// -2.5764us * 3.6875 loops/us = -9.5 loops
-	us -= 10; // -2 cycles, ~ -0.5 loops so -9.5 - 0.5 = -10 loops
+	us -= 5; // = 2 cycles, 
 
 #elif F_CPU >= 12000000L
 	// for the 12 MHz clock if somebody is working with USB
@@ -344,38 +351,7 @@ void delayMicroseconds(unsigned int us)
 	// we just burned 20 (22) cycles above, remove 5, (5*4=20)
   // us is at least 6 so we can substract 5
 	us -= 5; //2 cycles
-#elif F_CPU >= 11000000L
-	// for the 11 MHz uart clock
 
-	// for a 1 microsecond delay, simply return.  the overhead
-	// of the function call takes 14 (16) cycles, which is 1.5us
-	if (us <= 2) return; //  = 3 cycles, (4 when true)
-	// the following loop takes 4/11ths of a microsecond (4 cycles)
-	// per iteration, so execute it three times for each microsecond of
-	// delay requested.
-	
-	us +=us+(us>>1)+(us>>2); //x2.75 us
-
-	// account for the time taken in the preceeding commands.
-	// we just burned 20 (22) cycles above, remove 5, (5*4=20)
-  // us is at least 6 so we can substract 5
-	us -= 5; //2 cycles
-#elif F_CPU >= 9200000L
-	// for the 9.2 MHz uart clock
-
-	// for a 1 microsecond delay, simply return.  the overhead
-	// of the function call takes 14 (16) cycles, which is 1.8us
-	if (us <= 2) return; //  = 3 cycles, (4 when true)
-	// the following loop takes 4/11ths of a microsecond (4 cycles)
-	// per iteration, so execute it three times for each microsecond of
-	// delay requested.
-	
-	us +=us+(us>>3)+(us>>2); //x2.16
-
-	// account for the time taken in the preceeding commands.
-	// we just burned 20 (22) cycles above, remove 5, (5*4=20)
-  // us is at least 6 so we can substract 5
-	us -= 5; //2 cycles
 #elif F_CPU >= 8000000L
 	// for the 8 MHz internal clock
 
@@ -416,9 +392,9 @@ void delayMicroseconds(unsigned int us)
 
 	us -= 2; // = 2 cycles
 
+
 #else
 	// for the 1 MHz internal clock (default settings for common AVR microcontrollers)
-
 	// the overhead of the function calls is 14 (16) cycles
 	if (us <= 16) return; //= 3 cycles, (4 when true)
 	if (us <= 25) return; //= 3 cycles, (4 when true), (must be at least 25 if we want to substract 22)
