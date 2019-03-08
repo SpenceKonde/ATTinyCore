@@ -22,7 +22,7 @@
 /*------------------------------------------------------------------------ */
 
 /* Onboard LED is connected to pin PB5 in Arduino NG, Diecimila, and Duemilanove
- */ 
+ */
 #if !defined(LED)
 #define LED B5
 #endif
@@ -119,7 +119,7 @@
 /* Sanguino support (and other 40pin DIP cpus) */
 /*------------------------------------------------------------------------ */
 /*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega162__) 
+#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega162__)
 /*------------------------------------------------------------------------ */
 #if !defined(LED)
 #define LED         B0
@@ -318,7 +318,7 @@
     || defined(__AVR_ATmega1280__)	\
     || defined(__AVR_ATmega2560__)
 /*------------------------------------------------------------------------ */
-/* Onboard LED is connected to pin PB7 on Arduino Mega */ 
+/* Onboard LED is connected to pin PB7 on Arduino Mega */
 #if !defined(LED)
 #define LED         B7
 #endif
@@ -352,7 +352,7 @@
 
 
 /*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega169__) 
+#if defined(__AVR_ATmega169__)
 /*------------------------------------------------------------------------ */
 #if !defined(LED)
 #define LED         B5
@@ -424,7 +424,7 @@
 
 
 /*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega169__) 
+#if defined(__AVR_ATmega169__)
 /*------------------------------------------------------------------------ */
 #if !defined(LED)
 #define LED         B5
@@ -693,11 +693,11 @@
 #define LED 	B0
 #endif
 
-#define UDRE0 UDRE 
-#define FE0 FE 
+#define UDRE0 UDRE
+#define FE0 FE
 #define RXC0 RXC
 #define UCSZ00 UCSZ0
-#define UCSZ01 UCSZ1 
+#define UCSZ01 UCSZ1
 #define TXEN0 TXEN
 #define RXEN0 RXEN
 #define U2X0 U2X
@@ -714,7 +714,7 @@
 
 /*
  * ------------------------------------------------------------------------
- * A bunch of macros to enable the LED to be specified as "B5" for bit 5 
+ * A bunch of macros to enable the LED to be specified as "B5" for bit 5
  * of port B, and similar.
  * We define symbols for all the legal combination of port/bit on a chip,
  * and do pre-processor tests to see if there's a match.  This ends up

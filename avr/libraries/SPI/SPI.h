@@ -5,9 +5,9 @@
  * Original version of tinyISP by Jack Christensen 24Oct2013               *
  *                                                                         *
  * Added support for Attiny24/25, and Attiny2313/4313                      *
- * by Leonardo Miliani 28Nov2014                                           *               
+ * by Leonardo Miliani 28Nov2014                                           *
  *                                                                         *
- * Reworked to add support for 87/167, 261/461/861, and include the normal * 
+ * Reworked to add support for 87/167, 261/461/861, and include the normal *
  * SPI library on chips that have hardware SPI.                            *
  * Spence Konde 2016 (in progress)                                         *
  *                                                                         *
@@ -19,7 +19,7 @@
  * letter to Creative Commons, 171 Second Street, Suite 300,               *
  * San Francisco, California, 94105, USA.                                  *
  *-------------------------------------------------------------------------*/
- 
+
 #ifndef tinycoreSPI_h
 #define tinycoreSPI_h
 
@@ -344,7 +344,7 @@ private:
 extern SPIClass SPI;
 
 
-#else 
+#else
 
 #ifdef USICR //if we have a USI instead, use that
 
@@ -478,7 +478,7 @@ extern tinySPI SPI;
 
 
 
-#else 
+#else
 //if no USICR and no TWBR
 
 #error No supported hardware

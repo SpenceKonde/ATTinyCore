@@ -102,7 +102,7 @@ static const uint8_t A7 = 0x80 | 7;
 //Core Configuration (used to be in core_build_options.h)
 
 //If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out. 
+//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 //e.g
 //#define TUNED_OSCCAL_VALUE                        0x57
@@ -159,38 +159,38 @@ static const uint8_t A7 = 0x80 | 7;
 //                           +-\/-+
 //                     VCC  1|    |14  GND
 //             (D  0)  PB0  2|    |13  PA0  (D 10)        AREF
-//             (D  1)  PB1  3|    |12  PA1  (D  9) 
-//             (D 11)  PB3  4|    |11  PA2  (D  8) 
-//  PWM  INT0  (D  2)  PB2  5|    |10  PA3  (D  7) 
-//  PWM        (D  3)  PA7  6|    |9   PA4  (D  6) 
+//             (D  1)  PB1  3|    |12  PA1  (D  9)
+//             (D 11)  PB3  4|    |11  PA2  (D  8)
+//  PWM  INT0  (D  2)  PB2  5|    |10  PA3  (D  7)
+//  PWM        (D  3)  PA7  6|    |9   PA4  (D  6)
 //  PWM        (D  4)  PA6  7|    |8   PA5  (D  5)        PWM
 //                           +----+
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-const uint16_t PROGMEM port_to_mode_PGM[] = 
+const uint16_t PROGMEM port_to_mode_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&DDRA,
   (uint16_t)&DDRB,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = 
+const uint16_t PROGMEM port_to_output_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&PORTA,
   (uint16_t)&PORTB,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = 
+const uint16_t PROGMEM port_to_input_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&PINA,
   (uint16_t)&PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
   PB, /* 0 */
   PB,
@@ -206,7 +206,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PB, /* 11 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
   _BV(0), /* 0, port B */
   _BV(1),
@@ -216,13 +216,13 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(5),
   _BV(4),
   _BV(3),
-  _BV(2), 
+  _BV(2),
   _BV(1),
   _BV(0),
   _BV(3),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -232,7 +232,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   TIMER1B, /* OC1B */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER, 
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,

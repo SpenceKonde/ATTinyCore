@@ -1,4 +1,4 @@
-# 
+#
 # Support for the Atmel Xplained mini eval boards that are mostly
 #   compatible with Arduino.  (168pb, 328p, and 328pb chips.)
 #
@@ -9,8 +9,8 @@
 #   1) means that optiboot can only be programmed via Atmel Studio
 #   2) prevents optiboot from working at 115200bps.
 #   3) provides 16MHz (at 5V) via Xin on the chip.
-#  
-# 
+#
+#
 #
 HELPTEXT += "target xplained168pb - Atmel Xplained Mini 168pb Eval board\n"
 xplained168pb: TARGET = $@

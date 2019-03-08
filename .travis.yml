@@ -475,6 +475,8 @@ env:
 
 before_install:
   # Formatting checks:
+  # Check for trailing whitespace
+  - find . -path './.git' -prune -or -path './avr/travis-ci' -prune -or \( -not -name '*.lst' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp='[[:blank:]]$' '{}' \; -exec echo 'Trailing whitespace found.' \; -exec false '{}' +
   # Check for non-Unix line endings
   - find . -path './.git' -prune -or -path './avr/travis-ci' -prune -or -type f -exec grep --files-with-matches --binary-files=without-match --regexp=$'\r$' '{}' \; -exec echo 'Non-Unix EOL detected.' \; -exec false '{}' +
 

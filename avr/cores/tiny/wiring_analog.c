@@ -67,14 +67,14 @@ int analogRead(uint8_t pin)
   #ifndef ADCSRA
   return digitalRead(analogInputToDigitalPin(pin)) ? 1023 : 0; //No ADC, so read as a digital pin instead.
   #endif
-  
+
   #if defined(ADMUX)
   ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
   #if defined(REFS2)
   ADMUX |= (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
   #endif
   #endif
-  
+
   #if defined(HAVE_ADC) && HAVE_ADC
   sbi(ADCSRA, ADSC); //Start conversion
 
@@ -129,14 +129,14 @@ void analogWrite(uint8_t pin, int val)
 	} else
 	#endif
 
-	#if defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E) 
-		//TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85. 
+	#if defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E)
+		//TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85.
 		//So this handles "normal" timers
 	if( timer == TIMER1A){
 		// connect pwm to pin on timer 1, channel A
 		sbi(TCCR1A, COM1A1);
 		cbi(TCCR1A, COM1A0);
-	#ifdef OC1AX 
+	#ifdef OC1AX
 		cbi(TCCR1D, OC1AV);
 		cbi(TCCR1D, OC1AU);
 		cbi(TCCR1D, OC1AW);
@@ -200,7 +200,7 @@ void analogWrite(uint8_t pin, int val)
 		OCR1B = val; // set pwm duty
 	} else
 	#endif
-	
+
     {
       if (val < 128)
       {

@@ -140,7 +140,7 @@ class TwoWire {
 extern TwoWire Wire;
 #endif
 #else
-#if defined(TWSD) && !defined(__AVR_ATtiny1634__) 
+#if defined(TWSD) && !defined(__AVR_ATtiny1634__)
 #ifndef TWSWire_h
 #define TWSWire_h
 #include <stdint.h>

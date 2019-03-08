@@ -1,4 +1,4 @@
-# Overhauled summer 2015 by Dr. Azzy (Spence Konde) and again in early 2016 to add support for more chips. 
+# Overhauled summer 2015 by Dr. Azzy (Spence Konde) and again in early 2016 to add support for more chips.
 
 menu.chip=Chip
 menu.clock=Clock

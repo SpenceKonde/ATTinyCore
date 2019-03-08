@@ -23,7 +23,7 @@
 
   Modified 28-08-2009 for attiny84 R.Wiersma
   Modified 14-10-2009 for attiny45 Saposoft
-  Modified 26-02-2015 for attiny841 and other parts that use the PUEx registers. 
+  Modified 26-02-2015 for attiny841 and other parts that use the PUEx registers.
 */
 
 #ifndef Pins_Arduino_h
@@ -55,7 +55,7 @@ extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
-// 
+//
 // These perform slightly better as macros compared to inline functions
 //
 //#define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )
@@ -100,7 +100,7 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 
 #define ADC_TEMPERATURE 12
 
-// use ternaries for this to save space. 
+// use ternaries for this to save space.
 #define digitalPinToPort(P) (P==11?2:(P<3?2:1))
 #define portOutputRegister(P) (P==1?&PORTA:(P?&PORTB:NOT_A_PORT))
 #define portInputRegister(P)  (P==1?&PINA:(P?&PINB:NOT_A_PORT ))
@@ -127,7 +127,7 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 
 #define ADC_TEMPERATURE 12
 
-// use ternaries for this to save space. 
+// use ternaries for this to save space.
 #define digitalPinToPort(P) (P<8?1:2)
 #define portOutputRegister(P) (P==1?&PORTA:(P?&PORTB:NOT_A_PORT))
 #define portInputRegister(P)  (P==1?&PINA:(P?&PINB:NOT_A_PORT ))
@@ -212,7 +212,7 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define MOSI 24
 #define SCK 27
 
-          
+
 #define ADC_TEMPERATURE 30
 
 #define analogInputToDigitalPin(p)  (p)

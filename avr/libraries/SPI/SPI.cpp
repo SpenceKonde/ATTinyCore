@@ -5,7 +5,7 @@
  * Original version of tinyISP by Jack Christensen 24Oct2013               *
  *                                                                         *
  * Added support for Attiny24/25, and Attiny2313/4313                      *
- * by Leonardo Miliani 28Nov2014                                           *                          
+ * by Leonardo Miliani 28Nov2014                                           *
  *                                                                         *
  * CC BY-SA-NC:                                                            *
  * This work is licensed under the Creative Commons Attribution-           *
@@ -39,7 +39,7 @@ void SPIClass::begin()
   uint8_t sreg = SREG;
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
   if (!initialized) {
- 
+
     #ifdef  REMAP
     uint8_t SS_pin=0;
 
@@ -51,7 +51,7 @@ void SPIClass::begin()
       pinMode(SCK, OUTPUT);
       pinMode(MOSI, OUTPUT);
       SS_pin=SS;
-    }    
+    }
     uint8_t port = digitalPinToPort(SS_pin);
     uint8_t bit = digitalPinToBitMask(SS_pin);
     volatile uint8_t *reg = portModeRegister(port);
@@ -62,7 +62,7 @@ void SPIClass::begin()
       digitalWrite(SS_pin, HIGH);
     }
     pinMode(SS_pin, OUTPUT);
-    #else 
+    #else
     uint8_t port = digitalPinToPort(SS);
     uint8_t bit = digitalPinToBitMask(SS);
     volatile uint8_t *reg = portModeRegister(port);
@@ -74,7 +74,7 @@ void SPIClass::begin()
     }
        // Set SS to high so a connected chip will be "deselected" by default
 
-    
+
 
     // When the SS pin is set as OUTPUT, it can be used as
     // a general purpose output port (it doesn't influence
@@ -239,12 +239,12 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 }
 
 
-#else 
+#else
 #ifdef USICR
 
 #include <util/delay_basic.h>
 
-tinySPI::tinySPI() 
+tinySPI::tinySPI()
 {
 }
 

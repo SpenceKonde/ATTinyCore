@@ -331,14 +331,14 @@ void ServoSequencer::setServoPin(uint8_t servoNumber, uint8_t newPin)
 //=============================================================================
 void ServoSequencer::enableDisableServo(uint8_t servoNumber, bool servoShouldBeEnabled)
 {
-            
+
     //make sure we got a valid slot number and the slot is registered to a servo
     if( (servoNumber < MAX_SERVOS      ) &&
         (servoRegistry[servoNumber].slotOccupied == true)   )
     {
         if(servoShouldBeEnabled == true)
         {
-      
+
             //if this is the very first servo we are enabling then configure the servo timer
             if( timerIsSetup == false)
             {
@@ -583,7 +583,7 @@ void ServoSequencer::timerCompareMatchISR()
             volatile uint8_t *out;
             out = portOutputRegister(port);
             *out|=bit;
-          #else 
+          #else
             #error "Unsupported part - how did execution get here?"
           #endif
         }
@@ -642,7 +642,7 @@ void ServoSequencer::timerCompareMatchISR()
             volatile uint8_t *out;
             out = portOutputRegister(port);
             *out&=~bit;
-          #else 
+          #else
             #error "Unsupported part - how did execution get here?"
           #endif
         }
@@ -793,7 +793,7 @@ Servo::~Servo()
 //
 //=============================================================================
 uint8_t Servo::attach(uint8_t pin)
-{ 
+{
 
   //Do we need to register with the servo sequencer?
   delay(1000);
@@ -831,7 +831,7 @@ uint8_t Servo::attach(uint8_t pin)
       //enable the servo to start outputting the PWM wave
       ServoSequencer::enableDisableServo(servoIndex, true);
     }
-  #else 
+  #else
     #error "This part isn't supported - how did execution get here?"
   #endif
     else

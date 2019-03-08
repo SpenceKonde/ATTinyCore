@@ -37,7 +37,7 @@ you.
 
 Assuming that your installation of ATTinyCore resides at
 ~/Arduino/hardware then entering this grep command will provide a
-useful list of ATTinyCore options for your chosen processor (selected from the list below). 
+useful list of ATTinyCore options for your chosen processor (selected from the list below).
 **NOTE:** this Linux command requires [Cygwin](https://www.cygwin.com/) on Microsoft Windows.
 
 **grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt**
@@ -155,44 +155,44 @@ include $(ARDMK_DIR)/Arduino.mk
 $ make
 -------------------------
 Arduino.mk Configuration:
-- [AUTODETECTED]       CURRENT_OS = LINUX 
-- [USER]               ARDUINO_DIR = /home/username/arduino-1.6.11 
-- [USER]               ARDMK_DIR = /home/username/Arduino/Arduino-Makefile 
-- [AUTODETECTED]       ARDUINO_VERSION = 1611 
-- [DEFAULT]            ARCHITECTURE = avr 
-- [DEFAULT]            ARDMK_VENDOR = arduino 
-- [AUTODETECTED]       ARDUINO_PREFERENCES_PATH = /home/username/.arduino15/preferences.txt 
+- [AUTODETECTED]       CURRENT_OS = LINUX
+- [USER]               ARDUINO_DIR = /home/username/arduino-1.6.11
+- [USER]               ARDMK_DIR = /home/username/Arduino/Arduino-Makefile
+- [AUTODETECTED]       ARDUINO_VERSION = 1611
+- [DEFAULT]            ARCHITECTURE = avr
+- [DEFAULT]            ARDMK_VENDOR = arduino
+- [AUTODETECTED]       ARDUINO_PREFERENCES_PATH = /home/username/.arduino15/preferences.txt
 - [AUTODETECTED]       ARDUINO_SKETCHBOOK = /home/username/Arduino (from arduino preferences file)
-- [USER]               AVR_TOOLS_DIR = /home/username/arduino-1.6.11/hardware/tools/avr 
+- [USER]               AVR_TOOLS_DIR = /home/username/arduino-1.6.11/hardware/tools/avr
 - [COMPUTED]           ARDUINO_LIB_PATH = /home/username/arduino-1.6.11/libraries (from ARDUINO_DIR)
 - [COMPUTED]           ARDUINO_PLATFORM_LIB_PATH = /home/username/arduino-1.6.11/hardware/arduino/avr/libraries (from ARDUINO_DIR)
-- [USER]               ALTERNATE_CORE = ATTinyCore 
+- [USER]               ALTERNATE_CORE = ATTinyCore
 - [COMPUTED]           ALTERNATE_CORE_PATH = /home/username/Arduino/hardware/ATTinyCore/avr  (from ARDUINO_SKETCHBOOK and ALTERNATE_CORE)
 - [COMPUTED]           ARDUINO_VAR_PATH = /home/username/Arduino/hardware/ATTinyCore/avr/variants (from ALTERNATE_CORE_PATH)
 - [COMPUTED]           BOARDS_TXT = /home/username/Arduino/hardware/ATTinyCore/avr/boards.txt (from ALTERNATE_CORE_PATH)
 - [DEFAULT]            USER_LIB_PATH = /home/username/Arduino/libraries (in user sketchbook)
-- [DEFAULT]            PRE_BUILD_HOOK = pre-build-hook.sh 
-- [USER]               BOARD_SUB = 85 
-- [USER]               BOARD_TAG = attinyx5 
+- [DEFAULT]            PRE_BUILD_HOOK = pre-build-hook.sh
+- [USER]               BOARD_SUB = 85
+- [USER]               BOARD_TAG = attinyx5
 - [COMPUTED]           CORE = tiny (from build.core)
 - [COMPUTED]           VARIANT = tinyX5 (from build.variant)
-- [USER]               OBJDIR = /home/username/Arduino/ULPFlasher3/attinyx5/bin 
+- [USER]               OBJDIR = /home/username/Arduino/ULPFlasher3/attinyx5/bin
 - [COMPUTED]           ARDUINO_CORE_PATH = /home/username/Arduino/hardware/ATTinyCore/avr/cores/tiny (from ALTERNATE_CORE_PATH, BOARD_TAG and boards.txt)
-- [USER]               MONITOR_BAUDRATE = 115200 
-- [DEFAULT]            OPTIMIZATION_LEVEL = s 
-- [DEFAULT]            MCU_FLAG_NAME = mmcu 
-- [USER]               CFLAGS_STD = -std=gnu11 
-- [USER]               CXXFLAGS_STD = -std=gnu++11 
+- [USER]               MONITOR_BAUDRATE = 115200
+- [DEFAULT]            OPTIMIZATION_LEVEL = s
+- [DEFAULT]            MCU_FLAG_NAME = mmcu
+- [USER]               CFLAGS_STD = -std=gnu11
+- [USER]               CXXFLAGS_STD = -std=gnu++11
 - [COMPUTED]           DEVICE_PATH = /dev/ttyS0 (from MONITOR_PORT)
-- [DEFAULT]            FORCE_MONITOR_PORT =  
+- [DEFAULT]            FORCE_MONITOR_PORT =
 - [AUTODETECTED]       Size utility: AVR-aware for enhanced output
 - [COMPUTED]           BOOTLOADER_PARENT = /home/username/arduino-1.6.11/hardware/arduino/avr/bootloaders (from ARDUINO_DIR)
-- [COMPUTED]           ARDMK_VERSION = 1.5 
+- [COMPUTED]           ARDMK_VERSION = 1.5
 - [COMPUTED]           CC_VERSION = 4.9.2 (avr-gcc)
 -------------------------
 mkdir -p /home/username/Arduino/ULPFlasher3/attinyx5/bin
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-g++ -x c++ -include Arduino.h -MMD -c -mmcu=attiny85 -DF_CPU=8000000L -DARDUINO=1611 -DARDUINO_ARCH_AVR -D__PROG_TYPES_COMPAT__ -I/home/username/Arduino/hardware/ATTinyCore/avr/cores/tiny -I/home/username/Arduino/hardware/ATTinyCore/avr/variants/tinyX5    -Wall -ffunction-sections -fdata-sections -Os -pedantic -Wall -Wextra -fpermissive -fno-exceptions -std=gnu++11 ULPFlasher3.ino -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o
-/home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-gcc -mmcu=attiny85 -Wl,--gc-sections -Os -flto -fuse-linker-plugin -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o /home/username/Arduino/ULPFlasher3/attinyx5/bin/libcore.a   -lc -lm 
+/home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-gcc -mmcu=attiny85 -Wl,--gc-sections -Os -flto -fuse-linker-plugin -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o /home/username/Arduino/ULPFlasher3/attinyx5/bin/libcore.a   -lc -lm
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-objcopy -j .eeprom --set-section-flags=.eeprom='alloc,load' \
 		--no-change-warnings --change-section-lma .eeprom=0 -O ihex /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.eep
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.hex

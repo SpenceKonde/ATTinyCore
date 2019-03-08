@@ -28,7 +28,7 @@
 #include "Arduino.h"
 #include "wiring_private.h"
 
-#if USE_SOFTWARE_SERIAL 
+#if USE_SOFTWARE_SERIAL
 #include "TinySoftwareSerial.h"
 
 // Define constants and variables for buffering incoming serial data.  We're
@@ -50,7 +50,7 @@ uint8_t getch() {
 		"   and r23, %[mask]\n"
 		"   breq 2f\n"
 		"   sec\n"
-		"2: ror   %0\n"                    
+		"2: ror   %0\n"
 		"   dec   %[count]\n"
 		"   breq  3f\n"
 		"   rjmp  1b\n"
@@ -101,12 +101,12 @@ soft_ring_buffer rx_buffer  =  { { 0 }, 0, 0 };
 TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit)
 {
   _rx_buffer = rx_buffer;
-  
+
   _rxmask = _BV(rxBit);
   _txmask = _BV(txBit);
   _txunmask = ~_txmask;
-  
-  _delayCount = 0;	
+
+  _delayCount = 0;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ void TinySoftwareSerial::begin(long baud)
   cbi(ACSR,ACIC);  //prevent the comparator from affecting timer1 - just to be safe.
 #endif
   sbi(ACSR,ACIS1);  //interrupt on rising edge (this means RX has gone from Mark state to Start bit state).
-  sbi(ACSR,ACIS0);  
+  sbi(ACSR,ACIS0);
   //Setup the pins in case someone messed with them.
   ANALOG_COMP_DDR &= ~_rxmask; //set RX to an input
   ANALOG_COMP_PORT |= _rxmask; //enable pullup on RX pin - to prevent accidental interrupt triggers.
@@ -233,7 +233,7 @@ size_t TinySoftwareSerial::write(uint8_t ch)
 
 void TinySoftwareSerial::flush()
 {
-  
+
 }
 
 TinySoftwareSerial::operator bool() {
@@ -260,7 +260,7 @@ TinySoftwareSerial::operator bool() {
 #ifndef ANALOG_COMP_AIN1_BIT
 #error Please define ANALOG_COMP_AIN1_BIT in the pins_arduino.h file!
 #endif
-			  
+
 TinySoftwareSerial Serial(&rx_buffer, ANALOG_COMP_AIN0_BIT, ANALOG_COMP_AIN1_BIT);
 
 #endif // whole file

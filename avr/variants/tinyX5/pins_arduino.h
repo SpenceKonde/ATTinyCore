@@ -92,7 +92,7 @@ static const uint8_t A3 = 0x80 | 3;
 //Core Configuration (used to be in core_build_options.h)
 
 //If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out. 
+//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 //e.g
 //#define TUNED_OSCCAL_VALUE                        0x57
@@ -161,40 +161,40 @@ static const uint8_t A3 = 0x80 | 3;
 
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
-// and writing) tiny45 only port B 
-const uint16_t PROGMEM port_to_mode_PGM[] = 
+// and writing) tiny45 only port B
+const uint16_t PROGMEM port_to_mode_PGM[] =
 {
 	NOT_A_PORT,
 	NOT_A_PORT,
 	(uint16_t)&DDRB,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = 
+const uint16_t PROGMEM port_to_output_PGM[] =
 {
 	NOT_A_PORT,
 	NOT_A_PORT,
 	(uint16_t)&PORTB,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = 
+const uint16_t PROGMEM port_to_input_PGM[] =
 {
 	NOT_A_PIN,
 	NOT_A_PIN,
 	(uint16_t)&PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
 	PB, /* 0 */
 	PB,
 	PB,
 	PB,
-	PB, 
+	PB,
 	PB, /* 5 */
 
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
 	_BV(0), /* 0, port B */
 	_BV(1),
@@ -205,12 +205,12 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
 	TIMER0A, /* OC0A */
 	TIMER0B, /* OC0B */
 	NOT_ON_TIMER,
-	NOT_ON_TIMER, 
+	NOT_ON_TIMER,
 	TIMER1B, /*OC1B*/
 	NOT_ON_TIMER,
 };
