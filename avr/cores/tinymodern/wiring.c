@@ -122,20 +122,6 @@ unsigned long millis()
 
   return m;
 }
-unsigned long millis()
-{
-  unsigned long m;
-  uint8_t oldSREG = SREG;
-
-  // disable interrupts while we read millis_timer_millis or we might get an
-  // inconsistent value (e.g. in the middle of a write to millis_timer_millis)
-  cli();
-  m = millis_timer_millis;
-  SREG = oldSREG;
-
-  return m;
-}
-
 unsigned long micros() 
 {
   unsigned long m;
