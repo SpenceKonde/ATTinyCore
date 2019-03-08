@@ -522,7 +522,3 @@ uint8_t i2c_read(bool last)
 #pragma GCC diagnostic pop
 
 #endif
-
-
-
-

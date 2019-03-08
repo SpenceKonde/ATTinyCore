@@ -119,4 +119,3 @@ class i2c_tinyS : public Stream {
 extern i2c_tinyS TinyWireS;
 
 #endif
-

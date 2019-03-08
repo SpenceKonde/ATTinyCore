@@ -85,9 +85,3 @@ void loop()
   // blank line to separate data from the two ports:
   Serial.println();
 }
-
-
-
-
-
-

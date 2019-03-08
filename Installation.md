@@ -24,6 +24,3 @@ Option 2: Download the github client, and sync this repo to the hardware subfold
 
 
 ![core installation](http://drazzy.com/e/img/coreinstall.jpg "You want it to look like this")
-
-
-

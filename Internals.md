@@ -47,4 +47,3 @@ The following identify board variants (various cores have used both styles of de
 #define __AVR_ATtiny828__
 
 ```
-

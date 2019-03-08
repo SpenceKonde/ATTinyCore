@@ -174,4 +174,3 @@ ISR(TWI_SLAVE_vect) {
 i2c_tinyS TinyWireS  = i2c_tinyS();
 
 #endif
-

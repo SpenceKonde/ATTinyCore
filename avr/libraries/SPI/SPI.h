@@ -486,6 +486,3 @@ extern tinySPI SPI;
 #endif //end if USICR
 #endif //end if TWBR
 #endif //end of module include guard
-
-
-

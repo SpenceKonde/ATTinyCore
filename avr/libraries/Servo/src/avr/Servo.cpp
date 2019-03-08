@@ -1295,4 +1295,3 @@ bool Servo::attached()
 }
 #endif // 8bit servo test
 #endif // ARDUINO_ARCH_AVR
-

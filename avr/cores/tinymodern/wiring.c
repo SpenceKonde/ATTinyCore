@@ -484,4 +484,3 @@ void init(void)
     ADC_Enable();
   #endif
 }
-

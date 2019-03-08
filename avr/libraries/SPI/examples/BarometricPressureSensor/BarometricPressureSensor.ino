@@ -140,4 +140,3 @@ void writeRegister(byte thisRegister, byte thisValue) {
   // take the chip select high to de-select:
   digitalWrite(chipSelectPin, HIGH);
 }
-

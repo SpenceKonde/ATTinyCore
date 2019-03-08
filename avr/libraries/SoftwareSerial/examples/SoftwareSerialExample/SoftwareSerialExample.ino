@@ -52,4 +52,3 @@ void loop() // run over and over
   if (Serial.available())
     mySerial.write(Serial.read());
 }
-

@@ -65,4 +65,3 @@ stk500.protocol=stk500
 stk500.program.protocol=stk500
 stk500.program.tool=avrdude
 stk500.program.extra_params=-P{serial.port}
-
