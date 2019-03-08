@@ -42,13 +42,13 @@ This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny2
 
 **When using I2C on anything other than the ATTiny88** you **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. **That said, for maximum reliability, you should always ensure than an external pullup is present**, even on devices with real hardware I2C (like the t88 and atmega devices) - while it often will work with the internal pullups, they are not as strong as the I2C spec requires. 
 
-**You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the commpiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_xn (ex, PIN_B2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used
+**You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_xn (ex, PIN_B2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used
 
 **All ATTiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5 series) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.**
 
 **For low power applications, before entering sleep, remember to turn off the ADC (ADCSRA&=(~(1<<ADEN))) - otherwise it will waste ~270uA**
 
-**When using the WDT as a reset source and NOT using a bootloader** rembember that after reset the WDT will be enabled with minimum timeout. The very first thing your application must do upon restart is reset the WDT (`wdt_reset()`), clear WDRF flag in MCUSR (`MCUSR&=~(1<<WDRF)`) and then turn off or configure the WDT for your desired settings. If using the Optiboot bootloader, this is already done for you by thr bootloader.  
+**When using the WDT as a reset source and NOT using a bootloader** remember that after reset the WDT will be enabled with minimum timeout. The very first thing your application must do upon restart is reset the WDT (`wdt_reset()`), clear WDRF flag in MCUSR (`MCUSR&=~(1<<WDRF)`) and then turn off or configure the WDT for your desired settings. If using the Optiboot bootloader, this is already done for you by the bootloader.  
 
 ### Bootloader Support (ATtiny 441/841, 44/84, 45/85, 461/861, 48/88, 828, 1634, 87, 167 only)
 
@@ -188,7 +188,7 @@ B. O. D. (brown out detect) Configuration option
 --------
 Brown-out detection continuously monitors Vcc, and holds the chip in reset state (BOR) if the applied voltage is below a certain threshold. This is a good idea with slow-rising power supplies or where it is expected that the supply voltage could droop below the required operating voltage for the frequency it is running at (see the speed grade specification for the part you're using) - without BOD enabled, this can put the chip into a hung state until manually reset. However, BOD increases power consumption slightly, and hence may be inappropriate in low power applications. 
 
-The BOD voltage trigger level can be chosed from the tools -> BOD menu. The ATTiny 441, 841, and 1634 support independently configuring the BOD mode (active, sampled, disabled) for active and sleep modes (see the applicable datasheet for details). These are configured via the Tools -> BOD Mode (sleep) and Tools -> BOD Mode (active) menus.  The selected BOD option is configured by the fuses, so after changing these, you must do burn bootloader to set the fuses. 
+The BOD voltage trigger level can be chosen from the tools -> BOD menu. The ATTiny 441, 841, and 1634 support independently configuring the BOD mode (active, sampled, disabled) for active and sleep modes (see the applicable datasheet for details). These are configured via the Tools -> BOD Mode (sleep) and Tools -> BOD Mode (active) menus.  The selected BOD option is configured by the fuses, so after changing these, you must do burn bootloader to set the fuses. 
 
 Memory Lock Bits, disabling Reset
 -------------

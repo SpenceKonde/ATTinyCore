@@ -10,5 +10,5 @@ These will list the requirements for successfully claiming the bounty. The value
 Free shipping via USPS first class mail is included for domestic bounty claimants. Due to the higher cost of international shipping, $2 will be debited from the value of the bounty if shipping internationally.
 
 ### If you have any questions about the requirements, email me before you start working
-That way you can save yourself time and trouble, and it will save me the awkward conversation if a submited "bounty" PR ends up not meeting the requirements for inclusion in core. My email address is spencekonde@gmail.com
+That way you can save yourself time and trouble, and it will save me the awkward conversation if a submitted "bounty" PR ends up not meeting the requirements for inclusion in core. My email address is spencekonde@gmail.com
 

@@ -714,7 +714,7 @@
 
 /*
  * ------------------------------------------------------------------------
- * A bunch of macros to enable the LED to be specifed as "B5" for bit 5 
+ * A bunch of macros to enable the LED to be specified as "B5" for bit 5 
  * of port B, and similar.
  * We define symbols for all the legal combination of port/bit on a chip,
  * and do pre-processor tests to see if there's a match.  This ends up

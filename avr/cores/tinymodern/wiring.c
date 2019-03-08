@@ -82,7 +82,7 @@ ISR(MILLISTIMER_OVF_vect)
   unsigned long m = millis_timer_millis;
   unsigned char f = millis_timer_fract;
 
-/* rmv: The code below generates considerably less code (emtpy Sketch is 326 versus 304)...
+/* rmv: The code below generates considerably less code (empty Sketch is 326 versus 304)...
 
   m += MILLIS_INC;
   f += FRACT_INC;
@@ -234,7 +234,7 @@ void delayMicroseconds(unsigned int us)
 	// 2 microseconds) gives delays longer than desired.
 	//delay_us(us);
 #if F_CPU >= 24000000L
-	// for the 24 MHz clock for the aventurous ones, trying to overclock
+	// for the 24 MHz clock for the adventurous ones, trying to overclock
 
 	// zero delay fix
   if (!us) return; //  = 3 cycles, (4 when true)
@@ -244,9 +244,9 @@ void delayMicroseconds(unsigned int us)
 	// delay requested.
 	us *= 6; // x6 us, = 7 cycles
 
-	// account for the time taken in the preceeding commands.
+	// account for the time taken in the preceding commands.
 	// we just burned 22 (24) cycles above, remove 5, (5*4=20)
-  // us is at least 6 so we can substract 5
+  // us is at least 6 so we can subtract 5
 	us -= 5; //=2 cycles
 
 #elif F_CPU >= 20000000L
@@ -266,14 +266,14 @@ void delayMicroseconds(unsigned int us)
 	// delay requested.
 	us = (us << 2) + us; // x5 us, = 7 cycles
 
-	// account for the time taken in the preceeding commands.
+	// account for the time taken in the preceding commands.
 	// we just burned 26 (28) cycles above, remove 7, (7*4=28)
-  // us is at least 10 so we can substract 7
+  // us is at least 10 so we can subtract 7
 	us -= 7; // 2 cycles
 
 #elif F_CPU >= 18432000L
   // for a one-microsecond delay, simply return.  the overhead
-  // of the function call takes 17 (19) cycles, which is aprox. 1us
+  // of the function call takes 17 (19) cycles, which is approx. 1us
   __asm__ __volatile__ (
     "nop" "\n\t"
     "nop" "\n\t"
@@ -293,15 +293,15 @@ void delayMicroseconds(unsigned int us)
     // to multiply us by 0,9216 (18.432 / 20)
     us = (us >> 1) + (us >> 2) + (us >> 3) + (us >> 4); // x0.9375 us, = 20 cycles (TODO: the cycle count needs to be validated)
 
-    // account for the time taken in the preceeding commands.
+    // account for the time taken in the preceding commands.
     // we just burned 45 (47) cycles above, remove 12, (12*4=48) (TODO: calculate real number of cycles burned)
-    // additionaly, since we are not 100% precise (we are slower), subtract a bit more to fit for small values
-    // us is at least 46, so we can substract 18
+    // additionally, since we are not 100% precise (we are slower), subtract a bit more to fit for small values
+    // us is at least 46, so we can subtract 18
     us -= 19; // 2 cycles
   } else { 
-    // account for the time taken in the preceeding commands.
+    // account for the time taken in the preceding commands.
     // we just burned 30 (32) cycles above, remove 8, (8*4=32)
-    // us is at least 10, so we can substract 8
+    // us is at least 10, so we can subtract 8
     us -= 8; // 2 cycles
   }
 #elif F_CPU >= 16000000L
@@ -316,9 +316,9 @@ void delayMicroseconds(unsigned int us)
 	// delay requested.
 	us <<= 2; // x4 us, = 4 cycles
 
-	// account for the time taken in the preceeding commands.
+	// account for the time taken in the preceding commands.
 	// we just burned 19 (21) cycles above, remove 5, (5*4=20)
-  // us is at least 8 so we can substract 5
+  // us is at least 8 so we can subtract 5
 	us -= 5; // = 2 cycles, 
 
 #elif F_CPU >= 12000000L
@@ -333,9 +333,9 @@ void delayMicroseconds(unsigned int us)
 	// delay requested.
 	us = (us << 1) + us; // x3 us, = 5 cycles
 
-	// account for the time taken in the preceeding commands.
+	// account for the time taken in the preceding commands.
 	// we just burned 20 (22) cycles above, remove 5, (5*4=20)
-  // us is at least 6 so we can substract 5
+  // us is at least 6 so we can subtract 5
 	us -= 5; //2 cycles
 
 #elif F_CPU >= 8000000L
@@ -350,9 +350,9 @@ void delayMicroseconds(unsigned int us)
 	// delay requested.
 	us <<= 1; //x2 us, = 2 cycles
 
-	// account for the time taken in the preceeding commands.
+	// account for the time taken in the preceding commands.
 	// we just burned 17 (19) cycles above, remove 4, (4*4=16)
-  // us is at least 6 so we can substract 4
+  // us is at least 6 so we can subtract 4
 	us -= 4; // = 2 cycles
 #elif F_CPU >= 6000000L
 	// for that unusual 6mhz clock... 
@@ -383,9 +383,9 @@ void delayMicroseconds(unsigned int us)
 	// for the 1 MHz internal clock (default settings for common AVR microcontrollers)
 	// the overhead of the function calls is 14 (16) cycles
 	if (us <= 16) return; //= 3 cycles, (4 when true)
-	if (us <= 25) return; //= 3 cycles, (4 when true), (must be at least 25 if we want to substract 22)
+	if (us <= 25) return; //= 3 cycles, (4 when true), (must be at least 25 if we want to subtract 22)
 
-	// compensate for the time taken by the preceeding and next commands (about 22 cycles)
+	// compensate for the time taken by the preceding and next commands (about 22 cycles)
 	us -= 22; // = 2 cycles
 	// the following loop takes 4 microseconds (4 cycles)
 	// per iteration, so execute it us/4 times
@@ -460,7 +460,7 @@ void init(void)
   // Millis timer is always processor clock divided by MillisTimer_Prescale_Value (64)
   MillisTimer_ClockSelect( MillisTimer_Prescale_Index );
 
-  // Enable the overlow interrupt (this is the basic system tic-toc for millis)
+  // Enable the overflow interrupt (this is the basic system tic-toc for millis)
   MillisTimer_EnableOverflowInterrupt();
 
   // Initialize the timer used for Tone

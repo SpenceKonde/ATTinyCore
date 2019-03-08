@@ -242,7 +242,7 @@ void ServoSequencer::setServoPulseLength(uint8_t servoNumber, uint16_t newLength
         if( (newLengthInClockTicks > -1) && (newLengthInClockTicks < 256) )
         {
             servoRegistry[servoNumber].pulseLengthInTicks = static_cast<uint8_t>(newLengthInClockTicks);
-            //Programing note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
+            //Programming note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
             //                 interrupts would need to be disabled when updating it to a new value.
         }
         else
@@ -355,7 +355,7 @@ void ServoSequencer::enableDisableServo(uint8_t servoNumber, bool servoShouldBeE
                 //which typically configure all the timers to their liking on start up.
                 //Configuring our timer late allows us to overwrite these settings.
             }
-            //enable the servo. Its pulse will now be outputed on its pin.
+            //enable the servo. Its pulse will now be output on its pin.
             servoRegistry[servoNumber].enabled = true;
         }
         else
@@ -664,7 +664,7 @@ void ServoSequencer::timerCompareMatchISR()
         }
         else
         {
-            //This pulse length has not reached the 2048 us mark, therefor we have to get to that mark first
+            //This pulse length has not reached the 2048 us mark, therefore we have to get to that mark first
             //update state
             state = WAITING_FOR_2048_MARK;
             //set OCRnx to the amount of time (in timer ticks) we have to wait to reach this mark
@@ -694,7 +694,7 @@ void ServoSequencer::timerCompareMatchISR()
 
 
 //=============================================================================
-// Non Memeber Functions
+// Non Member Functions
 //=============================================================================
 
 
@@ -815,7 +815,7 @@ uint8_t Servo::attach(uint8_t pin)
         DDRB |= (1<<pin); //set pin as output
         //set the servo pin
         ServoSequencer::setServoPin(servoIndex, pin);
-        //enable the servo to start outputing the pwm wave
+        //enable the servo to start outputting the PWM wave
         ServoSequencer::enableDisableServo(servoIndex, true);
     }
 
@@ -828,7 +828,7 @@ uint8_t Servo::attach(uint8_t pin)
       reg = portModeRegister(port);
       *reg |= bit;
       ServoSequencer::setServoPin(servoIndex, pin);
-      //enable the servo to start outputing the pwm wave
+      //enable the servo to start outputting the PWM wave
       ServoSequencer::enableDisableServo(servoIndex, true);
     }
   #else 

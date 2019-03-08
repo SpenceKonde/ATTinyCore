@@ -492,7 +492,7 @@ int main(void) {
 #ifndef USE_TINY_TUNER
       unsigned char which = getch();
       verifySpace();
-    //for tiny chips with tuner code, dont bother sending optiboot version - saves code.
+    //for tiny chips with tuner code, don't bother sending optiboot version - saves code.
       if (which == 0x82) {
     /*
      * Send optiboot version as "minor SW version"
@@ -674,7 +674,7 @@ int main(void) {
       boot_spm_busy_wait();
 
 #if defined(RWWSRE)
-      // Reenable read access to flash
+      // Re-enable read access to flash
       boot_rww_enable();
 #endif
 

@@ -30,7 +30,7 @@ Version Modified By Date     Comments
 0006    D Mellis    09/12/29 Replaced objects with functions
 0007    B Cook      10/05/03 Rewritten to only work with Timer1 and support direct hardware output
 0008    B Cook      10/05/03 Rewritten so the timer can be selected at compile time
-0009	T Carpenter 12/08/06 Rewritten to remove requirement for all the wierd timer name creation macros.
+0009	T Carpenter 12/08/06 Rewritten to remove requirement for all the weird timer name creation macros.
 
 *************************************************/
 

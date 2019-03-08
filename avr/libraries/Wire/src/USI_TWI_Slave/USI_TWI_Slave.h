@@ -75,7 +75,7 @@ extern uint8_t TWI_Buffer[];
 #define USI_SLAVE_REQUEST_DATA (0x04)
 #define USI_SLAVE_GET_DATA_AND_SEND_ACK (0x05)
 
-// Device dependant defines
+// Device dependent defines
 #include "pins_arduino.h"
 
 #define SET_USI_TO_SEND_ACK()                                                                                          \

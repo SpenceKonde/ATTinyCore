@@ -406,5 +406,5 @@ HardwareSerial::operator bool() {
 #endif
 
 #elif !USE_SOFTWARE_SERIAL
-#warning There is no Hardware UART, and Sofware Serial is not enabled. There will be no serial port.
+#warning There is no Hardware UART, and Software Serial is not enabled. There will be no serial port.
 #endif // whole file

@@ -1,5 +1,10 @@
 # This file is used to configure the Travis CI tests of ATTinyCore
 
+# It's necessary to do this just for codespell
+language: python
+python: 3.6
+
+
 env:
   global:
     # The Arduino IDE will be installed at APPLICATION_FOLDER/arduino
@@ -469,6 +474,10 @@ env:
 
 
 before_install:
+  # Check for typos
+  - pip install codespell
+  - codespell --skip=*.lst,"${TRAVIS_BUILD_DIR}/.git","${TRAVIS_BUILD_DIR}/avr/travis-ci" --ignore-words="${TRAVIS_BUILD_DIR}/avr/travis-ci/etc/codespell-ignore-words-list.txt" "${TRAVIS_BUILD_DIR}"
+
   # Install the script used to simplify use of Travis CI for testing Arduino projects
   - source "${TRAVIS_BUILD_DIR}/avr/travis-ci/arduino-ci-script/arduino-ci-script.sh"
 

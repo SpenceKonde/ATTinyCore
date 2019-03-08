@@ -3,7 +3,7 @@
 # * MightyCore, MegaCore, MiniCore, and MajorCore
 # *  https://github.com/MCUdude
 # *
-# * This file has basic CPU defintions, while many possible combinations
+# * This file has basic CPU definitions, while many possible combinations
 # * of AVR_FREQ, BAUD_RATE, and UART are built by a shell script.
 # */
 

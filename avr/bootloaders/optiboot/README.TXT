@@ -11,7 +11,7 @@ Arduino-specific issues are tracked as part of the Arduino project
 at http://github.com/arduino/Arduino
 
 
-Most of the information in this file is superceeded by the wiki content at
+Most of the information in this file is superseded by the wiki content at
 https://github.com/Optiboot/optiboot/wiki
 
 It's till here "just in case."
@@ -63,7 +63,7 @@ or  make OS=macosx ENV=arduinodev <targets>
 
 Programming Chips Using the _isp Targets
 
-The CPU targets have corresponding ISP targets that will actuall
+The CPU targets have corresponding ISP targets that will actually
 program the bootloader into a chip. "atmega328_isp" for the atmega328,
 for example.  These will set the fuses and lock bits as appropriate as
 well as uploading the bootloader code.

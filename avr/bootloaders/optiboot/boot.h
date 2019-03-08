@@ -102,7 +102,7 @@
         boot_page_write (page);     // Store buffer in flash page.
         boot_spm_busy_wait();       // Wait until the memory is written.
 
-        // Reenable RWW-section again. We need this if we want to jump back
+        // Re-enable RWW-section again. We need this if we want to jump back
         // to the application after bootloading.
 
         boot_rww_enable ();

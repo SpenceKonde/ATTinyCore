@@ -73,7 +73,7 @@
 #endif
 
 #if CORE_PWM_COUNT >= 7
-#error Only 6 pins PWM are supported.  Add more macro defintions.
+#error Only 6 pins PWM are supported.  Add more macro definitions.
 #endif
 
 #endif

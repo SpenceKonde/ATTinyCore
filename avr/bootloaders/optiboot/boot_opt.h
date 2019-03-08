@@ -8,7 +8,7 @@
  *   (However, omit the *_extended_short, since by the time you
  *   need _extended_, the extra byte shouldn't be relevant any more)
  *
- * The C preprocessor can not determin at compile time whether SPMCSR is
+ * The C preprocessor can not determine at compile time whether SPMCSR is
  *   "out of range" of the OUT instruction, but we CAN do that in the
  *   assembler.  We can even make it pretty with a macro.
  * With this modification, the _short functions should work on cpus

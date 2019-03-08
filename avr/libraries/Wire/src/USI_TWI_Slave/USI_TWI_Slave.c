@@ -77,7 +77,7 @@ void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress)
 	DDR_USI &= ~(1 << PORT_USI_SDA);        // Set SDA as input
 	USICR = (1 << USISIE) | (0 << USIOIE) | // Enable Start Condition Interrupt. Disable Overflow Interrupt.
 	        (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode. No USI Counter overflow prior
-	                                        // to first Start Condition (potentail failure)
+	                                        // to first Start Condition (potential failure)
 	        (1 << USICS1) | (0 << USICS0) | (0 << USICLK) | // Shift Register Clock Source = External, positive edge
 	        (0 << USITC);
 	USISR = 0xF0; // Clear all flags and reset overflow counter
@@ -153,7 +153,7 @@ unsigned char USI_TWI_Slave_Is_Active()
 }
 
 /*----------------------------------------------------------
- Detects the USI_TWI Start Condition and intialises the USI
+ Detects the USI_TWI Start Condition and initializes the USI
  for reception of the "TWI Address" packet.
 ----------------------------------------------------------*/
 #ifdef __GNUC__
@@ -184,7 +184,7 @@ __interrupt void USI_Start_Condition_ISR(void)
 		// Stop Condition (waiting for next Start Condition)
 		USICR = (1 << USISIE) | (0 << USIOIE) | // Enable Start Condition Interrupt. Disable Overflow Interrupt.
 		        (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode. No USI Counter overflow prior
-		                                        // to first Start Condition (potentail failure)
+		                                        // to first Start Condition (potential failure)
 		        (1 << USICS1) | (0 << USICS0) | (0 << USICLK) | // Shift Register Clock Source = External, positive edge
 		        (0 << USITC);
 	} else {
@@ -200,7 +200,7 @@ __interrupt void USI_Start_Condition_ISR(void)
 }
 
 /*----------------------------------------------------------
- Handels all the comunication. Is disabled only when waiting
+ Handles all the communication. Is disabled only when waiting
  for new Start Condition.
 ----------------------------------------------------------*/
 #ifdef __GNUC__

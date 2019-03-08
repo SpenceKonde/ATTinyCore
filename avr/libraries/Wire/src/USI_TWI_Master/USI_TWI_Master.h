@@ -21,7 +21,7 @@
 *                     function. Hence messages/data are transceived on the bus using
 *                     the USI_TWI_Start_Transceiver_With_Data() function. If the transceiver
 *                     returns with a fail, then use USI_TWI_Get_Status_Info to evaluate the
-*                     couse of the failure.
+*                     cause of the failure.
 *
 ****************************************************************************/
 
@@ -49,7 +49,7 @@
 #define T4_TWI ((SYS_CLK * 4000) / 1000000) + 1 // >4,0us
 #endif
 
-// Defines controling code generating
+// Defines controlling code generating
 //#define PARAM_VERIFICATION
 //#define NOISE_TESTING
 #define SIGNAL_VERIFY

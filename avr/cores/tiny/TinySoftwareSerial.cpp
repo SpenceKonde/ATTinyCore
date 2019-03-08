@@ -85,7 +85,7 @@ void uartDelay() {
 //rename the vector so we can use it.
 	#define ANALOG_COMP_vect ANA_COMP_vect
 #elif !defined (ANALOG_COMP_vect)
-	#error Tiny Software Serial cant find the Analog comparator interrupt vector!
+	#error Tiny Software Serial can't find the Analog comparator interrupt vector!
 #endif
 ISR(ANALOG_COMP_vect){
   char ch = getch(); //read in the character softwarily - I know its not a word, but it sounded cool, so you know what: #define softwarily 1
@@ -196,7 +196,7 @@ size_t TinySoftwareSerial::write(uint8_t ch)
 {
   uint8_t oldSREG = SREG;
   cli(); //Prevent interrupts from breaking the transmission. Note: TinySoftwareSerial is half duplex.
-  //it can either recieve or send, not both (because recieving requires an interrupt and would stall transmission
+  //it can either receive or send, not both (because receiving requires an interrupt and would stall transmission
   __asm__ __volatile__ (
     "   com %[ch]\n" // ones complement, carry set
     "   sec\n"
