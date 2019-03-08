@@ -1,4 +1,3 @@
-
 ### ATtiny 43
 ![43 pin mapping](http://drazzy.com/e/img/PinoutT43.jpg "Arduino Pin Mapping for ATtiny 43")
 

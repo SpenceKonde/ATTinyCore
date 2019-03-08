@@ -1,4 +1,3 @@
-
 avrisp.name=AVR ISP
 avrisp.communication=serial
 avrisp.protocol=stk500v1

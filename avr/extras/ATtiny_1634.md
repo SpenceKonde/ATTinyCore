@@ -1,4 +1,3 @@
-
 ### ATtiny 1634
 ![1634 Pin Mapping](http://drazzy.com/e/img/PinoutT1634a.jpg "Arduino Pin Mapping for ATtiny 1634")
 

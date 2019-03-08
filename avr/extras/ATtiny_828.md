@@ -1,4 +1,3 @@
-
 ### ATtiny 828
 ![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny 828")
 

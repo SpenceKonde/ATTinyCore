@@ -1,4 +1,3 @@
-
 #if USE_SOFTWARE_SERIAL
 #ifndef TinySoftwareSerial_h
 #define TinySoftwareSerial_h

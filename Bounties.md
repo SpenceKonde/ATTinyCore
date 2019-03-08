@@ -1,4 +1,3 @@
-
 ### Policies w/regards to bounties for priority PRs
 
 In recognition of the large number of issues that need to be fixed here, and of the fact that I've got a pile of inventory for my Tindie store, I've decided to begin offering bounties on priority issues. For now, this will be limited to documentation issues. If it works out I may expand it to code as well.

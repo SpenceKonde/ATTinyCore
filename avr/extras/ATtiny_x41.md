@@ -1,4 +1,3 @@
-
 ### ATtiny 441/841
 ![x41 Pin Mapping](http://drazzy.com/e/products/img/PinoutT841_fixed.png "Arduino Pin Mapping for ATtiny x41")
 

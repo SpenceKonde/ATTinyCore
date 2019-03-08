@@ -1,4 +1,3 @@
-
 ### ATtiny 25/45/85
 ![x5 pin mapping](http://drazzy.com/e/img/PinoutT85a.jpg "Arduino Pin Mapping for ATtiny x5 series")
 
