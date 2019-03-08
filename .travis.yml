@@ -474,6 +474,10 @@ env:
 
 
 before_install:
+  # Formatting checks:
+  # Check for non-Unix line endings
+  - find . -path './.git' -prune -or -path './avr/travis-ci' -prune -or -type f -exec grep --files-with-matches --binary-files=without-match --regexp=$'\r$' '{}' \; -exec echo 'Non-Unix EOL detected.' \; -exec false '{}' +
+
   # Check for typos
   - pip install codespell
   - codespell --skip=*.lst,"${TRAVIS_BUILD_DIR}/.git","${TRAVIS_BUILD_DIR}/avr/travis-ci" --ignore-words="${TRAVIS_BUILD_DIR}/avr/travis-ci/etc/codespell-ignore-words-list.txt" "${TRAVIS_BUILD_DIR}"
