@@ -85,7 +85,7 @@ void tinyTuner(){
     running = update(&tuner);
 
 #if !defined(__AVR_ATtiny24__)
-	  putcal();
+    putcal();
     uint8_t i=0;
     for ( ; i < 4; i++ ){
       if(!(i & 1)){
@@ -178,7 +178,7 @@ void putstr_t(const prog_char *str){
   unsigned char c = pgm_read_byte(str++);
   while (c) {
     putch_t(c);
-	c = pgm_read_byte(str++);
+  c = pgm_read_byte(str++);
   }
 }
 

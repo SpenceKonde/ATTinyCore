@@ -40,13 +40,13 @@
 
 #if defined(__AVR_ATmega8__)
   //Name conversion R.Wiersma
-  #define UCSR0A	UCSRA
-  #define UDR0 		UDR
-  #define UDRE0 	UDRE
-  #define RXC0		RXC
-  #define FE0		FE
-  #define TIFR1 	TIFR
-  #define WDTCSR	WDTCR
+  #define UCSR0A  UCSRA
+  #define UDR0    UDR
+  #define UDRE0   UDRE
+  #define RXC0    RXC
+  #define FE0     FE
+  #define TIFR1   TIFR
+  #define WDTCSR  WDTCR
 #endif
 
 #if defined( __AVR_ATtiny167__) || defined( __AVR_ATtiny87__)

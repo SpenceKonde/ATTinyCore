@@ -1130,7 +1130,7 @@ static void initISR(timer16_Sequence_t timer)
     TCNT3 = 0;              // clear the timer count
 #if defined(__AVR_ATmega128__) || defined(__AVR_ATtiny1634__)
     TIFR |= _BV(OCF3A);     // clear any pending interrupts;
-	ETIMSK |= _BV(OCIE3A);  // enable the output compare interrupt
+    ETIMSK |= _BV(OCIE3A);  // enable the output compare interrupt
 #else
     TIFR3 = _BV(OCF3A);     // clear any pending interrupts;
     TIMSK3 =  _BV(OCIE3A) ; // enable the output compare interrupt
@@ -1204,7 +1204,7 @@ Servo::Servo()
 {
   if( ServoCount < MAX_SERVOS) {
     this->servoIndex = ServoCount++;                    // assign a servo index to this instance
-	servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values  - 12 Aug 2009
+    servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values  - 12 Aug 2009
   }
   else
     this->servoIndex = INVALID_SERVO ;  // too many servos

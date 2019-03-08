@@ -181,7 +181,7 @@ ISR(USART_UDRE_vect)
 #if !defined(LIN_TC_vect)
 {
   if (tx_buffer.head == tx_buffer.tail) {
-	// Buffer empty, so disable interrupts
+  // Buffer empty, so disable interrupts
 #if defined(UCSR0B)
     cbi(UCSR0B, UDRIE0);
 #else
@@ -208,7 +208,7 @@ ISR(USART_UDRE_vect)
 ISR(USART1_UDRE_vect)
 {
   if (tx_buffer1.head == tx_buffer1.tail) {
-	// Buffer empty, so disable interrupts
+  // Buffer empty, so disable interrupts
     cbi(UCSR1B, UDRIE1);
   }
   else {
@@ -387,7 +387,7 @@ size_t HardwareSerial::write(uint8_t c)
 }
 
 HardwareSerial::operator bool() {
-	return true;
+  return true;
 }
 
 // Preinstantiate Objects //////////////////////////////////////////////////////

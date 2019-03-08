@@ -475,6 +475,8 @@ env:
 
 before_install:
   # Formatting checks:
+  # Check for tabs
+  - find . -path './.git' -prune -or -path './avr/travis-ci' -prune -or \( -not -name 'keywords.txt' -not -iname 'makefile*' -not -name '*.lst' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp=$'\t' '{}' \; -exec echo 'Tab found.' \; -exec false '{}' +
   # Check for trailing whitespace
   - find . -path './.git' -prune -or -path './avr/travis-ci' -prune -or \( -not -name '*.lst' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp='[[:blank:]]$' '{}' \; -exec echo 'Trailing whitespace found.' \; -exec false '{}' +
   # Check for non-Unix line endings

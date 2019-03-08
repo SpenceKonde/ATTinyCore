@@ -30,7 +30,7 @@ Version Modified By Date     Comments
 0006    D Mellis    09/12/29 Replaced objects with functions
 0007    B Cook      10/05/03 Rewritten to only work with Timer1 and support direct hardware output
 0008    B Cook      10/05/03 Rewritten so the timer can be selected at compile time
-0009	T Carpenter 12/08/06 Rewritten to remove requirement for all the weird timer name creation macros.
+0009  T Carpenter 12/08/06 Rewritten to remove requirement for all the weird timer name creation macros.
 
 *************************************************/
 
@@ -170,20 +170,20 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   cbi(TCCR1B,WGM02);
     #else
     #if TIMER_TO_USE_FOR_TONE == 1
-	#if defined(TCCR1)//START OF ATTINY 85
-	sbi(TCCR1,CTC1);
+  #if defined(TCCR1)//START OF ATTINY 85
+  sbi(TCCR1,CTC1);
     cbi(TCCR1,PWM1A);
     cbi(GTCCR,PWM1B);
-	#elif !defined(TCCR1E)
-	cbi(TCCR1A,WGM10);
-	cbi(TCCR1A,WGM11);
-	sbi(TCCR1B,WGM12);
-	cbi(TCCR1B,WGM13);
-	#endif
+  #elif !defined(TCCR1E)
+  cbi(TCCR1A,WGM10);
+  cbi(TCCR1A,WGM11);
+  sbi(TCCR1B,WGM12);
+  cbi(TCCR1B,WGM13);
+  #endif
     #elif TIMER_TO_USE_FOR_TONE == 0
-	cbi(TCCR0A,WGM00);
-	sbi(TCCR0A,WGM01);
-	cbi(TCCR0B,WGM02);
+  cbi(TCCR0A,WGM00);
+  sbi(TCCR0A,WGM01);
+  cbi(TCCR0B,WGM02);
     #endif
   #endif
 
@@ -199,75 +199,75 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     if ( (digitalPinToTimer(_pin) == TIMER0A) || (digitalPinToTimer(_pin) == TIMER0B) )
     {
     #else
-	if (0)
-	{ //unsupported, so only use software.
-	#endif
+  if (0)
+  { //unsupported, so only use software.
+  #endif
       /* Pin toggling is handled by the hardware */
       tone_timer_pin_register = NULL;
       tone_timer_pin_mask = 0;
       uint8_t timer = digitalPinToTimer(_pin);
-	  #if defined(COM0A1)
-	  //Just in case there are now pwm pins on timer0 (ATTiny861)
+    #if defined(COM0A1)
+    //Just in case there are now pwm pins on timer0 (ATTiny861)
       if (timer == TIMER0A)
       {
         /* Compare Output Mode = Toggle OC0A on Compare Match. */
-		cbi(TCCR0A,COM0A1);
-		sbi(TCCR0A,COM0A0);
+    cbi(TCCR0A,COM0A1);
+    sbi(TCCR0A,COM0A0);
       }
       else
-	  #endif
-	  if (timer == TIMER1A)
+    #endif
+    if (timer == TIMER1A)
       {
         /* Compare Output Mode = Toggle OC1A on Compare Match. */
-		#if defined(TCCR1)
-		cbi(TCCR1,COM1A1);
-		sbi(TCCR1,COM1A0);
-		#elif defined(TCCR1E)
-		cbi(TCCR1C,COM1A1S);
-		sbi(TCCR1C,COM1A0S);
-		#else
-		cbi(TCCR1A,COM1A1);
-		sbi(TCCR1A,COM1A0);
-		#endif
+    #if defined(TCCR1)
+    cbi(TCCR1,COM1A1);
+    sbi(TCCR1,COM1A0);
+    #elif defined(TCCR1E)
+    cbi(TCCR1C,COM1A1S);
+    sbi(TCCR1C,COM1A0S);
+    #else
+    cbi(TCCR1A,COM1A1);
+    sbi(TCCR1A,COM1A0);
+    #endif
       }
-	  #if defined(COM0B1)
-	  //Just in case there are <2 pwm pins on timer0 (ATTiny861)
+    #if defined(COM0B1)
+    //Just in case there are <2 pwm pins on timer0 (ATTiny861)
       else if (timer == TIMER0B)
       {
         /* Compare Output Mode = Toggle OC0B on Compare Match. */
-		cbi(TCCR0A,COM0B1);
-		sbi(TCCR0A,COM0B0);
+    cbi(TCCR0A,COM0B1);
+    sbi(TCCR0A,COM0B0);
       }
-	  #endif
-	  #if defined(COM1D1)
-	  //in case there is a OCRD. (ATtiny861)
-	  else if (timer == TIMER1D){
+    #endif
+    #if defined(COM1D1)
+    //in case there is a OCRD. (ATtiny861)
+    else if (timer == TIMER1D){
         /* Compare Output Mode = Toggle OC1D on Compare Match. */
-		#if defined(TCCR1)
-		cbi(TCCR1,COM1D1);
-		sbi(TCCR1,COM1D0);
-		#elif defined(TCCR1E)
-		cbi(TCCR1C,COM1D1);
-		sbi(TCCR1C,COM1D0);
-		#else
-		cbi(TCCR1A,COM1D1);
-		sbi(TCCR1A,COM1D0);
-		#endif
-	  }
-	  #endif
+    #if defined(TCCR1)
+    cbi(TCCR1,COM1D1);
+    sbi(TCCR1,COM1D0);
+    #elif defined(TCCR1E)
+    cbi(TCCR1C,COM1D1);
+    sbi(TCCR1C,COM1D0);
+    #else
+    cbi(TCCR1A,COM1D1);
+    sbi(TCCR1A,COM1D0);
+    #endif
+    }
+    #endif
       else
       {
         /* Compare Output Mode = Toggle OC1B on Compare Match. */
-		#if defined(TCCR1)
-		cbi(GTCCR,COM1B1);
-		sbi(GTCCR,COM1B0);
-		#elif defined(TCCR1E)
-		cbi(TCCR1C,COM1B1S);
-		sbi(TCCR1C,COM1B0S);
-		#else
-		cbi(TCCR1A,COM1B1);
-		sbi(TCCR1A,COM1B0);
-		#endif
+    #if defined(TCCR1)
+    cbi(GTCCR,COM1B1);
+    sbi(GTCCR,COM1B0);
+    #elif defined(TCCR1E)
+    cbi(TCCR1C,COM1B1S);
+    sbi(TCCR1C,COM1B0S);
+    #else
+    cbi(TCCR1A,COM1B1);
+    sbi(TCCR1A,COM1B0);
+    #endif
       }
     }
     else
@@ -284,9 +284,9 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       GTCCR &= ~((1<<COM1B1)|(1<<COM1B0));
     #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E)
       TCCR1C &= ~((1<<COM1A1S)|(1<<COM1A0S)|(1<<COM1B1S)|(1<<COM1B0S)|(1<<COM1D1)|(1<<COM1D0));
-	#elif (TIMER_TO_USE_FOR_TONE == 1)
+  #elif (TIMER_TO_USE_FOR_TONE == 1)
       TCCR1A &= ~((1<<COM1A1)|(1<<COM1A0)|(1<<COM1B1)|(1<<COM1B0));
-	#endif
+  #endif
     }
 
     /* Ensure the pin is configured for output */
@@ -329,7 +329,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   uint32_t ocr = F_CPU / frequency / 2;
   #endif
   #endif
-	  #if defined(TCCR1E)
+    #if defined(TCCR1E)
       uint8_t prescalarbits = 0b0001;
       if (ocr > 256)
       {
@@ -352,8 +352,8 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
           }
         }
       }
-	  #else
-	   #if defined(TCCR1) //Start FANCY ATtiny85 code
+    #else
+     #if defined(TCCR1) //Start FANCY ATtiny85 code
        uint8_t prescalarbits = 0b0001;
        while (ocr > 0xff && prescalarbits < 15) {
           prescalarbits++;
@@ -361,19 +361,19 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 
        }
        OCR1C=ocr-1;
-	   #else
+     #else
         uint8_t prescalarbits = 0b001;
-	     if (ocr > 0xffff)
+       if (ocr > 0xffff)
         {
          ocr /= 64;
           prescalarbits = 0b011;
         }
       #endif
-	   ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above
+     ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above
 
       OCR1A = ocr;
-	  #endif
-	  #elif TIMER_TO_USE_FOR_TONE == 0
+    #endif
+    #elif TIMER_TO_USE_FOR_TONE == 0
       uint32_t ocr = F_CPU / frequency / 2;
       uint8_t prescalarbits = 0b001;  // ck/1
       if (ocr > 256)
@@ -397,7 +397,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
           }
         }
       }
-	  ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above
+    ocr -= 1; //Note we are doing the subtraction of 1 here to save repeatedly calculating ocr from just the frequency in the if tree above
       OCR0A = ocr;
 
       #endif
@@ -429,12 +429,12 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 
         /* All pins but the OCxA / OCxB pins have to be driven by software */
         #if (TIMER_TO_USE_FOR_TONE == 1)
-		#if defined(TCCR1E)
+    #if defined(TCCR1E)
         if ( (digitalPinToTimer(_pin) != TIMER1A) && (digitalPinToTimer(_pin) != TIMER1B) && (digitalPinToTimer(_pin) != TIMER1D) )
-		#else
+    #else
         if ( (digitalPinToTimer(_pin) != TIMER1A) && (digitalPinToTimer(_pin) != TIMER1B) )
         #endif
-		{
+    {
             /* Output Compare A Match Interrupt Enable (software control)*/
             #if defined (TIMSK)
             TIMSK |= (1<<OCIE1A);
@@ -455,7 +455,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
         #endif
       }
 
-	  //Clock is always stopped before this point, which means all of CS[0..2] are already 0, so can just use a bitwise OR to set required bits
+    //Clock is always stopped before this point, which means all of CS[0..2] are already 0, so can just use a bitwise OR to set required bits
       #if (TIMER_TO_USE_FOR_TONE == 0)
       TCCR0B |= (prescalarbits << CS00);
       #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1)
@@ -479,9 +479,9 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       #if defined(ICIE1)
       TIMSK &= ~(1<<ICIE1);
       #endif
-	  #if defined(OCIE1D)
+    #if defined(OCIE1D)
       TIMSK &= ~(1<<OCIE1D);
-	  #endif
+    #endif
       #else
       TIMSK1 |= (1<<OCIE1A);
       TIMSK1 &= ~((1<<ICIE1) | (1<<OCIE1B) | (1<<OCIE1A) | (1<<TOIE1));

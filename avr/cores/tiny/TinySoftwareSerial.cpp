@@ -40,52 +40,52 @@ extern "C"{
 uint8_t getch() {
   uint8_t ch = 0;
     __asm__ __volatile__ (
-		"   rcall uartDelay\n"          // Get to 0.25 of start bit (our baud is too fast, so give room to correct)
-		"1: rcall uartDelay\n"              // Wait 0.25 bit period
-		"   rcall uartDelay\n"              // Wait 0.25 bit period
-		"   rcall uartDelay\n"              // Wait 0.25 bit period
-		"   rcall uartDelay\n"              // Wait 0.25 bit period
-		"   clc\n"
-		"   in r23,%[pin]\n"
-		"   and r23, %[mask]\n"
-		"   breq 2f\n"
-		"   sec\n"
-		"2: ror   %0\n"
-		"   dec   %[count]\n"
-		"   breq  3f\n"
-		"   rjmp  1b\n"
-		"3: rcall uartDelay\n"              // Wait 0.25 bit period
-		"   rcall uartDelay\n"              // Wait 0.25 bit period
-		:
-		  "=r" (ch)
-		:
-		  "0" ((uint8_t)0),
-		  [count] "r" ((uint8_t)8),
-		  [pin] "I" (_SFR_IO_ADDR(ANALOG_COMP_PIN)),
-		  [mask] "r" (Serial._rxmask)
-		:
-		  "r23",
-		  "r24",
-		  "r25"
+    "   rcall uartDelay\n"          // Get to 0.25 of start bit (our baud is too fast, so give room to correct)
+    "1: rcall uartDelay\n"              // Wait 0.25 bit period
+    "   rcall uartDelay\n"              // Wait 0.25 bit period
+    "   rcall uartDelay\n"              // Wait 0.25 bit period
+    "   rcall uartDelay\n"              // Wait 0.25 bit period
+    "   clc\n"
+    "   in r23,%[pin]\n"
+    "   and r23, %[mask]\n"
+    "   breq 2f\n"
+    "   sec\n"
+    "2: ror   %0\n"
+    "   dec   %[count]\n"
+    "   breq  3f\n"
+    "   rjmp  1b\n"
+    "3: rcall uartDelay\n"              // Wait 0.25 bit period
+    "   rcall uartDelay\n"              // Wait 0.25 bit period
+    :
+      "=r" (ch)
+    :
+      "0" ((uint8_t)0),
+      [count] "r" ((uint8_t)8),
+      [pin] "I" (_SFR_IO_ADDR(ANALOG_COMP_PIN)),
+      [mask] "r" (Serial._rxmask)
+    :
+      "r23",
+      "r24",
+      "r25"
     );
-	return ch;
+  return ch;
 }
 
 void uartDelay() {
-	__asm__ __volatile__ (
-	  "mov r25,%[count]\n"
-	  "1:dec r25\n"
+  __asm__ __volatile__ (
+    "mov r25,%[count]\n"
+    "1:dec r25\n"
       "brne 1b\n"
       "ret\n"
-	  ::[count] "r" ((uint8_t)Serial._delayCount)
-	);
+    ::[count] "r" ((uint8_t)Serial._delayCount)
+  );
 }
 
 #if !defined (ANALOG_COMP_vect) && defined(ANA_COMP_vect)
 //rename the vector so we can use it.
-	#define ANALOG_COMP_vect ANA_COMP_vect
+  #define ANALOG_COMP_vect ANA_COMP_vect
 #elif !defined (ANALOG_COMP_vect)
-	#error Tiny Software Serial can't find the Analog comparator interrupt vector!
+  #error Tiny Software Serial can't find the Analog comparator interrupt vector!
 #endif
 ISR(ANALOG_COMP_vect){
   char ch = getch(); //read in the character softwarily - I know its not a word, but it sounded cool, so you know what: #define softwarily 1
@@ -115,7 +115,7 @@ void TinySoftwareSerial::begin(long baud)
 {
   long tempDelay = (((F_CPU/baud)-39)/12);
   if ((tempDelay > 255) || (tempDelay <= 0)){
-	end(); //Cannot start as it would screw up uartDelay().
+  end(); //Cannot start as it would screw up uartDelay().
   }
   _delayCount = (uint8_t)tempDelay;
   cbi(ACSR,ACIE);  //turn off the comparator interrupt to allow change of ACD
@@ -201,13 +201,13 @@ size_t TinySoftwareSerial::write(uint8_t ch)
     "   com %[ch]\n" // ones complement, carry set
     "   sec\n"
     "1: brcc 2f\n"
-	"   in r23,%[uartPort] \n"
+  "   in r23,%[uartPort] \n"
     "   and r23,%[uartUnmask]\n"
-	"   out %[uartPort],r23 \n"
+  "   out %[uartPort],r23 \n"
     "   rjmp 3f\n"
-	"2: in r23,%[uartPort] \n"
+  "2: in r23,%[uartPort] \n"
     "   or r23,%[uartMask]\n"
-	"   out %[uartPort],r23 \n"
+  "   out %[uartPort],r23 \n"
     "   nop\n"
     "3: rcall uartDelay\n"
     "   rcall uartDelay\n"
@@ -219,13 +219,13 @@ size_t TinySoftwareSerial::write(uint8_t ch)
     :
     :
       [ch] "r" (ch),
-	  [count] "r" ((uint8_t)10),
+    [count] "r" ((uint8_t)10),
       [uartPort] "I" (_SFR_IO_ADDR(ANALOG_COMP_PORT)),
       [uartMask] "r" (_txmask),
       [uartUnmask] "r" (_txunmask)
-	: "r23",
-	  "r24",
-	  "r25"
+  : "r23",
+    "r24",
+    "r25"
   );
   SREG = oldSREG;
   return 1;
@@ -237,7 +237,7 @@ void TinySoftwareSerial::flush()
 }
 
 TinySoftwareSerial::operator bool() {
-	return true;
+  return true;
 }
 
 // Preinstantiate Objects //////////////////////////////////////////////////////

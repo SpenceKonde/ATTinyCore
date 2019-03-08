@@ -119,13 +119,13 @@ static const uint8_t A7 = 0x80 | 7;
   Where to put the software serial? (Arduino Digital pin numbers)
 */
 //WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL           1
 //Please define the port on which the analog comparator is found.
-#define ANALOG_COMP_DDR						 	  DDRA
-#define ANALOG_COMP_PORT						  PORTA
-#define ANALOG_COMP_PIN						 	  PINA
-#define ANALOG_COMP_AIN0_BIT					  1
-#define ANALOG_COMP_AIN1_BIT					  2
+#define ANALOG_COMP_DDR               DDRA
+#define ANALOG_COMP_PORT              PORTA
+#define ANALOG_COMP_PIN               PINA
+#define ANALOG_COMP_AIN0_BIT          1
+#define ANALOG_COMP_AIN1_BIT          2
 
 
 /*
@@ -246,9 +246,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 //Old code, just here for temporary backup until I decide it is not needed.
 /*
 //WARNING, if using software, RX must be on a pin which has a Pin change interrupt <= 7 (e.g. PCINT6, or PCINT1, but not PCINT8)
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL             1
 //These are set to match Optiboot pins.
-#define SOFTWARE_SERIAL_PORT 					  PORTA
-#define SOFTWARE_SERIAL_TX 						  9
-#define SOFTWARE_SERIAL_PIN 					  PINA
-#define SOFTWARE_SERIAL_RX 						  8*/
+#define SOFTWARE_SERIAL_PORT            PORTA
+#define SOFTWARE_SERIAL_TX              9
+#define SOFTWARE_SERIAL_PIN             PINA
+#define SOFTWARE_SERIAL_RX              8*/

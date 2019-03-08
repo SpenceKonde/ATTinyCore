@@ -187,16 +187,16 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #endif
 
 #if NUM_ANALOG_INPUTS > 0
-	#define HAVE_ADC    						  1
-	#ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
-		#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
-	#endif
+  #define HAVE_ADC                  1
+  #ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
+  #endif
 #else
-	#define HAVE_ADC 							  0
-	#if defined(INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER)
-		#undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
-	#endif
-	#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
+  #define HAVE_ADC                0
+  #if defined(INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER)
+    #undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+  #endif
+  #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
 #endif
 
 #if !HAVE_ADC

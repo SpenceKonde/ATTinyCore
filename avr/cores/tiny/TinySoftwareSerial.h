@@ -34,11 +34,11 @@ extern "C"{
 class TinySoftwareSerial : public Stream
 {
   public: //should be private but needed by extern "C" {} functions.
-	uint8_t _rxmask;
-	uint8_t _txmask;
-	uint8_t _txunmask;
-	soft_ring_buffer *_rx_buffer;
-	uint8_t _delayCount;
+  uint8_t _rxmask;
+  uint8_t _txmask;
+  uint8_t _txunmask;
+  soft_ring_buffer *_rx_buffer;
+  uint8_t _delayCount;
   public:
     TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit);
     void begin(long);

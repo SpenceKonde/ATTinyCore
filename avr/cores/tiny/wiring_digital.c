@@ -31,102 +31,102 @@
 
 void pinMode(uint8_t pin, uint8_t mode)
 {
-	if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
-	uint8_t bit = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t *reg, *out;
+  if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
+  volatile uint8_t *reg, *out;
 
-	if (port == NOT_A_PIN) return;
+  if (port == NOT_A_PIN) return;
 
-	reg = portModeRegister(port);
-	out = portOutputRegister(port);
+  reg = portModeRegister(port);
+  out = portOutputRegister(port);
 
-	if (mode == INPUT) {
-		uint8_t oldSREG = SREG;
+  if (mode == INPUT) {
+    uint8_t oldSREG = SREG;
                 cli();
-		*reg &= ~bit;
-		*out &= ~bit;
-		SREG = oldSREG;
-	} else if (mode == INPUT_PULLUP) {
-		uint8_t oldSREG = SREG;
+    *reg &= ~bit;
+    *out &= ~bit;
+    SREG = oldSREG;
+  } else if (mode == INPUT_PULLUP) {
+    uint8_t oldSREG = SREG;
                 cli();
-		*reg &= ~bit;
-		*out |= bit;
-		SREG = oldSREG;
-	} else {
-		uint8_t oldSREG = SREG;
+    *reg &= ~bit;
+    *out |= bit;
+    SREG = oldSREG;
+  } else {
+    uint8_t oldSREG = SREG;
                 cli();
-		*reg |= bit;
-		SREG = oldSREG;
-	}
+    *reg |= bit;
+    SREG = oldSREG;
+  }
 }
 
 static void turnOffPWM(uint8_t timer)
 {
-	#if defined(TCCR0A) && defined(COM0A1)
-	if( timer == TIMER0A){
-		cbi(TCCR0A, COM0A1);
-		cbi(TCCR0A, COM0A0);
-	} else
-	#endif
+  #if defined(TCCR0A) && defined(COM0A1)
+  if( timer == TIMER0A){
+    cbi(TCCR0A, COM0A1);
+    cbi(TCCR0A, COM0A0);
+  } else
+  #endif
 
-	#if defined(TCCR0A) && defined(COM0B1)
-	if( timer == TIMER0B){
-		cbi(TCCR0A, COM0B1);
-		cbi(TCCR0A, COM0B0);
-	} else
-	#endif
+  #if defined(TCCR0A) && defined(COM0B1)
+  if( timer == TIMER0B){
+    cbi(TCCR0A, COM0B1);
+    cbi(TCCR0A, COM0B0);
+  } else
+  #endif
 
-	#if defined(TCCR1A) && defined(COM1A1)
-	if( timer == TIMER1A){
-		cbi(TCCR1A, COM1A1);
-		cbi(TCCR1A, COM1A0);
-	} else
-	#endif
+  #if defined(TCCR1A) && defined(COM1A1)
+  if( timer == TIMER1A){
+    cbi(TCCR1A, COM1A1);
+    cbi(TCCR1A, COM1A0);
+  } else
+  #endif
     #if defined(TCCR1E) //attiny861
-	if( timer == TIMER1A){
-		// disconnect pwm to pin on timer 1, channel A
-		cbi(TCCR1C,COM1A1S);
-		cbi(TCCR1C,COM1A0S);
-		//cbi(TCCR1A,PWM1A);
-	} else if (timer == TIMER1B){
-		// disconnect pwm to pin on timer 1, channel B
-		cbi(TCCR1C,COM1B1S);
-		cbi(TCCR1C,COM1B0S);
-		//cbi(TCCR1A,PWM1B);
-	} else if (timer == TIMER1D){
-		// disconnect pwm to pin on timer 1, channel D
-		cbi(TCCR1C,COM1D1);
-		cbi(TCCR1C,COM1D0);
-		//cbi(TCCR1A,PWM1D);
-	} else
+  if( timer == TIMER1A){
+    // disconnect pwm to pin on timer 1, channel A
+    cbi(TCCR1C,COM1A1S);
+    cbi(TCCR1C,COM1A0S);
+    //cbi(TCCR1A,PWM1A);
+  } else if (timer == TIMER1B){
+    // disconnect pwm to pin on timer 1, channel B
+    cbi(TCCR1C,COM1B1S);
+    cbi(TCCR1C,COM1B0S);
+    //cbi(TCCR1A,PWM1B);
+  } else if (timer == TIMER1D){
+    // disconnect pwm to pin on timer 1, channel D
+    cbi(TCCR1C,COM1D1);
+    cbi(TCCR1C,COM1D0);
+    //cbi(TCCR1A,PWM1D);
+  } else
     #endif
-	#if defined(TCCR1) && defined(COM1A1)
-	if(timer == TIMER1A){
-		cbi(TCCR1, COM1A1);
-		cbi(TCCR1, COM1A0);
-	#ifdef OC1AX
-		cbi(TCCR1D, OC1AX);
-	#endif
-	} else
-	#endif
+  #if defined(TCCR1) && defined(COM1A1)
+  if(timer == TIMER1A){
+    cbi(TCCR1, COM1A1);
+    cbi(TCCR1, COM1A0);
+  #ifdef OC1AX
+    cbi(TCCR1D, OC1AX);
+  #endif
+  } else
+  #endif
 
-	#if defined(TCCR1A) && defined(COM1B1)
-	if( timer == TIMER1B){
-		cbi(TCCR1A, COM1B1);
-		cbi(TCCR1A, COM1B0);
-	#ifdef OC1BV
-		cbi(TCCR1D, OC1BV);
-	#endif
-	} else
-	#endif
+  #if defined(TCCR1A) && defined(COM1B1)
+  if( timer == TIMER1B){
+    cbi(TCCR1A, COM1B1);
+    cbi(TCCR1A, COM1B0);
+  #ifdef OC1BV
+    cbi(TCCR1D, OC1BV);
+  #endif
+  } else
+  #endif
 
-	#if defined(TCCR1) && defined(COM1B1)
-	if( timer == TIMER1B){
-		cbi(GTCCR, COM1B1);
-		cbi(GTCCR, COM1B0);
-	} else
-	#endif
+  #if defined(TCCR1) && defined(COM1B1)
+  if( timer == TIMER1B){
+    cbi(GTCCR, COM1B1);
+    cbi(GTCCR, COM1B0);
+  } else
+  #endif
 
     {
     }
@@ -135,46 +135,46 @@ static void turnOffPWM(uint8_t timer)
 
 void digitalWrite(uint8_t pin, uint8_t val)
 {
-	if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
-	uint8_t timer = digitalPinToTimer(pin);
-	uint8_t bit = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
-	volatile uint8_t *out;
+  if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
+  uint8_t timer = digitalPinToTimer(pin);
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
+  volatile uint8_t *out;
 
-	if (port == NOT_A_PIN) return;
+  if (port == NOT_A_PIN) return;
 
-	// If the pin that support PWM output, we need to turn it off
-	// before doing a digital write.
-	if (timer != NOT_ON_TIMER) turnOffPWM(timer);
+  // If the pin that support PWM output, we need to turn it off
+  // before doing a digital write.
+  if (timer != NOT_ON_TIMER) turnOffPWM(timer);
 
-	out = portOutputRegister(port);
+  out = portOutputRegister(port);
 
-	if (val == LOW) {
-		uint8_t oldSREG = SREG;
+  if (val == LOW) {
+    uint8_t oldSREG = SREG;
     cli();
-		*out &= ~bit;
-		SREG = oldSREG;
-	} else {
-		uint8_t oldSREG = SREG;
+    *out &= ~bit;
+    SREG = oldSREG;
+  } else {
+    uint8_t oldSREG = SREG;
     cli();
-		*out |= bit;
-		SREG = oldSREG;
-	}
+    *out |= bit;
+    SREG = oldSREG;
+  }
 }
 
 int digitalRead(uint8_t pin)
 {
-	if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
-	uint8_t timer = digitalPinToTimer(pin);
-	uint8_t bit = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
+  if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
+  uint8_t timer = digitalPinToTimer(pin);
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
 
-	if (port == NOT_A_PIN) return LOW;
+  if (port == NOT_A_PIN) return LOW;
 
-	// If the pin that support PWM output, we need to turn it off
-	// before getting a digital reading.
-	if (timer != NOT_ON_TIMER) turnOffPWM(timer);
+  // If the pin that support PWM output, we need to turn it off
+  // before getting a digital reading.
+  if (timer != NOT_ON_TIMER) turnOffPWM(timer);
 
-	if (*portInputRegister(port) & bit) return HIGH;
-	return LOW;
+  if (*portInputRegister(port) & bit) return HIGH;
+  return LOW;
 }

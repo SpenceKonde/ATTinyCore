@@ -54,13 +54,13 @@
   Where to put the software serial? (Arduino Digital pin numbers)
 */
 //WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL           1
 //Please define the port on which the analog comparator is found.
-#define ANALOG_COMP_DDR						 	  DDRD
-#define ANALOG_COMP_PORT						  PORTD
-#define ANALOG_COMP_PIN						 	  PIND
-#define ANALOG_COMP_AIN0_BIT					  6
-#define ANALOG_COMP_AIN1_BIT					  7
+#define ANALOG_COMP_DDR               DDRD
+#define ANALOG_COMP_PORT              PORTD
+#define ANALOG_COMP_PIN               PIND
+#define ANALOG_COMP_AIN0_BIT          6
+#define ANALOG_COMP_AIN1_BIT          7
 
 
 /*
@@ -133,120 +133,120 @@ static const uint8_t A7 = 0x80 | 7;
 // and writing)
 
 const uint16_t PROGMEM port_to_mode_PGM[] = {
-	NOT_A_PORT,
-	(uint16_t) &DDRA,
-	(uint16_t) &DDRB,
-	(uint16_t) &DDRC,
-	(uint16_t) &DDRD,
+  NOT_A_PORT,
+  (uint16_t) &DDRA,
+  (uint16_t) &DDRB,
+  (uint16_t) &DDRC,
+  (uint16_t) &DDRD,
 };
 
 const uint16_t PROGMEM port_to_output_PGM[] = {
-	NOT_A_PORT,
-	(uint16_t) &PORTA,
-	(uint16_t) &PORTB,
-	(uint16_t) &PORTC,
-	(uint16_t) &PORTD,
+  NOT_A_PORT,
+  (uint16_t) &PORTA,
+  (uint16_t) &PORTB,
+  (uint16_t) &PORTC,
+  (uint16_t) &PORTD,
 };
 
 const uint16_t PROGMEM port_to_input_PGM[] = {
-	NOT_A_PORT,
-	(uint16_t) &PINA,
-	(uint16_t) &PINB,
-	(uint16_t) &PINC,
-	(uint16_t) &PIND,
+  NOT_A_PORT,
+  (uint16_t) &PINA,
+  (uint16_t) &PINB,
+  (uint16_t) &PINC,
+  (uint16_t) &PIND,
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
-	PD, /* 0 */
-	PD,
-	PD,
-	PD,
-	PD,
-	PD,
-	PD,
-	PD,
-	PB, /* 8 */
-	PB,
-	PB,
-	PB,
-	PB,
-	PB,
-	PB,
-	PB,
-	PC, /* 16 */
-	PC,
-	PC,
-	PC,
-	PC,
-	PC,
-	PC,
-	PA, /* 23 */
-	PA,
-	PA,
-	PA,
-	PC
+  PD, /* 0 */
+  PD,
+  PD,
+  PD,
+  PD,
+  PD,
+  PD,
+  PD,
+  PB, /* 8 */
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PC, /* 16 */
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PA, /* 23 */
+  PA,
+  PA,
+  PA,
+  PC
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
-	_BV(0), /* 0, port D */
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(6),
-	_BV(7),
-	_BV(0), /* 8, port B */
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(6),
-	_BV(7),
-	_BV(7), /* 16, port C */
-	_BV(0),
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(0), /* 23, port A */
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(6)
+  _BV(0), /* 0, port D */
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(0), /* 8, port B */
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(7), /* 16, port C */
+  _BV(0),
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(0), /* 23, port A */
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(6)
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
-	NOT_ON_TIMER, /* 0 - port D */
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, /* 8 - port B */
-	TIMER1A,
-	TIMER1B,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, /* 16 - port C */
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, /* 23 - port A */
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER
+  NOT_ON_TIMER, /* 0 - port D */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER, /* 8 - port B */
+  TIMER1A,
+  TIMER1B,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER, /* 16 - port C */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER, /* 23 - port A */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER
 };
 
 #endif

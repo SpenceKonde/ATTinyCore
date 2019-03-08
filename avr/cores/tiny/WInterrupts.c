@@ -83,7 +83,7 @@ void attachInterrupt(uint8_t interruptNum, void (*userFunc)(void), int mode)
       #endif
 
       #if NUMBER_EXTERNAL_INTERRUPTS >= 2 && !defined(ISC11)
-	  //For ATtiny861, but interrupts share the same vector.
+    //For ATtiny861, but interrupts share the same vector.
         case EXTERNAL_INTERRUPT_1:
           EICRA = (EICRA & ~((1 << ISC00) | (1 << ISC01))) | (mode << ISC00);
           EIMSK |= (1 << INT1);

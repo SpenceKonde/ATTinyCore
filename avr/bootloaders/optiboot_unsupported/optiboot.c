@@ -187,53 +187,53 @@ const unsigned char ver[2] __attribute__ ((section (".version"))) = {OPTIBOOT_MI
 
 #ifdef VIRTUAL_BOOT_PARTITION
 
-	#ifndef VIRTUAL_BOOT_PARTITION_START
-		#define VIRTUAL_BOOT_PARTITION_START 0x1dc0
-	#endif
-		//generate rjmp instruction for virtual boot partition
-	#define RJUMP_COMMAND ((((VIRTUAL_BOOT_PARTITION_START/2)-FLASHEND-2) & 0xFFF) | 0xC000)
-	#define RJUMP_COMMAND_LOW (RJUMP_COMMAND & 0xFF)
-	#define RJUMP_COMMAND_HIGH ((RJUMP_COMMAND>>8) & 0xFF)
+  #ifndef VIRTUAL_BOOT_PARTITION_START
+    #define VIRTUAL_BOOT_PARTITION_START 0x1dc0
+  #endif
+    //generate rjmp instruction for virtual boot partition
+  #define RJUMP_COMMAND ((((VIRTUAL_BOOT_PARTITION_START/2)-FLASHEND-2) & 0xFFF) | 0xC000)
+  #define RJUMP_COMMAND_LOW (RJUMP_COMMAND & 0xFF)
+  #define RJUMP_COMMAND_HIGH ((RJUMP_COMMAND>>8) & 0xFF)
 
 #endif
 
 #ifndef LED_START_FLASHES
-	#define LED_START_FLASHES 0
+  #define LED_START_FLASHES 0
 #endif
 
 #ifdef LUDICROUS_SPEED
-	#ifdef BAUD_RATE
-	//Fix warnings about BAUD_RATE being redefined.
-	#undef BAUD_RATE
-	#endif
-	#define BAUD_RATE 230400L
+  #ifdef BAUD_RATE
+  //Fix warnings about BAUD_RATE being redefined.
+  #undef BAUD_RATE
+  #endif
+  #define BAUD_RATE 230400L
 #endif
 
 /* set the UART baud rate defaults */
 #ifndef BAUD_RATE
-	#if F_CPU >= 8000000L
-		#define BAUD_RATE   115200L // Highest rate Avrdude win32 will support
-	#elsif F_CPU >= 1000000L
-		#define BAUD_RATE   9600L   // 19200 also supported, but with significant error
-	#elsif F_CPU >= 128000L
-		#define BAUD_RATE   4800L   // Good for 128kHz internal RC
-	#else
-		#define BAUD_RATE 1200L     // Good even at 32768Hz
-	#endif
+  #if F_CPU >= 8000000L
+    #define BAUD_RATE   115200L // Highest rate Avrdude win32 will support
+  #elsif F_CPU >= 1000000L
+    #define BAUD_RATE   9600L   // 19200 also supported, but with significant error
+  #elsif F_CPU >= 128000L
+    #define BAUD_RATE   4800L   // Good for 128kHz internal RC
+  #else
+    #define BAUD_RATE 1200L     // Good even at 32768Hz
+  #endif
 #endif
 
 #if !defined(__AVR_ATtiny87__) && !defined(__AVR_ATtiny167__)
 /* Switch in soft UART for hard baud rates */
 #if (F_CPU/BAUD_RATE) > 280 // > 57600 for 16MHz
-	#ifndef SOFT_UART
-		#define SOFT_UART
-	#endif
+  #ifndef SOFT_UART
+    #define SOFT_UART
+  #endif
 #endif
 
 #endif
 
 #if defined(SOFT_UART) && defined(RS485_SUPPORT)
-	#undef SOFT_UART
+  #undef SOFT_UART
 #endif
 
 /* Watchdog settings */
@@ -247,8 +247,8 @@ const unsigned char ver[2] __attribute__ ((section (".version"))) = {OPTIBOOT_MI
 #define WATCHDOG_1S     (_BV(WDP2) | _BV(WDP1) | _BV(WDE))
 #define WATCHDOG_2S     (_BV(WDP2) | _BV(WDP1) | _BV(WDP0) | _BV(WDE))
 #if !defined(__AVR_ATmega162__) && !defined(__AVR_ATmega8__)
-	#define WATCHDOG_4S     (_BV(WDP3) | _BV(WDE))
-	#define WATCHDOG_8S     (_BV(WDP3) | _BV(WDP0) | _BV(WDE))
+  #define WATCHDOG_4S     (_BV(WDP3) | _BV(WDE))
+  #define WATCHDOG_8S     (_BV(WDP3) | _BV(WDP0) | _BV(WDE))
 #endif
 
 #ifdef USE_TINY_TUNER

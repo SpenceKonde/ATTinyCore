@@ -2,13 +2,13 @@
 
 int main(void)
 {
-	init();
+  init();
 
-	setup();
+  setup();
 
-	for (;;)
-		loop();
+  for (;;)
+    loop();
 
-	return 0;
+  return 0;
 }
 

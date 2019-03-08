@@ -62,100 +62,100 @@
 // and writing)
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&DDRA,
-	(uint8_t)(uint16_t)&DDRB,
-	(uint8_t)(uint16_t)&DDRC
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&DDRA,
+  (uint8_t)(uint16_t)&DDRB,
+  (uint8_t)(uint16_t)&DDRC
 };
 
 const uint8_t PROGMEM port_to_output_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&PORTA,
-	(uint8_t)(uint16_t)&PORTB,
-	(uint8_t)(uint16_t)&PORTC
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PORTA,
+  (uint8_t)(uint16_t)&PORTB,
+  (uint8_t)(uint16_t)&PORTC
 };
 
 const uint8_t PROGMEM port_to_pullup_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&PUEA,
-	(uint8_t)(uint16_t)&PUEB,
-	(uint8_t)(uint16_t)&PUEC
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PUEA,
+  (uint8_t)(uint16_t)&PUEB,
+  (uint8_t)(uint16_t)&PUEC
 };
 
 const uint8_t PROGMEM port_to_input_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&PINA,
-	(uint8_t)(uint16_t)&PINB,
-	(uint8_t)(uint16_t)&PINC
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PINA,
+  (uint8_t)(uint16_t)&PINB,
+  (uint8_t)(uint16_t)&PINC
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
-	PORT_B_ID, /* 0 */
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID, /* 8 */
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_B_ID, /* 14 */
-	PORT_B_ID,
-	PORT_B_ID,
-    PORT_C_ID, /* 17 = RESET */
+  PORT_B_ID, /* 0 */
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID, /* 8 */
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_B_ID, /* 14 */
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_C_ID, /* 17 = RESET */
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
-	_BV(0), /* 0 */
-	_BV(7),
-	_BV(6),
-	_BV(5),
-	_BV(4),
-	_BV(3),
-	_BV(2),
-	_BV(1),
-	_BV(0), /* 8 */
-	_BV(5),
-	_BV(4),
-	_BV(2),
-	_BV(1),
-	_BV(0),
-	_BV(3), /* 14 */
-	_BV(2),
-	_BV(1),
-    _BV(3), /* 17 = RESET */
+  _BV(0), /* 0 */
+  _BV(7),
+  _BV(6),
+  _BV(5),
+  _BV(4),
+  _BV(3),
+  _BV(2),
+  _BV(1),
+  _BV(0), /* 8 */
+  _BV(5),
+  _BV(4),
+  _BV(2),
+  _BV(1),
+  _BV(0),
+  _BV(3), /* 14 */
+  _BV(2),
+  _BV(1),
+  _BV(3), /* 17 = RESET */
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
-	NOT_ON_TIMER, /* 0 */
-	NOT_ON_TIMER,
-	TIMER1B,
-    TIMER0B,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, /* 8 */
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	TIMER0A,
-	TIMER1A,      /* 14 */
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER, /* 17 = RESET */
+  NOT_ON_TIMER, /* 0 */
+  NOT_ON_TIMER,
+  TIMER1B,
+  TIMER0B,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER, /* 8 */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER0A,
+  TIMER1A,      /* 14 */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER, /* 17 = RESET */
 };
 
 
@@ -292,133 +292,133 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 // and writing)
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&DDRA,
-	(uint8_t)(uint16_t)&DDRB,
-	(uint8_t)(uint16_t)&DDRC,
-	(uint8_t)(uint16_t)&DDRD
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&DDRA,
+  (uint8_t)(uint16_t)&DDRB,
+  (uint8_t)(uint16_t)&DDRC,
+  (uint8_t)(uint16_t)&DDRD
 };
 
 const uint8_t PROGMEM port_to_output_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&PORTA,
-	(uint8_t)(uint16_t)&PORTB,
-	(uint8_t)(uint16_t)&PORTC,
-	(uint8_t)(uint16_t)&PORTD
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PORTA,
+  (uint8_t)(uint16_t)&PORTB,
+  (uint8_t)(uint16_t)&PORTC,
+  (uint8_t)(uint16_t)&PORTD
 };
 
 const uint8_t PROGMEM port_to_pullup_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&PUEA,
-	(uint8_t)(uint16_t)&PUEB,
-	(uint8_t)(uint16_t)&PUEC,
-	(uint8_t)(uint16_t)&PUED
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PUEA,
+  (uint8_t)(uint16_t)&PUEB,
+  (uint8_t)(uint16_t)&PUEC,
+  (uint8_t)(uint16_t)&PUED
 };
 
 const uint8_t PROGMEM port_to_input_PGM[] =
 {
-	NOT_A_PORT,
-	(uint8_t)(uint16_t)&PINA,
-	(uint8_t)(uint16_t)&PINB,
-	(uint8_t)(uint16_t)&PINC,
-	(uint8_t)(uint16_t)&PIND
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PINA,
+  (uint8_t)(uint16_t)&PINB,
+  (uint8_t)(uint16_t)&PINC,
+  (uint8_t)(uint16_t)&PIND
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_A_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_B_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_C_ID,
-	PORT_D_ID,
-	PORT_D_ID,
-	PORT_D_ID,
-	PORT_D_ID
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_A_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_B_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_C_ID,
+  PORT_D_ID,
+  PORT_D_ID,
+  PORT_D_ID,
+  PORT_D_ID
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
-	_BV(0),
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(6),
-	_BV(7),
-	_BV(0),
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(6),
-	_BV(7),
-	_BV(0),
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(6),
-	_BV(7),
-	_BV(0),
-	_BV(1),
-	_BV(2),
-	_BV(3),
+  _BV(0),
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(0),
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(0),
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(0),
+  _BV(1),
+  _BV(2),
+  _BV(3),
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	TIMER0A,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	TIMER0B,
-	TIMER1A,
-	TIMER1B,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER0A,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER0B,
+  TIMER1A,
+  TIMER1B,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER
 };
 
 

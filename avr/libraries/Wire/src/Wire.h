@@ -63,7 +63,7 @@ class TwoWire : public Stream
     uint8_t endTransmission(uint8_t);
     uint8_t requestFrom(uint8_t, uint8_t);
     uint8_t requestFrom(uint8_t, uint8_t, uint8_t);
-	uint8_t requestFrom(uint8_t, uint8_t, uint32_t, uint8_t, uint8_t);
+    uint8_t requestFrom(uint8_t, uint8_t, uint32_t, uint8_t, uint8_t);
     uint8_t requestFrom(int, int);
     uint8_t requestFrom(int, int, int);
     virtual size_t write(uint8_t);
@@ -151,37 +151,37 @@ extern TwoWire Wire;
 
 class TwoWire {
 private:
-	bool slaveMode;
+  bool slaveMode;
 public:
-	TwoWire();
-	void begin();
-	void begin(uint8_t);
-	void begin(int);
-	void end();
-	void setClock(uint32_t);
-	void beginTransmission(uint8_t);
-	void beginTransmission(int);
-	uint8_t endTransmission(void);
-	uint8_t endTransmission(uint8_t);
-	uint8_t requestFrom(uint8_t, uint8_t);
-	uint8_t requestFrom(uint8_t, uint8_t, uint8_t);
-	uint8_t requestFrom(uint8_t, uint8_t, uint32_t, uint8_t, uint8_t);
-	uint8_t requestFrom(int, int);
-	uint8_t requestFrom(int, int, int);
-	size_t write(uint8_t);
-	size_t write(const uint8_t *, size_t);
-	size_t write(const char *);
-	int available(void);
-	int read(void);
-	int peek(void);
-	void flush(void);
-	void onReceive(void(*)(int));
-	void onRequest(void(*)(void));
+  TwoWire();
+  void begin();
+  void begin(uint8_t);
+  void begin(int);
+  void end();
+  void setClock(uint32_t);
+  void beginTransmission(uint8_t);
+  void beginTransmission(int);
+  uint8_t endTransmission(void);
+  uint8_t endTransmission(uint8_t);
+  uint8_t requestFrom(uint8_t, uint8_t);
+  uint8_t requestFrom(uint8_t, uint8_t, uint8_t);
+  uint8_t requestFrom(uint8_t, uint8_t, uint32_t, uint8_t, uint8_t);
+  uint8_t requestFrom(int, int);
+  uint8_t requestFrom(int, int, int);
+  size_t write(uint8_t);
+  size_t write(const uint8_t *, size_t);
+  size_t write(const char *);
+  int available(void);
+  int read(void);
+  int peek(void);
+  void flush(void);
+  void onReceive(void(*)(int));
+  void onRequest(void(*)(void));
 
-	inline size_t write(unsigned long n) { return write((uint8_t)n); }
-	inline size_t write(long n) { return write((uint8_t)n); }
-	inline size_t write(unsigned int n) { return write((uint8_t)n); }
-	inline size_t write(int n) { return write((uint8_t)n); }
+  inline size_t write(unsigned long n) { return write((uint8_t)n); }
+  inline size_t write(long n) { return write((uint8_t)n); }
+  inline size_t write(unsigned int n) { return write((uint8_t)n); }
+  inline size_t write(int n) { return write((uint8_t)n); }
 };
 extern TwoWire Wire;
 #endif // TWSWire_h

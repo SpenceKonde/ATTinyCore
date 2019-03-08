@@ -16,12 +16,12 @@
  */
 
 asm(".macro __wr_spmcsr p, v \n\t"
-    ".if \\p > 0x57	\n\t"
-    "sts \\p, \\v	\n\t"
-    ".else		\n\t"
-    "out \\p-0x20, \\v	\n\t"
-    ".endif		\n\t"
-    ".endm		\n");
+    ".if \\p > 0x57 \n\t"
+    "sts \\p, \\v   \n\t"
+    ".else      \n\t"
+    "out \\p-0x20, \\v  \n\t"
+    ".endif     \n\t"
+    ".endm      \n");
 
 
 #if defined(__SPM_REG)

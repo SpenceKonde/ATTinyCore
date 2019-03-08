@@ -443,8 +443,8 @@ void noTone( uint8_t _pin )
 //rmv    ToneTimer_SetToPowerup();
 
   /* rmv
-	  // put timer 1 in 8-bit phase correct pwm mode
-	  TCCR1A = (0<<COM1A1)|(0<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(1<<WGM10);
+    // put timer 1 in 8-bit phase correct pwm mode
+    TCCR1A = (0<<COM1A1)|(0<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(1<<WGM10);
 
     // set timer 1 prescale factor to 64
     // and start the timer
