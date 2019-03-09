@@ -23,7 +23,7 @@
 
   Modified 28-08-2009 for attiny84 R.Wiersma
   Modified 14-10-2009 for attiny45 Saposoft
-  Modified 26-02-2015 for attiny841 and other parts that use the PUEx registers. 
+  Modified 26-02-2015 for attiny841 and other parts that use the PUEx registers.
 */
 
 #include "wiring_private.h"
@@ -49,7 +49,7 @@ void pinMode(uint8_t pin, uint8_t mode)
   out = portOutputRegister(port);
   pue = portPullupRegister(port);
 
-  if (mode == INPUT) { 
+  if (mode == INPUT) {
     uint8_t oldSREG = SREG;
                 cli();
     *reg &= ~bit;
@@ -71,7 +71,7 @@ void pinMode(uint8_t pin, uint8_t mode)
     SREG = oldSREG;
   }
 }
-#else 
+#else
 
 void pinMode(uint8_t pin, uint8_t mode)
 {
@@ -88,7 +88,7 @@ void pinMode(uint8_t pin, uint8_t mode)
   reg = portModeRegister(port);
   out = portOutputRegister(port);
 
-  if (mode == INPUT) { 
+  if (mode == INPUT) {
     uint8_t oldSREG = SREG;
                 cli();
     *reg &= ~bit;
@@ -209,7 +209,7 @@ void digitalWrite(uint8_t pin, uint8_t val)
     SREG = oldSREG;
   }
 }
-#else 
+#else
 
 void digitalWrite(uint8_t pin, uint8_t val)
 {
@@ -245,15 +245,15 @@ void digitalWrite(uint8_t pin, uint8_t val)
 int digitalRead(uint8_t pin)
 {
   if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
-	uint8_t bit = digitalPinToBitMask(pin);
-	uint8_t port = digitalPinToPort(pin);
+  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t port = digitalPinToPort(pin);
 
-	if (port == NOT_A_PIN) return LOW;
+  if (port == NOT_A_PIN) return LOW;
 
-	// If the pin that support PWM output, we need to turn it off
-	// before getting a digital reading.
+  // If the pin that support PWM output, we need to turn it off
+  // before getting a digital reading.
   turnOffPWM( pin );
 
-	if (*portInputRegister(port) & bit) return HIGH;
-	return LOW;
+  if (*portInputRegister(port) & bit) return HIGH;
+  return LOW;
 }

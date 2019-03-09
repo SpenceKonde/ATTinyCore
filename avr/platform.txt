@@ -1,15 +1,14 @@
-
 # Arduino AVR Core and platform.
 # ------------------------------
 
 # For more info:
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
 
-name=ATTinyCore 
+name=ATTinyCore
 version=1.2.4
 
 # AVR compile variables
-# --------------------- 
+# ---------------------
 
 compiler.warning_flags=-w
 compiler.warning_flags.none=-w
@@ -37,7 +36,7 @@ compiler.elf2hex.cmd=avr-objcopy
 compiler.ldflags=
 compiler.size.cmd=avr-size
 
-# This can be overriden in boards.txt
+# This can be overridden in boards.txt
 build.extra_flags=
 
 # These can be overridden in platform.local.txt

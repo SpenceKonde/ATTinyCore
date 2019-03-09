@@ -95,7 +95,7 @@ const unsigned int Tone_Lowest_Frequency = (F_CPU + (2L * TONETIMER_MAXIMUM_DIVI
   #define TONE_FREQUENCY_CUTOFF_3  (3898)
   #define TONE_FREQUENCY_CUTOFF_2  (31189)
   #define TONE_FREQUENCY_CUTOFF_1  (65535)
-#elif F_CPU > 16000000 //assume it's around 20 if it's over 16, since avr's don't usually work above low 20's anyway. 
+#elif F_CPU > 16000000 //assume it's around 20 if it's over 16, since avr's don't usually work above low 20's anyway.
   #define TONE_FREQUENCY_CUTOFF_5  (151)
   #define TONE_FREQUENCY_CUTOFF_4  (584)
   #define TONE_FREQUENCY_CUTOFF_3  (4677)
@@ -182,13 +182,13 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   tonetimer_(ocr_t)             ocr;
   tonetimer_(prescale_value_t)  csv;
   tonetimer_(cs_t)              csi;
-  
+
   if ( tone_pin == 255 )
   {
     /* Set the timer to power-up conditions so we start from a known state */
     ToneTimer_SetToPowerup();
 
-    /* 
+    /*
       Compare Output Mode = Normal port operation, OCxA/OCxB disconnected.
       Waveform Generation Mode = 4; 0100; CTC; (Clear Timer on Compare); OCR1A; Immediate; MAX
       Clock Select = No clock source (Timer/Counter stopped).
@@ -347,7 +347,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
         csv = TONETIMER_(PRESCALER_VALUE_5);
         csi = ToneTimer_(Prescale_Index_5);
       }
-      else 
+      else
       #endif
 
       #if defined( TONE_FREQUENCY_CUTOFF_4 )
@@ -356,7 +356,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
         csv = TONETIMER_(PRESCALER_VALUE_4);
         csi = ToneTimer_(Prescale_Index_4);
       }
-      else 
+      else
       #endif
 
       #if defined( TONE_FREQUENCY_CUTOFF_3 )
@@ -428,7 +428,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 
 void noTone( uint8_t _pin )
 {
-  if ( (tone_pin != 255) 
+  if ( (tone_pin != 255)
         && ((tone_pin == _pin) || (_pin == 255)) )
   {
     // Turn off all interrupts
@@ -443,8 +443,8 @@ void noTone( uint8_t _pin )
 //rmv    ToneTimer_SetToPowerup();
 
   /* rmv
-	  // put timer 1 in 8-bit phase correct pwm mode
-	  TCCR1A = (0<<COM1A1)|(0<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(1<<WGM10);
+    // put timer 1 in 8-bit phase correct pwm mode
+    TCCR1A = (0<<COM1A1)|(0<<COM1A0) | (0<<COM1B1)|(0<<COM1B0) | (0<<WGM11)|(1<<WGM10);
 
     // set timer 1 prescale factor to 64
     // and start the timer
@@ -460,7 +460,7 @@ void noTone( uint8_t _pin )
     {
       digitalWrite( tone_pin, LOW );
     }
-  
+
     tone_pin = 255;
   }
 }

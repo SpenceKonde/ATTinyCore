@@ -242,7 +242,7 @@ void ServoSequencer::setServoPulseLength(uint8_t servoNumber, uint16_t newLength
         if( (newLengthInClockTicks > -1) && (newLengthInClockTicks < 256) )
         {
             servoRegistry[servoNumber].pulseLengthInTicks = static_cast<uint8_t>(newLengthInClockTicks);
-            //Programing note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
+            //Programming note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
             //                 interrupts would need to be disabled when updating it to a new value.
         }
         else
@@ -331,14 +331,14 @@ void ServoSequencer::setServoPin(uint8_t servoNumber, uint8_t newPin)
 //=============================================================================
 void ServoSequencer::enableDisableServo(uint8_t servoNumber, bool servoShouldBeEnabled)
 {
-            
+
     //make sure we got a valid slot number and the slot is registered to a servo
     if( (servoNumber < MAX_SERVOS      ) &&
         (servoRegistry[servoNumber].slotOccupied == true)   )
     {
         if(servoShouldBeEnabled == true)
         {
-      
+
             //if this is the very first servo we are enabling then configure the servo timer
             if( timerIsSetup == false)
             {
@@ -355,7 +355,7 @@ void ServoSequencer::enableDisableServo(uint8_t servoNumber, bool servoShouldBeE
                 //which typically configure all the timers to their liking on start up.
                 //Configuring our timer late allows us to overwrite these settings.
             }
-            //enable the servo. Its pulse will now be outputed on its pin.
+            //enable the servo. Its pulse will now be output on its pin.
             servoRegistry[servoNumber].enabled = true;
         }
         else
@@ -583,7 +583,7 @@ void ServoSequencer::timerCompareMatchISR()
             volatile uint8_t *out;
             out = portOutputRegister(port);
             *out|=bit;
-          #else 
+          #else
             #error "Unsupported part - how did execution get here?"
           #endif
         }
@@ -642,7 +642,7 @@ void ServoSequencer::timerCompareMatchISR()
             volatile uint8_t *out;
             out = portOutputRegister(port);
             *out&=~bit;
-          #else 
+          #else
             #error "Unsupported part - how did execution get here?"
           #endif
         }
@@ -664,7 +664,7 @@ void ServoSequencer::timerCompareMatchISR()
         }
         else
         {
-            //This pulse length has not reached the 2048 us mark, therefor we have to get to that mark first
+            //This pulse length has not reached the 2048 us mark, therefore we have to get to that mark first
             //update state
             state = WAITING_FOR_2048_MARK;
             //set OCRnx to the amount of time (in timer ticks) we have to wait to reach this mark
@@ -694,7 +694,7 @@ void ServoSequencer::timerCompareMatchISR()
 
 
 //=============================================================================
-// Non Memeber Functions
+// Non Member Functions
 //=============================================================================
 
 
@@ -793,7 +793,7 @@ Servo::~Servo()
 //
 //=============================================================================
 uint8_t Servo::attach(uint8_t pin)
-{ 
+{
 
   //Do we need to register with the servo sequencer?
   delay(1000);
@@ -815,7 +815,7 @@ uint8_t Servo::attach(uint8_t pin)
         DDRB |= (1<<pin); //set pin as output
         //set the servo pin
         ServoSequencer::setServoPin(servoIndex, pin);
-        //enable the servo to start outputing the pwm wave
+        //enable the servo to start outputting the PWM wave
         ServoSequencer::enableDisableServo(servoIndex, true);
     }
 
@@ -828,10 +828,10 @@ uint8_t Servo::attach(uint8_t pin)
       reg = portModeRegister(port);
       *reg |= bit;
       ServoSequencer::setServoPin(servoIndex, pin);
-      //enable the servo to start outputing the pwm wave
+      //enable the servo to start outputting the PWM wave
       ServoSequencer::enableDisableServo(servoIndex, true);
     }
-  #else 
+  #else
     #error "This part isn't supported - how did execution get here?"
   #endif
     else
@@ -1130,7 +1130,7 @@ static void initISR(timer16_Sequence_t timer)
     TCNT3 = 0;              // clear the timer count
 #if defined(__AVR_ATmega128__) || defined(__AVR_ATtiny1634__)
     TIFR |= _BV(OCF3A);     // clear any pending interrupts;
-	ETIMSK |= _BV(OCIE3A);  // enable the output compare interrupt
+    ETIMSK |= _BV(OCIE3A);  // enable the output compare interrupt
 #else
     TIFR3 = _BV(OCF3A);     // clear any pending interrupts;
     TIMSK3 =  _BV(OCIE3A) ; // enable the output compare interrupt
@@ -1204,7 +1204,7 @@ Servo::Servo()
 {
   if( ServoCount < MAX_SERVOS) {
     this->servoIndex = ServoCount++;                    // assign a servo index to this instance
-	servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values  - 12 Aug 2009
+    servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values  - 12 Aug 2009
   }
   else
     this->servoIndex = INVALID_SERVO ;  // too many servos
@@ -1295,4 +1295,3 @@ bool Servo::attached()
 }
 #endif // 8bit servo test
 #endif // ARDUINO_ARCH_AVR
-

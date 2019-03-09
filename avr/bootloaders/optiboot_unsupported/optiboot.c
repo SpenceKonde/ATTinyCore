@@ -165,7 +165,7 @@ const unsigned char ver[4] __attribute__ ((section (".version"))) = {0xFF, 0xFF,
 #else
 const unsigned char ver[2] __attribute__ ((section (".version"))) = {OPTIBOOT_MINVER, OPTIBOOT_MAJVER};
 #endif
-    
+
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -187,53 +187,53 @@ const unsigned char ver[2] __attribute__ ((section (".version"))) = {OPTIBOOT_MI
 
 #ifdef VIRTUAL_BOOT_PARTITION
 
-	#ifndef VIRTUAL_BOOT_PARTITION_START
-		#define VIRTUAL_BOOT_PARTITION_START 0x1dc0
-	#endif
-		//generate rjmp instruction for virtual boot partition
-	#define RJUMP_COMMAND ((((VIRTUAL_BOOT_PARTITION_START/2)-FLASHEND-2) & 0xFFF) | 0xC000)
-	#define RJUMP_COMMAND_LOW (RJUMP_COMMAND & 0xFF)
-	#define RJUMP_COMMAND_HIGH ((RJUMP_COMMAND>>8) & 0xFF)
+  #ifndef VIRTUAL_BOOT_PARTITION_START
+    #define VIRTUAL_BOOT_PARTITION_START 0x1dc0
+  #endif
+    //generate rjmp instruction for virtual boot partition
+  #define RJUMP_COMMAND ((((VIRTUAL_BOOT_PARTITION_START/2)-FLASHEND-2) & 0xFFF) | 0xC000)
+  #define RJUMP_COMMAND_LOW (RJUMP_COMMAND & 0xFF)
+  #define RJUMP_COMMAND_HIGH ((RJUMP_COMMAND>>8) & 0xFF)
 
 #endif
 
 #ifndef LED_START_FLASHES
-	#define LED_START_FLASHES 0
+  #define LED_START_FLASHES 0
 #endif
 
 #ifdef LUDICROUS_SPEED
-	#ifdef BAUD_RATE
-	//Fix warnings about BAUD_RATE being redefined.
-	#undef BAUD_RATE
-	#endif
-	#define BAUD_RATE 230400L
+  #ifdef BAUD_RATE
+  //Fix warnings about BAUD_RATE being redefined.
+  #undef BAUD_RATE
+  #endif
+  #define BAUD_RATE 230400L
 #endif
 
 /* set the UART baud rate defaults */
 #ifndef BAUD_RATE
-	#if F_CPU >= 8000000L
-		#define BAUD_RATE   115200L // Highest rate Avrdude win32 will support
-	#elsif F_CPU >= 1000000L
-		#define BAUD_RATE   9600L   // 19200 also supported, but with significant error
-	#elsif F_CPU >= 128000L
-		#define BAUD_RATE   4800L   // Good for 128kHz internal RC
-	#else
-		#define BAUD_RATE 1200L     // Good even at 32768Hz
-	#endif
+  #if F_CPU >= 8000000L
+    #define BAUD_RATE   115200L // Highest rate Avrdude win32 will support
+  #elsif F_CPU >= 1000000L
+    #define BAUD_RATE   9600L   // 19200 also supported, but with significant error
+  #elsif F_CPU >= 128000L
+    #define BAUD_RATE   4800L   // Good for 128kHz internal RC
+  #else
+    #define BAUD_RATE 1200L     // Good even at 32768Hz
+  #endif
 #endif
 
 #if !defined(__AVR_ATtiny87__) && !defined(__AVR_ATtiny167__)
 /* Switch in soft UART for hard baud rates */
 #if (F_CPU/BAUD_RATE) > 280 // > 57600 for 16MHz
-	#ifndef SOFT_UART
-		#define SOFT_UART
-	#endif
+  #ifndef SOFT_UART
+    #define SOFT_UART
+  #endif
 #endif
 
 #endif
 
 #if defined(SOFT_UART) && defined(RS485_SUPPORT)
-	#undef SOFT_UART
+  #undef SOFT_UART
 #endif
 
 /* Watchdog settings */
@@ -247,8 +247,8 @@ const unsigned char ver[2] __attribute__ ((section (".version"))) = {OPTIBOOT_MI
 #define WATCHDOG_1S     (_BV(WDP2) | _BV(WDP1) | _BV(WDE))
 #define WATCHDOG_2S     (_BV(WDP2) | _BV(WDP1) | _BV(WDP0) | _BV(WDE))
 #if !defined(__AVR_ATmega162__) && !defined(__AVR_ATmega8__)
-	#define WATCHDOG_4S     (_BV(WDP3) | _BV(WDE))
-	#define WATCHDOG_8S     (_BV(WDP3) | _BV(WDP0) | _BV(WDE))
+  #define WATCHDOG_4S     (_BV(WDP3) | _BV(WDE))
+  #define WATCHDOG_8S     (_BV(WDP3) | _BV(WDP0) | _BV(WDE))
 #endif
 
 #ifdef USE_TINY_TUNER
@@ -419,7 +419,7 @@ int main(void) {
 #else
   if (!(ch & _BV(EXTRF))) appStart();
 #endif
-  
+
 #if LED_START_FLASHES > 0
   // Set up Timer 1 for timeout counter
 #if defined(__AVR_ATtiny85__)
@@ -447,7 +447,7 @@ int main(void) {
   UBRR0L = (uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
 #elif defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
 #define PRESCALE            16L
-  LINCR = (1 << LSWRES); 
+  LINCR = (1 << LSWRES);
   LINBTR = _BV(LDISR) | (PRESCALE << LBT0);
   LINBRR = (((F_CPU * 10L / PRESCALE / BAUD_RATE) + 5L) / 10L) - 1;// ((((2 * F_CPU) + (BAUD_RATE * PRESCALE)) / (BAUD_RATE * 2L * PRESCALE)) - 1);
   LINERR = _BV(LFERR);
@@ -457,7 +457,7 @@ int main(void) {
   UCSR0B = _BV(RXEN0) | _BV(TXEN0);
   UCSR0C = _BV(UCSZ00) | _BV(UCSZ01);
   UBRR0L = (uint8_t)( (F_CPU + BAUD_RATE * 4L) / (BAUD_RATE * 8L) - 1 );
-  
+
 #endif
 #endif
 
@@ -471,7 +471,7 @@ int main(void) {
 
   /* Set LED pin as output */
   LED_DDR |= _BV(LED);
-  
+
 #ifdef SOFT_UART
   /* Set TX pin as output */
   UART_DDR |= _BV(UART_TX_BIT);
@@ -492,7 +492,7 @@ int main(void) {
 #ifndef USE_TINY_TUNER
       unsigned char which = getch();
       verifySpace();
-    //for tiny chips with tuner code, dont bother sending optiboot version - saves code.
+    //for tiny chips with tuner code, don't bother sending optiboot version - saves code.
       if (which == 0x82) {
     /*
      * Send optiboot version as "minor SW version"
@@ -503,7 +503,7 @@ int main(void) {
      * Send optiboot version as "major SW version"
      */
         putch(OPTIBOOT_MAJVER);
-      } else 
+      } else
 #else
       getch();
       verifySpace();
@@ -561,7 +561,7 @@ int main(void) {
 #ifndef VIRTUAL_BOOT_PARTITION
       // If we are in RWW section, immediately start page erase
       if (address < NRWWSTART) __boot_page_erase_short((uint16_t)(void*)address);
-      
+
       //For tiny chips, this is never possible
 #endif
 
@@ -583,7 +583,7 @@ int main(void) {
       //For tiny chips, this is always the case
       __boot_page_erase_short((uint16_t)(void*)address);
 #endif
-      
+
 #ifndef SOFT_UART
       // Read command terminator, start reply
       verifySpace();
@@ -618,7 +618,7 @@ int main(void) {
         tempWdtVect.array[2] = buff[WDT_VECT_START+2];
         tempWdtVect.array[3] = buff[WDT_VECT_START+3];
         #endif
-        
+
         // Add jump to bootloader at RESET vector
         buff[0] = RJUMP_COMMAND_LOW; //df
         buff[1] = RJUMP_COMMAND_HIGH; //ce   rjmp instruction
@@ -626,10 +626,10 @@ int main(void) {
         buff[2] = 0x00; //nop
         buff[3] = 0x00; //nop
         #endif
-        
+
         wdtVect.integer = tempWdtVect.integer;
         rstVect.integer = vect.integer;
-        
+
         #if VECTOR_WORDS == 1
         vect.integer -= (WDT_VECT_START/2); // Instruction is a relative jump (rjmp), so recalculate.
         #else
@@ -638,7 +638,7 @@ int main(void) {
         #endif
         buff[WDT_VECT_START] = vect.array[0];
         buff[WDT_VECT_START+1] = vect.array[1];
-        
+
         //EDIT: Although the code above looks A LOT longer, it compiles to be 24 bytes LESS - go unions!.
         /*uint16_t vect = buff[0] | (buff[1]<<8);
         rstVect = vect;
@@ -674,7 +674,7 @@ int main(void) {
       boot_spm_busy_wait();
 
 #if defined(RWWSRE)
-      // Reenable read access to flash
+      // Re-enable read access to flash
       boot_rww_enable();
 #endif
 
@@ -756,7 +756,7 @@ void putch(char ch) {
 
 #ifdef RS485_SUPPORT
   DE_PORT |= _BV(DE_BIT);
-#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__) 
+#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__)
   LED_PORT ^= _BV(LED);
 #else
   LED_PIN |= _BV(LED);
@@ -769,12 +769,12 @@ void putch(char ch) {
 #else
   UDR0 = ch;
 #endif
-  
+
 #ifdef RS485_SUPPORT
   while(!(UCSR0A & _BV(TXC0)) );
   _delay_us(9);
   DE_PORT &= ~_BV(DE_BIT);
-#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__) 
+#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__)
   LED_PORT ^= _BV(LED);
 #else
   LED_PIN |= _BV(LED);
@@ -813,7 +813,7 @@ uint8_t getch(void) {
   uint8_t ch;
 
 #ifdef LED_DATA_FLASH
-#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__) 
+#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__)
   LED_PORT ^= _BV(LED);
 #else
   LED_PIN |= _BV(LED);
@@ -824,15 +824,15 @@ uint8_t getch(void) {
   __asm__ __volatile__ (
     "1: sbic  %[uartPin],%[uartBit]\n"  // Wait for start edge
     "   rjmp  1b\n"
-    "   rcall uartDelay\n"          // Get to 0.25 of start bit 
+    "   rcall uartDelay\n"          // Get to 0.25 of start bit
     "2: rcall uartDelay\n"              // Wait 0.25 bit period
     "   rcall uartDelay\n"              // Wait 0.25 bit period
     "   rcall uartDelay\n"              // Wait 0.25 bit period
     "   rcall uartDelay\n"              // Wait 0.25 bit period
     "   clc\n"
     "   sbic  %[uartPin],%[uartBit]\n"
-    "   sec\n"      
-    "   ror   %[ch]\n"                    
+    "   sec\n"
+    "   ror   %[ch]\n"
     "   dec   %[bitCnt]\n"
     "   breq  3f\n"
     "   rjmp  2b\n"
@@ -869,7 +869,7 @@ uint8_t getch(void) {
        */
     watchdogReset();
   }
-  
+
   ch = LINDAT;
 #else
   while(!(UCSR0A & _BV(RXC0)))
@@ -885,12 +885,12 @@ uint8_t getch(void) {
        */
     watchdogReset();
   }
-  
+
   ch = UDR0;
 #endif
 
 #ifdef LED_DATA_FLASH
-#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__) 
+#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__)
   LED_PORT ^= _BV(LED);
 #else
   LED_PIN |= _BV(LED);
@@ -951,7 +951,7 @@ void flash_led(uint8_t count) {
     TIFR1 |= _BV(TOV1); //at boot TIFR1 is 0, so can just set the TOV1 bit - save memory.
     while(!(TIFR1 & _BV(TOV1)));
 #endif
-#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__) 
+#if defined(__AVR_ATmega162__) || defined(__AVR_ATmega8__)
     LED_PORT ^= _BV(LED);
 #else
     LED_PIN |= _BV(LED);

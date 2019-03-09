@@ -86,7 +86,7 @@ static const uint8_t A10 = 0x80 | 10;
 //Core Configuration (used to be in core_build_options.h)
 
 //If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out. 
+//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 //e.g
 //#define TUNED_OSCCAL_VALUE                        0x57
@@ -103,13 +103,13 @@ static const uint8_t A10 = 0x80 | 10;
   Where to put the software serial? (Arduino Digital pin numbers)
 */
 //WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL						  0
+#define USE_SOFTWARE_SERIAL           0
 //Please define the port on which the analog comparator is found.
-#define ANALOG_COMP_DDR						 	  DDRA
-#define ANALOG_COMP_PORT						  PORTA
-#define ANALOG_COMP_PIN						 	  PINA
-#define ANALOG_COMP_AIN0_BIT					  6
-#define ANALOG_COMP_AIN1_BIT					  7
+#define ANALOG_COMP_DDR               DDRA
+#define ANALOG_COMP_PORT              PORTA
+#define ANALOG_COMP_PIN               PINA
+#define ANALOG_COMP_AIN0_BIT          6
+#define ANALOG_COMP_AIN1_BIT          7
 
 /*
   Analog reference bit masks.
@@ -165,85 +165,85 @@ static const uint8_t A10 = 0x80 | 10;
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-const uint16_t PROGMEM port_to_mode_PGM[] = 
+const uint16_t PROGMEM port_to_mode_PGM[] =
 {
-	NOT_A_PORT,
-	(uint16_t)&DDRA,
-	(uint16_t)&DDRB,
+  NOT_A_PORT,
+  (uint16_t)&DDRA,
+  (uint16_t)&DDRB,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = 
+const uint16_t PROGMEM port_to_output_PGM[] =
 {
-	NOT_A_PORT,
-	(uint16_t)&PORTA,
-	(uint16_t)&PORTB,
+  NOT_A_PORT,
+  (uint16_t)&PORTA,
+  (uint16_t)&PORTB,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = 
+const uint16_t PROGMEM port_to_input_PGM[] =
 {
-	NOT_A_PORT,
-	(uint16_t)&PINA,
-	(uint16_t)&PINB,
+  NOT_A_PORT,
+  (uint16_t)&PINA,
+  (uint16_t)&PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
-	PA, /* 0 */
-	PA,
-	PB, /* 2 */
-	PA, /* 3 */
-	PB, /* 4 */
-	PB,
-	PB,
-	PB,
-	PB,
-	PB,
-	PA, /* 10 */
-	PA,
-	PA,
-	PA,
-	PA,
-	PB, /* 15 */
+  PA, /* 0 */
+  PA,
+  PB, /* 2 */
+  PA, /* 3 */
+  PB, /* 4 */
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PA, /* 10 */
+  PA,
+  PA,
+  PA,
+  PA,
+  PB, /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
-	_BV(0), /* 0 */
-	_BV(1),
-	_BV(6), /* 2 */
-	_BV(3), /* 3 */
-	_BV(0), /* 4 */
-	_BV(1),
-	_BV(2),
-	_BV(3),
-	_BV(4),
-	_BV(5),
-	_BV(6), /* 10 */
-	_BV(4),
-	_BV(2),
-	_BV(5),
-	_BV(7),
-	_BV(7), /* 15 */
+  _BV(0), /* 0 */
+  _BV(1),
+  _BV(6), /* 2 */
+  _BV(3), /* 3 */
+  _BV(0), /* 4 */
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6), /* 10 */
+  _BV(4),
+  _BV(2),
+  _BV(5),
+  _BV(7),
+  _BV(7), /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
-	NOT_ON_TIMER, 
-	NOT_ON_TIMER,
-	TIMER1A,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	TIMER1B,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	TIMER0A,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
-	NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER1A,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER1B,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER0A,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
 };
 
 #endif
@@ -255,10 +255,10 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 
 //Old code, just here for temporary backup until I decide it is not needed.
 //WARNING, if using software, RX must be on a pin which has a Pin change interrupt <= 7 (e.g. PCINT6, or PCINT1, but not PCINT8)
-/*#define USE_SOFTWARE_SERIAL						  1
+/*#define USE_SOFTWARE_SERIAL             1
 //These are set to match Optiboot pins.
 
-#define SOFTWARE_SERIAL_PORT 					  PORTB
-#define SOFTWARE_SERIAL_TX 						  0
-#define SOFTWARE_SERIAL_PIN 					  PINB
-#define SOFTWARE_SERIAL_RX 						  1*/
+#define SOFTWARE_SERIAL_PORT            PORTB
+#define SOFTWARE_SERIAL_TX              0
+#define SOFTWARE_SERIAL_PIN             PINB
+#define SOFTWARE_SERIAL_RX              1*/

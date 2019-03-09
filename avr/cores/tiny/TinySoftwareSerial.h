@@ -1,5 +1,4 @@
-
-#if USE_SOFTWARE_SERIAL 
+#if USE_SOFTWARE_SERIAL
 #ifndef TinySoftwareSerial_h
 #define TinySoftwareSerial_h
 #include <inttypes.h>
@@ -26,7 +25,7 @@ struct soft_ring_buffer
 };
 
 extern "C"{
-  void uartDelay() __attribute__ ((naked,used)); //used attribute needed to prevent LTO from throwing it out. 
+  void uartDelay() __attribute__ ((naked,used)); //used attribute needed to prevent LTO from throwing it out.
   uint8_t getch();
   void store_char(unsigned char c, soft_ring_buffer *buffer);
 }
@@ -34,11 +33,11 @@ extern "C"{
 class TinySoftwareSerial : public Stream
 {
   public: //should be private but needed by extern "C" {} functions.
-	uint8_t _rxmask;
-	uint8_t _txmask;
-	uint8_t _txunmask;
-	soft_ring_buffer *_rx_buffer;
-	uint8_t _delayCount;
+  uint8_t _rxmask;
+  uint8_t _txmask;
+  uint8_t _txunmask;
+  soft_ring_buffer *_rx_buffer;
+  uint8_t _delayCount;
   public:
     TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit);
     void begin(long);

@@ -41,10 +41,9 @@ The following identify board variants (various cores have used both styles of de
 #define ATTINYX313 1
 #define __AVR_ATtinyX313__
 
-//no backwards compatibility options since no previously existing cores used the other convention. 
+//no backwards compatibility options since no previously existing cores used the other convention.
 #define __AVR_ATtinyX41__
-#define __AVR_ATtiny1634__ 
+#define __AVR_ATtiny1634__
 #define __AVR_ATtiny828__
 
 ```
-

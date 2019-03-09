@@ -18,7 +18,7 @@ endif
 
 
 #-----------------------
-# ATtiny 1634, UART 0 
+# ATtiny 1634, UART 0
 #-----------------------
 attiny1634at12:
 	"$(MAKE)" attiny1634	AVR_FREQ=12000000L
@@ -79,7 +79,7 @@ endif
 
 
 #-----------------------
-# ATtiny 1634, UART 1 
+# ATtiny 1634, UART 1
 #-----------------------
 
 attiny1634at12ser1:
@@ -159,7 +159,7 @@ attiny841: $(PROGRAM)_attiny841.lst
 endif
 
 #-----------------------
-# ATtiny 841, UART 0 
+# ATtiny 841, UART 0
 #-----------------------
 attiny841at184:
 	$(MAKE) attiny841	 AVR_FREQ=18432000L
@@ -251,7 +251,7 @@ ifndef PRODUCTION
 endif
 
 attiny841at110ser1:
-	$(MAKE) attiny841	 AVR_FREQ=11059200L UART=1 
+	$(MAKE) attiny841	 AVR_FREQ=11059200L UART=1
 	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_11059200L_ser1.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_11059200L_ser1.lst
@@ -302,7 +302,7 @@ endif
 #-----------------------
 # ATtiny 841, UART 0, no LED
 # There's no noLED definitions for 1634 because the larger page size
-# on the 1634 means that you don't gain any usable flash from it. 
+# on the 1634 means that you don't gain any usable flash from it.
 #-----------------------
 
 attiny841at20noLED:
@@ -345,7 +345,7 @@ attiny441: $(PROGRAM)_attiny441.lst
 endif
 
 #-----------------------
-# ATtiny 441, UART 0 
+# ATtiny 441, UART 0
 #-----------------------
 attiny441at184:
 	$(MAKE) attiny441	 AVR_FREQ=18432000L
@@ -489,7 +489,7 @@ endif
 #-----------------------
 # ATtiny 841, UART 0, no LED
 # There's no noLED definitions for 1634 because the larger page size
-# on the 1634 means that you don't gain any usable flash from it. 
+# on the 1634 means that you don't gain any usable flash from it.
 #-----------------------
 
 attiny441at20noLED:
@@ -514,8 +514,8 @@ ifndef PRODUCTION
 endif
 
 #-------------------
-# ATtiny828 - only one speed since it doesn't support crystal. 
-# If you want to use an external clock 
+# ATtiny828 - only one speed since it doesn't support crystal.
+# If you want to use an external clock
 #--------------------
 
 HELPTEXT += "target attiny828     - atttiny828at<freq>  attiny841at8_5v\n"
@@ -531,14 +531,14 @@ attiny828: $(PROGRAM)_attiny828.lst
 endif
 
 
-attiny828at8: 
+attiny828at8:
 	$(MAKE) attiny828at8 AVR_FREQ=8000000L BAUD_RATE=57600
 	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_8000000L.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_8000000L.lst
 endif
 
-attiny828at8_5v: 
+attiny828at8_5v:
 	$(MAKE) attiny828at8 AVR_FREQ=8200000L BAUD_RATE=57600
 	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_8000000L.hex
 ifndef PRODUCTION
@@ -712,7 +712,7 @@ HELPTEXT += "                     - atttiny841at<freq>noLED\n"
 
 attiny84: TARGET = attiny84
 attiny84: MCU_TARGET = attiny84
-attiny84: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART' 
+attiny84: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
 attiny84: AVR_FREQ ?= 8000000L
 attiny84: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny84: $(PROGRAM)_attiny84.hex

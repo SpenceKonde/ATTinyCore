@@ -48,7 +48,7 @@ void fullInit( tuner_t* tuner );
 
 void tinyTuner(){
   //watchdogConfig(WATCHDOG_OFF);
-  
+
 #if defined(__AVR_ATtiny85__)
   TCCR1 = _BV(CS13) | _BV(CS12); // div 2048 as it is only 8bit, so having to half TCNT1 value
 #elif !defined(__AVR_ATtiny24__)
@@ -74,18 +74,18 @@ void tinyTuner(){
 
   flash_led(LED_START_FLASHES * 10);
 #endif
-  
+
   tuner_t tuner;
   tuner._state = sFirstPass;
-  
+
   uint8_t running = true;
-  
+
   while ( running )
   {
     running = update(&tuner);
-    
+
 #if !defined(__AVR_ATtiny24__)
-	  putcal();
+    putcal();
     uint8_t i=0;
     for ( ; i < 4; i++ ){
       if(!(i & 1)){
@@ -102,11 +102,11 @@ void tinyTuner(){
       while(!(TIFR1 & _BV(TOV1)));
     #endif
     }
-#else 
+#else
     LED_PIN |= _BV(LED); //toggle pin
 #endif
   }
-  
+
 #if !defined(__AVR_ATtiny24__)
   putstr_t(PSTR("\r\n\r\nFinal Cal = "));
   putch_t(OSCCAL);
@@ -116,17 +116,17 @@ void tinyTuner(){
   putch_t('=');
   putch_t(OSCCAL);
 #endif
-  
-  
+
+
   uint16_t addrPtr;
-  
+
   //For this code we are assuming that the cleared value of each byte in the temporary page buffer is 0xFF
   //This is important as we have to write a page at a time which means that we will be overwriting bytes we
   //don't want to change - by using 0xFF this isn't an issue as programming can only convert a bit from a 1
   //to a 0 (otherwise it needs to erase which is not being done here). So if say you had 0b00100101, and reprogrammed
-  //it with 0b11111111, the result would be 0b00100101 as none on the 0's can be turned into 1's. 
+  //it with 0b11111111, the result would be 0b00100101 as none on the 0's can be turned into 1's.
   addrPtr = (uint16_t)(void*)ver;
-  
+
   SPMCSR = CTPB; //clear the temporary page buffer - this sets all bytes to 0xFF so as not to change any bytes we don't want to
   twoByte oscProg;
   oscProg.array[1] = OSCCAL; //store the new OSCCAL value in the program memory so it can be restored by the bootloader at startup.
@@ -138,15 +138,15 @@ void tinyTuner(){
 #if !defined(__AVR_ATtiny24__)
   putstr_t(PSTR("Removing call to TinyTuner to reduce bootloader size by 2.3kbytes\r\n"));
 #endif
-  
+
   addrPtr = (uint16_t)(void*)bootloader; //get the page on which to bootloader starts;
   addrPtr += 0x0A; //move to the correct place in the bootloader (where the RCALL to tinyTuner() is)
-  
+
   SPMCSR = CTPB; //clear the temporary page buffer - this sets all bytes to 0xFF so as not to change any bytes we don't want to
   __boot_page_fill_short((uint16_t)(void*)addrPtr,(uint16_t)0x00); //write a NOP instruction to prevent calling tinyTuner when it doesn't exist anymore.
   __boot_page_write_short((uint16_t)(void*)addrPtr); //program the whole page. Any byte where temp=0xFF will remain as they were.
   boot_spm_busy_wait(); //wait for completion
-  
+
 #if !defined(__AVR_ATtiny24__)
   putstr_t(PSTR("Calibration saved and TinyTuner Deleted\r\n"));
   putstr_t(PSTR("\r\n\r\nEnabling Bootloader and Rebooting\r\n\r\n"));
@@ -178,7 +178,7 @@ void putstr_t(const prog_char *str){
   unsigned char c = pgm_read_byte(str++);
   while (c) {
     putch_t(c);
-	c = pgm_read_byte(str++);
+  c = pgm_read_byte(str++);
   }
 }
 
@@ -232,13 +232,13 @@ void putch_t(char ch) {
 uint8_t update( tuner_t* tuner ) {
   // Time the 'x'
   uint16_t nbt = TimeNineBits();
-  
+
   // Calculate the number of clock cycles spent in TimeNineBits
   int16_t clocks = (nbt-1)*5 + 5;
-  
+
   // Calculate the difference between the actual number of cycles spent in TimeNineBits and the expected number of cycles
   int16_t error = clocks - 7500;
-  
+
   if ( tuner->_state == sFirstPass ) {
     tuner->_info[pLeft].OsccalValue  = -1;
     tuner->_info[pThis].OsccalValue  = OSCCAL & 0x7F;
@@ -247,23 +247,23 @@ uint8_t update( tuner_t* tuner ) {
     tuner->_state = sBigSteps;
     tuner->_threshold = 3;
   }
-  
+
   if ( tuner->_state == sConfirm ) {
     uint16_t delta;
     info_t* info = &(tuner->_info[tuner->_position]);
-    
+
     if ( nbt > info->NineBitTime ){
       delta = nbt - info->NineBitTime;
     } else {
       delta = info->NineBitTime - nbt;
     }
-    
+
     info->NineBitTime = nbt;
-    
+
     if ( (delta <= 2) || (info->ConfirmCount == 0) ) {
       ++info->ConfirmCount;
       info->ConfirmNineBitTime += nbt;
-      
+
       if ( info->ConfirmCount >= tuner->_threshold ) {
         for ( tuner->_position=pLeft; tuner->_position < pMax; tuner->_position=(tuner->_position+1) ) {
           if ( tuner->_info[tuner->_position].ConfirmCount < tuner->_threshold ) {
@@ -327,9 +327,9 @@ uint8_t update( tuner_t* tuner ) {
       }
     }
   }
-  
+
   AdjustOSCCAL( (uint8_t)(tuner->_info[tuner->_position].OsccalValue) );
-  
+
   if ( tuner->_state == sFinished ){
     return( false );
   }
@@ -343,20 +343,20 @@ uint8_t FindBest( tuner_t* tuner ) {
   uint8_t position;
   int16_t BestError;
   uint8_t NeedToTryHarder;
-  
+
   BestError = 0x7FFF;
   NeedToTryHarder = false;
-  
+
   for ( position=pLeft; position < pMax; position++ ) {
     //rmv nbt = ( ( 2 * _info[position].ConfirmNineBitTime / _info[position].ConfirmCount ) + 1 ) / 2;
     //rmv clocks = (nbt-1)*5 + 5;
     clocks = (((((((uint32_t)(tuner->_info[position].ConfirmNineBitTime) - 1) * 5ul ) + 5ul) * 2ul) / tuner->_info[position].ConfirmCount) + 1ul) / 2ul;
     error = clocks - 7500;
-    
+
     if ( error < 0 ) {
       error = -error;
     }
-    
+
     // rmv: Strictly for debugging...
     // rmv _info[position].NineBitTime = nbt;
     //tuner->_info[position].ConfirmClocks = clocks;
@@ -384,27 +384,27 @@ void TransitionToConfirm( tuner_t* tuner ) {
     tuner->_info[pThis].OsccalValue = tuner->_info[pLeft].OsccalValue;
     tuner->_info[pThis].NineBitTime = tuner->_info[pLeft].NineBitTime;
     tuner->_info[pThis].Error = tuner->_info[pLeft].Error;
-    
+
     tuner->_info[pLeft].OsccalValue = tuner->_info[pThis].OsccalValue - 1;
     tuner->_info[pLeft].ConfirmCount = 0;
     tuner->_info[pLeft].ConfirmNineBitTime = 0;
-    
+
     tuner->_info[pThis].ConfirmCount = 1;
     tuner->_info[pThis].ConfirmNineBitTime = tuner->_info[pThis].NineBitTime;
-    
+
     tuner->_info[pRight].ConfirmCount = 1;
     tuner->_info[pRight].ConfirmNineBitTime = tuner->_info[pRight].NineBitTime;
   } else {
     tuner->_info[pThis].OsccalValue = tuner->_info[pRight].OsccalValue;
     tuner->_info[pThis].NineBitTime = tuner->_info[pRight].NineBitTime;
     tuner->_info[pThis].Error = tuner->_info[pRight].Error;
-    
+
     tuner->_info[pLeft].ConfirmCount = 1;
     tuner->_info[pLeft].ConfirmNineBitTime = tuner->_info[pLeft].NineBitTime;
-    
+
     tuner->_info[pThis].ConfirmCount = 1;
     tuner->_info[pThis].ConfirmNineBitTime = tuner->_info[pThis].NineBitTime;
-    
+
     tuner->_info[pRight].OsccalValue = tuner->_info[pThis].OsccalValue + 1;
     tuner->_info[pRight].ConfirmCount = 0;
     tuner->_info[pRight].ConfirmNineBitTime = 0;
@@ -414,7 +414,7 @@ void TransitionToConfirm( tuner_t* tuner ) {
 
 static int8_t NumberOfBigSteps( int16_t error ) {
   error = error / 100;
-  
+
   switch ( error )
   {
     case -7:  return( 20 );
@@ -440,12 +440,12 @@ static void AdjustOSCCAL( uint8_t NewValue ) {
   uint8_t Temp;
   uint8_t Value;
   uint8_t Range;
-  
+
   Temp = OSCCAL;
-  
+
   Value = Temp & 0x7F;
   Range = Temp & 0x80;
-  
+
   if ( NewValue < Value ){
     while ( NewValue != Value ){
       --Value;
@@ -468,12 +468,12 @@ static uint16_t TimeNineBits( void ){
   CLKPR = (0<<CLKPS3) | (0<<CLKPS2) | (0<<CLKPS1) | (0<<CLKPS0);
   sei();
   #endif
-  
+
   uint16_t Temp = 0;
-  
+
   // lowercase 'x' on the wire...
   // ...1111111111 0 0001 1110 1 111111111...
-  
+
   asm volatile
   (
     // Wait for a start bit
@@ -506,9 +506,9 @@ static uint16_t TimeNineBits( void ){
 
       "sei"                                     "\n\t"
 
-      : 
+      :
         [reseult] "+w" ( Temp )
-      : 
+      :
       #ifdef UART_RX_PIN
         [calreg] "I" (_SFR_IO_ADDR(UART_RX_PIN)), //rx is on a different port.
       #else
@@ -516,7 +516,7 @@ static uint16_t TimeNineBits( void ){
       #endif
         [calbit] "I" ( UART_RX_BIT )
   );
-  
+
   // Put the clock back the way we found it
   #if (F_CPU != 8000000)
   cli();
@@ -524,14 +524,14 @@ static uint16_t TimeNineBits( void ){
   CLKPR = ClockDivisor;
   sei();
   #endif
-  
+
   return( Temp );
 }
 
 void fullInit( tuner_t* tuner ) {
   tuner->_position = pMax;
   tuner->_threshold = 0;
-  
+
   uint8_t p = pLeft;
   for ( ; p < pMax; p=(p+1) ) {
     tuner->_info[p].OsccalValue = 0;

@@ -125,7 +125,7 @@ STK500-2 = $(STK500) -d$(MCU_TARGET) -ms -q -lCF -LCF -cUSB -I200kHz -s -wt
 OBJ        = $(PROGRAM).o
 OPTIMIZE = -Os -fno-split-wide-types -mrelax
 
-DEFS       = 
+DEFS       =
 
 CC         = $(GCCROOT)avr-gcc
 
@@ -294,7 +294,7 @@ HELPTEXT += "target virboot8      - ATmega8 with virtual boot partition\n"
 virboot8: TARGET = atmega8
 virboot8: MCU_TARGET = atmega8
 virboot8: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-Dsave_vect_num=EE_RDY_vect_num'
-virboot8: AVR_FREQ ?= 16000000L 
+virboot8: AVR_FREQ ?= 16000000L
 # Start address of 1D80 allows for size up to 640 bytes, app up to 7552
 virboot8: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 virboot8: $(PROGRAM)_virboot8.hex
@@ -348,7 +348,7 @@ HELPTEXT += "target atmega8       - ATmega8, ATmega8A, ATmega8L\n"
 atmega8: TARGET = atmega8
 atmega8: MCU_TARGET = atmega8
 atmega8: CFLAGS += $(COMMON_OPTIONS)
-atmega8: AVR_FREQ ?= 16000000L 
+atmega8: AVR_FREQ ?= 16000000L
 ifndef BIGBOOT
 atmega8: LDSECTIONS  = -Wl,--section-start=.text=0x1e00 -Wl,--section-start=.version=0x1ffe -Wl,--gc-sections -Wl,--undefined=optiboot_version
 else
@@ -451,9 +451,9 @@ endif
 #---------------------------------------------------------------------------
 # "Board-level Platform" targets.
 # A "Board-level Platform" implies a manufactured platform with a particular
-# AVR_FREQ, LED, and so on.  Parameters are not particularly changable from
+# AVR_FREQ, LED, and so on.  Parameters are not particularly changeable from
 # the "make" command line.
-# Most of the board-level platform builds should envoke make recursively
+# Most of the board-level platform builds should invoke make recursively
 #  appropriate specific options
 #---------------------------------------------------------------------------
 # 20MHz clocked platforms

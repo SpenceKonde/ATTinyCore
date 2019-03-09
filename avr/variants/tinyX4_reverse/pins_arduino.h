@@ -102,7 +102,7 @@ static const uint8_t A7 = 0x80 | 7;
 //Core Configuration (used to be in core_build_options.h)
 
 //If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out. 
+//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 //e.g
 //#define TUNED_OSCCAL_VALUE                        0x57
@@ -119,13 +119,13 @@ static const uint8_t A7 = 0x80 | 7;
   Where to put the software serial? (Arduino Digital pin numbers)
 */
 //WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL           1
 //Please define the port on which the analog comparator is found.
-#define ANALOG_COMP_DDR						 	  DDRA
-#define ANALOG_COMP_PORT						  PORTA
-#define ANALOG_COMP_PIN						 	  PINA
-#define ANALOG_COMP_AIN0_BIT					  1
-#define ANALOG_COMP_AIN1_BIT					  2
+#define ANALOG_COMP_DDR               DDRA
+#define ANALOG_COMP_PORT              PORTA
+#define ANALOG_COMP_PIN               PINA
+#define ANALOG_COMP_AIN0_BIT          1
+#define ANALOG_COMP_AIN1_BIT          2
 
 
 /*
@@ -159,34 +159,34 @@ static const uint8_t A7 = 0x80 | 7;
 //                           +-\/-+
 //                     VCC  1|    |14  GND
 //            (D  10)  PB0  2|    |13  PA0  (D  0)        AREF
-//             (D  9)  PB1  3|    |12  PA1  (D  1) 
-//             (D 11)  PB3  4|    |11  PA2  (D  2) 
-//  PWM  INT0  (D  8)  PB2  5|    |10  PA3  (D  3) 
-//  PWM        (D  7)  PA7  6|    |9   PA4  (D  4) 
+//             (D  9)  PB1  3|    |12  PA1  (D  1)
+//             (D 11)  PB3  4|    |11  PA2  (D  2)
+//  PWM  INT0  (D  8)  PB2  5|    |10  PA3  (D  3)
+//  PWM        (D  7)  PA7  6|    |9   PA4  (D  4)
 //  PWM        (D  6)  PA6  7|    |8   PA5  (D  5)        PWM
 //                           +----+
-const uint16_t PROGMEM port_to_mode_PGM[] = 
+const uint16_t PROGMEM port_to_mode_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&DDRA,
   (uint16_t)&DDRB,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = 
+const uint16_t PROGMEM port_to_output_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&PORTA,
   (uint16_t)&PORTB,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = 
+const uint16_t PROGMEM port_to_input_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&PINA,
   (uint16_t)&PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
   PA, /* 0 */
   PA,
@@ -204,14 +204,14 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 
 
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
   _BV(0), /* port A */
   _BV(1),
   _BV(2),
   _BV(3),
   _BV(4),
-  _BV(5), 
+  _BV(5),
   _BV(6),
   _BV(7),
   _BV(2), /* port B */
@@ -220,12 +220,12 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(3),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER, 
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER1B, /* OC1B */
   TIMER1A, /* OC1A */
@@ -246,9 +246,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 //Old code, just here for temporary backup until I decide it is not needed.
 /*
 //WARNING, if using software, RX must be on a pin which has a Pin change interrupt <= 7 (e.g. PCINT6, or PCINT1, but not PCINT8)
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL             1
 //These are set to match Optiboot pins.
-#define SOFTWARE_SERIAL_PORT 					  PORTA
-#define SOFTWARE_SERIAL_TX 						  9
-#define SOFTWARE_SERIAL_PIN 					  PINA
-#define SOFTWARE_SERIAL_RX 						  8*/
+#define SOFTWARE_SERIAL_PORT            PORTA
+#define SOFTWARE_SERIAL_TX              9
+#define SOFTWARE_SERIAL_PIN             PINA
+#define SOFTWARE_SERIAL_RX              8*/

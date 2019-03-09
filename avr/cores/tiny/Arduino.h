@@ -64,7 +64,7 @@ void yield(void);
 #define noInterrupts() cli()
 
 #if F_CPU < 1000000L
-//Prevent a divide by 0 is 
+//Prevent a divide by 0 is
 #warning Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1.
 //static inline unsigned long clockCyclesPerMicrosecond() __attribute__ ((always_inline));
 //static inline unsigned long clockCyclesPerMicrosecond()
@@ -72,7 +72,7 @@ void yield(void);
 //Inline function will be optimised out.
 //  return 1;
 //}
-  //WTF were they thinking?! 
+  //WTF were they thinking?!
 #define clockCyclesPerMicrosecond() 1L
 #else
 #define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
@@ -137,7 +137,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
-// 
+//
 // These perform slightly better as macros compared to inline functions
 //
 #define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
@@ -187,23 +187,23 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #endif
 
 #if NUM_ANALOG_INPUTS > 0
-	#define HAVE_ADC    						  1
-	#ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER 
-		#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
-	#endif
+  #define HAVE_ADC                  1
+  #ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
+  #endif
 #else
-	#define HAVE_ADC 							  0
-	#if defined(INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER)
-		#undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
-	#endif
-	#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
+  #define HAVE_ADC                0
+  #if defined(INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER)
+    #undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+  #endif
+  #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
 #endif
 
 #if !HAVE_ADC
   #undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
   #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
 #else
-  #ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER 
+  #ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
     #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
   #endif
 #endif
@@ -246,7 +246,7 @@ long map(long, long, long, long, long);
 #endif
 
 /*=============================================================================
-  Aliases for the interrupt service routine vector numbers so the code 
+  Aliases for the interrupt service routine vector numbers so the code
   doesn't have to be riddled with #ifdefs.
 =============================================================================*/
 

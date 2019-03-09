@@ -1,5 +1,5 @@
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega88) || defined(__AVR_ATmega8__) || defined(__AVR_ATmega88__)
-/* Onboard LED is connected to pin PB5 in Arduino NG, Diecimila, and Duemilanove */ 
+/* Onboard LED is connected to pin PB5 in Arduino NG, Diecimila, and Duemilanove */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
@@ -27,7 +27,7 @@
 #define LED_PORT PORTB
 #define LED_PIN  PINB
 #define LED      PINB7
-	
+
 /* Ports for soft UART */
 #ifdef SOFT_UART
 #define UART_PORT   PORTD
@@ -37,20 +37,20 @@
 #define UART_RX_BIT 0
 #endif
 #endif
-	
+
 #if defined(__AVR_ATmega8__)
   //Name conversion R.Wiersma
-  #define UCSR0A	UCSRA
-  #define UDR0 		UDR
-  #define UDRE0 	UDRE
-  #define RXC0		RXC
-  #define FE0		FE
-  #define TIFR1 	TIFR
-  #define WDTCSR	WDTCR
+  #define UCSR0A  UCSRA
+  #define UDR0    UDR
+  #define UDRE0   UDRE
+  #define RXC0    RXC
+  #define FE0     FE
+  #define TIFR1   TIFR
+  #define WDTCSR  WDTCR
 #endif
 
 #if defined( __AVR_ATtiny167__) || defined( __AVR_ATtiny87__)
-/* Red LED is connected to pin PA2 */ 
+/* Red LED is connected to pin PA2 */
 #define LED_DDR     DDRA
 #define LED_PORT    PORTA
 #define LED_PIN     PINA
@@ -67,10 +67,10 @@
 
 /* Tiny24 support */
 #ifdef __AVR_ATtiny24__
-/* Bootloader entry pin pin is PB1 */ 
+/* Bootloader entry pin pin is PB1 */
 #define BOOTENTRY_PIN     PINB
 #define BOOTENTRY         PINB1
-/* Red LED is connected to pin PB2 */ 
+/* Red LED is connected to pin PB2 */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
@@ -87,7 +87,7 @@
 /* Tiny84 support */
 #ifdef __AVR_ATtiny84__
 #ifdef ALTERNATE_LAYOUT
-/* Red LED is connected to pin PB1 */ 
+/* Red LED is connected to pin PB1 */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
@@ -102,7 +102,7 @@
 #define UART_RX_BIT    PINA7
 #endif
 #else
-/* Red LED is connected to pin PB2 */ 
+/* Red LED is connected to pin PB2 */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
@@ -120,7 +120,7 @@
 
 /* Tiny85 support */
 #ifdef __AVR_ATtiny85__
-/* Red LED is connected to pin PB2 */ 
+/* Red LED is connected to pin PB2 */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
@@ -137,7 +137,7 @@
 
 /* Sanguino support */
 #if defined(__AVR_ATmega644P__)
-/* Onboard LED is connected to pin PB0 on Sanguino */ 
+/* Onboard LED is connected to pin PB0 on Sanguino */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB
@@ -155,7 +155,7 @@
 
 /* Mega support */
 #if defined(__AVR_ATmega1280__)
-/* Onboard LED is connected to pin PB7 on Arduino Mega */ 
+/* Onboard LED is connected to pin PB7 on Arduino Mega */
 #define LED_DDR     DDRB
 #define LED_PORT    PORTB
 #define LED_PIN     PINB

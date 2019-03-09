@@ -36,10 +36,10 @@ long map(long, long, long, long, long);
 
 /*
   fix?  On the Mega processors, the analogs are also "extended" digital pins.
-  To (sort of) work the same way with this core, the following constants 
-  would have to be valid arguments to digitalRead, digitalWrite, and pinMode 
-  ("the digitals").  Which means the digitals would have to check for pins 
-  over A0 and then subtract A0.  The current plan is to wait until someone 
+  To (sort of) work the same way with this core, the following constants
+  would have to be valid arguments to digitalRead, digitalWrite, and pinMode
+  ("the digitals").  Which means the digitals would have to check for pins
+  over A0 and then subtract A0.  The current plan is to wait until someone
   wants this feature.
 */
 #if CORE_ANALOG_COUNT >= 1

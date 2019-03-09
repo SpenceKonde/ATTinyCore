@@ -8,8 +8,8 @@
 /* Arduino-maintained version : See README.TXT            */
 /* http://code.google.com/p/arduino/                      */
 /*  It is the intent that changes not relevant to the     */
-/*  Arduino production envionment get moved from the      */
-/*  optiboot project to the arduino project in "lumps."   */
+/*  Arduino production environment get moved from the      */
+/*  optiboot project to the Arduino project in "lumps."   */
 /*                                                        */
 /* Heavily optimised bootloader that is faster and        */
 /* smaller than the Arduino standard bootloader           */
@@ -163,50 +163,50 @@
 /**********************************************************/
 
 /**********************************************************/
-/* Edit History:					  */
-/*							  */
-/* Sep 2018						  */
-/* 8.0  WestfW (and Majekw and MCUDude)			  */
+/* Edit History:                                          */
+/*                                                        */
+/* Sep 2018                                               */
+/* 8.0  WestfW (and Majekw and MCUDude)                   */
 /*      Include do_spm routine callable from the app      */
 /*      at BOOTSTART+2, controllable with compile option  */
-/* July 2018						  */
-/* 7.0	WestfW (with much input from Others)		  */
-/*	Fix MCUSR treatement as per much discussion,	  */
-/*	 Patches by MarkG55, majekw.  Preserve value	  */
-/*	 for the application, as much as possible.	  */
-/*	 see https://github.com/Optiboot/optiboot/issues/97 */
-/*	Optimize a bit by implementing a union for the	  */
-/*	 various 16bit address values used (based on	  */
-/*	 observation by "aweatherguy", but different.)	  */
-/*	Slightly optimize math in VIRTUAL_BOOT code	  */
-/*	Add some virboot targets, fix some fuses.	  */
-/*	Implement LED_START_ON; less code than flashes	  */
-/* Aug 2014						  */
+/* July 2018                                              */
+/* 7.0  WestfW (with much input from Others)              */
+/*      Fix MCUSR treatement as per much discussion,      */
+/*       Patches by MarkG55, majekw.  Preserve value      */
+/*       for the application, as much as possible.        */
+/*       see https://github.com/Optiboot/optiboot/issues/97 */
+/*      Optimize a bit by implementing a union for the    */
+/*       various 16bit address values used (based on      */
+/*       observation by "aweatherguy", but different.)    */
+/*      Slightly optimize math in VIRTUAL_BOOT code       */
+/*      Add some virboot targets, fix some fuses.         */
+/*      Implement LED_START_ON; less code than flashes    */
+/* Aug 2014                                               */
 /* 6.2 WestfW: make size of length variables dependent    */
 /*              on the SPM_PAGESIZE.  This saves space    */
 /*              on the chips where it's most important.   */
-/* 6.1 WestfW: Fix OPTIBOOT_CUSTOMVER (send it!)	  */
-/*             Make no-wait mod less picky about	  */
-/*               skipping the bootloader.		  */
-/*             Remove some dead code			  */
-/* Jun 2014						  */
-/* 6.0 WestfW: Modularize memory read/write functions	  */
-/*             Remove serial/flash overlap		  */
-/*              (and all references to NRWWSTART/etc)	  */
+/* 6.1 WestfW: Fix OPTIBOOT_CUSTOMVER (send it!)          */
+/*             Make no-wait mod less picky about          */
+/*               skipping the bootloader.                 */
+/*             Remove some dead code                      */
+/* Jun 2014                                               */
+/* 6.0 WestfW: Modularize memory read/write functions     */
+/*             Remove serial/flash overlap                */
+/*              (and all references to NRWWSTART/etc)     */
 /*             Correctly handle pagesize > 255bytes       */
 /*             Add EEPROM support in BIGBOOT (1284)       */
 /*             EEPROM write on small chips now causes err */
 /*             Split Makefile into smaller pieces         */
-/*             Add Wicked devices Wildfire		  */
-/*	       Move UART=n conditionals into pin_defs.h   */
-/*	       Remove LUDICOUS_SPEED option		  */
-/*	       Replace inline assembler for .version      */
+/*             Add Wicked devices Wildfire                */
+/*             Move UART=n conditionals into pin_defs.h   */
+/*             Remove LUDICOUS_SPEED option               */
+/*             Replace inline assembler for .version      */
 /*              and add OPTIBOOT_CUSTOMVER for user code  */
 /*             Fix LED value for Bobuino (Makefile)       */
 /*             Make all functions explicitly inline or    */
 /*              noinline, so we fit when using gcc4.8     */
-/*             Change optimization options for gcc4.8	  */
-/*             Make ENV=arduino work in 1.5.x trees.	  */
+/*             Change optimization options for gcc4.8     */
+/*             Make ENV=arduino work in 1.5.x trees.      */
 /* May 2014                                               */
 /* 5.0 WestfW: Add support for 1Mbps UART                 */
 /* Mar 2013                                               */
@@ -217,7 +217,7 @@
 /* 4.6 WestfW/Pito: Add ATmega32 support                  */
 /* 4.6 WestfW/radoni: Don't set LED_PIN as an output if   */
 /*                    not used. (LED_START_FLASHES = 0)   */
-/* Jan 2013						  */
+/* Jan 2013                                               */
 /* 4.6 WestfW/dkinzer: use autoincrement lpm for read     */
 /* 4.6 WestfW/dkinzer: pass reset cause to app in R2      */
 /* Mar 2012                                               */
@@ -248,7 +248,7 @@
 /*  http://code.google.com/p/arduino/issues/detail?id=368n*/
 /* 4.2 WestfW: reduce code size, fix timeouts, change     */
 /*             verifySpace to use WDT instead of appstart */
-/* 4.1 WestfW: put version number in binary.		  */
+/* 4.1 WestfW: put version number in binary.              */
 /**********************************************************/
 
 #define OPTIBOOT_MAJVER 8
@@ -264,7 +264,7 @@
 #define OPTIBOOT_CUSTOMVER 0
 #endif
 
-unsigned const int __attribute__((section(".version"))) 
+unsigned const int __attribute__((section(".version")))
 optiboot_version = 256*(OPTIBOOT_MAJVER + OPTIBOOT_CUSTOMVER) + OPTIBOOT_MINVER;
 
 
@@ -281,10 +281,10 @@ optiboot_version = 256*(OPTIBOOT_MAJVER + OPTIBOOT_CUSTOMVER) + OPTIBOOT_MINVER;
  * do this manually.  Expanding it a little, we can also get rid of casts.
  */
 typedef union {
-	uint8_t  *bptr;
-	uint16_t *wptr;
-	uint16_t word;
-	uint8_t bytes[2];
+        uint8_t  *bptr;
+        uint16_t *wptr;
+        uint16_t word;
+        uint8_t bytes[2];
 } addr16_t;
 
 /*
@@ -358,11 +358,11 @@ typedef union {
 #endif
 
 #if BAUD_SETTING > 250
-#error Unachievable baud rate (too slow) BAUD_RATE 
+#error Unachievable baud rate (too slow) BAUD_RATE
 #endif // baud rate slow check
 #if (BAUD_SETTING - 1) < 3
 #if BAUD_ERROR != 0 // permit high bitrates (ie 1Mbps@16MHz) if error is zero
-#error Unachievable baud rate (too fast) BAUD_RATE 
+#error Unachievable baud rate (too fast) BAUD_RATE
 #endif
 #endif // baud rate fast check
 #endif // SOFT_UART
@@ -400,7 +400,7 @@ typedef uint8_t pagelen_t;
  * The main() function is in init9, which removes the interrupt vector table
  * we don't need. It is also 'OS_main', which means the compiler does not
  * generate any entry or exit code itself (but unlike 'naked', it doesn't
- * supress some compile-time options we want.)
+ * suppress some compile-time options we want.)
  */
 
 void pre_main(void) __attribute__ ((naked)) __attribute__ ((section (".init8")));
@@ -417,9 +417,9 @@ static inline void flash_led(uint8_t);
 #endif
 static inline void watchdogReset();
 static inline void writebuffer(int8_t memtype, addr16_t mybuff,
-			       addr16_t address, pagelen_t len);
+                               addr16_t address, pagelen_t len);
 static inline void read_mem(uint8_t memtype,
-			    addr16_t, pagelen_t len);
+                            addr16_t, pagelen_t len);
 
 #ifdef SOFT_UART
 void uartDelay() __attribute__ ((naked));
@@ -470,7 +470,7 @@ static addr16_t buff = {(uint8_t *)(RAMSTART)};
 #elif defined (WDT_vect_num)
 #define save_vect_num (WDT_vect_num)
 #else
-#error Cant find SPM or WDT interrupt vector for this CPU
+#error Can't find SPM or WDT interrupt vector for this CPU
 #endif
 #endif //save_vect_num
 // check if it's on the same page (code assumes that)
@@ -501,12 +501,12 @@ static addr16_t buff = {(uint8_t *)(RAMSTART)};
 /* everything that needs to run VERY early */
 void pre_main(void) {
   // Allow convenient way of calling do_spm function - jump table,
-  //   so entry to this function will always be here, indepedent of compilation,
+  //   so entry to this function will always be here, independent of compilation,
   //   features etc
   asm volatile (
-    "	rjmp	1f\n"
+    "   rjmp    1f\n"
 #ifndef APP_NOSPM
-    "	rjmp	do_spm\n"
+    "   rjmp    do_spm\n"
 #else
     "   ret\n"   // if do_spm isn't include, return without doing anything
 #endif
@@ -539,9 +539,9 @@ int main(void) {
   // cli();
   asm volatile ("clr __zero_reg__");
 
-#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega8515__) ||		\
-    defined(__AVR_ATmega8535__) || defined (__AVR_ATmega16__) || 	\
-    defined (__AVR_ATmega32__) || defined (__AVR_ATmega64__)  ||	\
+#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega8515__) ||          \
+    defined(__AVR_ATmega8535__) || defined (__AVR_ATmega16__) ||        \
+    defined (__AVR_ATmega32__) || defined (__AVR_ATmega64__)  ||        \
     defined (__AVR_ATmega128__) || defined (__AVR_ATmega162__)
   SP=RAMEND;  // This is done by hardware reset
 #endif
@@ -549,12 +549,12 @@ int main(void) {
   /*
    * Protect as much from MCUSR as possible for application
    * and still skip bootloader if not necessary
-   * 
+   *
    * Code by MarkG55
-   * see discusion in https://github.com/Optiboot/optiboot/issues/97
+   * see discussion in https://github.com/Optiboot/optiboot/issues/97
    */
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||	\
-    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||	\
+#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||       \
+    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||        \
     defined (__AVR_ATmega128__)
   ch = MCUCSR;
 #else
@@ -569,66 +569,66 @@ int main(void) {
        * shouldn't run bootloader in loop :-) That's why:
        *  1. application is running if WDRF is cleared
        *  2. we clear WDRF if it's set with EXTRF to avoid loops
-       * One problematic scenario: broken application code sets watchdog timer 
+       * One problematic scenario: broken application code sets watchdog timer
        * without clearing MCUSR before and triggers it quickly. But it's
        * recoverable by power-on with pushed reset button.
        */
-      if ((ch & (_BV(WDRF) | _BV(EXTRF))) != _BV(EXTRF)) { 
-	  if (ch & _BV(EXTRF)) {
-	      /*
-	       * Clear WDRF because it was most probably set by wdr in bootloader.
-	       * It's also needed to avoid loop by broken application which could
-	       * prevent entering bootloader.
-	       * '&' operation is skipped to spare few bytes as bits in MCUSR
-	       * can only be cleared.
-	       */
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||	\
-    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||	\
+      if ((ch & (_BV(WDRF) | _BV(EXTRF))) != _BV(EXTRF)) {
+          if (ch & _BV(EXTRF)) {
+              /*
+               * Clear WDRF because it was most probably set by wdr in bootloader.
+               * It's also needed to avoid loop by broken application which could
+               * prevent entering bootloader.
+               * '&' operation is skipped to spare few bytes as bits in MCUSR
+               * can only be cleared.
+               */
+#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||       \
+    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||        \
     defined(__AVR_ATmega128__)
                // Fix missing definitions in avr-libc
-	      MCUCSR = ~(_BV(WDRF));
+              MCUCSR = ~(_BV(WDRF));
 #else
-	      MCUSR = ~(_BV(WDRF));
+              MCUSR = ~(_BV(WDRF));
 #endif
-	  }
-	  /* 
-	   * save the reset flags in the designated register
-	   * This can be saved in a main program by putting code in .init0 (which
-	   * executes before normal c init code) to save R2 to a global variable.
-	   */
-	  __asm__ __volatile__ ("mov r2, %0\n" :: "r" (ch));
+          }
+          /*
+           * save the reset flags in the designated register
+           * This can be saved in a main program by putting code in .init0 (which
+           * executes before normal c init code) to save R2 to a global variable.
+           */
+          __asm__ __volatile__ ("mov r2, %0\n" :: "r" (ch));
 
-	  // switch off watchdog
-	  watchdogConfig(WATCHDOG_OFF);
-	  // Note that appstart_vec is defined so that this works with either
-	  // real or virtual boot partitions.
-	   __asm__ __volatile__ (
-	    // Jump to 'save' or RST vector
+          // switch off watchdog
+          watchdogConfig(WATCHDOG_OFF);
+          // Note that appstart_vec is defined so that this works with either
+          // real or virtual boot partitions.
+           __asm__ __volatile__ (
+            // Jump to 'save' or RST vector
 #ifdef VIRTUAL_BOOT_PARTITION
-	    // full code version for virtual boot partition
-	    "ldi r30,%[rstvec]\n"
-	    "clr r31\n"
-	    "ijmp\n"::[rstvec] "M"(appstart_vec)
+            // full code version for virtual boot partition
+            "ldi r30,%[rstvec]\n"
+            "clr r31\n"
+            "ijmp\n"::[rstvec] "M"(appstart_vec)
 #else
 #ifdef RAMPZ
-	    // use absolute jump for devices with lot of flash
-	    "jmp 0\n"::
+            // use absolute jump for devices with lot of flash
+            "jmp 0\n"::
 #else
-	    // use rjmp to go around end of flash to address 0
-	    // it uses fact that optiboot_version constant is 2 bytes before end of flash
-	    "rjmp optiboot_version+2\n"
+            // use rjmp to go around end of flash to address 0
+            // it uses fact that optiboot_version constant is 2 bytes before end of flash
+            "rjmp optiboot_version+2\n"
 #endif //RAMPZ
 #endif //VIRTUAL_BOOT_PARTITION
-	  );
+          );
       }
   }
 
 #if LED_START_FLASHES > 0
   // Set up Timer 1 for timeout counter
 #if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__)
-  TCCR1B = 0x0E; //div 8196 - we could divide by less since it's a 10-bit counter, but why? 
+  TCCR1B = 0x0E; //div 8196 - we could divide by less since it's a 10-bit counter, but why?
 #elif defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
-  TCCR1 = 0x0E; //div 8196 - it's an 8-bit timer. 
+  TCCR1 = 0x0E; //div 8196 - it's an 8-bit timer.
 #elif defined(__AVR_ATtiny43__)
   #error "LED flash for Tiny43 not yet supported"
 #else
@@ -638,8 +638,8 @@ int main(void) {
 
 
 #ifndef SOFT_UART
-  #if defined(__AVR_ATmega8__) || defined (__AVR_ATmega8515__) ||	\
-      defined (__AVR_ATmega8535__) || defined (__AVR_ATmega16__) ||	\
+  #if defined(__AVR_ATmega8__) || defined (__AVR_ATmega8515__) ||       \
+      defined (__AVR_ATmega8535__) || defined (__AVR_ATmega16__) ||     \
       defined (__AVR_ATmega32__)
   #ifndef SINGLESPEED
   UCSRA = _BV(U2X); //Double speed mode USART
@@ -650,11 +650,11 @@ int main(void) {
   #else // mega8/etc
     #ifdef LIN_UART
   //DDRB|=3;
-  LINCR = (1 << LSWRES); 
-  //LINBRRL = (((F_CPU * 10L / 32L / BAUD_RATE) + 5L) / 10L) - 1; 
+  LINCR = (1 << LSWRES);
+  //LINBRRL = (((F_CPU * 10L / 32L / BAUD_RATE) + 5L) / 10L) - 1;
   LINBRRL=(uint8_t)BAUD_SETTING;
-  LINBTR = (1 << LDISR) | (8 << LBT0); 
-  LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0); 
+  LINBTR = (1 << LDISR) | (8 << LBT0);
+  LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
   LINDAT=0;
     #else
       #ifndef SINGLESPEED
@@ -703,15 +703,15 @@ int main(void) {
        * Note that the references to memory are optimized away.
        */
       if (which == STK_SW_MINOR) {
-	  putch(optiboot_version & 0xFF);
+          putch(optiboot_version & 0xFF);
       } else if (which == STK_SW_MAJOR) {
-	  putch(optiboot_version >> 8);
+          putch(optiboot_version >> 8);
       } else {
-	/*
-	 * GET PARAMETER returns a generic 0x03 reply for
+        /*
+         * GET PARAMETER returns a generic 0x03 reply for
          * other parameters - enough to keep Avrdude happy
-	 */
-	putch(0x03);
+         */
+        putch(0x03);
       }
     }
     else if(ch == STK_SET_DEVICE) {
@@ -789,12 +789,12 @@ int main(void) {
 #error "Can't use VIRTUAL_BOOT_PARTITION with more than 128k of Flash"
 #endif
       if (address.word == 0) {
-	// This is the reset vector page. We need to live-patch the
-	// code so the bootloader runs first.
-	//
-	// Save jmp targets (for "Verify")
-	rstVect0_sav = buff.bptr[rstVect0];
-	rstVect1_sav = buff.bptr[rstVect1];
+        // This is the reset vector page. We need to live-patch the
+        // code so the bootloader runs first.
+        //
+        // Save jmp targets (for "Verify")
+        rstVect0_sav = buff.bptr[rstVect0];
+        rstVect1_sav = buff.bptr[rstVect1];
 
 
         // Add jump to bootloader at RESET vector
@@ -802,22 +802,22 @@ int main(void) {
         buff.bptr[rstVect0] = ((uint16_t)main) & 0xFF;
         buff.bptr[rstVect1] = ((uint16_t)main) >> 8;
 #if (save_vect_num>SPM_PAGESIZE/4)
-	} else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))) { //allow for any vector
-		saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
-		saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
+        } else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))) { //allow for any vector
+                saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
+                saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
 
         // Move RESET jmp target to 'save' vector
         buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))] = rstVect0_sav;
         buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))] = rstVect1_sav;
     }
-#else 
+#else
         saveVect0_sav = buff.bptr[saveVect0];
-		saveVect1_sav = buff.bptr[saveVect1];
+                saveVect1_sav = buff.bptr[saveVect1];
 
         // Move RESET jmp target to 'save' vector
         buff.bptr[saveVect0] = rstVect0_sav;
         buff.bptr[saveVect1] = rstVect1_sav;
-	}
+        }
 #endif
 
 #else
@@ -829,40 +829,40 @@ int main(void) {
         // the code so the bootloader runs first.
         //
         // Move RESET vector to 'save' vector
-	// Save jmp targets (for "Verify")
-	rstVect0_sav = buff.bptr[rstVect0];
-	rstVect1_sav = buff.bptr[rstVect1];
-	addr16_t vect;
-	vect.word = ((uint16_t)main);
+        // Save jmp targets (for "Verify")
+        rstVect0_sav = buff.bptr[rstVect0];
+        rstVect1_sav = buff.bptr[rstVect1];
+        addr16_t vect;
+        vect.word = ((uint16_t)main);
     buff.bptr[0] = vect.bytes[0]; // rjmp to start of bootloader
-	buff.bptr[1] = vect.bytes[1] | 0xC0;  // make an "rjmp"
+        buff.bptr[1] = vect.bytes[1] | 0xC0;  // make an "rjmp"
 #if (save_vect_num > SPM_PAGESIZE/2)
 } else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))) { //allow for any vector
-	// Instruction is a relative jump (rjmp), so recalculate.
-	// an RJMP instruction is 0b1100xxxx xxxxxxxx, so we should be able to
-	// do math on the offsets without masking it off first.
-	addr16_t vect;
-	vect.bytes[0] = rstVect0_sav;
-	vect.bytes[1] = rstVect1_sav;
-	saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
-	saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
-	vect.word = (vect.word-save_vect_num); //substract 'save' interrupt position
+        // Instruction is a relative jump (rjmp), so recalculate.
+        // an RJMP instruction is 0b1100xxxx xxxxxxxx, so we should be able to
+        // do math on the offsets without masking it off first.
+        addr16_t vect;
+        vect.bytes[0] = rstVect0_sav;
+        vect.bytes[1] = rstVect1_sav;
+        saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
+        saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
+        vect.word = (vect.word-save_vect_num); //subtract 'save' interrupt position
         // Move RESET jmp target to 'save' vector
         buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = vect.bytes[0];
         buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
       }
-		
+
 #else
 
-		saveVect0_sav = buff.bptr[saveVect0];
-		saveVect1_sav = buff.bptr[saveVect1];
-		vect.bytes[0] = rstVect0_sav;
-		vect.bytes[1] = rstVect1_sav;
-		vect.word = (vect.word-save_vect_num); //substract 'save' interrupt position
+                saveVect0_sav = buff.bptr[saveVect0];
+                saveVect1_sav = buff.bptr[saveVect1];
+                vect.bytes[0] = rstVect0_sav;
+                vect.bytes[1] = rstVect1_sav;
+                vect.word = (vect.word-save_vect_num); //subtract 'save' interrupt position
         // Move RESET jmp target to 'save' vector
-    	buff.bptr[saveVect0] = vect.bytes[0];
-    	buff.bptr[saveVect1] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
-    	// Add rjump to bootloader at RESET vector
+        buff.bptr[saveVect0] = vect.bytes[0];
+        buff.bptr[saveVect1] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
+        // Add rjump to bootloader at RESET vector
         vect.word = ((uint16_t)main); // (main) is always <= 0x0FFF; no masking needed.
         buff.bptr[0] = vect.bytes[0]; // rjmp 0x1c00 instruction
       }
@@ -950,9 +950,9 @@ uint8_t getch(void) {
   uint8_t ch;
 
 #ifdef LED_DATA_FLASH
-#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||	\
-    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||	\
-    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||	\
+#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||       \
+    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||       \
+    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||       \
     defined(__AVR_ATmega64__)   || defined(__AVR_ATmega128__)
   LED_PORT ^= _BV(LED);
 #else
@@ -1008,9 +1008,9 @@ uint8_t getch(void) {
 #endif
 
 #ifdef LED_DATA_FLASH
-#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||	\
-    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||	\
-    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||	\
+#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||       \
+    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||       \
+    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||       \
     defined(__AVR_ATmega64__)   || defined(__AVR_ATmega128__)
   LED_PORT ^= _BV(LED);
 #else
@@ -1056,8 +1056,8 @@ void getNch(uint8_t count) {
 void verifySpace() {
   if (getch() != CRC_EOP) {
     watchdogConfig(WATCHDOG_16MS);    // shorten WD timeout
-    while (1)			      // and busy-loop so that WD causes
-      ;				      //  a reset and app start.
+    while (1)                         // and busy-loop so that WD causes
+      ;                               //  a reset and app start.
   }
   putch(STK_INSYNC);
 }
@@ -1065,21 +1065,21 @@ void verifySpace() {
 #if LED_START_FLASHES > 0
 void flash_led(uint8_t count) {
   do {
-  	#if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
-  		TCNT1 = -(F_CPU/(8196*16));
-    	TIFR = _BV(TOV1);
-    	while(!(TIFR & _BV(TOV1)));
-	#elif defined(__AVR_ATtiny43__)
-  		#error "LED flash for Tiny43 not yet supported"
-	#else
-  		TCNT1 = -(F_CPU/(1024*16));
-    	TIFR1 = _BV(TOV1);
-    	while(!(TIFR1 & _BV(TOV1)));
-	#endif
-    
-#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||	\
-    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||	\
-    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||	\
+        #if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
+                TCNT1 = -(F_CPU/(8196*16));
+        TIFR = _BV(TOV1);
+        while(!(TIFR & _BV(TOV1)));
+        #elif defined(__AVR_ATtiny43__)
+                #error "LED flash for Tiny43 not yet supported"
+        #else
+                TCNT1 = -(F_CPU/(1024*16));
+        TIFR1 = _BV(TOV1);
+        while(!(TIFR1 & _BV(TOV1)));
+        #endif
+
+#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||       \
+    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||       \
+    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||       \
     defined(__AVR_ATmega64__)   || defined(__AVR_ATmega128__)
     LED_PORT ^= _BV(LED);
 #else
@@ -1098,11 +1098,11 @@ void flash_led(uint8_t count) {
 #else
     if (LINSIR & _BV(LRXOK))
 #endif
-	break;
+        break;
 #else
 // This doesn't seem to work?
 //    if ((UART_PIN & (1<<UART_RX_BIT)) == 0)
-//	break;  // detect start bit on soft uart too.
+//      break;  // detect start bit on soft uart too.
 #endif
   } while (--count);
 }
@@ -1124,7 +1124,7 @@ void watchdogConfig(uint8_t x) {
  #endif
 #else //then it must be one of those newfangled ones that use CCP
   CCP=0xD8; //so write this magic number to CCP
-#endif 
+#endif
 
 #ifdef WDTCSR
   WDTCSR = x;
@@ -1138,68 +1138,68 @@ void watchdogConfig(uint8_t x) {
  * void writebuffer(memtype, buffer, address, length)
  */
 static inline void writebuffer(int8_t memtype, addr16_t mybuff,
-			       addr16_t address, pagelen_t len)
+                               addr16_t address, pagelen_t len)
 {
     switch (memtype) {
     case 'E': // EEPROM
 #if defined(SUPPORT_EEPROM) || defined(BIGBOOT)
         while(len--) {
-	    eeprom_write_byte((address.bptr++), *(mybuff.bptr++));
+            eeprom_write_byte((address.bptr++), *(mybuff.bptr++));
         }
 #else
-	/*
-	 * On systems where EEPROM write is not supported, just busy-loop
-	 * until the WDT expires, which will eventually cause an error on
-	 * host system (which is what it should do.)
-	 */
-	while (1)
-	    ; // Error: wait for WDT
+        /*
+         * On systems where EEPROM write is not supported, just busy-loop
+         * until the WDT expires, which will eventually cause an error on
+         * host system (which is what it should do.)
+         */
+        while (1)
+            ; // Error: wait for WDT
 #endif
-	break;
+        break;
     default:  // FLASH
-	/*
-	 * Default to writing to Flash program memory.  By making this
-	 * the default rather than checking for the correct code, we save
-	 * space on chips that don't support any other memory types.
-	 */
-	{
-	    // Copy buffer into programming buffer
-	    uint16_t addrPtr = address.word;
+        /*
+         * Default to writing to Flash program memory.  By making this
+         * the default rather than checking for the correct code, we save
+         * space on chips that don't support any other memory types.
+         */
+        {
+            // Copy buffer into programming buffer
+            uint16_t addrPtr = address.word;
 
-	    /*
-	     * Start the page erase and wait for it to finish.  There
-	     * used to be code to do this while receiving the data over
-	     * the serial link, but the performance improvement was slight,
-	     * and we needed the space back.
-	     */
+            /*
+             * Start the page erase and wait for it to finish.  There
+             * used to be code to do this while receiving the data over
+             * the serial link, but the performance improvement was slight,
+             * and we needed the space back.
+             */
 #ifdef FOURPAGEERASE
-	    if ((address.bytes[0] & ((SPM_PAGESIZE<<2)-1))==0) {
+            if ((address.bytes[0] & ((SPM_PAGESIZE<<2)-1))==0) {
 #endif
-	    __boot_page_erase_short(address.word);
-	    boot_spm_busy_wait();
+            __boot_page_erase_short(address.word);
+            boot_spm_busy_wait();
 #ifdef FOURPAGEERASE
-	    }
+            }
 #endif
 
-	    /*
-	     * Copy data from the buffer into the flash write buffer.
-	     */
-	    do {
-		__boot_page_fill_short((uint16_t)(void*)addrPtr, *(mybuff.wptr++));
-		addrPtr += 2;
-	    } while (len -= 2);
+            /*
+             * Copy data from the buffer into the flash write buffer.
+             */
+            do {
+                __boot_page_fill_short((uint16_t)(void*)addrPtr, *(mybuff.wptr++));
+                addrPtr += 2;
+            } while (len -= 2);
 
-	    /*
-	     * Actually Write the buffer to flash (and wait for it to finish.)
-	     */
-	    __boot_page_write_short(address.word);
-	    boot_spm_busy_wait();
+            /*
+             * Actually Write the buffer to flash (and wait for it to finish.)
+             */
+            __boot_page_write_short(address.word);
+            boot_spm_busy_wait();
 #if defined(RWWSRE)
-	    // Reenable read access to flash
-	    __boot_rww_enable_short();
+            // Re-enable read access to flash
+            __boot_rww_enable_short();
 #endif
-	} // default block
-	break;
+        } // default block
+        break;
     } // switch
 }
 
@@ -1211,35 +1211,35 @@ static inline void read_mem(uint8_t memtype, addr16_t address, pagelen_t length)
 
 #if defined(SUPPORT_EEPROM) || defined(BIGBOOT)
     case 'E': // EEPROM
-	do {
-	    putch(eeprom_read_byte((address.bptr++)));
-	} while (--length);
-	break;
+        do {
+            putch(eeprom_read_byte((address.bptr++)));
+        } while (--length);
+        break;
 #endif
     default:
-	do {
+        do {
 #ifdef VIRTUAL_BOOT_PARTITION
         // Undo vector patch in bottom page so verify passes
-	    if (address.word == rstVect0) ch = rstVect0_sav;
-	    else if (address.word == rstVect1) ch = rstVect1_sav;
-	    else if (address.word == saveVect0) ch = saveVect0_sav;
-	    else if (address.word == saveVect1) ch = saveVect1_sav;
-	    else ch = pgm_read_byte_near(address.bptr);
-	    address.bptr++;
+            if (address.word == rstVect0) ch = rstVect0_sav;
+            else if (address.word == rstVect1) ch = rstVect1_sav;
+            else if (address.word == saveVect0) ch = saveVect0_sav;
+            else if (address.word == saveVect1) ch = saveVect1_sav;
+            else ch = pgm_read_byte_near(address.bptr);
+            address.bptr++;
 #elif defined(RAMPZ)
-	    // Since RAMPZ should already be set, we need to use EPLM directly.
-	    // Also, we can use the autoincrement version of lpm to update "address"
-	    //      do putch(pgm_read_byte_near(address++));
-	    //      while (--length);
-	    // read a Flash and increment the address (may increment RAMPZ)
-	    __asm__ ("elpm %0,Z+\n" : "=r" (ch), "=z" (address.bptr): "1" (address));
+            // Since RAMPZ should already be set, we need to use EPLM directly.
+            // Also, we can use the autoincrement version of lpm to update "address"
+            //      do putch(pgm_read_byte_near(address++));
+            //      while (--length);
+            // read a Flash and increment the address (may increment RAMPZ)
+            __asm__ ("elpm %0,Z+\n" : "=r" (ch), "=z" (address.bptr): "1" (address));
 #else
-	    // read a Flash byte and increment the address
-	    __asm__ ("lpm %0,Z+\n" : "=r" (ch), "=z" (address.bptr): "1" (address));
+            // read a Flash byte and increment the address
+            __asm__ ("lpm %0,Z+\n" : "=r" (ch), "=z" (address.bptr): "1" (address));
 #endif
-	    putch(ch);
-	} while (--length);
-	break;
+            putch(ch);
+        } while (--length);
+        break;
     } // switch
 }
 
@@ -1254,8 +1254,8 @@ static inline void read_mem(uint8_t memtype, addr16_t address, pagelen_t length)
  * How it works:
  * - do SPM
  * - wait for SPM to complete
- * - if chip have RWW/NRWW sections it does additionaly:
- *   - if command is WRITE or ERASE, AND data=0 then reenable RWW section
+ * - if chip have RWW/NRWW sections it does additionally:
+ *   - if command is WRITE or ERASE, AND data=0 then re-enable RWW section
  *
  * In short:
  * If you play erase-fill-write, just set data to 0 in ERASE and WRITE
@@ -1267,7 +1267,7 @@ static void do_spm(uint16_t address, uint8_t command, uint16_t data)  __attribut
 static void do_spm(uint16_t address, uint8_t command, uint16_t data) {
     // Do spm stuff
     asm volatile (
-	"    movw  r0, %3\n"
+        "    movw  r0, %3\n"
     "    __wr_spmcsr %0, %1\n"
     "    spm\n"
     "    clr  r1\n"
@@ -1288,7 +1288,7 @@ static void do_spm(uint16_t address, uint8_t command, uint16_t data) {
     // but it's tweaked a little assuming that in every command we are interested in here, there
     // must be also SELFPRGEN set. If we skip checking this bit, we save here 4B
     if ((command & (_BV(PGWRT)|_BV(PGERS))) && (data == 0) ) {
-      // Reenable read access to flash
+      // Re-enable read access to flash
       __boot_rww_enable_short();
     }
 #endif
@@ -1308,7 +1308,7 @@ static void do_spm(uint16_t address, uint8_t command, uint16_t data) {
  * information about how Optiboot was built (which options were selected,
  * what version, all in human-readable form (and extractable from the
  * binary with avr-strings.)
- * 
+ *
  * This can always be removed or trimmed if more actual program space
  * is needed in the future.  Currently the data occupies about 160 bytes,
  */

@@ -24,4 +24,3 @@ void loop() {
   myservo.write(val);                  // sets the servo position according to the scaled value
   delay(15);                           // waits for the servo to get there
 }
-

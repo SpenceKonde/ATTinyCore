@@ -279,7 +279,7 @@ __attribute__((always_inline)) static inline uint16_t ADC_GetDataRegister( void 
 #endif
 
 /*=============================================================================
-  Veneer for the ATtiny828 ADC 
+  Veneer for the ATtiny828 ADC
 =============================================================================*/
 #if defined( __AVR_ATtiny828__ )
 
@@ -290,7 +290,7 @@ typedef enum
 }
 adc_vr_t;
 
-//Save resources - no need for typedef enum to 
+//Save resources - no need for typedef enum to
 
 __attribute__((always_inline)) static inline void ADC_SetVoltageReference( adc_vr_t vr )
 {

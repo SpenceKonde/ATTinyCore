@@ -3,7 +3,7 @@
 # * MightyCore, MegaCore, MiniCore, and MajorCore
 # *  https://github.com/MCUdude
 # *
-# * This file has basic CPU defintions, while many possible combinations
+# * This file has basic CPU definitions, while many possible combinations
 # * of AVR_FREQ, BAUD_RATE, and UART are built by a shell script.
 # */
 
@@ -48,7 +48,7 @@ atmega64a: atmega64
 atmega88p: TARGET = atmega88p
 atmega88p: MCU_TARGET = atmega88p
 atmega88p: CFLAGS += $(COMMON_OPTIONS) $(UART_CMD)
-atmega88p: AVR_FREQ ?= 16000000L 
+atmega88p: AVR_FREQ ?= 16000000L
 atmega88p: LDSECTIONS = -Wl,--section-start=.text=0x1e00 -Wl,--section-start=.version=0x1ffe -Wl,--gc-sections -Wl,--undefined=optiboot_version
 atmega88p: $(PROGRAM)_atmega88p_UART$(UART)_$(BAUD_RATE)_$(AVR_FREQ).hex
 ifndef PRODUCTION
@@ -118,7 +118,7 @@ atmega164pa: atmega164p
 atmega168: TARGET = atmega168
 atmega168: MCU_TARGET = atmega168
 atmega168: CFLAGS += $(COMMON_OPTIONS) $(UART_CMD)
-atmega168: AVR_FREQ ?= 16000000L 
+atmega168: AVR_FREQ ?= 16000000L
 atmega168: LDSECTIONS = -Wl,--section-start=.text=0x3e00 -Wl,--section-start=.version=0x3ffe
 atmega168: $(PROGRAM)_atmega168_UART$(UART)_$(BAUD_RATE)_$(AVR_FREQ).hex
 ifndef PRODUCTION
@@ -130,7 +130,7 @@ atmega168a: atmega168
 atmega168p: TARGET = atmega168p
 atmega168p: MCU_TARGET = atmega168p
 atmega168p: CFLAGS += $(COMMON_OPTIONS) $(UART_CMD)
-atmega168p: AVR_FREQ ?= 16000000L 
+atmega168p: AVR_FREQ ?= 16000000L
 atmega168p: LDSECTIONS = -Wl,--section-start=.text=0x3e00 -Wl,--section-start=.version=0x3ffe
 atmega168p: $(PROGRAM)_atmega168p_UART$(UART)_$(BAUD_RATE)_$(AVR_FREQ).hex
 ifndef PRODUCTION
@@ -142,7 +142,7 @@ atmega168pa: atmega168p
 atmega168pb: TARGET = atmega168pb
 atmega168pb: MCU_TARGET = atmega168pb
 atmega168pb: CFLAGS += $(COMMON_OPTIONS) $(UART_CMD)
-atmega168pb: AVR_FREQ ?= 16000000L 
+atmega168pb: AVR_FREQ ?= 16000000L
 atmega168pb: LDSECTIONS = -Wl,--section-start=.text=0x3e00 -Wl,--section-start=.version=0x3ffe
 atmega168pb: $(PROGRAM)_atmega168pb_UART$(UART)_$(BAUD_RATE)_$(AVR_FREQ).hex
 ifndef PRODUCTION

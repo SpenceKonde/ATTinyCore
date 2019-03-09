@@ -140,7 +140,7 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
         // There is more data in the output buffer. Send the next byte
         unsigned char c = tx_buffer.buffer[tx_buffer.tail];
         tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
-        
+
         LINDAT = c;
       }
     }
@@ -181,7 +181,7 @@ ISR(USART_UDRE_vect)
 #if !defined(LIN_TC_vect)
 {
   if (tx_buffer.head == tx_buffer.tail) {
-	// Buffer empty, so disable interrupts
+  // Buffer empty, so disable interrupts
 #if defined(UCSR0B)
     cbi(UCSR0B, UDRIE0);
 #else
@@ -191,7 +191,7 @@ ISR(USART_UDRE_vect)
     // There is more data in the output buffer. Send the next byte
     unsigned char c = tx_buffer.buffer[tx_buffer.tail];
     tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
-	
+
   #if defined(UDR)
     UDR = c;
   #elif defined(UDR0)
@@ -208,14 +208,14 @@ ISR(USART_UDRE_vect)
 ISR(USART1_UDRE_vect)
 {
   if (tx_buffer1.head == tx_buffer1.tail) {
-	// Buffer empty, so disable interrupts
+  // Buffer empty, so disable interrupts
     cbi(UCSR1B, UDRIE1);
   }
   else {
     // There is more data in the output buffer. Send the next byte
     unsigned char c = tx_buffer1.buffer[tx_buffer1.tail];
     tx_buffer1.tail = (tx_buffer1.tail + 1) % SERIAL_BUFFER_SIZE;
-	
+
     UDR1 = c;
   }
 }
@@ -269,9 +269,9 @@ void HardwareSerial::begin(long baud)
     use_u2x = false;
   }
 #endif
-  
+
 try_again:
-  
+
   if (use_u2x) {
     *_ucsra = 1 << _u2x;
     baud_setting = (F_CPU / 4 / baud - 1) / 2;
@@ -279,7 +279,7 @@ try_again:
     *_ucsra = 0;
     baud_setting = (F_CPU / 8 / baud - 1) / 2;
   }
-  
+
   if ((baud_setting > 4095) && use_u2x)
   {
     use_u2x = false;
@@ -295,10 +295,10 @@ try_again:
   sbi(*_ucsrb, _rxcie);
   cbi(*_ucsrb, _udrie);
 #else
-  LINCR = (1 << LSWRES); 
-  LINBRR = (((F_CPU * 10L / 16L / baud) + 5L) / 10L) - 1; 
-  LINBTR = (1 << LDISR) | (16 << LBT0); 
-  LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0); 
+  LINCR = (1 << LSWRES);
+  LINBRR = (((F_CPU * 10L / 16L / baud) + 5L) / 10L) - 1;
+  LINBTR = (1 << LDISR) | (16 << LBT0);
+  LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
   sbi(LINENIR,LENRXOK);
 #endif
 
@@ -311,8 +311,8 @@ void HardwareSerial::end()
 #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
   cbi(*_ucsrb, _rxen);
   cbi(*_ucsrb, _txen);
-  cbi(*_ucsrb, _rxcie); 
-  cbi(*_ucsrb, _udrie); 
+  cbi(*_ucsrb, _rxcie);
+  cbi(*_ucsrb, _udrie);
 #else
   cbi(LINENIR,LENTXOK);
   cbi(LINENIR,LENRXOK);
@@ -360,16 +360,16 @@ void HardwareSerial::flush()
 size_t HardwareSerial::write(uint8_t c)
 {
   byte i = (_tx_buffer->head + 1) % SERIAL_BUFFER_SIZE;
-	
-  // If the output buffer is full, there's nothing for it other than to 
+
+  // If the output buffer is full, there's nothing for it other than to
   // wait for the interrupt handler to empty it a bit
   // ???: return 0 here instead?
   while (i == _tx_buffer->tail)
     ;
-	
+
   _tx_buffer->buffer[_tx_buffer->head] = c;
   _tx_buffer->head = i;
-	
+
   #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) )
   sbi(*_ucsrb, _udrie);
   #else
@@ -382,12 +382,12 @@ size_t HardwareSerial::write(uint8_t c)
   }
   #endif
 
-  
+
   return 1;
 }
 
 HardwareSerial::operator bool() {
-	return true;
+  return true;
 }
 
 // Preinstantiate Objects //////////////////////////////////////////////////////
@@ -406,5 +406,5 @@ HardwareSerial::operator bool() {
 #endif
 
 #elif !USE_SOFTWARE_SERIAL
-#warning There is no Hardware UART, and Sofware Serial is not enabled. There will be no serial port.
+#warning There is no Hardware UART, and Software Serial is not enabled. There will be no serial port.
 #endif // whole file

@@ -1,5 +1,5 @@
 /*==============================================================================================================*
- 
+
     @file     WireS.h
     @license  MIT (c) 2016 Nadav Matalon
 
@@ -10,15 +10,15 @@
  *===============================================================================================================*
     INTRODUCTION
  *===============================================================================================================*
- 
-    This library enables the newer members of the ATtiny family (ATtiny441/841, ATtiny1634 & ATtiny828) to become 
-    Slaves on an I2C Bus. The library is based on a hardware implementation of I2C which is faster than the 
-    software one, but requries using a specific set of pins for SDA (PA6 on ATtiny841) & SCL (PA4 on ATtiny841).
+
+    This library enables the newer members of the ATtiny family (ATtiny441/841, ATtiny1634 & ATtiny828) to become
+    Slaves on an I2C Bus. The library is based on a hardware implementation of I2C which is faster than the
+    software one, but requires using a specific set of pins for SDA (PA6 on ATtiny841) & SCL (PA4 on ATtiny841).
 
  *===============================================================================================================*
     LICENSE
  *===============================================================================================================*
- 
+
     The MIT License (MIT)
     Copyright (c) 2016 Nadav Matalon
 
@@ -36,7 +36,7 @@
     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- 
+
  *==============================================================================================================*/
 
 #if (!defined(WIRE_S_H) && (/*defined(__AVR_ATtiny1634__) ||*/defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny828__) || defined(__AVR_ATtiny40__) || defined(__AVR_ATtiny20__))) && !defined(WIRE_MASTER_ONLY)
@@ -119,4 +119,3 @@ class i2c_tinyS : public Stream {
 extern i2c_tinyS TinyWireS;
 
 #endif
-

@@ -29,7 +29,7 @@
 
 #include <avr/pgmspace.h>
 
-//FIXED TO HERE - all below is wrong. 
+//FIXED TO HERE - all below is wrong.
 
 #define NUM_DIGITAL_PINS            12
 #define NUM_ANALOG_INPUTS           8
@@ -93,7 +93,7 @@ static const uint8_t A3 = 0x80 | 3;
 #define PIN_B4  ( 4)
 #define PIN_B5  ( 5)
 #define PIN_B6  ( 6)
-#define PIN_B7  ( 7) 
+#define PIN_B7  ( 7)
 #define LED_BUILTIN (13)
 
 //----------------------------------------------------------
@@ -101,7 +101,7 @@ static const uint8_t A3 = 0x80 | 3;
 //Core Configuration (used to be in core_build_options.h)
 
 //If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out. 
+//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
 #define TUNED_OSCCAL_VALUE                        OSCCAL
 //e.g
 //#define TUNED_OSCCAL_VALUE                        0x57
@@ -118,13 +118,13 @@ static const uint8_t A3 = 0x80 | 3;
   Where to put the software serial? (Arduino Digital pin numbers)
 */
 //WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL						  1
+#define USE_SOFTWARE_SERIAL           1
 //Please define the port on which the analog comparator is found.
-#define ANALOG_COMP_DDR						 	  DDRA
-#define ANALOG_COMP_PORT						  PORTA
-#define ANALOG_COMP_PIN						 	  PINA
-#define ANALOG_COMP_AIN0_BIT					  4
-#define ANALOG_COMP_AIN1_BIT					  5
+#define ANALOG_COMP_DDR               DDRA
+#define ANALOG_COMP_PORT              PORTA
+#define ANALOG_COMP_PIN               PINA
+#define ANALOG_COMP_AIN0_BIT          4
+#define ANALOG_COMP_AIN1_BIT          5
 
 
 /*
@@ -155,13 +155,13 @@ static const uint8_t A3 = 0x80 | 3;
 //
 //                           +-\/-+
 //             (D  0)  PB0  1|    |13  PA7  (D 15)        RESET
-//  PWM        (D  1)  PB1  2|    |12  PA6  (D 14) 
-//  PWM        (D  2)  PB3  3|    |11  PA5  (D 13) 
-//             (D  3)  PB2  4|    |10  PA4  (D 12) 
-//  PWM        (D  4)  PB7  5|    |9   PA3  (D 11) 
-//  PWM        (D  5)  PB7  6|    |9   PA2  (D 10) 
-//             (D  6)  PB7  7|    |9   PA1  (D  9) 
-//       INT0  (D  7)  PB7  8|    |9   PA0  (D  8) 
+//  PWM        (D  1)  PB1  2|    |12  PA6  (D 14)
+//  PWM        (D  2)  PB3  3|    |11  PA5  (D 13)
+//             (D  3)  PB2  4|    |10  PA4  (D 12)
+//  PWM        (D  4)  PB7  5|    |9   PA3  (D 11)
+//  PWM        (D  5)  PB7  6|    |9   PA2  (D 10)
+//             (D  6)  PB7  7|    |9   PA1  (D  9)
+//       INT0  (D  7)  PB7  8|    |9   PA0  (D  8)
 //                     Vcc  9|    |9   VBat
 //                    Gnd  10|    |8   LSW
 //                           +----+
@@ -169,28 +169,28 @@ static const uint8_t A3 = 0x80 | 3;
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)
-const uint16_t PROGMEM port_to_mode_PGM[] = 
+const uint16_t PROGMEM port_to_mode_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&DDRA,
   (uint16_t)&DDRB,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = 
+const uint16_t PROGMEM port_to_output_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&PORTA,
   (uint16_t)&PORTB,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = 
+const uint16_t PROGMEM port_to_input_PGM[] =
 {
   NOT_A_PORT,
   (uint16_t)&PINA,
   (uint16_t)&PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
   PB, /* 0 */
   PB,
@@ -203,19 +203,19 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PA,
   PA,
   PA,
-  PA, 
   PA,
   PA,
   PA,
-  PA 
+  PA,
+  PA
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
-  _BV(3), 
+  _BV(3),
   _BV(4),
   _BV(5),
   _BV(6),
@@ -223,14 +223,14 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
-  _BV(3), 
+  _BV(3),
   _BV(4),
   _BV(5),
   _BV(6),
   _BV(7)
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = 
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   TIMER0A, /* OC0A */
@@ -240,7 +240,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   TIMER1B, /* OC1B */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER, 
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -253,4 +253,3 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 #endif
 
 #endif
-

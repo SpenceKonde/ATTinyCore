@@ -67,14 +67,14 @@ int analogRead(uint8_t pin)
   #ifndef ADCSRA
   return digitalRead(analogInputToDigitalPin(pin)) ? 1023 : 0; //No ADC, so read as a digital pin instead.
   #endif
-  
+
   #if defined(ADMUX)
   ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
   #if defined(REFS2)
   ADMUX |= (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
   #endif
   #endif
-  
+
   #if defined(HAVE_ADC) && HAVE_ADC
   sbi(ADCSRA, ADSC); //Start conversion
 
@@ -111,96 +111,96 @@ void analogWrite(uint8_t pin, int val)
   else
   {
     uint8_t timer = digitalPinToTimer(pin);
-	#if defined(TCCR0A) && defined(COM0A1)
-	if( timer == TIMER0A){
-		// connect pwm to pin on timer 0, channel A
-		sbi(TCCR0A, COM0A1);
-		cbi(TCCR0A, COM0A0);
-		OCR0A = val; // set pwm duty
-	} else
-	#endif
+  #if defined(TCCR0A) && defined(COM0A1)
+  if( timer == TIMER0A){
+    // connect pwm to pin on timer 0, channel A
+    sbi(TCCR0A, COM0A1);
+    cbi(TCCR0A, COM0A0);
+    OCR0A = val; // set pwm duty
+  } else
+  #endif
 
-	#if defined(TCCR0A) && defined(COM0B1)
-	if( timer == TIMER0B){
-		// connect pwm to pin on timer 0, channel B
-		sbi(TCCR0A, COM0B1);
-		cbi(TCCR0A, COM0B0);
-		OCR0B = val; // set pwm duty
-	} else
-	#endif
+  #if defined(TCCR0A) && defined(COM0B1)
+  if( timer == TIMER0B){
+    // connect pwm to pin on timer 0, channel B
+    sbi(TCCR0A, COM0B1);
+    cbi(TCCR0A, COM0B0);
+    OCR0B = val; // set pwm duty
+  } else
+  #endif
 
-	#if defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E) 
-		//TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85. 
-		//So this handles "normal" timers
-	if( timer == TIMER1A){
-		// connect pwm to pin on timer 1, channel A
-		sbi(TCCR1A, COM1A1);
-		cbi(TCCR1A, COM1A0);
-	#ifdef OC1AX 
-		cbi(TCCR1D, OC1AV);
-		cbi(TCCR1D, OC1AU);
-		cbi(TCCR1D, OC1AW);
-		sbi(TCCR1D, OC1AX);
-	#endif
-		OCR1A = val; // set pwm duty
-	} else
-	#endif
+  #if defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E)
+    //TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85.
+    //So this handles "normal" timers
+  if( timer == TIMER1A){
+    // connect pwm to pin on timer 1, channel A
+    sbi(TCCR1A, COM1A1);
+    cbi(TCCR1A, COM1A0);
+  #ifdef OC1AX
+    cbi(TCCR1D, OC1AV);
+    cbi(TCCR1D, OC1AU);
+    cbi(TCCR1D, OC1AW);
+    sbi(TCCR1D, OC1AX);
+  #endif
+    OCR1A = val; // set pwm duty
+  } else
+  #endif
 
-	#if defined(TCCR1E) //Tiny861
-	if( timer == TIMER1A){
-		// connect pwm to pin on timer 1, channel A
-		cbi(TCCR1C,COM1A1S);
-		sbi(TCCR1C,COM1A0S);
-		//sbi(TCCR1A,PWM1A);
-		OCR1A = val; // set pwm duty
-	} else if (timer == TIMER1B){
-		// connect pwm to pin on timer 1, channel A
-		cbi(TCCR1C,COM1B1S);
-		sbi(TCCR1C,COM1B0S);
-		//sbi(TCCR1A,PWM1B);
-		OCR1B = val; // set pwm duty
-	} else if (timer == TIMER1D){
-		// connect pwm to pin on timer 1, channel A
-		cbi(TCCR1C,COM1D1);
-		sbi(TCCR1C,COM1D0);
-		//sbi(TCCR1A,PWM1D);
-		OCR1D = val; // set pwm duty
-	} else
-	#endif
+  #if defined(TCCR1E) //Tiny861
+  if( timer == TIMER1A){
+    // connect pwm to pin on timer 1, channel A
+    cbi(TCCR1C,COM1A1S);
+    sbi(TCCR1C,COM1A0S);
+    //sbi(TCCR1A,PWM1A);
+    OCR1A = val; // set pwm duty
+  } else if (timer == TIMER1B){
+    // connect pwm to pin on timer 1, channel A
+    cbi(TCCR1C,COM1B1S);
+    sbi(TCCR1C,COM1B0S);
+    //sbi(TCCR1A,PWM1B);
+    OCR1B = val; // set pwm duty
+  } else if (timer == TIMER1D){
+    // connect pwm to pin on timer 1, channel A
+    cbi(TCCR1C,COM1D1);
+    sbi(TCCR1C,COM1D0);
+    //sbi(TCCR1A,PWM1D);
+    OCR1D = val; // set pwm duty
+  } else
+  #endif
 
-	#if defined(TCCR1) && defined(COM1A1) //Tiny85
-	if(timer == TIMER1A){
-		// connect pwm to pin on timer 1, channel A
-		sbi(TCCR1, COM1A1);
-		cbi(TCCR1, COM1A0);
-		OCR1A = val; // set pwm duty
-	} else
-	#endif
+  #if defined(TCCR1) && defined(COM1A1) //Tiny85
+  if(timer == TIMER1A){
+    // connect pwm to pin on timer 1, channel A
+    sbi(TCCR1, COM1A1);
+    cbi(TCCR1, COM1A0);
+    OCR1A = val; // set pwm duty
+  } else
+  #endif
 
-	#if defined(TCCR1A) && defined(COM1B1) && !defined(TCCR1E)
-	if( timer == TIMER1B){
-		// connect pwm to pin on timer 1, channel B
-		sbi(TCCR1A, COM1B1);
-		cbi(TCCR1A, COM1B0);
-	#ifdef OC1BV
-		sbi(TCCR1D, OC1BV);
-		cbi(TCCR1D, OC1BU);
-		cbi(TCCR1D, OC1BW);
-		cbi(TCCR1D, OC1BX);
-	#endif
-		OCR1B = val; // set pwm duty
-	} else
-	#endif
+  #if defined(TCCR1A) && defined(COM1B1) && !defined(TCCR1E)
+  if( timer == TIMER1B){
+    // connect pwm to pin on timer 1, channel B
+    sbi(TCCR1A, COM1B1);
+    cbi(TCCR1A, COM1B0);
+  #ifdef OC1BV
+    sbi(TCCR1D, OC1BV);
+    cbi(TCCR1D, OC1BU);
+    cbi(TCCR1D, OC1BW);
+    cbi(TCCR1D, OC1BX);
+  #endif
+    OCR1B = val; // set pwm duty
+  } else
+  #endif
 
-	#if defined(TCCR1) && defined(COM1B1)
-	if( timer == TIMER1B){
-		// connect pwm to pin on timer 1, channel B
-		sbi(GTCCR, COM1B1);
-		cbi(GTCCR, COM1B0);
-		OCR1B = val; // set pwm duty
-	} else
-	#endif
-	
+  #if defined(TCCR1) && defined(COM1B1)
+  if( timer == TIMER1B){
+    // connect pwm to pin on timer 1, channel B
+    sbi(GTCCR, COM1B1);
+    cbi(GTCCR, COM1B0);
+    OCR1B = val; // set pwm duty
+  } else
+  #endif
+
     {
       if (val < 128)
       {

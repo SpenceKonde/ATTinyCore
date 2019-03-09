@@ -12,6 +12,6 @@ avr-objdump.exe -S sketch_sep22a.cpp.elf > C:\Temp\dump.cpp & C:\Temp\dump.cpp
 
 int main(void)
 {
-	for (;;);
-	return 0;
+  for (;;);
+  return 0;
 }

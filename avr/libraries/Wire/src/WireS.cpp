@@ -1,5 +1,5 @@
 /*==============================================================================================================*
- 
+
     @file     WireS.h
     @license  MIT (c) 2016 Nadav Matalon
 
@@ -10,7 +10,7 @@
  *===============================================================================================================*
     LICENSE
  *===============================================================================================================*
- 
+
     The MIT License (MIT)
     Copyright (c) 2016 Nadav Matalon
 
@@ -28,7 +28,7 @@
     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- 
+
  *==============================================================================================================*/
 
 #if (/*defined(__AVR_ATtiny1634__) ||*/ defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny828__) || defined(__AVR_ATtiny40__) || defined(__AVR_ATtiny20__)) && !defined(WIRE_MASTER_ONLY)
@@ -41,7 +41,7 @@
 #ifndef TWAE
 #define TWAE 0
 #endif
- 
+
 #define SET_TENBIT   do { i2c->Addr |= 0x8000; } while(0)
 #define CLEAR_TENBIT do { i2c->Addr &= 0x7FFF; } while(0)
 #define IS_TENBIT (i2c->Addr & 0x8000)
@@ -174,4 +174,3 @@ ISR(TWI_SLAVE_vect) {
 i2c_tinyS TinyWireS  = i2c_tinyS();
 
 #endif
-
