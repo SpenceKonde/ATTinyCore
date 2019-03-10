@@ -57,8 +57,11 @@
  * timer16_Sequence_t enumerates the sequence that the timers should be allocated
  * _Nbr_16timers indicates how many 16 bit timers are available.
  */
+#if (defined(__AVR_ATtiny43__))
+#error "The Servo library does not support the ATTiny43"
 
-#if (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
+#elif (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
+
 
 #define Servo_VERSION           2     // software version of this library
 #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo

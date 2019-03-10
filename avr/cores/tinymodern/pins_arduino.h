@@ -158,9 +158,9 @@ extern const uint8_t PROGMEM port_to_pullup_PGM[];
 #define SCK 12
 #define USI_DDR_PORT DDRB
 #define USI_SCK_PORT DDRC
-#define USCK_DD_PIN DDC1
-#define DO_DD_PIN DDB2
-#define DI_DD_PIN DDB1
+#define USCK_DD_PIN DDRC1
+#define DO_DD_PIN DDRB2
+#define DI_DD_PIN DDRB1
 
 
 #define ADC_TEMPERATURE 30
