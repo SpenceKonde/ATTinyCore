@@ -301,44 +301,46 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=184external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx41
-    # LTO=disable, chip=841, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled, pinmapping=anew,wiremode=amaster, wiremode=amaster
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=8internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
-    # clock=20external, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled, pinmapping=old, wiremode=slave
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=20external,eesave=disable,bod=2v7,pinmapping=old,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # LTO=disable, chip=841, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled, pinmapping=anew,wiremode=amaster, wiremode=both
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=8internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # clock=20external, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled, pinmapping=old
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=20external,eesave=disable,bod=2v7,pinmapping=old,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=16external, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=16external,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=enable,chip=841,clock=8internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
-    # chip=441, clock=8external
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=enable,chip=841,clock=8internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    # chip=441, clock=8external, wiremode=amaster
     # The libraries have already been tested with F_CPU of 8000000UL in the clock=8internal job so only a single compilation is necessary to test the clock=8external option
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    # The Wire library can't be used in slave mode when the wiremode option is set to amaster and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=441,clock=8external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
-    # clock=6external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=6external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # clock=6external, wiremode=slave
+    # The Wire library can't be used in master mode when the wiremode option is set to slave and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=6external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=4external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=4external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=4external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=1internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=1internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=737external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=737external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=737external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=92external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=92external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=92external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=11external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=11external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=11external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=14external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=14external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=14external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=184external
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=184external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=184external,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=512internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=512internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=512internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=256internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=256internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=256internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=128internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=128internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=128internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=64internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=64internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=64internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=32internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=32internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=32internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx41opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
@@ -368,19 +370,25 @@ env:
 
     # attiny43
     # LTO=disable, clock=8internal, eesave=aenable, bod=disable
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=8internal,eesave=aenable,bod=disable" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=8internal,eesave=aenable,bod=disable" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=4internal, eesave=disable, bod=1v8
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=4internal,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=4internal,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal, bod=2v7
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=1internal,eesave=aenable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=1internal,eesave=aenable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, bod=4v3
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny43:LTO=enable,clock=8internal,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=enable,clock=8internal,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
 
     # attiny828
     # LTO=disable, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled, wiremode=amaster
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=8internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # The Wire library can't be used in slave mode when the wiremode option is set to amaster and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=8internal,eesave=aenable,bod=1v8,bodact=disabled,bodpd=disabled,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled, wiremode=slave
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=1internal,eesave=disable,bod=2v7,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # The Wire library can't be used in master mode when the wiremode option is set to slave and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=1internal,eesave=disable,bod=2v7,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=16external, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny828:LTO=enable,clock=8internal,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
 
