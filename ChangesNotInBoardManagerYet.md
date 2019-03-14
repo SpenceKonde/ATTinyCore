@@ -5,3 +5,4 @@
 * Fix issue with macros in pins_arduino.h for t1634 that could cause problems with some compiler (well, io.h) versions
 * Correct issues with some of the macros for t43.
 * Add missing attiny85 9.26MHz external clock menu option.
+* Fix PWM on pins A3 and A6 on Tiny841/441
