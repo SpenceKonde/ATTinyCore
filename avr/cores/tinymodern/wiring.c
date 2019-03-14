@@ -423,12 +423,20 @@ static void initToneTimerInternal(void)
 #if defined (__AVR_ATtinyX41__)
 static void initTimer841(void)
 {
+  #if(TIMER_TO_USE_FOR_TONE==1)
   Timer2_ClockSelect(0);
+  Timer2_SetWaveformGenerationMode(1);
+  Timer2_ClockSelect(3);
+  #else
+  Timer1_ClockSelect(0);
+  Timer1_SetWaveformGenerationMode(1);
+  Timer1_ClockSelect(3);
+
+  #endif
+
   TOCPMSA0=0b00010000;
   TOCPMSA1=0b10100100;
   TOCPMCOE=0b11111100;
-  Timer2_SetWaveformGenerationMode(1);
-  Timer2_ClockSelect(3);
 
 }
 #endif
