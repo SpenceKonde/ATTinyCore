@@ -8,7 +8,7 @@ RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
 Bootloader | Yes, Optiboot w/virtualboot
 GPIO Pins | 11
-ADC Channels | 12 (including the one on reset), many differential channels
+ADC Channels | 8, plus many differential channels
 PWM Channels | 4
 Interfaces | USI
 Clock options | Internal 1/8mhz, external crystal or clock up to 20mhz
