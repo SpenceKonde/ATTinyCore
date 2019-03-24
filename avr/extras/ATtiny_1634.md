@@ -3,7 +3,7 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 16768b ( 15744b with bootloader)
+Flash (program memory)   | 16384b ( 15744b with bootloader)
 RAM  | 1024 bytes
 EEPROM | 256 bytes
 Bootloader | Yes, Optiboot w/Virtual Boot
