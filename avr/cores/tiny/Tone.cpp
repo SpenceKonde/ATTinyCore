@@ -193,7 +193,11 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     if ( (digitalPinToTimer(_pin) == TIMER1A) || (digitalPinToTimer(_pin) == TIMER1B)  || (digitalPinToTimer(_pin) == TIMER1D) )
     {
     #elif (TIMER_TO_USE_FOR_TONE == 1)
+      #ifdef __AVR_ATtinyX5__
+    if ( _pin==1 || _pin==4 )
+      #else 
     if ( (digitalPinToTimer(_pin) == TIMER1A) || (digitalPinToTimer(_pin) == TIMER1B) )
+      #endif
     {
     #elif (TIMER_TO_USE_FOR_TONE == 0)
     if ( (digitalPinToTimer(_pin) == TIMER0A) || (digitalPinToTimer(_pin) == TIMER0B) )
@@ -206,6 +210,9 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       tone_timer_pin_register = NULL;
       tone_timer_pin_mask = 0;
       uint8_t timer = digitalPinToTimer(_pin);
+      #ifdef __AVR_ATtinyX5__
+         if ( _pin==1) {timer=TIMER1A;}
+      #endif
     #if defined(COM0A1)
     //Just in case there are now pwm pins on timer0 (ATTiny861)
       if (timer == TIMER0A)

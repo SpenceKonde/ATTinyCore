@@ -486,9 +486,9 @@ static void initToneTimerInternal(void)
   TCCR1 &= ~((1<<CS13) | (1<<CS12) | (1<<CS11) | (1<<CS10)); //stop the clock to configure
   // Use the Tone Timer for fast PWM as phase correct not supported by this timer
   sbi(TCCR1, CTC1);
-  #if !defined(__AVR_ATtiny85__)
+  //#if !defined(__AVR_ATtiny85__)
   sbi(TCCR1, PWM1A); //for the tiny 85, Timer0 is used instead.
-  #endif
+  //#endif
   sbi(GTCCR, PWM1B);
   OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
   TCCR1 |= (ToneTimer_Prescale_Index << CS10);

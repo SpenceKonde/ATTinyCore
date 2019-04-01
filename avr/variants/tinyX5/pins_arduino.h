@@ -72,7 +72,6 @@
 static const uint8_t SDA = 0;
 static const uint8_t SCL = 2;
 
-//Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
 static const uint8_t A2 = 0x80 | 2;
@@ -208,7 +207,11 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   TIMER0A, /* OC0A */
+  #ifdef TIMER1_PWM
+  TIMER1A, /* OC1A */
+  #else
   TIMER0B, /* OC0B */
+  #endif
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER1B, /*OC1B*/
