@@ -195,7 +195,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     #elif (TIMER_TO_USE_FOR_TONE == 1)
       #ifdef __AVR_ATtinyX5__
     if ( _pin==1 || _pin==4 )
-      #else 
+      #else
     if ( (digitalPinToTimer(_pin) == TIMER1A) || (digitalPinToTimer(_pin) == TIMER1B) )
       #endif
     {
