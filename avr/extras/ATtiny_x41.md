@@ -35,8 +35,8 @@ There are two hardware serial ports, Serial and Serial1. It works the same as Se
 
 To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSRB1 instead)
 ```
-UCSRB0 &=~(1<<TXEN0); // disable TX
-UCSRB0 &=~(1<<RXEN0); // disable RX
+UCSR0B &=~(1<<TXEN0); // disable TX
+UCSR0B &=~(1<<RXEN0); // disable RX
 ```
 
 
