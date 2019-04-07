@@ -47,4 +47,3 @@ ACSR |=~(1<<ACD);
 I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core.
 ### [Assembled Boards](https://www.tindie.com/products/16617/)
 ### **Bare Boards** Coming soon
-
