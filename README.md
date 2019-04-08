@@ -254,7 +254,7 @@ Except for the x5, x4, x61, and x313 series, these are only available in surface
 * 828: [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/ )
 * x61 series (861/461/261): [Bare boards](https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
 * x7 series (167/87): [Bare boards](https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
-* x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards] (https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
+* x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
 * ATtiny43 breakout board (including boost converter) [Assembled Boards](https://www.tindie.com/products/16617/)
 * SMD/DIP or DIP ATtiny 85 prototyping board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
 * SMD or DIP ATtiny 84 prototyping board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
