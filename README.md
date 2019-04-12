@@ -76,8 +76,12 @@ Internal:
 * 1 MHz
 * 16 MHz (PLL clock,  x5, x61 only)
 * 4 MHz (x313, 43 only)
-* 0.5 MHz (x313 only)
-* 128 kHz
+* 0.5 MHz** (x313 only)
+* 512 kHz** (ULP - x41 only)
+* 256 kHz** (ULP - x41 only)
+* 128 kHz** (watchdog or ULP, all except 1643, 828) 
+* 64 kHz** (ULP - x41 only)
+* 32 kHz** (ULP - 1634, 828, x41 only)
 
 External crystal (all except 828, 43 and x8 series):
 * 20 MHz
@@ -94,6 +98,8 @@ External crystal (all except 828, 43 and x8 series):
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 Options marked with a * are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies. These are not available for chips without a UART in versions of ATTinyCore older than 1.1.5.
+
+**Warning** Options marked with ** are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption. 
 
 **Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. millis() is not effected, only micros() and delay().
 
