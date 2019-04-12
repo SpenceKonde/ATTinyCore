@@ -20,13 +20,13 @@ This core supports the following processors - essentially every ATtiny processor
 * [ATTiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot bootloader)
 * [ATTiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
 * [ATTiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
-* [ATtiny43](avr/extras/ATtiny_43.md) (Experimental, currently in github version only)
+* [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
 **1.2.0 and later adds a lot of new bootloader related features. There are sure to be bugs. Please report them using the github "issues" feature or in Microcontrollers section of Arduino forum. 1.2.0 and 1.2.2 have serious bugs; it is recommended to upgrade to 1.2.3 for best results**
 
-This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the "xMega-like" peripherals. A very large amount of work would be required to support these parts. See [#174](https://github.com/SpenceKonde/ATTinyCore/issues/174) for details. It looks like the Arduino team is planning to release an official board based on a part with similar peripherals; after this is done, work could begin on porting that to the similar ATTiny parts.
+This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the new CIP peripherals. A new core may be created to support these in the future, but it will be a different core, as basically everything about these parts is different. See [#288](https://github.com/SpenceKonde/ATTinyCore/issues/288) for details.
 
 ### Quick Gotcha list:
 
