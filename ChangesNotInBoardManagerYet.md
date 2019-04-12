@@ -8,4 +8,5 @@
 * Fix PWM on pins A3 and A6 on Tiny841/441 (#302)
 * Correct hardware specs for Tiny24/44/84 and Tiny1634 (#304/305)
 * On the attiny25/45/85, tone() will now use hardware output compare for pin 1 and 4, not just pin 1. (#289)
+* Add missing low frequency internal (128kHz WDT or 32kHz ULP) for all parts where this wasn't already an option (#310)
 * Various documentation corrections and clarifications (#307 and others)
