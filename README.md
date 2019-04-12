@@ -79,7 +79,7 @@ Internal:
 * 0.5 MHz** (x313 only)
 * 512 kHz** (ULP - x41 only)
 * 256 kHz** (ULP - x41 only)
-* 128 kHz** (watchdog or ULP, all except 1643, 828) 
+* 128 kHz** (watchdog or ULP, all except 1643, 828)
 * 64 kHz** (ULP - x41 only)
 * 32 kHz** (ULP - 1634, 828, x41 only)
 
