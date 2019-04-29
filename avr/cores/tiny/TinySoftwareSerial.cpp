@@ -85,7 +85,7 @@ void uartDelay() {
 //rename the vector so we can use it.
   #define ANALOG_COMP_vect ANA_COMP_vect
 #elif !defined (ANALOG_COMP_vect)
-  #error Tiny Software Serial can't find the Analog comparator interrupt vector!
+  #error Tiny Software Serial cannot find the Analog comparator interrupt vector!
 #endif
 ISR(ANALOG_COMP_vect){
   char ch = getch(); //read in the character softwarily - I know its not a word, but it sounded cool, so you know what: #define softwarily 1

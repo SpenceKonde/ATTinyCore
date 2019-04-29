@@ -20,13 +20,13 @@ This core supports the following processors - essentially every ATtiny processor
 * [ATTiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot bootloader)
 * [ATTiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
 * [ATTiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
-* [ATtiny43](avr/extras/ATtiny_43.md) (Experimental, currently in github version only)
+* [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
 
 Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
 **1.2.0 and later adds a lot of new bootloader related features. There are sure to be bugs. Please report them using the github "issues" feature or in Microcontrollers section of Arduino forum. 1.2.0 and 1.2.2 have serious bugs; it is recommended to upgrade to 1.2.3 for best results**
 
-This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the "xMega-like" peripherals. A very large amount of work would be required to support these parts. See [#174](https://github.com/SpenceKonde/ATTinyCore/issues/174) for details. It looks like the Arduino team is planning to release an official board based on a part with similar peripherals; after this is done, work could begin on porting that to the similar ATTiny parts.
+This core will NOT support ATtiny x14/x17/x18 (ATtiny406, ATtiny212/412, ATtiny214/414/814/1614, ATtiny416/816/1616/3216, ATtiny417/817/1617/3217, etc) or other chips with the new CIP peripherals. A new core may be created to support these in the future, but it will be a different core, as basically everything about these parts is different. See [#288](https://github.com/SpenceKonde/ATTinyCore/issues/288) for details.
 
 ### Quick Gotcha list:
 
@@ -76,8 +76,12 @@ Internal:
 * 1 MHz
 * 16 MHz (PLL clock,  x5, x61 only)
 * 4 MHz (x313, 43 only)
-* 0.5 MHz (x313 only)
-* 128 kHz
+* 0.5 MHz** (x313 only)
+* 512 kHz** (ULP - x41 only)
+* 256 kHz** (ULP - x41 only)
+* 128 kHz** (watchdog or ULP, all except 1643, 828)
+* 64 kHz** (ULP - x41 only)
+* 32 kHz** (ULP - 1634, 828, x41 only)
 
 External crystal (all except 828, 43 and x8 series):
 * 20 MHz
@@ -93,7 +97,9 @@ External crystal (all except 828, 43 and x8 series):
 * 4 MHz
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
-Options marked with a * are "UART frequencies", used to get perfect match to common UART baud rates. These are not available for chips without a UART in versions of ATTinyCore older than 1.1.5.
+Options marked with a * are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies. These are not available for chips without a UART in versions of ATTinyCore older than 1.1.5.
+
+**Warning** Options marked with ** are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
 
 **Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. millis() is not effected, only micros() and delay().
 
@@ -251,10 +257,11 @@ For use with Optiboot, the following additional components and connections are r
 Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core. Where applicable, all of these assembled boards have the bootloader installed, and all are set to run at the advertised speed (most are available with several speed/voltage combinations).
 * 841: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot/ )
 * 1634: [Bare boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/) - [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/ )
-* 828: [Bare boards]( https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/ )
-* x61 series (861/461/261): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
-* x7 series (167/87): [Bare boards] (https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
-* x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/ ) [Assembled Boards] ( https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/ )
+* 828: [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards]( https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/ )
+* x61 series (861/461/261): [Bare boards](https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
+* x7 series (167/87): [Bare boards](https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
+* x8 series (48/88): [Bare boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/) [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
+* ATtiny43 breakout board (including boost converter) [Assembled Boards](https://www.tindie.com/products/16617/)
 * SMD/DIP or DIP ATtiny 85 prototyping board: https://www.tindie.com/products/DrAzzy/attiny85-project-board/
 * SMD or DIP ATtiny 84 prototyping board: https://www.tindie.com/products/DrAzzy/attiny84-project-board/
 
@@ -275,5 +282,7 @@ Acknowledgements
 This core is based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
 The ATtiny841 support is based on shimniok's ATTiny x41 core, and the 1634 support on Rambo's ATtiny 1634 core.
 And of course - everything is based on the great work of the Arduino development team for creating the Arduino IDE and community which we all use.
+
+The Board Manager package and Travis CI scripts were created by Per Tillisch (pert on Arduino forums), who provides similar assistance to a number of other cores, as well as being highly active on the Arduino forums with technical support.
 
 The pinout diagrams are created by MCUdude (hansibull on Arduino forums), who maintains a number of excellent cores for supporting common ATmega processors - http://github.com/MCUdude
