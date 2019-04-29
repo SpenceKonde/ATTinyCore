@@ -260,7 +260,7 @@ void HardwareSerial::begin(long baud)
 #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
   uint16_t baud_setting;
   bool use_u2x = true;
-
+/*
 #if F_CPU == 16000000UL
   // hardcoded exception for compatibility with the bootloader shipped
   // with the Duemilanove and previous boards and the firmware on the 8U2
@@ -269,7 +269,7 @@ void HardwareSerial::begin(long baud)
     use_u2x = false;
   }
 #endif
-
+*/
 try_again:
 
   if (use_u2x) {

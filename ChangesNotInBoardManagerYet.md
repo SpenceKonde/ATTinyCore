@@ -10,3 +10,4 @@
 * On the attiny25/45/85, tone() will now use hardware output compare for pin 1 and 4, not just pin 1. (#289)
 * Add missing low frequency internal (128kHz WDT or 32kHz ULP) for all parts where this wasn't already an option (#310)
 * Various documentation corrections and clarifications (#307 and others)
+* Shorten internal names for tools -> board options to prevent the cached core file names from exceeding Windows MAX_PATH. 
