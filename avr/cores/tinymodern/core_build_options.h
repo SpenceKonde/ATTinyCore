@@ -25,7 +25,7 @@
 #define core_build_options_h
 
 #if defined(ARDUINO) && (defined( __AVR_ATtiny441__ ) || defined( __AVR_ATtiny841__ ))
-#if (ARDUINO < 10806) 
+#if (ARDUINO < 10806)
 #error "This version of the Arduino IDE is not supported for this part, upgrade Arduino 1.8.6 or higher or downgrade ATTinyCore to 1.2.1"
 #endif
 #endif
@@ -88,9 +88,6 @@
   Build options for the ATtiny1634 processor and other boring ones
 =============================================================================*/
 #if defined( __AVR_ATtiny1634__ ) || defined(__AVR_ATtiny828__ )
-
-
-
 /*
   The old standby ... millis on Timer 0.
 */
