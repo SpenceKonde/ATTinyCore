@@ -557,7 +557,7 @@ void tinySPI::end(void)
     USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
 }
 
-tinySPI SPI = tinySPI();                //instantiate a tinySPI objec
+tinySPI SPI = tinySPI();                //instantiate a tinySPI object
 
 
 #endif

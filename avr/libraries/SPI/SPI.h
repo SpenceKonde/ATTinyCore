@@ -128,7 +128,7 @@ private:
     // slowest (128 == 2 ^^ 7, so clock_div = 6).
     uint8_t clockDiv;
 
-    // When the clock is known at compiletime, use this if-then-else
+    // When the clock is known at compile time, use this if-then-else
     // cascade, which the compiler knows how to completely optimize
     // away. When clock is not known, use a loop instead, which generates
     // shorter code.

@@ -125,7 +125,7 @@ uint8_t __attribute__ ((noinline)) i2c_read(bool last) __attribute__ ((used));
 #define I2C_SLOWMODE 0
 #endif
 
-// if I2C_NOINTERRUPT is 1, then the I2C routines are not interruptable.
+// if I2C_NOINTERRUPT is 1, then the I2C routines are not interruptible.
 // This is most probably only necessary if you are using a 1MHz system clock,
 // you are communicating with a SMBus device, and you want to avoid timeouts.
 // Be aware that the interrupt bit is enabled after each call. So the
