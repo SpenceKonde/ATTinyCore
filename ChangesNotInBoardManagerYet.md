@@ -11,3 +11,5 @@
 * Add missing low frequency internal (128kHz WDT or 32kHz ULP) for all parts where this wasn't already an option (#310)
 * Various documentation corrections and clarifications (#307 and others)
 * Remove U2X exception for 57600 baud (#309)
+* Give #error when compiling attiny841/441 on versions of the IDE where the cached core filename would exceed MAX_PATH under common conditions on windows. 
+* Add 1MHz optiboot bootloaders due to persistent requests for this feature. 
