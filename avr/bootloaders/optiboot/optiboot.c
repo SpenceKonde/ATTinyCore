@@ -1066,7 +1066,7 @@ void verifySpace() {
 void flash_led(uint8_t count) {
   do {
         #if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
-                TCNT1 = -(F_CPU/(8196*16));
+                TCNT1 = 0xFF-(F_CPU/(8196*16));
         TIFR = _BV(TOV1);
         while(!(TIFR & _BV(TOV1)));
         #elif defined(__AVR_ATtiny43__)
