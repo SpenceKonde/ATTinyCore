@@ -282,10 +282,10 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 // and writing)
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
-  _BV(0), 
+  _BV(0),
   _BV(1),
   _BV(2),
-  _BV(3), 
+  _BV(3),
   _BV(4),
   _BV(5),
   _BV(6),
