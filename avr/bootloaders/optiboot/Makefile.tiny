@@ -1156,7 +1156,7 @@ endif
 attiny461at16:
 	$(MAKE) attiny461 AVR_FREQ=16000000L BAUD_RATE=19200
 	mv $(PROGRAM)_attiny461.hex $(PROGRAM)_attiny461_16000000L.hex
-ifndef PRODUCTION 
+ifndef PRODUCTION
 	mv $(PROGRAM)_attiny461.lst $(PROGRAM)_attiny461_16000000L.lst
 endif
 
@@ -1212,7 +1212,7 @@ HELPTEXT += "target attiny167, attiny87\n"
 attiny167: TARGET = attiny167
 attiny167: MCU_TARGET = attiny167
 attiny167: AVR_FREQ ?= 8000000L
-attiny167: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny167: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION'
 attiny167: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny167: $(PROGRAM)_attiny167.hex
 ifndef PRODUCTION
@@ -1222,7 +1222,7 @@ endif
 
 attiny87: TARGET = attiny87
 attiny87: MCU_TARGET = attiny87
-attiny87: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' 
+attiny87: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION'
 attiny87: AVR_FREQ ?= 8000000L
 attiny87: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
 attiny87: $(PROGRAM)_attiny87.hex
