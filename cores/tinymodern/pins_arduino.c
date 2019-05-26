@@ -163,6 +163,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 #endif
 
 #if defined( __AVR_ATtinyX41__ )
+
+#ifdef OLD_PINOUT
+
 // ATMEL ATTINY841 / ARDUINO
 //
 //                                 +-\/-+
@@ -261,7 +264,38 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 //  NOT_ON_TIMER,
 //  NOT_ON_TIMER,
 //};
-
+#else //new pinout
+// ATMEL ATTINY841 / ARDUINO
+//
+//                                 +-\/-+
+//                           VCC  1|    |14  GND
+//  ADC11            (D 10)  PB0  2|    |13  AREF (D  0)              ADC0
+//  ADC10      _____ (D  9)  PB1  3|    |12  PA1  (D  1)  TX0         ADC1
+//  ADC9       RESET (D 11)  PB3  4|    |11  PA2  (D  2)  RX0         ADC2
+//  ADC8  PWM  INT0  (D  8)  PB2  5|    |10  PA3  (D  3)        PWM   ADC3
+//  ADC7  PWM        (D  7)  PA7  6|    |9   PA4  (D  4)  RX1   PWM   ADC4
+//  ADC6  PWM        (D  6)  PA6  7|    |8   PA5  (D  5)  TX1   PWM   ADC5
+//                                 +----+
+//
+// these arrays map port names (e.g. port B) to the
+// appropriate addresses for various functions (e.g. reading
+// and writing)
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
+{
+  _BV(0),
+  _BV(1),
+  _BV(2),
+  _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(2),
+  _BV(1),
+  _BV(0),
+  _BV(3), //reset
+};
+#endif
 #endif
 
 
