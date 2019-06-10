@@ -8,7 +8,7 @@
 /* Arduino-maintained version : See README.TXT            */
 /* http://code.google.com/p/arduino/                      */
 /*  It is the intent that changes not relevant to the     */
-/*  Arduino production envionment get moved from the      */
+/*  Arduino production environment get moved from the      */
 /*  optiboot project to the arduino project in "lumps."   */
 /*                                                        */
 /* Heavily optimised bootloader that is faster and        */
@@ -400,7 +400,7 @@ typedef uint8_t pagelen_t;
  * The main() function is in init9, which removes the interrupt vector table
  * we don't need. It is also 'OS_main', which means the compiler does not
  * generate any entry or exit code itself (but unlike 'naked', it doesn't
- * supress some compile-time options we want.)
+ * suppress some compile-time options we want.)
  */
 
 void pre_main(void) __attribute__ ((naked)) __attribute__ ((section (".init8")));
@@ -470,7 +470,7 @@ static addr16_t buff = {(uint8_t *)(RAMSTART)};
 #elif defined (WDT_vect_num)
 #define save_vect_num (WDT_vect_num)
 #else
-#error Cant find SPM or WDT interrupt vector for this CPU
+#error Can't find SPM or WDT interrupt vector for this CPU
 #endif
 #endif //save_vect_num
 // check if it's on the same page (code assumes that)
@@ -501,7 +501,7 @@ static addr16_t buff = {(uint8_t *)(RAMSTART)};
 /* everything that needs to run VERY early */
 void pre_main(void) {
   // Allow convenient way of calling do_spm function - jump table,
-  //   so entry to this function will always be here, indepedent of compilation,
+  //   so entry to this function will always be here, independent of compilation,
   //   features etc
   asm volatile (
     "    rjmp    1f\n"
@@ -551,7 +551,7 @@ int main(void) {
    * and still skip bootloader if not necessary
    *
    * Code by MarkG55
-   * see discusion in https://github.com/Optiboot/optiboot/issues/97
+   * see discussion in https://github.com/Optiboot/optiboot/issues/97
    */
 #if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||    \
     defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||    \
@@ -846,7 +846,7 @@ int main(void) {
     vect.bytes[1] = rstVect1_sav;
     saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
     saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
-    vect.word = (vect.word-save_vect_num); //substract 'save' interrupt position
+    vect.word = (vect.word-save_vect_num); //subtract 'save' interrupt position
         // Move RESET jmp target to 'save' vector
         buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = vect.bytes[0];
         buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
@@ -857,7 +857,7 @@ int main(void) {
         saveVect1_sav = buff.bptr[saveVect1];
         vect.bytes[0] = rstVect0_sav;
         vect.bytes[1] = rstVect1_sav;
-        vect.word = (vect.word-save_vect_num); //substract 'save' interrupt position
+        vect.word = (vect.word-save_vect_num); //subtract 'save' interrupt position
         // Move RESET jmp target to 'save' vector
         buff.bptr[saveVect0] = vect.bytes[0];
         buff.bptr[saveVect1] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
@@ -1194,7 +1194,7 @@ static inline void writebuffer(int8_t memtype, addr16_t mybuff,
         __boot_page_write_short(address.word);
         boot_spm_busy_wait();
 #if defined(RWWSRE)
-        // Reenable read access to flash
+        // Re-enable read access to flash
         __boot_rww_enable_short();
 #endif
     } // default block
@@ -1253,8 +1253,8 @@ static inline void read_mem(uint8_t memtype, addr16_t address, pagelen_t length)
  * How it works:
  * - do SPM
  * - wait for SPM to complete
- * - if chip have RWW/NRWW sections it does additionaly:
- *   - if command is WRITE or ERASE, AND data=0 then reenable RWW section
+ * - if chip have RWW/NRWW sections it does additionally:
+ *   - if command is WRITE or ERASE, AND data=0 then re-enable RWW section
  *
  * In short:
  * If you play erase-fill-write, just set data to 0 in ERASE and WRITE
@@ -1287,7 +1287,7 @@ static void do_spm(uint16_t address, uint8_t command, uint16_t data) {
     // but it's tweaked a little assuming that in every command we are interested in here, there
     // must be also SELFPRGEN set. If we skip checking this bit, we save here 4B
     if ((command & (_BV(PGWRT)|_BV(PGERS))) && (data == 0) ) {
-      // Reenable read access to flash
+      // Re-enable read access to flash
       __boot_rww_enable_short();
     }
 #endif
