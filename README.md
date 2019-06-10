@@ -26,7 +26,7 @@ Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
 
 **1.2.0 and later adds a lot of new bootloader related features. There are sure to be bugs. Please report them using the github "issues" feature or in Microcontrollers section of Arduino forum. 1.2.0 and 1.2.2 have serious bugs; it is recommended to upgrade to 1.2.3 for best results**
 
-The megaAVR ATtiny parts (x12/x14/x16/x17/etc) will be supported by https://github.com/SpenceKonde/megaTinyCore 
+The megaAVR ATtiny parts (x12/x14/x16/x17/etc) will be supported by https://github.com/SpenceKonde/megaTinyCore
 
 ### Quick Gotcha list:
 
