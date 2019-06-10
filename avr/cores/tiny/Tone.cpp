@@ -562,7 +562,7 @@ void noTone( uint8_t _pin )
     else
     {
       #ifdef __AVR_ATtinyX5__
-         if ( _pin==1) turnOffPWM(TIMER1A);
+         if ( tone_pin==1) turnOffPWM(TIMER1A);
       #endif
       digitalWrite( tone_pin, LOW );
     }
