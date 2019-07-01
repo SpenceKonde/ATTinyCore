@@ -203,8 +203,30 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       /* Pin toggling is handled by the hardware */
       tone_timer_pin_register = NULL;
       tone_timer_pin_mask = 0;
+      uint8_t tShiftAmount;
+  #if (digitalPinHasPWM(11))
+      // New pin layout
       if(_pin >= 8) {
-          uint8_t tShiftAmount = (_pin - 8) >> 1;
+          tShiftAmount = (_pin - 8) >> 1;
+          if(_pin & 0x01) {
+              tShiftAmount += 4; // odd pins are controlled by the B outputs
+              /* Compare Output Mode = Toggle OC1Bx on Compare Match. */
+              cbi(TCCR1A, COM1B1);
+              sbi(TCCR1A, COM1B0);
+          } else {
+              /* Compare Output Mode = Toggle OC1Ax on Compare Match. */
+              cbi(TCCR1A, COM1A1);
+              sbi(TCCR1A, COM1A0);
+          }
+          TCCR1D = 1 << tShiftAmount ;
+  #else
+      // Old pin layout
+      if((_pin >= 4 && _pin <= 9) || _pin == 2 || _pin == 15) {
+          if( _pin == 2 || _pin == 15) {
+              tShiftAmount = 3;
+          } else {
+              tShiftAmount = (_pin - 4) >> 1;
+          }
           if(_pin & 0x01){
               tShiftAmount += 4; // odd pins are controlled by the B outputs
               /* Compare Output Mode = Toggle OC1Bx on Compare Match. */
@@ -216,6 +238,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
               sbi(TCCR1A, COM1A0);
           }
           TCCR1D = 1 << tShiftAmount ;
+  #endif
 #else
 #if (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E)
     if ( (digitalPinToTimer(_pin) == TIMER1A) || (digitalPinToTimer(_pin) == TIMER1B)  || (digitalPinToTimer(_pin) == TIMER1D) )
@@ -307,7 +330,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 #endif //  defined(__AVR_ATtiny167__) || defined(__AVR_ATtiny87__)
 
      }
-     else 
+     else
      {
       /* Save information needed by the interrupt service routine */
       tone_timer_pin_register = portOutputRegister( digitalPinToPort( _pin ) );
@@ -472,10 +495,16 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 
         /* All pins but the OCxA / OCxB pins have to be driven by software */
 #if (TIMER_TO_USE_FOR_TONE == 1)
-    #if defined(TCCR1E)
+  #if defined(TCCR1E)
         if ( (digitalPinToTimer(_pin) != TIMER1A) && (digitalPinToTimer(_pin) != TIMER1B) && (digitalPinToTimer(_pin) != TIMER1D) )
   #elif defined(__AVR_ATtiny167__) || defined(__AVR_ATtiny87__)
+    #if (digitalPinHasPWM(11))
+        // New pin layout
         if(_pin < 8)
+    #else
+        // Old pin layout
+        if(!((_pin >= 4 && _pin <= 9) || _pin == 2 || _pin == 15))
+    #endif
   #else
         if ( (digitalPinToTimer(_pin) != TIMER1A) && (digitalPinToTimer(_pin) != TIMER1B) )
   #endif
