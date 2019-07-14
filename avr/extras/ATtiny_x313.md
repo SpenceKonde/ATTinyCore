@@ -1,5 +1,5 @@
 ### ATtiny 2313/4313
-![x4 pin mapping](http://drazzy.com/e/img/PinoutT4313a.jpg "Arduino Pin Mapping for ATtiny x313 series")
+![x4 pin mapping](Pinout_x313.jpg "Arduino Pin Mapping for ATtiny x313 series")
 
  Specifications |  .
 ------------ | -------------
