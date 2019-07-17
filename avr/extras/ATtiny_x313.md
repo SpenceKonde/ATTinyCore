@@ -7,7 +7,7 @@ Flash (program memory)   | 2048b/4096b
 RAM  | 128/256 bytes
 EEPROM | 128/256 bytes
 Bootloader | No
-GPIO Pins | 18
+GPIO Pins | 17
 ADC Channels | None
 PWM Channels | 3
 Interfaces | UART, USI
