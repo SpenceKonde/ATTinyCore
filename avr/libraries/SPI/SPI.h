@@ -429,13 +429,13 @@ private:
   uint8_t usicr;
   uint8_t delay;
   USI_impl::ClockOut clockoutfn;
-  friend class tinySPI;
+  friend class SPIClass;
 };
 
-class tinySPI
+class SPIClass
 {
  public:
-  tinySPI();
+  SPIClass();
   static void begin();
   static void beginTransaction(SPISettings settings);
   static uint8_t transfer(uint8_t data);
@@ -474,7 +474,7 @@ private:
   static uint8_t interruptSave; // temp storage, to restore state
 };
 
-extern tinySPI SPI;
+extern SPIClass SPI;
 
 
 

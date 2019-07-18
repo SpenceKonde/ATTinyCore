@@ -1,6 +1,7 @@
 /*-------------------------------------------------------------------------*
- * tinySPI.h - Arduino hardware SPI master library for ATtiny24/44/84,     *
- * ATtiny25/45/85, and Attiny2313/4313.                                    *
+ * Combined SPI library for ATTinyCore - based on official Arduino SPI     *
+ * library and tinySPI by Jack Christensen                                 *
+ * Combination by Spence Konde 2018                                        *
  *                                                                         *
  * Original version of tinyISP by Jack Christensen 24Oct2013               *
  *                                                                         *
@@ -244,19 +245,19 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 
 #include <util/delay_basic.h>
 
-tinySPI::tinySPI()
+SPIClass::SPIClass()
 {
 }
 
-USI_impl::ClockOut tinySPI::clockoutfn = 0;
-uint8_t tinySPI::delay = 0;
-uint8_t tinySPI::msb1st = MSBFIRST;
+USI_impl::ClockOut SPIClass::clockoutfn = 0;
+uint8_t SPIClass::delay = 0;
+uint8_t SPIClass::msb1st = MSBFIRST;
 
-uint8_t tinySPI::interruptMode = 0;
-uint8_t tinySPI::interruptMask = 0;
-uint8_t tinySPI::interruptSave = 0;
+uint8_t SPIClass::interruptMode = 0;
+uint8_t SPIClass::interruptMask = 0;
+uint8_t SPIClass::interruptSave = 0;
 
-void tinySPI::begin(void)
+void SPIClass::begin(void)
 {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
     USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
@@ -266,7 +267,7 @@ void tinySPI::begin(void)
     applySettings(SPISettings());
 }
 
-void tinySPI::setDataMode(uint8_t spiDataMode)
+void SPIClass::setDataMode(uint8_t spiDataMode)
 {
     if (spiDataMode == SPI_MODE1) {
         USICR |= _BV(USICS0);
@@ -402,7 +403,7 @@ uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t delay)
     return USIDR;
 }
 
-uint8_t tinySPI::transfer(uint8_t spiData)
+uint8_t SPIClass::transfer(uint8_t spiData)
 {
     if (msb1st) {
         return clockoutfn(spiData, delay);
@@ -411,7 +412,7 @@ uint8_t tinySPI::transfer(uint8_t spiData)
     }
 }
 
-uint16_t tinySPI::transfer16(uint16_t data)
+uint16_t SPIClass::transfer16(uint16_t data)
 {
     union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } tmp;
     tmp.val = data;
@@ -425,7 +426,7 @@ uint16_t tinySPI::transfer16(uint16_t data)
     return tmp.val;
 }
 
-void tinySPI::transfer(void* _buf, size_t count) {
+void SPIClass::transfer(void* _buf, size_t count) {
     uint8_t* buf = (uint8_t*)_buf;
     if (!msb1st) {
         for (uint8_t i = 0; i < count; ++i) {
@@ -442,7 +443,7 @@ void tinySPI::transfer(void* _buf, size_t count) {
     }
 }
 
-void tinySPI::applySettings(SPISettings settings) {
+void SPIClass::applySettings(SPISettings settings) {
     USICR = settings.usicr;
     msb1st = settings.msb1st ;
     delay = settings.delay;
@@ -454,7 +455,7 @@ void tinySPI::applySettings(SPISettings settings) {
     }
 }
 
-void tinySPI::beginTransaction(SPISettings settings) {
+void SPIClass::beginTransaction(SPISettings settings) {
     if (interruptMode > 0) {
       uint8_t sreg = SREG;
       noInterrupts();
@@ -473,7 +474,7 @@ void tinySPI::beginTransaction(SPISettings settings) {
     applySettings(settings);
   }
 
-void tinySPI::endTransaction(void) {
+void SPIClass::endTransaction(void) {
   if (interruptMode > 0) {
     #ifdef SPI_AVR_EIMSK
     uint8_t sreg = SREG;
@@ -500,7 +501,7 @@ void tinySPI::endTransaction(void) {
 #define SPI_INT2_MASK  (1<<INT2)
 #endif
 
-void tinySPI::usingInterrupt(uint8_t interruptNumber)
+void SPIClass::usingInterrupt(uint8_t interruptNumber)
 {
   uint8_t mask = 0;
   uint8_t sreg = SREG;
@@ -525,7 +526,7 @@ void tinySPI::usingInterrupt(uint8_t interruptNumber)
   SREG = sreg;
 }
 
-void tinySPI::notUsingInterrupt(uint8_t interruptNumber)
+void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 {
   // Once in mode 2 we can't go back to 0 without a proper reference count
   if (interruptMode == 2)
@@ -552,12 +553,12 @@ void tinySPI::notUsingInterrupt(uint8_t interruptNumber)
     interruptMode = 0;
   SREG = sreg;
 }
-void tinySPI::end(void)
+void SPIClass::end(void)
 {
     USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
 }
 
-tinySPI SPI = tinySPI();                //instantiate a tinySPI object
+SPIClass SPI = SPIClass();                //instantiate a tinySPI object
 
 
 #endif
