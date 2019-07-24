@@ -66,21 +66,21 @@ static void turnOffPWM(uint8_t timer)
   #if defined(TCCR0A) && defined(COM0A1)
   if( timer == TIMER0A){
     cbi(TCCR0A, COM0A1);
-    cbi(TCCR0A, COM0A0);
+    //cbi(TCCR0A, COM0A0);
   } else
   #endif
 
   #if defined(TCCR0A) && defined(COM0B1)
   if( timer == TIMER0B){
     cbi(TCCR0A, COM0B1);
-    cbi(TCCR0A, COM0B0);
+    //cbi(TCCR0A, COM0B0);
   } else
   #endif
 
   #if defined(TCCR1A) && defined(COM1A1)
   if( timer == TIMER1A){
     cbi(TCCR1A, COM1A1);
-    cbi(TCCR1A, COM1A0);
+    //cbi(TCCR1A, COM1A0);
   } else
   #endif
     #if defined(TCCR1E) //attiny861
@@ -104,7 +104,7 @@ static void turnOffPWM(uint8_t timer)
   #if defined(TCCR1) && defined(COM1A1)
   if(timer == TIMER1A){
     cbi(TCCR1, COM1A1);
-    cbi(TCCR1, COM1A0);
+    //cbi(TCCR1, COM1A0);
   #ifdef OC1AX
     cbi(TCCR1D, OC1AX);
   #endif
@@ -114,7 +114,7 @@ static void turnOffPWM(uint8_t timer)
   #if defined(TCCR1A) && defined(COM1B1)
   if( timer == TIMER1B){
     cbi(TCCR1A, COM1B1);
-    cbi(TCCR1A, COM1B0);
+    //cbi(TCCR1A, COM1B0);
   #ifdef OC1BV
     cbi(TCCR1D, OC1BV);
   #endif
@@ -124,7 +124,7 @@ static void turnOffPWM(uint8_t timer)
   #if defined(TCCR1) && defined(COM1B1)
   if( timer == TIMER1B){
     cbi(GTCCR, COM1B1);
-    cbi(GTCCR, COM1B0);
+    //cbi(GTCCR, COM1B1);
   } else
   #endif
 
