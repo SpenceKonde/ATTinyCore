@@ -14,7 +14,7 @@ Interfaces | 2x UART, USI, slave I2C
 Clock options | Internal 1/8mhz, external crystal or clock up to 12mhz
 
 ### Warning: Pin 14 (PB3) does not work as an input unless watchdog timer is running
-This is a design flaw in the chip, as noted in the datasheet errata. 
+This is a design flaw in the chip, as noted in the datasheet errata.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at 115200 baud for 12mhz or higher, or 57600 when running at lower speeds. In order to work on the 1634, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application. As a consequence, the watchdog timer interrupt cannot be used if you're using the Optiboot bootloader (Watchdog reset still works), and the (sketch name)_bootloader.hex file generated via sketch -> Export Compiled Binary won't work. These issues are only relevant when programming through the bootloader. A version of the bootloader that operates on Serial1 is included in the bootloaders folder, though you will have to program it manually or modify boards.txt to use it.
