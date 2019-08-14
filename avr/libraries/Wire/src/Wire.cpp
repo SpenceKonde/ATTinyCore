@@ -867,7 +867,8 @@ size_t TwoWire::write(uint8_t data) {
 // or after requestFrom(address, numBytes)
 int TwoWire::available(void) {
   int value = -1;
-    value = TinyWireS.available();
+  value = TinyWireS.available();
+  return value;
 }
 
 // must be called in:
