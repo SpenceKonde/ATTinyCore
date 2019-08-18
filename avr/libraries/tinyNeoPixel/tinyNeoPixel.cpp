@@ -789,7 +789,7 @@ uint16_t tinyNeoPixel::numPixels(void) const {
 // brightness level).  If there's a significant step up in brightness,
 // the limited number of steps (quantization) in the old data will be
 // quite visible in the re-scaled version.  For a non-destructive
-// change, you'll need to re-render the full strip data.  
+// change, you'll need to re-render the full strip data.
 void tinyNeoPixel::setBrightness(uint8_t b) {
   // Stored brightness value is different than what's passed.
   // This simplifies the actual scaling math later, allowing a fast
