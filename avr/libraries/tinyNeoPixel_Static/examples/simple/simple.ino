@@ -1,11 +1,11 @@
-// NeoPixel simple sketch (c) 2013 Shae Erisson, adapted to tinyNeoPixel library by Spence Konde 2019. 
+// NeoPixel simple sketch (c) 2013 Shae Erisson, adapted to tinyNeoPixel library by Spence Konde 2019.
 // released under the GPLv3 license to match the rest of the AdaFruit NeoPixel library
 
 #include <tinyNeoPixel_Static.h>
 
 
 // Which pin on the Arduino is connected to the NeoPixels?
-// This example uses pin 3, which is on PORTA on all megaTinyCore boards, so default menu option will work. 
+// This example uses pin 3, which is on PORTA on all megaTinyCore boards, so default menu option will work.
 #define PIN            3
 
 // How many NeoPixels are attached to the Arduino?
@@ -26,10 +26,10 @@ tinyNeoPixel leds = tinyNeoPixel(NUMPIXELS, PIN, NEO_GRB, pixels);
 int delayval = 500; // delay for half a second
 
 void setup() {
-  pinMode(PIN,OUTPUT); 
-  //with tinyNeoPixel_Static, you need to set pinMode yourself. This means you can eliminate pinMode() 
-  //and replace with direct port writes to save a couple hundred bytes in sketch size (note that this 
-  //savings is only present when you eliminate *all* references to pinMode). 
+  pinMode(PIN,OUTPUT);
+  //with tinyNeoPixel_Static, you need to set pinMode yourself. This means you can eliminate pinMode()
+  //and replace with direct port writes to save a couple hundred bytes in sketch size (note that this
+  //savings is only present when you eliminate *all* references to pinMode).
   //leds.begin() not needed on tinyNeoPixel
 }
 
@@ -46,7 +46,7 @@ void loop() {
 
     delay(delayval); // Delay for a period of time (in milliseconds).
   }
-  //with tinyNeoPixel_Static, since we have the pixel array, we can also directly manipulate it - this sacrifices the correction for the pixel order, and the clarity of setColor to save a tiny amount of flash and time. 
+  //with tinyNeoPixel_Static, since we have the pixel array, we can also directly manipulate it - this sacrifices the correction for the pixel order, and the clarity of setColor to save a tiny amount of flash and time.
   for(int i=0;i<(NUMPIXELS*3);i++) {
     pixels[i]=150; //set byte i of array (this is channel (i%3) of led (i/3) (respectively, i%4 and i/4 for RGBW leds)
     leds.show(); //show

@@ -13,14 +13,14 @@
 
 // Since this is for the static version of the library, we need to supply the pixel array
 // This saves space by eliminating use of malloc() and free(), and makes the RAM used for
-// the frame buffer show up when the sketch is compiled. 
+// the frame buffer show up when the sketch is compiled.
 
 byte pixels[NUMPIXELS * 3];
 
 // When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
 // Note that for older NeoPixel strips you might need to change the third parameter--see the strandtest
-// example for more information on possible values. Finally, for the 4th argument we pass the array we 
-// defined above. 
+// example for more information on possible values. Finally, for the 4th argument we pass the array we
+// defined above.
 
 tinyNeoPixel strip = tinyNeoPixel(NUMPIXELS, PIN, NEO_GRB, pixels);
 
@@ -31,7 +31,7 @@ tinyNeoPixel strip = tinyNeoPixel(NUMPIXELS, PIN, NEO_GRB, pixels);
 
 void setup() {
   pinMode(PIN,OUTPUT); //set pin output - this is not done internally by the library for Static version of library
-  //strip.begin(); //Static version does not use this. 
+  //strip.begin(); //Static version does not use this.
   strip.show(); // Initialize all pixels to 'off'
 }
 

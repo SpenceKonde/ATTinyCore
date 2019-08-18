@@ -2,8 +2,8 @@
   Arduino library to control a wide variety of WS2811- and WS2812-based RGB
   LED devices such as Adafruit FLORA RGB Smart Pixels and NeoPixel strips.
   Currently handles 800 KHz bitstreams on 8, 10, 12, 16, and 20 MHz ATtiny
-  MCUs used with megaTinyCore 1.0.3+ and ATTinyCore 1.2.6+ with LEDs wired 
-  for various color orders. 
+  MCUs used with megaTinyCore 1.0.3+ and ATTinyCore 1.30+ with LEDs wired
+  for various color orders.
 
   Written by Phil Burgess / Paint Your Dragon for Adafruit Industries,
   contributions by PJRC, Michael Miller and other members of the open
@@ -579,12 +579,12 @@ void tinyNeoPixel::show(void) {
 
 #else
  #error "CPU SPEED NOT SUPPORTED"
-#endif 
+#endif
 
 // END AVR ----------------------------------------------------------------
 
 
-  interrupts();  
+  interrupts();
 #ifndef DISABLEMILLIS
   endTime = micros(); // Save EOD time for latch on next call
 #endif

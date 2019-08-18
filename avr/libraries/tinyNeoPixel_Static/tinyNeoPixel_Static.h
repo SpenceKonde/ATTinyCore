@@ -126,7 +126,7 @@ class tinyNeoPixel {
     canShow(void) { return (micros() - endTime) >= 50L; }
 #else
   inline bool
-    canShow(void) {return 1;} //we don't have micros here; 
+    canShow(void) {return 1;} //we don't have micros here;
 #endif
 
  private:

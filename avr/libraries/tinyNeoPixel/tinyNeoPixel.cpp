@@ -618,7 +618,7 @@ void tinyNeoPixel::show(void) {
 
 #else
  #error "CPU SPEED NOT SUPPORTED"
-#endif 
+#endif
 
 
 // END AVR ----------------------------------------------------------------
