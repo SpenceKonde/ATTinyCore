@@ -628,7 +628,9 @@ void tinyNeoPixel::show(void) {
 
 
   interrupts();
+  #ifndef DISABLEMILLIS
   endTime = micros(); // Save EOD time for latch on next call
+  #endif
 }
 
 // Set the output pin number

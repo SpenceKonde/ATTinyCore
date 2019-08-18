@@ -71,6 +71,8 @@
 #define FRACT_INC ((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000) >> 3)
 #define FRACT_MAX (1000 >> 3)
 
+#ifndef DISABLEMILLIS
+
 volatile unsigned long millis_timer_overflow_count = 0;
 volatile unsigned long millis_timer_millis = 0;
 static unsigned char millis_timer_fract = 0;
@@ -214,16 +216,38 @@ void yield(void) __attribute__ ((weak, alias("__empty")));
 
 void delay(unsigned long ms)
 {
+  #if (F_CPU>=1000000L)
   uint16_t start = (uint16_t)micros();
 
   while (ms > 0) {
     yield();
-    while (((uint16_t)micros() - start) >= 1000) {
+    while (((uint16_t)micros() - start) >= 1000 && ms) {
       ms--;
       start += 1000;
     }
   }
+  #else
+  uint32_t start = millis();
+  while((millis() - start) < ms)  /* NOP */yield();
+  return;
+  #endif
 }
+
+#else
+
+static void __empty() {
+  // Empty
+}
+void yield(void) __attribute__ ((weak, alias("__empty")));
+
+void delay(unsigned long ms) //non-millis-timer-dependent delay()
+{
+  while(ms--){
+    yield();
+    delayMicroseconds(1000);
+  }
+}
+#endif
 
 /* Delay for the given number of microseconds.  Assumes a 1,8,12,16,20 or 24 MHz clock. */
 void delayMicroseconds(unsigned int us)

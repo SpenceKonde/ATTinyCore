@@ -135,8 +135,14 @@ class tinyNeoPixel {
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w);
   uint32_t
     getPixelColor(uint16_t n) const;
+#ifndef DISABLEMILLIS
   inline bool
     canShow(void) { return (micros() - endTime) >= 50L; }
+#else
+  inline bool
+    canShow(void) {return 1;} //we don't have micros here; 
+#endif
+
 
  private:
 

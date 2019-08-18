@@ -186,8 +186,11 @@ int analogRead(int8_t);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t, int);
 
+#ifndef DISABLEMILLIS
 unsigned long millis(void);
 unsigned long micros(void);
+#endif
+
 void delay(unsigned long);
 void delayMicroseconds(unsigned int us);
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);

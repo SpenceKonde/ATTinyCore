@@ -30,6 +30,7 @@
 // private method to read stream with timeout
 int Stream::timedRead()
 {
+  #if !defined(DISABLEMILLIS)
   int c;
   _startMillis = millis();
   do {
@@ -37,11 +38,27 @@ int Stream::timedRead()
     if (c >= 0) return c;
   } while(millis() - _startMillis < _timeout);
   return -1;     // -1 indicates timeout
+  #else
+  int c; // @FIXME Why are we using an int for this?
+  // We can't use millis() to time ourselves, we will have to
+  // do this another way, timeout is no longer in milliseconds
+  // @TODO cycle-count the contents of this loop and figure out a proper
+  //   number for this, this is currently completely bogus based on
+  //   a complete and utter guess assuming 9.6MHz clock (ATTiny13 commonly)
+  //   This code shamelessly copied from github.com/sleemanj/ATTinyCore
+  uint32_t MaxLoops = _timeout << 10;
+  do {
+    c = read();
+    if (c >= 0) return c;
+  } while(MaxLoops-- > 0);
+  return -1;     // -1 indicates timeout
+  #endif
 }
 
 // private method to peek stream with timeout
 int Stream::timedPeek()
 {
+  #if !defined(DISABLEMILLIS)
   int c;
   _startMillis = millis();
   do {
@@ -49,7 +66,23 @@ int Stream::timedPeek()
     if (c >= 0) return c;
   } while(millis() - _startMillis < _timeout);
   return -1;     // -1 indicates timeout
+  #else
+  int c; // @FIXME Why are we using an int for this?
+  // We can't use millis() to time ourselves, we will have to
+  // do this another way, timeout is no longer in milliseconds
+  // @TODO cycle-count the contents of this loop and figure out a proper
+  //   number for this, this is currently completely bogus based on
+  //   a complete and utter guess assuming 9.6MHz clock (ATTiny13 commonly)
+  //   This code shamelessly copied from github.com/sleemanj/ATTinyCore
+  uint32_t MaxLoops = _timeout << 10;
+  do {
+    c = peek();
+    if (c >= 0) return c;
+  } while(MaxLoops-- > 0);
+  return -1;     // -1 indicates timeout
+  #endif
 }
+
 
 // returns peek of the next digit in the stream or -1 if timeout
 // discards non-numeric characters

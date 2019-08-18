@@ -584,8 +584,10 @@ void tinyNeoPixel::show(void) {
 // END AVR ----------------------------------------------------------------
 
 
-  interrupts();
+  interrupts();  
+#ifndef DISABLEMILLIS
   endTime = micros(); // Save EOD time for latch on next call
+#endif
 }
 
 // Set the output pin number
