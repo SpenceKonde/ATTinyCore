@@ -75,7 +75,7 @@ void tinyNeoPixel::show(void) {
   // allows the mainline code to start generating the next frame of data
   // rather than stalling for the latch.
   while(!canShow());
-  // endTime is a private member (rather than global var) so that mutliple
+  // endTime is a private member (rather than global var) so that multiple
   // instances on different pins can be quickly issued in succession (each
   // instance doesn't delay the next).
 
@@ -741,7 +741,7 @@ uint16_t tinyNeoPixel::numPixels(void) const {
 // brightness level).  If there's a significant step up in brightness,
 // the limited number of steps (quantization) in the old data will be
 // quite visible in the re-scaled version.  For a non-destructive
-// change, you'll need to re-render the full strip data.  C'est la vie.
+// change, you'll need to re-render the full strip data. 
 void tinyNeoPixel::setBrightness(uint8_t b) {
   // Stored brightness value is different than what's passed.
   // This simplifies the actual scaling math later, allowing a fast
