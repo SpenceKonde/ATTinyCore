@@ -13,7 +13,7 @@
 
 // Since this is for the static version of the library, we need to supply the pixel array
 // This saves space by eliminating use of malloc() and free(), and makes the RAM used for
-// the frame buffer show up when the sketch is compiled. 
+// the frame buffer show up when the sketch is compiled.
 
 byte pixels[NUMPIXELS * 3];
 
@@ -54,5 +54,4 @@ void loop() {
     pixels[i]=0; //turn off the above pixel
     //result is that each pixel will cycle through each of the primary colors (green, red, blue for most LEDs) in turn, and only one LED will be on at a time.
   }
-  
 }
