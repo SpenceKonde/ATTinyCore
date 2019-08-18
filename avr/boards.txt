@@ -13,6 +13,8 @@ menu.TimerClockSource=Timer 1 Clock
 menu.LTO=LTO (1.6.11+ only)
 menu.bootUART=Bootloader UART
 menu.wiremode=Wire Modes
+menu.neopixelport=tinyNeoPixel Port
+menu.millis=millis()/micros()
 
 
 
@@ -111,6 +113,15 @@ attinyx4.menu.pinmapping.anew=Clockwise (like damellis core)
 attinyx4.menu.pinmapping.anew.build.variant=tinyX4_reverse
 attinyx4.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and x41-series)
 attinyx4.menu.pinmapping.old.build.variant=tinyX4
+attinyx4.menu.millis.enabled=Enabled
+attinyx4.menu.millis.disabled=Disabled (saves flash)
+attinyx4.menu.millis.enabled.build.millis=
+attinyx4.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx4.menu.neopixelport.porta=Port A (CW:0~7,CCW:3~10)
+attinyx4.menu.neopixelport.portb=Port A (CW:8~11,CCW:0~2,11)
+attinyx4.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx4.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx4.build.extra_flags={build.millis} {build.neopixelport}
 
 attinyx4opti.name=ATtiny44/84 (optiboot)
 attinyx4opti.upload.tool=avrdude
@@ -193,6 +204,15 @@ attinyx4opti.menu.pinmapping.anew=Clockwise (like damellis core)
 attinyx4opti.menu.pinmapping.anew.build.variant=tinyX4_reverse
 attinyx4opti.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and x41-series)
 attinyx4opti.menu.pinmapping.old.build.variant=tinyX4
+attinyx4opti.menu.millis.enabled=Enabled
+attinyx4opti.menu.millis.disabled=Disabled (saves flash)
+attinyx4opti.menu.millis.enabled.build.millis=
+attinyx4opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx4opti.menu.neopixelport.porta=Port A (CW:0~7,CCW:3~10)
+attinyx4opti.menu.neopixelport.portb=Port A (CW:8~11,CCW:0~2,11)
+attinyx4opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx4opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx4opti.build.extra_flags={build.millis} {build.neopixelport}
 
 
 attinyx5.name=ATtiny25/45/85
@@ -218,10 +238,11 @@ attinyx5.menu.LTO.disable.ltoelfflags=
 attinyx5.menu.LTO.disable.ltocppflags=
 attinyx5.menu.LTO.disable.ltoarcmd=
 attinyx5.menu.TimerClockSource.default=CPU
+attinyx5.menu.TimerClockSource.default.build.pllsettings=
 attinyx5.menu.TimerClockSource.pll=64MHz
-attinyx5.menu.TimerClockSource.pll.build.extra_flags=-DPLLTIMER1
+attinyx5.menu.TimerClockSource.pll.build.pllsettings=-DPLLTIMER1
 attinyx5.menu.TimerClockSource.lowpll=32MHz
-attinyx5.menu.TimerClockSource.lowpll.build.extra_flags=-DLOWPLLTIMER1
+attinyx5.menu.TimerClockSource.lowpll.build.pllsettings=-DLOWPLLTIMER1
 attinyx5.menu.chip.85=ATtiny85
 attinyx5.menu.chip.85.build.mcu=attiny85
 attinyx5.menu.chip.85.upload.maximum_size=8192
@@ -293,6 +314,11 @@ attinyx5.menu.bod.2v7.bootloader.bod_bits=101
 attinyx5.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx5.menu.bod.4v3.bootloader.bod_bits=100
 attinyx5.build.variant=tinyX5
+attinyx5.menu.millis.enabled=Enabled
+attinyx5.menu.millis.disabled=Disabled (saves flash)
+attinyx5.menu.millis.enabled.build.millis=
+attinyx5.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx5.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings}
 
 attinyx5opti.name=ATtiny45/85 (Optiboot)
 attinyx5opti.upload.tool=avrdude
@@ -376,6 +402,11 @@ attinyx5opti.menu.bod.2v7.bootloader.bod_bits=101
 attinyx5opti.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx5opti.menu.bod.4v3.bootloader.bod_bits=100
 attinyx5opti.build.variant=tinyX5
+attinyx5opti.menu.millis.enabled=Enabled
+attinyx5opti.menu.millis.disabled=Disabled (saves flash)
+attinyx5opti.menu.millis.enabled.build.millis=
+attinyx5opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx5opti.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings}
 
 
 attinyx8.name=ATtiny48/88
@@ -431,6 +462,19 @@ attinyx8.menu.bod.2v7.bootloader.bod_bits=101
 attinyx8.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx8.menu.bod.4v3.bootloader.bod_bits=100
 attinyx8.build.variant=tinyX8
+attinyx8.menu.millis.enabled=Enabled
+attinyx8.menu.millis.disabled=Disabled (saves flash)
+attinyx8.menu.millis.enabled.build.millis=
+attinyx8.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx8.menu.neopixelport.porta=Port A (pins 23~26)
+attinyx8.menu.neopixelport.portb=Port B (pins 16~22,27)
+attinyx8.menu.neopixelport.portc=Port C (pins 9~13)
+attinyx8.menu.neopixelport.portd=Port D (pins 0~7)
+attinyx8.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx8.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx8.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attinyx8.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
+attinyx8.build.extra_flags={build.millis} {build.neopixelport}
 
 
 attinyx8opti.name=ATtiny48/88 (optiboot)
@@ -480,6 +524,19 @@ attinyx8opti.menu.bod.2v7.bootloader.bod_bits=101
 attinyx8opti.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx8opti.menu.bod.4v3.bootloader.bod_bits=100
 attinyx8opti.build.variant=tinyX8
+attinyx8opti.menu.millis.enabled=Enabled
+attinyx8opti.menu.millis.disabled=Disabled (saves flash)
+attinyx8opti.menu.millis.enabled.build.millis=
+attinyx8opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx8opti.menu.neopixelport.porta=Port A (pins 23~26)
+attinyx8opti.menu.neopixelport.portb=Port B (pins 16~22,27)
+attinyx8opti.menu.neopixelport.portc=Port C (pins 9~13)
+attinyx8opti.menu.neopixelport.portd=Port D (pins 0~7)
+attinyx8opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx8opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx8opti.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attinyx8opti.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
+attinyx8opti.build.extra_flags={build.millis} {build.neopixelport}
 
 attinyx7.name=ATtiny87/167 (No bootloader)
 attinyx7.upload.maximum_data_size=512
@@ -568,6 +625,15 @@ attinyx7.menu.pinmapping.new=New style (down each side)
 attinyx7.menu.pinmapping.new.build.variant=tinyX7_New
 attinyx7.menu.pinmapping.old=Old style (SCL on 13)
 attinyx7.menu.pinmapping.old.build.variant=tinyX7
+attinyx7.menu.millis.enabled=Enabled
+attinyx7.menu.millis.disabled=Disabled (saves flash)
+attinyx7.menu.millis.enabled.build.millis=
+attinyx7.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx7.menu.neopixelport.porta=Port A (pins 0~7)
+attinyx7.menu.neopixelport.portb=Port B (pins 8~15)
+attinyx7.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx7.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx7.build.extra_flags={build.millis} {build.neopixelport}
 
 
 attinyx7opti.name=ATtiny167/87 (Optiboot)
@@ -647,6 +713,15 @@ attinyx7opti.menu.pinmapping.new=New style (down each side)
 attinyx7opti.menu.pinmapping.new.build.variant=tinyX7_New
 attinyx7opti.menu.pinmapping.old=Old style (SCL on 13)
 attinyx7opti.menu.pinmapping.old.build.variant=tinyX7
+attinyx7opti.menu.millis.enabled=Enabled
+attinyx7opti.menu.millis.disabled=Disabled (saves flash)
+attinyx7opti.menu.millis.enabled.build.millis=
+attinyx7opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx7opti.menu.neopixelport.porta=Port A (pins 0~7)
+attinyx7opti.menu.neopixelport.portb=Port B (pins 8~15)
+attinyx7opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx7opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx7opti.build.extra_flags={build.millis} {build.neopixelport}
 
 
 
@@ -672,9 +747,9 @@ attinyx61.menu.LTO.disable.ltocppflags=
 attinyx61.menu.LTO.disable.ltoarcmd=
 attinyx61.menu.TimerClockSource.default=CPU
 attinyx61.menu.TimerClockSource.pll=64MHz
-attinyx61.menu.TimerClockSource.pll.build.extra_flags=-DPLLTIMER1
+attinyx61.menu.TimerClockSource.pll.build.pllsettings=-DPLLTIMER1
 attinyx61.menu.TimerClockSource.lowpll=32MHz
-attinyx61.menu.TimerClockSource.lowpll.build.extra_flags=-DLOWPLLTIMER1
+attinyx61.menu.TimerClockSource.lowpll.build.pllsettings=-DLOWPLLTIMER1
 attinyx61.menu.chip.861=ATtiny861
 attinyx61.menu.chip.861.build.mcu=attiny861
 attinyx61.menu.chip.861.upload.maximum_size=8192
@@ -747,6 +822,15 @@ attinyx61.menu.bod.2v7.bootloader.bod_bits=101
 attinyx61.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx61.menu.bod.4v3.bootloader.bod_bits=100
 attinyx61.build.variant=tinyX61
+attinyx61.menu.millis.enabled=Enabled
+attinyx61.menu.millis.disabled=Disabled (saves flash)
+attinyx61.menu.millis.enabled.build.millis=
+attinyx61.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx61.menu.neopixelport.porta=Port A (pins 0~2, 10~14)
+attinyx61.menu.neopixelport.portb=Port B (pins 3~9, 15)
+attinyx61.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx61.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx61.build.extra_flags={build.millis} {build.pllsettings} {build.neopixelport}
 
 attinyx61opti.name=ATtiny461/861 (optiboot)
 attinyx61opti.upload.tool=avrdude
@@ -771,9 +855,9 @@ attinyx61opti.menu.LTO.disable.ltocppflags=
 attinyx61opti.menu.LTO.disable.ltoarcmd=
 attinyx61opti.menu.TimerClockSource.default=CPU
 attinyx61opti.menu.TimerClockSource.pll=64MHz
-attinyx61opti.menu.TimerClockSource.pll.build.extra_flags=-DPLLTIMER1
+attinyx61opti.menu.TimerClockSource.pll.build.pllsettings=-DPLLTIMER1
 attinyx61opti.menu.TimerClockSource.lowpll=32MHz
-attinyx61opti.menu.TimerClockSource.lowpll.build.extra_flags=-DLOWPLLTIMER1
+attinyx61opti.menu.TimerClockSource.lowpll.build.pllsettings=-DLOWPLLTIMER1
 attinyx61opti.menu.chip.861=ATtiny861
 attinyx61opti.menu.chip.861.build.mcu=attiny861
 attinyx61opti.menu.chip.861.upload.maximum_size=7552
@@ -830,6 +914,15 @@ attinyx61opti.menu.bod.2v7.bootloader.bod_bits=101
 attinyx61opti.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx61opti.menu.bod.4v3.bootloader.bod_bits=100
 attinyx61opti.build.variant=tinyX61
+attinyx61opti.menu.millis.enabled=Enabled
+attinyx61opti.menu.millis.disabled=Disabled (saves flash)
+attinyx61opti.menu.millis.enabled.build.millis=
+attinyx61opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx61opti.menu.neopixelport.porta=Port A (pins 0~2, 10~14)
+attinyx61opti.menu.neopixelport.portb=Port B (pins 3~9, 15)
+attinyx61opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx61opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx61opti.build.extra_flags={build.millis} {build.pllsettings} {build.neopixelport}
 
 
 attinyx41.name=ATtiny441/841 (No bootloader)
@@ -955,7 +1048,6 @@ attinyx41.menu.bodpd.enabled=B.O.D. Enabled
 attinyx41.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attinyx41.menu.bodpd.sampled=B.O.D. Sampled Mode
 attinyx41.menu.bodpd.sampled.bootloader.bodpd_bits=01
-attinyx41.build.extra_flags={build.pinmap} {build.wiremode}
 attinyx41.menu.pinmapping.anew=Clockwise (like Rev. D boards)
 attinyx41.menu.pinmapping.anew.build.pinmap=-DNEW_PINOUT
 attinyx41.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and Rev. C boards)
@@ -966,6 +1058,15 @@ attinyx41.menu.wiremode.slave=Slave Only
 attinyx41.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attinyx41.menu.wiremode.both=Both (uses more flash)
 attinyx41.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
+attinyx41.menu.millis.enabled=Enabled
+attinyx41.menu.millis.disabled=Disabled (saves flash)
+attinyx41.menu.millis.enabled.build.millis=
+attinyx41.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx41.menu.neopixelport.porta=Port A (CW:0~7,CCW:3~10)
+attinyx41.menu.neopixelport.portb=Port A (CW:8~11,CCW:0~2,11)
+attinyx41.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx41.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx41.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode}
 
 attinyx41opti.name=ATtiny441/841 (Optiboot)
 attinyx41opti.upload.protocol=arduino
@@ -1071,7 +1172,6 @@ attinyx41opti.menu.bodpd.enabled=B.O.D. Enabled
 attinyx41opti.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attinyx41opti.menu.bodpd.sampled=B.O.D. Sampled Mode
 attinyx41opti.menu.bodpd.sampled.bootloader.bodpd_bits=01
-attinyx41opti.build.extra_flags={build.pinmap} {build.wiremode}
 attinyx41opti.menu.pinmapping.anew=Clockwise (like Rev. D boards)
 attinyx41opti.menu.pinmapping.anew.build.pinmap=-DNEW_PINOUT
 attinyx41opti.menu.pinmapping.old=Counterclockwise (like old ATTinyCore and Rev. C boards)
@@ -1082,6 +1182,15 @@ attinyx41opti.menu.wiremode.slave=Slave Only
 attinyx41opti.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attinyx41opti.menu.wiremode.both=Both (uses more flash)
 attinyx41opti.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
+attinyx41opti.menu.millis.enabled=Enabled
+attinyx41opti.menu.millis.disabled=Disabled (saves flash)
+attinyx41opti.menu.millis.enabled.build.millis=
+attinyx41opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx41opti.menu.neopixelport.porta=Port A (CW:0~7,CCW:3~10)
+attinyx41opti.menu.neopixelport.portb=Port A (CW:8~11,CCW:0~2,11)
+attinyx41opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx41opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx41opti.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode}
 
 attiny43.name=ATtiny43
 attiny43.upload.maximum_size=4096
@@ -1132,6 +1241,15 @@ attiny43.menu.clock.1internal.build.f_cpu=1000000L
 attiny43.menu.clock.128internal=128 kHz (internal WDT)
 attiny43.menu.clock.128internal.bootloader.low_fuses=0xC3
 attiny43.menu.clock.128internal.build.f_cpu=128000L
+attiny43.menu.millis.enabled=Enabled
+attiny43.menu.millis.disabled=Disabled (saves flash)
+attiny43.menu.millis.enabled.build.millis=
+attiny43.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny43.menu.neopixelport.porta=Port A (pins 8~15)
+attiny43.menu.neopixelport.portb=Port B (pins 0~7)
+attiny43.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attiny43.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attiny43.build.extra_flags={build.millis} {build.pllsettings} {build.neopixelport}
 
 attiny828.name=ATtiny828 (No bootloader)
 attiny828.upload.maximum_size=8192
@@ -1196,6 +1314,19 @@ attiny828.menu.wiremode.slave=Slave Only
 attiny828.menu.wiremode.slave.build.extra_flags=-DWIRE_SLAVE_ONLY
 attiny828.menu.wiremode.both=Both (uses more flash)
 attiny828.menu.wiremode.both.build.extra_flags=-DWIRE_BOTH
+attiny828.menu.millis.enabled=Enabled
+attiny828.menu.millis.disabled=Disabled (saves flash)
+attiny828.menu.millis.enabled.build.millis=
+attiny828.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny828.menu.neopixelport.porta=Port A (pins 0~7)
+attiny828.menu.neopixelport.portb=Port B (pins 8~15)
+attiny828.menu.neopixelport.portc=Port C (pins 16~23)
+attiny828.menu.neopixelport.portd=Port D (pins 24~27)
+attiny828.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attiny828.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attiny828.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attiny828.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
+attiny828.build.extra_flags={build.millis} {build.neopixelport} {build.wiremode}
 
 
 attiny828opti.name=ATtiny828 (Optiboot)
@@ -1248,11 +1379,24 @@ attiny828opti.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attiny828opti.menu.bodpd.sampled=B.O.D. Sampled Mode
 attiny828opti.menu.bodpd.sampled.bootloader.bodpd_bits=01
 attiny828opti.menu.wiremode.amaster=Master Only
-attiny828opti.menu.wiremode.amaster.build.extra_flags=-DWIRE_MASTER_ONLY
+attiny828opti.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
 attiny828opti.menu.wiremode.slave=Slave Only
-attiny828opti.menu.wiremode.slave.build.extra_flags=-DWIRE_SLAVE_ONLY
+attiny828opti.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attiny828opti.menu.wiremode.both=Both (uses more flash)
-attiny828opti.menu.wiremode.both.build.extra_flags=-DWIRE_BOTH
+attiny828opti.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
+attiny828opti.menu.millis.enabled=Enabled
+attiny828opti.menu.millis.disabled=Disabled (saves flash)
+attiny828opti.menu.millis.enabled.build.millis=
+attiny828opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny828opti.menu.neopixelport.porta=Port A (pins 0~7)
+attiny828opti.menu.neopixelport.portb=Port B (pins 8~15)
+attiny828opti.menu.neopixelport.portc=Port C (pins 16~23)
+attiny828opti.menu.neopixelport.portd=Port D (pins 24~27)
+attiny828opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attiny828opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attiny828opti.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attiny828opti.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
+attiny828opti.build.extra_flags={build.millis} {build.neopixelport} {build.wiremode}
 
 
 
@@ -1340,6 +1484,17 @@ attiny1634.menu.bodpd.enabled=B.O.D. Enabled
 attiny1634.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attiny1634.menu.bodpd.sampled=B.O.D. Sampled Mode
 attiny1634.menu.bodpd.sampled.bootloader.bodpd_bits=01
+attiny1634.menu.millis.enabled=Enabled
+attiny1634.menu.millis.disabled=Disabled (saves flash)
+attiny1634.menu.millis.enabled.build.millis=
+attiny1634.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny1634.menu.neopixelport.porta=Port A (pins 1~8)
+attiny1634.menu.neopixelport.portb=Port B (pins 0,14,15,16)
+attiny1634.menu.neopixelport.portc=Port C (pins 9~13, 17)
+attiny1634.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attiny1634.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attiny1634.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attiny1634.build.extra_flags={build.millis} {build.neopixelport}
 
 attiny1634opti.name=ATtiny1634 (Optiboot)
 attiny1634opti.upload.maximum_size=15744
@@ -1430,6 +1585,17 @@ attiny1634opti.menu.bodpd.enabled=B.O.D. Enabled
 attiny1634opti.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attiny1634opti.menu.bodpd.sampled=B.O.D. Sampled Mode
 attiny1634opti.menu.bodpd.sampled.bootloader.bodpd_bits=01
+attiny1634opti.menu.millis.enabled=Enabled
+attiny1634opti.menu.millis.disabled=Disabled (saves flash)
+attiny1634opti.menu.millis.enabled.build.millis=
+attiny1634opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny1634opti.menu.neopixelport.porta=Port A (pins 1~8)
+attiny1634opti.menu.neopixelport.portb=Port B (pins 0,14,15,16)
+attiny1634opti.menu.neopixelport.portc=Port C (pins 9~13, 17)
+attiny1634opti.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attiny1634opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attiny1634opti.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attiny1634opti.build.extra_flags={build.millis} {build.neopixelport}
 
 
 attinyx313.name=ATtiny2313/4313
@@ -1525,5 +1691,17 @@ attinyx313.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx313.menu.bod.4v3.bootloader.bod_bits=1001
 attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.0=no
 attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.1=yes
-attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.1.build.extra_flags=-DINITIALIZE_SECONDARY_TIMERS=1
+attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.0.build.initsectimer=
+attinyx313.menu.INITIALIZE_SECONDARY_TIMERS.1.build.initsectimer=-DINITIALIZE_SECONDARY_TIMERS=1
 attinyx313.build.variant=tinyX313
+attinyx313.menu.millis.enabled=Enabled
+attinyx313.menu.millis.disabled=Disabled (saves flash)
+attinyx313.menu.millis.enabled.build.millis=
+attinyx313.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx313.menu.neopixelport.porta=Port A (pins 2,3,17)
+attinyx313.menu.neopixelport.portb=Port B (pins 0,1,4~8)
+attinyx313.menu.neopixelport.portd=Port D (pins 9~16)
+attinyx313.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx313.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx313.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
+attinyx313.build.extra_flags={build.millis} {build.neopixelport} {build.initsectimer}
