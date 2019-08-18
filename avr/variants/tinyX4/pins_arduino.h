@@ -153,6 +153,7 @@ static const uint8_t A7 = 0x80 | 7;
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
+#warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
 
 // ATMEL ATTINY84 / ARDUINO
 //

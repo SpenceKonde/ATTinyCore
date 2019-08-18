@@ -153,7 +153,7 @@ static const uint8_t A7 = 0x80 | 7;
 
 #define digitalPinToInterrupt(p)  ((p) == 8 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
-
+#warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"
 // ATMEL ATTINY84 / ARDUINO
 //
 //                           +-\/-+

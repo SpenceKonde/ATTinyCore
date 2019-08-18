@@ -36,6 +36,7 @@
 
 #ifdef OLD_PINOUT
 
+#warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
 #define PIN_A0  (10)
 #define PIN_A1  ( 9)
 #define PIN_A2  ( 8)
@@ -50,6 +51,7 @@
 #define PIN_B3  (11)  /* RESET */
 #else
 
+#warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"
 #define PIN_A0  ( 0)
 #define PIN_A1  ( 1)
 #define PIN_A2  ( 2)
