@@ -823,16 +823,3 @@ uint8_t tinyNeoPixel::getBrightness(void) const {
 void tinyNeoPixel::clear() {
   memset(pixels, 0, numBytes);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
