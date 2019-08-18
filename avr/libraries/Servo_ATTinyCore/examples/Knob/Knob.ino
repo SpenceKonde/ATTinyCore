@@ -5,7 +5,7 @@
  modified on 8 Nov 2013
  by Scott Fitzgerald
  http://www.arduino.cc/en/Tutorial/Knob
- 
+
  If Servo library is installed to libraries, then that version (which doesn't support ATTiny parts)
  will be used instead of the one included with the core, which does. To get around this,
  include  Servo_ATTinyCore.h instead - this will always use the version that came with core.
