@@ -17,7 +17,7 @@ There are two versions of this library provided. `tinyNeoPixel` implements the e
 
 `tinyNeoPixel()` - empty constructor, set pin and length later with setPin(), updateLength(), and updateType().
 
-`tinyNeoPixel(uint16_t n, uint8_t p, neoPixelType t,uint8_t *pxl);` constructor for tinyNeoPixel_Static - the final argument is a uint_8 (byte) array sized to accomodate the data to be sent to the LED. For example:
+`tinyNeoPixel(uint16_t n, uint8_t p, neoPixelType t,uint8_t *pxl);` constructor for tinyNeoPixel_Static - the final argument is a uint_8 (byte) array sized to accommodate the data to be sent to the LED. For example:
 
 
   >#include <"tinyNeoPixel_Static.h">                 <br/>
