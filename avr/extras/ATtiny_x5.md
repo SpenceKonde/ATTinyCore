@@ -12,7 +12,7 @@ GPIO Pins | 5
 ADC Channels | 4 (including the one on reset)
 PWM Channels | 3
 Interfaces | USI, high speed timer
-Clock options | Internal 1/8MHz, Internal PLL at 16MHz, external crystal or clock up to 20MHz
+Clock options | Internal 1/8MHz, Internal PLL at 16MHz, external crystal up to 20MHz
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny85/45, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or7552b available for user code. In order to work on the 85/45, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
