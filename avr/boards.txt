@@ -15,8 +15,6 @@ menu.bootUART=Bootloader UART
 menu.wiremode=Wire Modes
 menu.neopixelport=tinyNeoPixel Port
 menu.millis=millis()/micros()
-build.millis=
-build.neopixelport=PORTB
 
 
 
