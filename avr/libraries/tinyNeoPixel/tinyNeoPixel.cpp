@@ -156,7 +156,7 @@ void tinyNeoPixel::show(void) {
   // resulting program isn't as massive as it might look from source here.
 
 // 8 MHz(ish) AVR ---------------------------------------------------------
-#if (F_CPU >= 7400000UL) && (F_CPU <= 9500000UL)
+#if (F_CPU >= 7370000UL) && (F_CPU <= 9500000UL)
 
   volatile uint8_t n1, n2 = 0;  // First, next bits out
 
