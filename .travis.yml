@@ -79,47 +79,47 @@ env:
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=pll, clock=16pll, eesave=disable, bod=1v8
     # PLL Timer source not compatible with Servo library and I can't add individual jobs for each library due to Travis CI's 200 job limit, so I can only do a single compilation to check this board configuration
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=pll,chip=85,clock=16pll,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=pll,chip=85,clock=16pll,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=lowpll, clock=20external, bod=2v7
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=lowpll,chip=85,clock=20external,eesave=disable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=lowpll,chip=85,clock=20external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=16external, bod=4v3
     # The libraries have already been tested with F_CPU of 16000000UL in the clock=16pll job so only a single compilation is necessary to test the clock=16external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=16external,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=16external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=enable,TimerClockSource=default,chip=85,clock=12external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=enable,TimerClockSource=default,chip=85,clock=12external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # chip=45, clock=8external
     # The libraries have already been tested with F_CPU of 8000000UL in the clock=8internal job so only a single compilation is necessary to test the clock=8external option
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=45,clock=8external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=45,clock=8external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # chip=25, clock=6external
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=25,clock=6external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=25,clock=6external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=4external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=4external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=4external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=1internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=1internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=737external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=737external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=737external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=92external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=92external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=92external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=11external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=11external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=11external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=14external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=14external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=14external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=184external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=184external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=184external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=128internal
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=128internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=128internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx5opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
@@ -128,10 +128,10 @@ env:
     # TimerClockSource=pll, chip=45, clock=16pll, eesave=disable, bod=1v8
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=pll,chip=45,clock=16pll,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=lowpll, clock=20external, bod=2v7
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=lowpll,chip=85,clock=20external,eesave=disable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=lowpll,chip=85,clock=20external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=16external, bod=4v3
     # The libraries have already been tested with F_CPU of 16000000UL in the clock=16pll job so only a single compilation is necessary to test the clock=16external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=16external,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=16external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=enable,TimerClockSource=default,chip=85,clock=12external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
@@ -140,19 +140,19 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=8external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=737external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=737external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=737external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=92external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=92external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=92external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=11external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=11external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=11external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=14external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=14external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=14external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=184external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=184external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=184external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx8
     # LTO=disable, chip=88, clock=8internal, eesave=aenable, bod=1v8
@@ -164,20 +164,20 @@ env:
     # chip=48, bod=4v3
     # BOD doesn't affect compilation so only a single compilation needs to be done to check the bod=4v3 option
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=disable,chip=48,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=disable,chip=48,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx8opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
     # LTO=disable, chip=88, clock=8internal, eesave=aenable, bod=1v8
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=disable,chip=88,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=disable,chip=88,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # chip=48, eesave=disable, bod=1v8
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=disable,chip=88,clock=8internal,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=disable,chip=88,clock=8internal,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, bod=2v7
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=enable,chip=88,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=enable,chip=88,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # bod=4v3
     # BOD doesn't affect compilation so only a single compilation needs to be done to check the bod=4v3 option
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=disable,chip=48,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx8opti:LTO=disable,chip=48,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx7
     # LTO=disable, chip=167, clock=8internal, eesave=aenable, bod=1v8, pinmapping=new
@@ -235,79 +235,79 @@ env:
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=pll, chip=461, clock=16pll, eesave=disable, bod=1v8
     # PLL Timer source not compatible with Servo library and I can't add individual jobs for each library due to Travis CI's 200 job limit, so I can only do a single compilation to check this board configuration
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=pll,chip=461,clock=16pll,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=pll,chip=461,clock=16pll,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=lowpll, clock=20external, bod=2v7
     # PLL Timer source not compatible with Servo library and I can't add individual jobs for each library due to Travis CI's 200 job limit, so I can only do a single compilation to check this board configuration
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=lowpll,chip=861,clock=20external,eesave=disable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=lowpll,chip=861,clock=20external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=16external, bod=4v3
     # The libraries have already been tested with F_CPU of 16000000UL in the clock=16pll job so only a single compilation is necessary to test the clock=16external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=16external,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=16external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=enable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=enable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # chip=261, clock=8external
     # The libraries have already been tested with F_CPU of 8000000UL in the clock=8internal job so only a single compilation is necessary to test the clock=8external option
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=261,clock=8external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=261,clock=8external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=6external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=6external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=6external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=4external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=4external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=4external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=1internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=1internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=737external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=737external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=737external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=92external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=92external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=92external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=11external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=11external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=11external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=14external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=14external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=14external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=184external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=184external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=184external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx61opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
     # LTO=disable, TimerClockSource=default, chip=861, clock=8internal, eesave=aenable, bod=1v8
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=pll, chip=461, clock=16pll, eesave=disable, bod=1v8
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=pll,chip=461,clock=16pll,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=pll,chip=461,clock=16pll,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=lowpll, clock=20external, bod=2v7
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=lowpll,chip=861,clock=20external,eesave=disable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=lowpll,chip=861,clock=20external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=16external, bod=4v3
     # The libraries have already been tested with F_CPU of 16000000UL in the clock=16pll job so only a single compilation is necessary to test the clock=16external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=16external,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=16external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=enable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=enable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # clock=8external
     # The libraries have already been tested with F_CPU of 8000000UL in the clock=8internal job so only a single compilation is necessary to test the clock=8external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=8external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=8external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=737external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=737external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=737external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=92external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=92external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=92external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=11external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=11external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=11external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=14external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=14external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=14external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=184external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=184external,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61opti:LTO=disable,TimerClockSource=default,chip=861,clock=184external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx41
     # LTO=disable, chip=841, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled, pinmapping=anew,wiremode=amaster, wiremode=both
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # clock=20external, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled, pinmapping=old
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=20external,eesave=disable,bod=2v7,pinmapping=old,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=20external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled,pinmapping=old,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # clock=16external, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=16external,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=disable,chip=841,clock=16external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx41:LTO=enable,chip=841,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # chip=441, clock=8external, wiremode=amaster
@@ -348,9 +348,9 @@ env:
     # bootUART=UART0, LTO=disable, chip=841, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled, pinmapping=anew,wiremode=amaster, wiremode=amaster
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART0,LTO=disable,chip=841,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # bootUART=UART1, chip=441, clock=20external, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled, pinmapping=old, wiremode=slave
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART1,LTO=disable,chip=441,clock=20external,eesave=disable,bod=2v7,pinmapping=old,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART1,LTO=disable,chip=441,clock=20external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled,pinmapping=old,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # clock=16external, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART0,LTO=disable,chip=841,clock=16external,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART0,LTO=disable,chip=841,clock=16external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled,pinmapping=anew,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # LTO=enable, clock=12external
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART0,LTO=enable,chip=841,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # clock=8external
@@ -372,16 +372,16 @@ env:
     # attiny43
     # LTO=disable, clock=8internal, eesave=aenable, bod=disable
     # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=8internal,eesave=aenable,bod=disable" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=8internal,eesave=aenable,bod=disable,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=4internal, eesave=disable, bod=1v8
     # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=4internal,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=4internal,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal, bod=2v7
     # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=1internal,eesave=aenable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=disable,clock=1internal,eesave=aenable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, bod=4v3
     # The Servo library is not compatible with ATtiny43 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=enable,clock=8internal,eesave=aenable,bod=4v3" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny43:LTO=enable,clock=8internal,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
 
     # attiny828
     # LTO=disable, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled, wiremode=amaster
@@ -389,18 +389,18 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled, wiremode=slave
     # The Wire library can't be used in master mode when the wiremode option is set to slave and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=1internal,eesave=disable,bod=2v7,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828:LTO=disable,clock=1internal,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=16external, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny828:LTO=enable,clock=8internal,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny828:LTO=enable,clock=8internal,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
 
     # attiny828opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
     # LTO=disable, vcc=3v3, bod=1v8, bodact=disabled, bodpd=disabled, wiremode=amaster
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,vcc=3v3,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # vcc=5v, bod=2v7, bodact=enabled, bodpd=enabled, wiremode=slave
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,vcc=5v,bod=2v7,bodact=enabled,bodpd=enabled,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,vcc=5v,bod=2v7,neopixelport=portb,millis=enabled,bodact=enabled,bodpd=enabled,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=enable,vcc=3v3,bod=4v3,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=enable,vcc=3v3,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
 
     # attiny1634
     # LTO=disable, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled
@@ -432,10 +432,10 @@ env:
     # bootUART=UART0, LTO=disable, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634opti:bootUART=UART0,LTO=disable,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # bootUART=UART1, clock=12external, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634opti:bootUART=UART1,LTO=disable,clock=12external,eesave=disable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634opti:bootUART=UART1,LTO=disable,clock=12external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=8external, bod=4v3, bodact=sampled, bodpd=sampled
     # The libraries have already been tested with F_CPU of 8000000UL in the clock=8internal job so only a single compilation is necessary to test the clock=8external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634opti:bootUART=UART0,LTO=disable,clock=8external,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634opti:bootUART=UART0,LTO=disable,clock=8external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=737external
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634opti:bootUART=UART0,LTO=enable,clock=737external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # clock=921external
