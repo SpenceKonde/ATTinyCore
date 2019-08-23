@@ -3,13 +3,13 @@
 
 #define PIN 6
 
-#define NUM_LEDS 60
+#define NUM_LEDS 20
 
 #define BRIGHTNESS 50
 
 tinyNeoPixel strip = tinyNeoPixel(NUM_LEDS, PIN, NEO_GRBW + NEO_KHZ800);
 
-int gamma[] = {
+byte gamma[] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,
     1,  1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2,
