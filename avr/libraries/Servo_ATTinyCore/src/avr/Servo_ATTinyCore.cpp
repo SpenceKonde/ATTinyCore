@@ -24,7 +24,7 @@
 #include <avr/interrupt.h>
 #include <Arduino.h>
 
-#include "Servo.h"
+#include "Servo_ATTinyCore.h"
 
 #if (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
 
