@@ -1,6 +1,8 @@
 // NeoPixel Ring simple sketch (c) 2013 Shae Erisson
 // released under the GPLv3 license to match the rest of the AdaFruit NeoPixel library
 
+#if (F_CPU>7370000) //neopixel library required 7.37MHz minimum clock speed; this line is used to skip this sketch in internal testing. It is not needed in your sketches.
+
 #include <tinyNeoPixel.h>
 
 
@@ -37,3 +39,8 @@ void loop() {
 
   }
 }
+#else //neopixel library required 7.37MHz minimum clock speed; these and following lines are used to skip this sketch in internal testing. It is not needed in your sketches.
+#warning "Neopixel control requires F_CPU > 7.37MHz"
+void setup() {}
+void loop() {}
+#endif

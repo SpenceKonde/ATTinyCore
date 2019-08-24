@@ -1,6 +1,8 @@
 // NeoPixel simple sketch (c) 2013 Shae Erisson, adapted to tinyNeoPixel library by Spence Konde 2019.
 // released under the GPLv3 license to match the rest of the AdaFruit NeoPixel library
 
+#if (F_CPU>7370000) //neopixel library required 7.37MHz minimum clock speed; this line is used to skip this sketch in internal testing. It is not needed in your sketches.
+
 #include <tinyNeoPixel_Static.h>
 
 
@@ -55,3 +57,8 @@ void loop() {
     //result is that each pixel will cycle through each of the primary colors (green, red, blue for most LEDs) in turn, and only one LED will be on at a time.
   }
 }
+#else //neopixel library required 7.37MHz minimum clock speed; these and following lines are used to skip this sketch in internal testing. It is not needed in your sketches.
+#warning "Neopixel control requires F_CPU > 7.37MHz"
+void setup() {}
+void loop() {}
+#endif

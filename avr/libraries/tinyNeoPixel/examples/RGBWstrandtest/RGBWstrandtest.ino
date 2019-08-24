@@ -1,3 +1,5 @@
+#if (F_CPU>7370000) //neopixel library required 7.37MHz minimum clock speed; this line is used to skip this sketch in internal testing. It is not needed in your sketches.
+
 #include <tinyNeoPixel.h>
 
 
@@ -246,3 +248,9 @@ uint8_t green(uint32_t c) {
 uint8_t blue(uint32_t c) {
   return (c);
 }
+
+#else //neopixel library required 7.37MHz minimum clock speed; these and following lines are used to skip this sketch in internal testing. It is not needed in your sketches.
+#warning "Neopixel control requires F_CPU > 7.37MHz"
+void setup() {}
+void loop() {}
+#endif

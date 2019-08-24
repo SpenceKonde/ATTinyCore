@@ -3,6 +3,8 @@
 // press the button it will change to a new pixel animation.  Note that you need to press the
 // button once to start the first animation!
 
+#if (F_CPU>7370000) //neopixel library required 7.37MHz minimum clock speed; this line is used to skip this sketch in internal testing. It is not needed in your sketches.
+
 #include <tinyNeoPixel_Static.h>
 
 #define BUTTON_PIN   2    // Digital IO pin connected to the button.  This will be
@@ -170,3 +172,8 @@ uint32_t Wheel(byte WheelPos) {
   WheelPos -= 170;
   return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
+#else //neopixel library required 7.37MHz minimum clock speed; these and following lines are used to skip this sketch in internal testing. It is not needed in your sketches.
+#warning "Neopixel control requires F_CPU > 7.37MHz"
+void setup() {}
+void loop() {}
+#endif
