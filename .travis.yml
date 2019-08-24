@@ -156,11 +156,11 @@ env:
 
     # attinyx8
     # LTO=disable, chip=88, clock=8internal, eesave=aenable, bod=1v8
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=disable,chip=88,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=disable,chip=88,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=1internal, eesave=disable, bod=1v8
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=disable,chip=88,clock=1internal,eesave=disable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=disable,chip=88,clock=1internal,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, bod=2v7
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=enable,chip=88,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx8:LTO=enable,chip=88,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # chip=48, bod=4v3
     # BOD doesn't affect compilation so only a single compilation needs to be done to check the bod=4v3 option
     # Some example sketches are too big to compile for this chip and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
