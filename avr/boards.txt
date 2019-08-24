@@ -856,6 +856,7 @@ attinyx61opti.menu.LTO.disable.ltoelfflags=
 attinyx61opti.menu.LTO.disable.ltocppflags=
 attinyx61opti.menu.LTO.disable.ltoarcmd=
 attinyx61opti.menu.TimerClockSource.default=CPU
+attinyx61opti.menu.TimerClockSource.default.build.pllsettings=
 attinyx61opti.menu.TimerClockSource.pll=64MHz
 attinyx61opti.menu.TimerClockSource.pll.build.pllsettings=-DPLLTIMER1
 attinyx61opti.menu.TimerClockSource.lowpll=32MHz
