@@ -1003,7 +1003,7 @@ bool Servo::attached()
 #else //end of 8-bit servo code
 
 
-#include "Servo.h"
+#include "Servo_ATTinyCore.h"
 
 #define usToTicks(_us)    (( clockCyclesPerMicrosecond()* _us) / 8)     // converts microseconds to tick (assumes prescale of 8)  // 12 Aug 2009
 #define ticksToUs(_ticks) (( (unsigned)_ticks * 8)/ clockCyclesPerMicrosecond() ) // converts from ticks back to microseconds
