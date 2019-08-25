@@ -406,10 +406,10 @@ env:
     # LTO=disable, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny1634:LTO=disable,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=12external, eesave=disable, bod=2v7, bodact=enabled, bodpd=enabled
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny1634:LTO=disable,clock=12external,eesave=disable,bod=2v7" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny1634:LTO=disable,clock=12external,eesave=disable,bod=2v7,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=8external, bod=4v3, bodact=sampled, bodpd=sampled
     # The libraries have already been tested with F_CPU of 8000000UL in the clock=8internal job so only a single compilation is necessary to test the clock=8external option
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634:LTO=disable,clock=8external,eesave=aenable,bod=4v3,bodact=sampled,bodpd=sampled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny1634:LTO=disable,clock=8external,eesave=aenable,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, clock=737external
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attiny1634:LTO=enable,clock=737external,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
     # clock=92external

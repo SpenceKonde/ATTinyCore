@@ -1252,7 +1252,7 @@ attiny43.menu.neopixelport.porta=Port A (pins 8~15)
 attiny43.menu.neopixelport.portb=Port B (pins 0~7)
 attiny43.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
 attiny43.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
-attiny43.build.extra_flags={build.millis} {build.pllsettings} {build.neopixelport}
+attiny43.build.extra_flags={build.millis} {build.neopixelport}
 
 attiny828.name=ATtiny828 (No bootloader)
 attiny828.upload.maximum_size=8192
@@ -1312,11 +1312,11 @@ attiny828.menu.bodpd.enabled.bootloader.bodpd_bits=10
 attiny828.menu.bodpd.sampled=B.O.D. Sampled Mode
 attiny828.menu.bodpd.sampled.bootloader.bodpd_bits=01
 attiny828.menu.wiremode.amaster=Master Only
-attiny828.menu.wiremode.amaster.build.extra_flags=-DWIRE_MASTER_ONLY
+attiny828.menu.wiremode.amaster.build.wiremode=-DWIRE_MASTER_ONLY
 attiny828.menu.wiremode.slave=Slave Only
 attiny828.menu.wiremode.slave.build.extra_flags=-DWIRE_SLAVE_ONLY
 attiny828.menu.wiremode.both=Both (uses more flash)
-attiny828.menu.wiremode.both.build.extra_flags=-DWIRE_BOTH
+attiny828.menu.wiremode.both.build.wiremode=-DWIRE_BOTH
 attiny828.menu.millis.enabled=Enabled
 attiny828.menu.millis.disabled=Disabled (saves flash)
 attiny828.menu.millis.enabled.build.millis=
