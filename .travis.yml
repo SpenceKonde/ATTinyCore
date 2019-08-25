@@ -232,7 +232,7 @@ env:
 
     # attinyx61
     # LTO=disable, TimerClockSource=default, chip=861, clock=8internal, eesave=aenable, bod=1v8
-    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # TimerClockSource=pll, chip=461, clock=16pll, eesave=disable, bod=1v8
     # PLL Timer source not compatible with Servo library and I can't add individual jobs for each library due to Travis CI's 200 job limit, so I can only do a single compilation to check this board configuration
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=pll,chip=461,clock=16pll,eesave=disable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
