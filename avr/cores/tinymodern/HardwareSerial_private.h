@@ -23,7 +23,7 @@
 
 #include "wiring_private.h"
 
-// this next line disables the entire HardwareSerial.cpp, 
+// this next line disables the entire HardwareSerial.cpp,
 // this is so I can support Attiny series and any other chip without a uart
 #if defined(HAVE_HWSERIAL0) || defined(HAVE_HWSERIAL1) || defined(HAVE_HWSERIAL2) || defined(HAVE_HWSERIAL3)
 
@@ -67,18 +67,18 @@
 // UART0 for the other UARTs as well, in case these values ever get
 // changed for future hardware.
 #if defined(TXC1) && (TXC1 != TXC0 || RXEN1 != RXEN0 || RXCIE1 != RXCIE0 || \
-		      UDRIE1 != UDRIE0 || U2X1 != U2X0 || UPE1 != UPE0 || \
-		      UDRE1 != UDRE0)
+          UDRIE1 != UDRIE0 || U2X1 != U2X0 || UPE1 != UPE0 || \
+          UDRE1 != UDRE0)
 #error "Not all bit positions for UART1 are the same as for UART0"
 #endif
 #if defined(TXC2) && (TXC2 != TXC0 || RXEN2 != RXEN0 || RXCIE2 != RXCIE0 || \
-		      UDRIE2 != UDRIE0 || U2X2 != U2X0 || UPE2 != UPE0 || \
-		      UDRE2 != UDRE0)
+          UDRIE2 != UDRIE0 || U2X2 != U2X0 || UPE2 != UPE0 || \
+          UDRE2 != UDRE0)
 #error "Not all bit positions for UART2 are the same as for UART0"
 #endif
 #if defined(TXC3) && (TXC3 != TXC0 || RXEN3 != RXEN0 || RXCIE3 != RXCIE0 || \
-		      UDRIE3 != UDRIE0 || U3X3 != U3X0 || UPE3 != UPE0 || \
-		      UDRE3 != UDRE0)
+          UDRIE3 != UDRIE0 || U3X3 != U3X0 || UPE3 != UPE0 || \
+          UDRE3 != UDRE0)
 #error "Not all bit positions for UART3 are the same as for UART0"
 #endif
 
