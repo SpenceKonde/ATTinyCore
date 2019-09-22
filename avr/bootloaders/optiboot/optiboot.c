@@ -171,7 +171,7 @@
 /*      at BOOTSTART+2, controllable with compile option  */
 /* July 2018                          */
 /* 7.0    WestfW (with much input from Others)          */
-/*    Fix MCUSR treatement as per much discussion,      */
+/*    Fix MCUSR treatment as per much discussion,      */
 /*     Patches by MarkG55, majekw.  Preserve value      */
 /*     for the application, as much as possible.      */
 /*     see https://github.com/Optiboot/optiboot/issues/97 */

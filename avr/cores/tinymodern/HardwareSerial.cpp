@@ -219,7 +219,7 @@ void HardwareSerial::flush()
     _tx_udr_empty_irq();
   }
   // If we get here, nothing is queued anymore (DRIE is disabled) and
-  // the hardware finished tranmission (TXC is set).
+  // the hardware finished transmission (TXC is set).
 }
 
 size_t HardwareSerial::write(uint8_t c)

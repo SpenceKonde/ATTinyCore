@@ -63,7 +63,7 @@
 #endif
 #endif // !defined TXC0
 
-// Check at compiletime that it is really ok to use the bit positions of
+// Check at compile time that it is really ok to use the bit positions of
 // UART0 for the other UARTs as well, in case these values ever get
 // changed for future hardware.
 #if defined(TXC1) && (TXC1 != TXC0 || RXEN1 != RXEN0 || RXCIE1 != RXCIE0 || \
