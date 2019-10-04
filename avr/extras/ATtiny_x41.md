@@ -54,7 +54,7 @@ The names of interrupt vectors used in the 841 and 441 are:
 INT0_vect
 PCINT0_vect
 PCINT1_vect
-WDT_vect   (note: this is unavailable when using the bootloader, and the IDE will not warn you about it)
+WDT_vect   (note: this is unavailable when using the bootloader before 1.2.0)
 TIMER1_CAPT_vect
 TIMER1_COMPA_vect
 TIMER1_COMPB_vect
@@ -64,7 +64,7 @@ TIMER0_COMPB_vect
 TIMER0_OVF_vect
 ANA_COMP0_vect
 ADC_vect
-EE_RDY_vect
+EE_RDY_vect (note: this is unavailable when using the bootloader on 1.2.0 and later; note that it is not used by the EEPROM library)
 ANA_COMP1_vect
 TIMER2_CAPT_vect
 TIMER2_COMPA_vect
