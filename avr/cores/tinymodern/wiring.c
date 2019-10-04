@@ -493,8 +493,10 @@ void init(void)
   MillisTimer_ClockSelect( MillisTimer_Prescale_Index );
 
   // Enable the overflow interrupt (this is the basic system tic-toc for millis)
+  #ifndef DISABLEMILLIS
   MillisTimer_EnableOverflowInterrupt();
-
+  #endif
+  
   // Initialize the timer used for Tone
   #if defined( INITIALIZE_SECONDARY_TIMERS ) && INITIALIZE_SECONDARY_TIMERS
     initToneTimerInternal();
