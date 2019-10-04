@@ -38,11 +38,11 @@ UCSR0B&=~(1<<RXEN0); // disable RX
 ```
 
 ### ADC Reference options
-Note that when using the Internal 1.1v reference, you must not apply an external voltage to AREF pin - this sometimes appears to work, but other times results in unexpected ADC readings.
+Note that **when using the Internal 1.1v reference, you must not apply an external voltage to AREF pin** - this sometimes appears to work, but other times results in erroneous ADC readings. Unlike some parts, there is no option to use the internal reference without the AREF pin being used.
 
 * DEFAULT: Vcc
 * EXTERNAL: External voltage applied to AREF pin
-* INTERNAL1V1: Internal 1.1v reference
+* INTERNAL1V1: Internal 1.1v reference, AREF may have added capacitor for improved ADC stability. 
 * INTERNAL: synonym for INTERNAL1V1
 
 ### Overclocking
