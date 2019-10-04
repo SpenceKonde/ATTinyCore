@@ -42,7 +42,7 @@ Note that **when using the Internal 1.1v reference, you must not apply an extern
 
 * DEFAULT: Vcc
 * EXTERNAL: External voltage applied to AREF pin
-* INTERNAL1V1: Internal 1.1v reference, AREF may have added capacitor for improved ADC stability. 
+* INTERNAL1V1: Internal 1.1v reference, AREF may have added capacitor for improved ADC stability.
 * INTERNAL: synonym for INTERNAL1V1
 
 ### Overclocking
