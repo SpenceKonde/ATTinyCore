@@ -496,7 +496,7 @@ void init(void)
   #ifndef DISABLEMILLIS
   MillisTimer_EnableOverflowInterrupt();
   #endif
-  
+
   // Initialize the timer used for Tone
   #if defined( INITIALIZE_SECONDARY_TIMERS ) && INITIALIZE_SECONDARY_TIMERS
     initToneTimerInternal();
