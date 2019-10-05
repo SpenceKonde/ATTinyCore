@@ -836,7 +836,7 @@ void init(void)
   #endif
   // this needs to be called before setup() or some functions won't work there
   sei();
-  
+
   #ifndef DISABLEMILLIS
   // Enable the overlow interrupt (this is the basic system tic-toc for millis)
   #if defined(TIMSK) && defined(TOIE0) && (TIMER_TO_USE_FOR_MILLIS == 0)
