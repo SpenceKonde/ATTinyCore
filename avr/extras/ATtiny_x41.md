@@ -11,8 +11,12 @@ GPIO Pins | 11
 ADC Channels | 12 (including the one on reset), many differential channels
 PWM Channels | 6
 Interfaces | 2x UART, SPI, slave I2C
-Clock options | Internal 1/8mhz, external crystal or clock up to 16mhz
+Clock options | Internal 1/8MHz, external crystal or clock* up to 16MHz, overclocking to 20MHz.
 Packages | SOIC-14, MLF-20 (QFN), VQFN-20
+
+* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
+
+Two pinout options are available, clockwise and counterclockwise. Be sure that the one you have selected is the one that you intend!
 
 The ATtiny x41 series is a more advanced version of the ATtiny 84. It is pin compatible, though available only in surface mount packages, and offers an incredible array of peripherals, whilst costing only slightly more than an ATtiny 84. Tests have shown that despite manufacturer spec'ed max speed of 16mhz, they typically work without issue at 20mhz @ 5v and room temperature.
 
