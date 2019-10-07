@@ -597,6 +597,27 @@ ifndef PRODUCTION
 	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_8000000L.lst
 endif
 
+attiny828at12:
+	$(MAKE) attiny828 AVR_FREQ=12000000L BAUD_RATE=57600
+	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_12000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_12000000L.lst
+endif
+
+attiny828at16:
+	$(MAKE) attiny828 AVR_FREQ=16000000L BAUD_RATE=115200
+	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_16000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_16000000L.lst
+endif
+
+attiny828at20:
+	$(MAKE) attiny828 AVR_FREQ=20000000L BAUD_RATE=115200
+	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_20000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_20000000L.lst
+endif
+
 attiny828at8_5v:
 	$(MAKE) attiny828 AVR_FREQ=8200000L BAUD_RATE=57600
 	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_8200000L.hex
@@ -642,6 +663,22 @@ ifndef PRODUCTION
 	mv $(PROGRAM)_attiny88.lst $(PROGRAM)_attiny88_8000000L.lst
 endif
 
+attiny88at12:
+	$(MAKE) attiny88 AVR_FREQ=12000000L BAUD_RATE=19200
+	mv $(PROGRAM)_attiny88.hex $(PROGRAM)_attiny88_12000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny88.lst $(PROGRAM)_attiny88_12000000L.lst
+endif
+
+attiny88at16:
+	$(MAKE) attiny88 AVR_FREQ=16000000L BAUD_RATE=19200
+	mv $(PROGRAM)_attiny88.hex $(PROGRAM)_attiny88_16000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny88.lst $(PROGRAM)_attiny88_16000000L.lst
+endif
+
+
+
 attiny88at1:
 	$(MAKE) attiny88 AVR_FREQ=1000000L BAUD_RATE=2400
 	mv $(PROGRAM)_attiny88.hex $(PROGRAM)_attiny88_1000000L.hex
@@ -673,12 +710,28 @@ ifndef PRODUCTION
 	mv $(PROGRAM)_attiny48.lst $(PROGRAM)_attiny48_8000000L.lst
 endif
 
+attiny84at12:
+	$(MAKE) attiny48 AVR_FREQ=12000000L BAUD_RATE=19200
+	mv $(PROGRAM)_attiny48.hex $(PROGRAM)_attiny88_12000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny48.lst $(PROGRAM)_attiny88_12000000L.lst
+endif
+
+attiny84at16:
+	$(MAKE) attiny84 AVR_FREQ=16000000L BAUD_RATE=19200
+	mv $(PROGRAM)_attiny48.hex $(PROGRAM)_attiny88_16000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny48.lst $(PROGRAM)_attiny88_16000000L.lst
+endif
+
 attiny48at1:
 	$(MAKE) attiny48 AVR_FREQ=1000000L BAUD_RATE=2400
 	mv $(PROGRAM)_attiny48.hex $(PROGRAM)_attiny48_1000000L.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny48.lst $(PROGRAM)_attiny48_1000000L.lst
 endif
+
+
 
 #-------------------
 # ATtiny85 - No LED (pins are scarce, and led blink routine would need to be adapted to x5 timer, and it saves us a page of flash)
