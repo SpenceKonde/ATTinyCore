@@ -11,7 +11,9 @@ GPIO Pins | 17
 ADC Channels | None
 PWM Channels | 3
 Interfaces | UART, USI
-Clock options | Internal 0.5/1/4/8mhz, external crystal or clock up to 20mhz
+Clock options | Internal 0.5/1/4/8mhz, external crystal or clock* up to 20mhz
+
+* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
 
 ### Tone Support
 Tone() uses timer1. For best results, use pin 12, and 13, as this will use the hardware output compare to generate the square wave instead of using interrupts. In order to use Tone(), you must select Initialize Secondard Timers: Yes
