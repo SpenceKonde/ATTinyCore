@@ -396,11 +396,11 @@ env:
     # attiny828opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
     # LTO=disable, vcc=3v3, bod=1v8, bodact=disabled, bodpd=disabled, wiremode=amaster
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,vcc=3v3,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,clock=8internal,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # vcc=5v, bod=2v7, bodact=enabled, bodpd=enabled, wiremode=slave
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,vcc=5v,bod=2v7,neopixelport=portb,millis=enabled,bodact=enabled,bodpd=enabled,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=disable,clock=8internal5v,bod=2v7,neopixelport=portb,millis=enabled,bodact=enabled,bodpd=enabled,wiremode=slave" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # LTO=enable, bod=4v3, bodact=sampled, bodpd=sampled, wiremode=both
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=enable,vcc=3v3,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attiny828opti:LTO=enable,clock=16external,bod=4v3,neopixelport=portb,millis=enabled,bodact=sampled,bodpd=sampled,wiremode=both" ALLOW_FAILURE="false" IDE_VERSION_LIST="$LTO_IDE_VERSION_LIST"
 
     # attiny1634
     # LTO=disable, clock=8internal, eesave=aenable, bod=1v8, bodact=disabled, bodpd=disabled
