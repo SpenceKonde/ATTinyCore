@@ -27,6 +27,9 @@ The ATtiny x8 series of microcontrollers, in the interest of lowering costs, doe
 
 While the +/- 10% accuracy is not close enough to guarantee UART serial will work (that requires ~2% accuracy), every chip I have tested at room temperature and 3.3 ~ 5v has been close enough to 8MHz for serial to work without calibration.
 
+### Using external CLOCK on 48/88
+These parts do not support using an external crystal. External clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!**
+
 ### I2C Support
 There is full Hardware I2C support using Wire.h
 
