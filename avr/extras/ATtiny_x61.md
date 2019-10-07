@@ -11,8 +11,10 @@ GPIO Pins | 15
 ADC Channels | 11 (including the one on reset)
 PWM Channels | 3
 Interfaces | USI, high speed timer
-Clock options | Internal 1/8mhz, Internal PLL at 16mhz, external crystal or clock up to 20mhz
+Clock options | Internal 1/8mhz, Internal PLL at 16mhz, external crystal or clock* up to 20mhz
 Packages | DIP-20, SOIC-20, MLF-32
+
+* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
 
 The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control. To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32
 
