@@ -11,9 +11,11 @@ GPIO Pins | 11
 ADC Channels | 8, plus many differential channels
 PWM Channels | 4
 Interfaces | USI
-Clock options | Internal 1/8mhz, external crystal or clock up to 20mhz
+Clock options | Internal 1/8mhz, external crystal or clock* up to 20mhz
 
-Two pinouts are available - this provides compatibility with cores which use either layout.
+* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
+
+Two pinouts are available - this provides compatibility with cores which use either layout. Be sure you are using the pinout you think you are!
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny84/44, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or7552b available for user code. In order to work on the 84, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
