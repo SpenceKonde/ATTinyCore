@@ -23,7 +23,7 @@ This core includes an Optiboot bootloader for the ATtiny88/48, operating using s
 Programming the ATTiny88/48 via ISP without the bootloader is fully supported.
 
 ### Clock options
-The ATtiny x8 series of microcontrollers, in the interest of lowering costs, does not provide support for using an external crystal as a clock source, only the internal oscillator (at ~8 or ~1mhz) or an external *clock* source. The internal oscillator is only factory calibrated to +/- 10%, so for timing critical tasks, other arrangements (or a different chip) must be used. Note that using an external clock source is not an option in the board drop-down menus, so you cannot set it that way with "burn bootloader" from within the IDE - you must do it manually (this is to prevent new users from accidentally bricking their parts).
+The ATtiny x8 series of microcontrollers, in the interest of lowering costs, does not provide support for using an external crystal as a clock source, only the internal oscillator (at ~8 or ~1mhz) or an external *clock* source. The internal oscillator is only factory calibrated to +/- 10%, so for timing critical tasks, other arrangements (or a different chip) must be used.
 
 While the +/- 10% accuracy is not close enough to guarantee UART serial will work (that requires ~2% accuracy), every chip I have tested at room temperature and 3.3 ~ 5v has been close enough to 8MHz for serial to work without calibration.
 
