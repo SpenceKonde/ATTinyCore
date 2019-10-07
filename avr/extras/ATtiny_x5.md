@@ -12,7 +12,7 @@ GPIO Pins | 5
 ADC Channels | 4 (including the one on reset)
 PWM Channels | 3
 Interfaces | USI, high speed timer
-Clock options | Internal 1/8MHz, Internal PLL at 16MHz, external crystal or clock up to 20MHz
+Clock options | Internal 1/8MHz, Internal PLL at 16MHz, external crystal or clock* up to 20MHz
 
 * Manual steps required. See notes in README under "Using external CLOCK (not crystal).
 
@@ -55,4 +55,4 @@ As of version 1.2.2, the builtin Servo library supports the Tinyx5 series. As al
 * INTERNAL: synonym for INTERNAL1V1
 * INTERNAL2V56: Internal 2.56v reference, with external bypass
 * INTERNAL2V56_NO_CAP: Internal 2.56v reference, without external bypass
-* INTERNAL2V56NOBP: Synonym for INTERNAL2V56_NO_CAP 
+* INTERNAL2V56NOBP: Synonym for INTERNAL2V56_NO_CAP
