@@ -6,6 +6,14 @@ avrisp.program.protocol=stk500v1
 avrisp.program.tool=avrdude
 avrisp.program.extra_params=-P{serial.port}
 
+diamexusbisp.name=Diamex USB ISP (ATTinyCore)
+diamexusbisp.communication=serial
+diamexusbisp.protocol=stk500v2
+diamexusbisp.program.tool=avrdude
+diamexusbisp.program.protocol=stk500v2
+diamexusbisp.program.tool=avrdude
+diamexusbisp.program.extra_params=-P{serial.port}
+
 avrispmkii.name=AVRISP mkII (ATTinyCore)
 avrispmkii.communication=usb
 avrispmkii.protocol=stk500v2
