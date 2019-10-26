@@ -11,24 +11,24 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.5 and
 #### ATtinyCore Universal
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino. Click the processor name for part-specific information:
 
-* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md)
+* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
 * [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot bootloader)
 * [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot bootloader)
 * [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
-* [ATTiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot bootloader)
-* [ATTiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot bootloader)
-* [ATTiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot bootloader)
-* [ATTiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
-* [ATTiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
+* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot bootloader)
+* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot bootloader)
+* [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot bootloader)
+* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
+* [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
 * [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
 
-Variants of these are also supported (such as the ATTiny1634R or ATTiny85V)
+Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
 The megaAVR ATtiny parts (x12/x14/x16/x17/x02/x04/x06/x07) are be supported by https://github.com/SpenceKonde/megaTinyCore - they are sufficiently different from the classic AVR ATtiny parts that they need a separate core.
 
 ### Quick Gotcha list:
 
-**There is a bug in the compiler toolchain included with AVR board packages 1.6.22 and 1.6.23 (included with IDE 1.8.7 and 1.8.8, or if you upgrade AVR board package** The symptom of this is a segmentation fault reported when compiling correct code. This issue is fixed in 1.8.1 of the AVR board package, so if you encounter this error, use board manager to downgrade to 1.6.21 or upgrade to 1.8.1.
+**This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
 **There is a bug in the IDE that causes compilation errors with some combinations of boards and submenu options** on 1.8.5 and earlier on windows. The symptom of this is an error ending in something like C:\Users\yourusername\AppData\Local\Temp\arduino_build_131884/..\arduino_cache_186227\core\core_ATTinyCore_avr_attinyx4_LTO_enable,chip_84,clock_8internal,eesave_aenable,bod_disable,pinmapping_anew,millis_enabled,neopixelport_porta_1bc5d2d7fe299bbd4d4a668366e76c74.a: No such file or directory - this is caused by the way it includes all options in the name of the file; where there are many menu options, this will exceed the maximum file name length under windows. This issue impacts many parts on ATTinyCore 1.3.0 and later, and the 841/441 on ATTinyCore 1.2.2 and later. To fix this issue without downgrading ATTinyCore, update to 1.8.6 or later of the IDE - 1.8.9 or later is recommended (it is also the most recent version of the IDE which supports Windows XP)
 
@@ -37,8 +37,6 @@ The megaAVR ATtiny parts (x12/x14/x16/x17/x02/x04/x06/x07) are be supported by h
 **When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTiny from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE.**
 
 **When using a chip for the first time, or after changing the clock speed or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
-
-**This core includes part specific documentation - click the links above for your family of chips** These describe issues and "gotchas" specific to certain chips, particularly regarding differences in I2C/SPI/Serial behavior between parts. Be sure to review this documentation, and it will prevent pain and confusion when you run into these issues.
 
 **When using analogRead(), use the A# constant to refer to the pin, not the digital pin number.** Analog channel number (see table in datasheet entry for ADMUX register) can also be used - unlike the official core, you can use analogRead() with the differential ADC channels (for example).
 
