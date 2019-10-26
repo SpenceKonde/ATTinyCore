@@ -92,7 +92,9 @@ call omake attiny1634at8ser1
 
 
 call omake attiny828at8
+call omake attiny828at12
 call omake attiny828at16
+call omake attiny828at20
 call omake attiny828at8_5v
 call omake attiny828at1
 call omake attiny828at1_5v
