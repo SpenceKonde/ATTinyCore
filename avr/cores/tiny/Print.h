@@ -106,9 +106,12 @@ class Print
     size_t println(double, int = 2);
     size_t println(void);
 
+    int16_t printf(const char *ifsh, ...);
+
     #ifdef FLASHSTRING_SUPPORT
     size_t print(const __FlashStringHelper *ifsh);
     size_t println(const __FlashStringHelper *ifsh);
+    int16_t printf(const __FlashStringHelper *ifsh, ...);
     #endif
 };
 
