@@ -197,6 +197,34 @@ size_t Print::println(const Printable& x)
   return n;
 }
 
+static int16_t printf_putchar(char c, FILE *fp)
+{
+  ((class Print *)(fdev_get_udata(fp)))->write((uint8_t)c);
+  return 0;
+}
+
+int16_t Print::printf(const char *ifsh, ...)
+{
+  FILE f;
+  va_list ap;
+
+  fdev_setup_stream(&f, printf_putchar, NULL, _FDEV_SETUP_WRITE);
+  fdev_set_udata(&f, this);
+  va_start(ap, ifsh);
+  return vfprintf(&f, ifsh, ap);
+}
+
+int16_t Print::printf(const __FlashStringHelper *ifsh, ...)
+{
+  FILE f;
+  va_list ap;
+
+  fdev_setup_stream(&f, printf_putchar, NULL, _FDEV_SETUP_WRITE);
+  fdev_set_udata(&f, this);
+  va_start(ap, ifsh);
+  return vfprintf_P(&f, (const char *)ifsh, ap);
+}
+
 // Private Methods /////////////////////////////////////////////////////////////
 
 size_t Print::printNumber(unsigned long n, uint8_t base) {
