@@ -64,8 +64,12 @@
 
 
 #define Servo_VERSION           2     // software version of this library
+#ifndef MIN_PULSE_WIDTH               // Let the user set min/max pulse lengths
 #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
-#define MAX_PULSE_WIDTH      2400
+#endif
+#ifndef MAX_PULSE_WIDTH               // Let the user set min/max pulse lengths
+#define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
+#endif
 #define MAX_SERVOS              5
 #define INVALID_SERVO         255
 
@@ -101,8 +105,12 @@ private:
 
 #define Servo_VERSION           2     // software version of this library
 
+#ifndef MIN_PULSE_WIDTH               // Let the user set min/max pulse lengths
 #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
+#endif
+#ifndef MAX_PULSE_WIDTH               // Let the user set min/max pulse lengths
 #define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
+#endif
 #define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
 #define REFRESH_INTERVAL    20000     // minumim time to refresh servos in microseconds
 
