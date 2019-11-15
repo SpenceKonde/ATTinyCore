@@ -3,3 +3,4 @@
 * Fix bug with using 32K ULP as clock source on 828.
 * A bit of boards.txt cleanup.
 * Serial hogged an unnecessary amount of ram on the 841/441/1634. Pulled in the latest version of HardwareSerial from the official AVR core; this sorts out that issue.
+* Add printf support to printable class.
