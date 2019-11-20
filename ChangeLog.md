@@ -6,5 +6,6 @@
 * A bit of boards.txt cleanup.
 * Serial hogged an unnecessary amount of ram on the 841/441/1634. Pulled in the latest version of HardwareSerial from the official AVR core; this sorts out that issue.
 * Add printf support to printable class.
+* Add CLOCK_SOURCE define to identify clock source
 
 Prior to 1.3.3, a proper changelog was not kept. See the releases for information about changes introduced during that timeframe.
