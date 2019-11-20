@@ -122,6 +122,18 @@ The use of an external clock - that is, a single wire with an appropriate clock 
 9. Copy/paste this command into a command window, and hit return. Your chip should now be running on the external clock, and the XTAL2 pin (but not the XTAL1 pin) will be available for use normally.
 10. When compiling for and uploading to your now-externally-clocked part, use the external crystal option corresponding to the clock speed you are using.
 
+### Determining clock speed and source from within the sketch
+The clock speed is made available via the F_CPU #define - you can test this using #if macro
+
+In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values:
+
+> 0 - Internal 8MHz oscillator (with or without prescaling to a speed lower than 8MHz)
+> 1 - External Crystal
+> 2 - External Clock
+> 3 - Internal WDT or ULP clock
+> 4 - Internal 128KHz oscillator
+> 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
+
 
 Assembler Listing generation
 ------------
