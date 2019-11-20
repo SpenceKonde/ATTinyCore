@@ -664,7 +664,7 @@ PLLCSR |= PCKE;
 
 void init(void)
 {
-  #if defined(__AVR_ATtiny43__) && F_CPU==4000000L
+  #if (F_CPU==4000000L && CLOCK_SOURCE==0)
   CLKPR=128; //CLKPCE
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
