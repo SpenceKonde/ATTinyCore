@@ -129,9 +129,9 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 > 0 - Internal 8MHz oscillator (with or without prescaling to a speed lower than 8MHz)
 > 1 - External Crystal
-> 2 - External Clock
-> 3 - Internal WDT or ULP clock
-> 4 - Internal 128KHz oscillator
+> 2 - External Clock (only available within the core on the 48, 88 and 828, as described above)
+> 3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
+> 4 - Internal ULP oscillator (available only on the x41, 1634, and 828)
 > 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
 
 
