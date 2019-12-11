@@ -664,6 +664,8 @@ PLLCSR |= PCKE;
 
 void init(void)
 {
+  #if (F_CPU==4000000L && CLOCK_SOURCE==0)
+  cli();
   #ifdef CCP
   CCP=0xD8; //enable change of protected register
   #else
@@ -671,6 +673,7 @@ void init(void)
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
+  sei();
 
   // In case the bootloader left our millis timer in a bad way
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
