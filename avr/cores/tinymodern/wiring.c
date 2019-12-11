@@ -479,8 +479,9 @@ void initToneTimer(void)
 void init(void)
 {
   // this needs to be called before setup() or some functions won't work there
-  sei();
+  
   #if (F_CPU==4000000L && CLOCK_SOURCE==0)
+  cli();
   #ifdef CCP
   CCP=0xD8; //enable change of protected register
   #else
@@ -488,11 +489,12 @@ void init(void)
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
+  sei();
   // In case the bootloader left our millis timer in a bad way
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
     MillisTimer_SetToPowerup();
   #endif
-
+  
   // Use the Millis Timer for fast PWM
   MillisTimer_SetWaveformGenerationMode( MillisTimer_(Fast_PWM_FF) );
 
