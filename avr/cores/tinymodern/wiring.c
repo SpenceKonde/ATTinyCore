@@ -480,7 +480,14 @@ void init(void)
 {
   // this needs to be called before setup() or some functions won't work there
   sei();
-
+  #if (F_CPU==4000000L && CLOCK_SOURCE==0)
+  #ifdef CCP
+  CCP=0xD8; //enable change of protected register
+  #else
+  CLKPR=1<<CLKPCE; //enable change of protected register
+  #endif
+  CLKPR=1; //prescale by 2 for 4MHz
+  #endif
   // In case the bootloader left our millis timer in a bad way
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
     MillisTimer_SetToPowerup();
