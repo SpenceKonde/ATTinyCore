@@ -479,7 +479,6 @@ void initToneTimer(void)
 void init(void)
 {
   // this needs to be called before setup() or some functions won't work there
-  
   #if (F_CPU==4000000L && CLOCK_SOURCE==0)
   cli();
   #ifdef CCP
@@ -494,7 +493,7 @@ void init(void)
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
     MillisTimer_SetToPowerup();
   #endif
-  
+
   // Use the Millis Timer for fast PWM
   MillisTimer_SetWaveformGenerationMode( MillisTimer_(Fast_PWM_FF) );
 
