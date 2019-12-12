@@ -141,6 +141,8 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 > 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
 
+> 6 - Internal PLL (x5 and x61 only)
+
 
 Assembler Listing generation
 ------------
