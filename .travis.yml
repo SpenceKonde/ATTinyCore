@@ -125,6 +125,9 @@ env:
     # clock=128internal
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=128internal,eesave=aenable,bod=1v8,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # clock=165pll
+    # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5:LTO=disable,TimerClockSource=default,chip=85,clock=165pll,eesave=aenable,bod=1v8,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx5opti
     # Compilation-wise, the opti boards should be copies of non-opti version so only a single compilation is needed to test each board configuration
