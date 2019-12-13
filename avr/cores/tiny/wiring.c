@@ -665,6 +665,15 @@ PLLCSR |= PCKE;
   #define ADC_ARDUINO_PRESCALER   B010 //prescaler of 4
 #endif
 
+#if (F_CPU == 16500000L && CLOCK_SOURCE==6)
+byte read_factory_calibration(void)
+  {
+    byte SIGRD = 5;
+    byte value = boot_signature_byte_get(1);
+    return value;
+  }
+#endif
+
 void init(void)
 {
   #if (F_CPU==4000000L && CLOCK_SOURCE==0)
