@@ -676,7 +676,7 @@ void init(void)
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
-  #if (F_CPU == 16500000L && CLOCK_SOURCE==6) 
+  #if (F_CPU == 16500000L && CLOCK_SOURCE==6)
   if (OSCCAL == read_factory_calibration()) {
     // adjust the calibration up from 16.0mhz to 16.5mhz
     if (OSCCAL >= 128) {
