@@ -3,10 +3,11 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.5 and
 
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-
+### Read the first three guides - these explain the basics of installing ATTinyCore and using it with a supported ATtiny part
 ### [Installation](Installation.md)
-### [Basic Wiring](Wiring.md)
-### [Migration Guide](Migration.md)
+### [Wiring and required external components](Wiring.md)
+### [Programming Guide](Programming.md)
+### [Migration Guide - moving to ATTinyCore from a different ATtiny board package](Migration.md)
 
 #### ATtinyCore Universal
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino. Click the processor name for part-specific information:
@@ -62,7 +63,7 @@ The ATtiny441/841, ATtiny1634, ATtiny44/84, ATtiny45/85, ATtiny461/861, ATtiny48
 
 ### Changing the ATtiny clock speed and other settings
 
-Changing the ATtiny clock speed, B.O.D. settings etc. is made easy: After the [Installation](Installation.md), when an ATTinyCore board is selected from the Tools -> Board menu, there will appear extra submenus under Tools menu where we can set several ATtiny properties:
+Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCore board is selected from the Tools -> Board menu, there will appear extra submenus under Tools menu where we can set several ATtiny properties:
 
 * Tools > Save EEPROM: (Boards without bootloader only - controls whether EEPROM is erased during a chip erase cycle)
 * Tools > Timer 1 clock: (ATTiny25/45/85 only - allows timer1 to be clocked off the PLL for higher frequency PWM)
@@ -72,6 +73,8 @@ Changing the ATtiny clock speed, B.O.D. settings etc. is made easy: After the [I
 * Tools > Clock:  (Select the desired clock speed)
 * Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
 * Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
+
+After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
 
 ### Supported clock speeds:
 
@@ -287,22 +290,6 @@ Pin Mapping
 Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu.
 
 Note that analog pin numbers (ex A0 ) cannot be used with digitalWrite()/digitalRead()/analogWrite() - all pins have a digital pin number. Analog pin number should only be used for analogRead() - this represents a departure from the behavior used in the official AVR boards. This enables us to expose the advanced ADC functionality available on some of the ATtiny parts with minimal impact, as clearly written code is unlikely to fall afoul of this anyway.
-
-Hardware
-============
-
-To work correctly, these parts should be installed with a 0.1uf capacitor between Vcc and Ground, as close to the chip as possible. Where there are more than one Vcc pin (x61, x7, x8) both must have a capacitor. No other specific hardware is needed, though when designing a custom board, it is incredibly helpful to provide a convenient ISP header. See the pinout diagrams in the datasheet for the location of the ISP/SPI programming pins. A larger value capacitor for power filtering is recommended - if using a regulator, the ones specified for the regulator are typically sufficient for this. If the power supply rail is shared with higher power devices that will be switched on and off during operation, larger capacitors may be necessary.
-
-
-For use with Optiboot, the following additional components and connections are required:
-* Arduino pin 9/PA1/TXD0 to RXI of serial adapter (0/PB0 on 1634)
-* Arduino pin 8/PA2/RXD0 to TXO of serial adapter (1/PA7 on 1634)
-* Diode between Reset and Vcc (band towards Vcc)
-* 0.1uf capacitor between Reset and DTR of serial adapter
-* 10k resistor between reset and Vcc (required)
-* (optional) LED and series resistor from Arduino pin 2/PB2 (on 841) or pin 13 (on 1634/828) to ground (This is the pin optiboot flashes to let you know it's running)
-
-
 
 ### Buy Breakout boards
 Except for the x5, x4, x61, and x313 series, these are only available in surface mount packages. Breakout boards are available from my Tindie store (these are the breakout boards used for testing this core), which have the pins numbered to correspond with the pin numbers used in this core. Where applicable, all of these assembled boards have the bootloader installed, and all are set to run at the advertised speed (most are available with several speed/voltage combinations).
