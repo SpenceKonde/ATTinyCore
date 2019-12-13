@@ -118,8 +118,7 @@ Options marked with a * are "UART frequencies" - these divide evenly to common b
 
 *** The 4MHz internal option is useful if you are running near the minimum voltage - the lowest voltage for most of these parts is 1.8v, and at that voltage, they are only rated for 4MHz maximum. 
 
-**** 
-The 16.5MHz is specific to some digispark-related applications (though note that we do not support uploading via USB direct to a digispark) - see #349. Not recommended unless you understand that issue and know why you need it. 
+`****` The 16.5MHz is specific to some digispark-related applications (though note that we do not support uploading via USB direct to a digispark) - see #349. Not recommended unless you understand that issue and know why you need it. 
 
 **Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. millis() is not effected, only micros() and delay().
 
