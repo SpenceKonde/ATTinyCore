@@ -27,6 +27,9 @@
 */
 
 #include "wiring_private.h"
+#if (F_CPU == 16500000L && CLOCK_SOURCE==6)
+  #include <avr/boot.h>
+#endif
 
 #if F_CPU >= 3000000L
 
@@ -672,6 +675,17 @@ void init(void)
   CLKPR=1<<CLKPCE; //enable change of protected register
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
+  #endif
+  #if (F_CPU == 16500000L && CLOCK_SOURCE==6) 
+  if (OSCCAL == read_factory_calibration()) {
+    // adjust the calibration up from 16.0mhz to 16.5mhz
+    if (OSCCAL >= 128) {
+      // maybe 8 is better? oh well - only about 0.3% out anyway
+      OSCCAL += 7;
+    } else {
+      OSCCAL += 5;
+    }
+  }
   #endif
   sei();
 
