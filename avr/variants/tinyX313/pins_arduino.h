@@ -15,7 +15,7 @@
 
 #define digitalPinHasPWM(p)         ((p) == 7 || (p) == 11 || (p) == 12 || (p) == 13)
 
-//The io*.h included for this part has the wrong neumonics for the bits in DDRA register.
+//The 2313 and 2313a use different mneumonics for the names of the bits in DDRA. This ensures they're all there for all parts
 #ifndef DDA0
 #define DDA0 DDRA0
 #endif
@@ -24,6 +24,17 @@
 #endif
 #ifndef DDA2
 #define DDA2 DDRA2
+#endif
+
+//for compatibility
+#ifndef DDAR0
+#define DDAR0 DDA0
+#endif
+#ifndef DDAR1
+#define DDAR1 DDA1
+#endif
+#ifndef DDAR2
+#define DDAR2 DDA2
 #endif
 
 //This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
