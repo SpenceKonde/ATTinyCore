@@ -176,6 +176,7 @@ public:
   int peek(void);
   void flush(void);
   void onReceive(void(*)(int));
+  void onReceive( void (*)(size_t) );
   void onRequest(void(*)(void));
 
   inline size_t write(unsigned long n) { return write((uint8_t)n); }
