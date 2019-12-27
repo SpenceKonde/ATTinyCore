@@ -86,9 +86,6 @@ void tinyNeoPixel::updateType(neoPixelType t) {
   rOffset = (t >> 4) & 0b11; // regarding R/G/B/W offsets
   gOffset = (t >> 2) & 0b11;
   bOffset =  t       & 0b11;
-#ifdef NEO_KHZ400
-  is800KHz = (t < 256);      // 400 KHz flag is 1<<8
-#endif
 
   // If bytes-per-pixel has changed (and pixel data was previously
   // allocated), re-allocate to new size.  Will clear any data.
@@ -262,135 +259,12 @@ void tinyNeoPixel::show(void) {
     [lo]     "r" (lo));
 
 #elif (F_CPU >= 9500000UL) && (F_CPU <= 11100000UL)
-/*
-  volatile uint8_t n1, n2 = 0;  // First, next bits out
-
-  // Squeezing an 800 KHz stream out of an 8 MHz chip requires code
-  // specific to each PORT register.  At present this is only written
-  // to work with pins on PORTD or PORTB, the most likely use case --
-  // this covers all the pins on the Adafruit Flora and the bulk of
-  // digital pins on the Arduino Pro 8 MHz (keep in mind, this code
-  // doesn't even get compiled for 16 MHz boards like the Uno, Mega,
-  // Leonardo, etc., so don't bother extending this out of hand).
-  // Additional PORTs could be added if you really need them, just
-  // duplicate the else and loop and change the PORT.  Each add'l
-  // PORT will require about 150(ish) bytes of program space.
-
-  // 13 instruction clocks per bit: HHHxxxxxLLLLL
-  // OUT instructions:              ^  ^    ^   (T=0,3,7)
-  hi = NEOPIXELPORT |  pinMask;
-  lo = NEOPIXELPORT & ~pinMask;
-  n1 = lo;
-  if(b & 0x80) n1 = hi;
-
-  // Dirty trick: RJMPs proceeding to the next instruction are used
-  // to delay two clock cycles in one instruction word (rather than
-  // using two NOPs).  This was necessary in order to squeeze the
-  // loop down to exactly 64 words -- the maximum possible for a
-  // relative branch.
-
-  asm volatile(
-   "headD:"                   "\n\t" // Clk  Pseudocode
-    // Bit 7:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n2]   , %[lo]"    "\n\t" // 1    n2   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n1]"    "\n\t" // 1    PORT = n1
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 6"        "\n\t" // 1-2  if(b & 0x40)
-     "mov %[n2]   , %[hi]"    "\n\t" // 0-1   n2 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    // Bit 6:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n1]   , %[lo]"    "\n\t" // 1    n1   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n2]"    "\n\t" // 1    PORT = n2
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 5"        "\n\t" // 1-2  if(b & 0x20)
-     "mov %[n1]   , %[hi]"    "\n\t" // 0-1   n1 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    // Bit 5:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n2]   , %[lo]"    "\n\t" // 1    n2   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n1]"    "\n\t" // 1    PORT = n1
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 4"        "\n\t" // 1-2  if(b & 0x10)
-     "mov %[n2]   , %[hi]"    "\n\t" // 0-1   n2 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    // Bit 4:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n1]   , %[lo]"    "\n\t" // 1    n1   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n2]"    "\n\t" // 1    PORT = n2
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 3"        "\n\t" // 1-2  if(b & 0x08)
-     "mov %[n1]   , %[hi]"    "\n\t" // 0-1   n1 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    // Bit 3:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n2]   , %[lo]"    "\n\t" // 1    n2   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n1]"    "\n\t" // 1    PORT = n1
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 2"        "\n\t" // 1-2  if(b & 0x04)
-     "mov %[n2]   , %[hi]"    "\n\t" // 0-1   n2 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    // Bit 2:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n1]   , %[lo]"    "\n\t" // 1    n1   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n2]"    "\n\t" // 1    PORT = n2
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 1"        "\n\t" // 1-2  if(b & 0x02)
-     "mov %[n1]   , %[hi]"    "\n\t" // 0-1   n1 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    // Bit 1:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n2]   , %[lo]"    "\n\t" // 1    n2   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n1]"    "\n\t" // 1    PORT = n1
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "sbrc %[byte] , 0"        "\n\t" // 1-2  if(b & 0x01)
-     "mov %[n2]   , %[hi]"    "\n\t" // 0-1   n2 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "sbiw %[count], 1"        "\n\t" // 2    i-- (don't act on Z flag yet)
-    // Bit 0:
-    "out  %[port] , %[hi]"    "\n\t" // 1    PORT = hi
-    "mov  %[n1]   , %[lo]"    "\n\t" // 1    n1   = lo
-    "nop"                     "\n\t" // 1    nop
-    "out  %[port] , %[n2]"    "\n\t" // 1    PORT = n2
-    "ld   %[byte] , %a[ptr]+" "\n\t" // 2    b = *ptr++
-    "sbrc %[byte] , 7"        "\n\t" // 1-2  if(b & 0x80)
-     "mov %[n1]   , %[hi]"    "\n\t" // 0-1   n1 = hi
-    "out  %[port] , %[lo]"    "\n\t" // 1    PORT = lo
-    "rjmp .+0"                "\n\t" // 2    nop nop
-    "brne headD"              "\n"   // 2    while(i) (Z flag set above)
-  : [byte]  "+r" (b),
-    [n1]    "+r" (n1),
-    [n2]    "+r" (n2),
-    [count] "+w" (i)
-  : [port]   "I" (_SFR_IO_ADDR(NEOPIXELPORT)),
-    [ptr]    "e" (ptr),
-    [hi]     "r" (hi),
-    [lo]     "r" (lo));
-
-*/
+    // In the 10 MHz case, an optimized 800 KHz datastream (no dead time
+    // between bytes) requires a PORT-specific loop similar to the 8 MHz
+    // code (but a little more relaxed in this case).
 
     // 14 instruction clocks per bit: HHHHxxxxLLLLL
-    // OUT instructions:              ^   ^   ^   (T=0,4,7)
+    // OUT instructions:              ^   ^   ^   (T=0,4,8)
       volatile uint8_t next;
 
       hi   = NEOPIXELPORT |  pinMask;
@@ -585,9 +459,6 @@ void tinyNeoPixel::show(void) {
 
 // 16 MHz(ish) AVR --------------------------------------------------------
 #elif (F_CPU >= 15400000UL) && (F_CPU <= 19000000L)
-
-  // WS2811 and WS2812 have different hi/lo duty cycles; this is
-  // similar but NOT an exact copy of the prior 400-on-8 code.
 
   // 20 inst. clocks per bit: HHHHHxxxxxxxxLLLLLLL
   // ST instructions:         ^    ^       ^       (T=0,5,13)
