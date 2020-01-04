@@ -3,6 +3,8 @@ ATTiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 for Arduino 1.6.5 and
 
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+### Current recommended IDE version: 1.8.9 (1.8.10 introduced some new bugs)
+
 ### Read the first three guides - these explain the basics of installing ATTinyCore and using it with a supported ATtiny part
 ### [Installation](Installation.md)
 ### [Wiring and required external components](Wiring.md)
