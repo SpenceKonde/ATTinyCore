@@ -10,9 +10,9 @@ env:
     # The Arduino IDE will be installed at APPLICATION_FOLDER/arduino
     - APPLICATION_FOLDER="${HOME}/arduino-ide"
     - SKETCHBOOK_FOLDER="${HOME}/Arduino"
-    - FULL_IDE_VERSION_LIST='("1.6.7" "1.6.9" "1.6.13" "1.8.6" "newest")'
-    - LTO_IDE_VERSION_LIST='("1.6.11" "1.6.13" "1.8.6" "newest")'
-    - MAX_PATH_SAFE_IDE_VERSION_LIST='("1.8.6" "newest")'
+    - FULL_IDE_VERSION_LIST='("1.6.7" "1.6.9" "1.6.13" "1.8.6" "1.8.11")'
+    - LTO_IDE_VERSION_LIST='("1.6.11" "1.6.13" "1.8.6" "1.8.11")'
+    - MAX_PATH_SAFE_IDE_VERSION_LIST='("1.8.6" "1.8.11")'
 
 
   matrix:
