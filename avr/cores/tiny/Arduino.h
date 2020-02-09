@@ -73,9 +73,9 @@ void yield(void);
 //  return 1;
 //}
   //WTF were they thinking?!
-#define clockCyclesPerMicrosecond() 1L
+#define clockCyclesPerMicrosecond() 1UL
 #else
-#define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
+#define clockCyclesPerMicrosecond() ( F_CPU / 1000000UL )
 #endif
 
 //#define clockCyclesToMicroseconds(a) ( ((a) * 1000L) / (F_CPU / 1000L) )
