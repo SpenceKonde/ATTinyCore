@@ -45,6 +45,8 @@ extern "C"{
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
 #endif
 
+uint32_t countPulseASM(volatile uint8_t *port, uint8_t bit, uint8_t stateMask, unsigned long maxloops);
+
 #if defined( EXT_INT0_vect )
   #define EXTERNAL_INTERRUPT_0_vect EXT_INT0_vect
 #elif defined( INT0_vect )
