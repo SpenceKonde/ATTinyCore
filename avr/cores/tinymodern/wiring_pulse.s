@@ -80,6 +80,11 @@ countPulseASM:
 .L4:
 /*         if (--maxloops == 0) */
 .LM2:
+    rjmp .LM2A ; waste an extra 5 cycles
+.LM2A:
+    rjmp .LM2B ;
+.LM2B:
+    nop ;
     subi r16,1   ;  maxloops,  ;  17  addsi3/2  [length = 4]
     sbc r17, r1   ;  maxloops
     sbc r18, r1   ;  maxloops
@@ -101,6 +106,11 @@ countPulseASM:
 ***         if (--maxloops == 0)
 */
 .LM4:
+    rjmp .LM4A ; waste an extra 5 cycles
+.LM4A:
+    rjmp .LM4B ;
+.LM4B:
+    nop ;
     subi r16,1   ;  maxloops,  ;  31  addsi3/2  [length = 4]
     sbc r17, r1   ;  maxloops
     sbc r18, r1   ;  maxloops
