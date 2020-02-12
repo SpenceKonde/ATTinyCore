@@ -1,4 +1,7 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
+1.3.4
+* Fix pulseIn(), both pulse length, and timeout (the latter is broken in official avr core too) (#384)
+* Add pulseInLong()
 
 1.3.3
 * Add support for external CLOCK on 48/88/828. Document how to use external clock on other parts via manual AVRdude step (#355).
