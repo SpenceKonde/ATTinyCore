@@ -167,15 +167,8 @@ countPulseASM:
     mov r23,r13  ;  D.1553, width  ;  109 movqi_insn/1  [length = 1]
     mov r24,r14  ;  D.1553, width  ;  110 movqi_insn/1  [length = 1]
     mov r25,r15  ;  D.1553, width  ;  111 movqi_insn/1  [length = 1]
+    rjmp .LM11 ;
 /* epilogue start */
-.LM9:
-    pop r17  ;   ;  171 popqi [length = 1]
-    pop r16  ;   ;  172 popqi [length = 1]
-    pop r15  ;   ;  173 popqi [length = 1]
-    pop r14  ;   ;  174 popqi [length = 1]
-    pop r13  ;   ;  175 popqi [length = 1]
-    pop r12  ;   ;  176 popqi [length = 1]
-    ret  ;  177 return_from_epilogue  [length = 1]
 .L13:
 .LM10:
     ldi r22,0  ;  D.1553   ;  120 movqi_insn/1  [length = 1]
