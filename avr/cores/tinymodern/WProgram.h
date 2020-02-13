@@ -24,8 +24,15 @@ uint16_t makeWord(byte h, byte l);
 #define word(...) makeWord(__VA_ARGS__)
 
 
+unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
+#ifndef DISABLEMILLIS
+unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout);
+#endif
+
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
+#ifndef DISABLEMILLIS
 unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
+#endif
 
 void tone(uint8_t _pin, unsigned long frequency, unsigned long duration = 0);
 void noTone(uint8_t _pin = 255);
