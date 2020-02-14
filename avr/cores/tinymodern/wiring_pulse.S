@@ -2,7 +2,7 @@
   wiring_pulse.s - pulseInASM() function in different flavours
   Part of Arduino - http://www.arduino.cc/
 
-  Copyright (c) 2014 Martino Facchin
+  Copyright (c) 2014 Martino Facchin, 2020 Spence Konde
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -47,6 +47,14 @@
  * }
  *
  * some compiler outputs were removed but the rest of the code is untouched
+ *
+ * Spence feb 2020: not untouched anymore! The first two loops ran in 11 cycles instead
+ * of 16, so if no pulse was detected, the timeout would be reached when
+ * 11/16ths of the requested timeout had elapsed. This was fixed by the addition
+ * of 2 rjmps to the next line (a 2 cycle nop that uses only 1 word) and 1 nop
+ * to each of these loops before they decrement maxloops.
+ * Additionally, removed duplication of return sequence to save 12b flash
+ * which is conveniently exactly how much the other fix cost.
  */
 
 #include <avr/io.h>
