@@ -179,6 +179,12 @@ LED_CMD = -DLED=$(LED)
 dummy = FORCE
 endif
 
+ifdef RS485
+RS485_CMD = -DRS485=$(RS485)
+dummy = FORCE
+endif
+
+
 HELPTEXT += "Option LED_START_FLASHES=n   - set number of LED flashes when bootloader starts\n"
 ifdef LED_START_FLASHES
 LED_START_FLASHES_CMD = -DLED_START_FLASHES=$(LED_START_FLASHES)
@@ -248,6 +254,7 @@ COMMON_OPTIONS = $(BAUD_RATE_CMD) $(LED_START_FLASHES_CMD) $(BIGBOOT_CMD)
 COMMON_OPTIONS += $(SOFT_UART_CMD) $(LED_DATA_FLASH_CMD) $(LED_CMD) $(SS_CMD)
 COMMON_OPTIONS += $(SUPPORT_EEPROM_CMD) $(LED_START_ON_CMD) $(APPSPM_CMD)
 COMMON_OPTIONS += $(VERSION_CMD)
+COMMON_OPTIONS += $(RS485_CMD)
 
 #UART is handled separately and only passed for devices with more than one.
 HELPTEXT += "Option UART=n                - use UARTn for communications\n"

@@ -91,7 +91,6 @@ ifndef PRODUCTION
 endif
 
 
-
 #-----------------------
 # ATtiny 1634, UART 1
 #-----------------------
@@ -164,6 +163,35 @@ attiny1634at147ser1:
 	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_14745600L_ser1.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_14745600L_ser1.lst
+endif
+
+
+#-------------------------------
+# Special Bootloaders
+#-------------------------------
+
+
+attiny1634at8_5v_rs485_B3_noLED:
+	"$(MAKE)" attiny1634	AVR_FREQ=8200000L BAUD_RATE=57600 RS485=B3 LED_START_FLASHES=0
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8200000L_RS485_B3_noLED.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8200000L_RS485_B3_noLED.lst
+endif
+
+
+attiny1634at8_5v_rs485_C0_noLED:
+	"$(MAKE)" attiny1634	AVR_FREQ=8200000L BAUD_RATE=57600 RS485=C0 LED_START_FLASHES=0
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8200000L_RS485_C0_noLED.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8200000L_RS485_C0_noLED.lst
+endif
+
+
+attiny1634at8_5v_rs485_B3:
+	"$(MAKE)" attiny1634	AVR_FREQ=8200000L BAUD_RATE=57600 RS485=B3
+	mv $(PROGRAM)_attiny1634.hex $(PROGRAM)_attiny1634_8200000L_RS485_B3.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny1634.lst $(PROGRAM)_attiny1634_8200000L_RS485_B3.lst
 endif
 
 
@@ -340,22 +368,22 @@ ifndef PRODUCTION
 endif
 attiny841at8_5vser1:
 	$(MAKE) attiny841	 AVR_FREQ=8200000L BAUD_RATE=57600 UART=1
-	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_8200000L.hex
+	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_8200000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_8200000L.lst
+	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_8200000L_ser1.lst
 endif
 
-attiny841at8ser1:
+attiny841at1ser1:
 	$(MAKE) attiny841	 AVR_FREQ=1000000L BAUD_RATE=4800 UART=1
 	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_1000000L_ser1.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_1000000L_ser1.lst
 endif
-attiny841at8_5vser1:
+attiny841at1_5vser1:
 	$(MAKE) attiny841	 AVR_FREQ=1025000L BAUD_RATE=4800 UART=1
-	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_1025000L.hex
+	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_1025000L_ser1.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_1025000L.lst
+	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_1025000L_ser1.lst
 endif
 
 #-----------------------

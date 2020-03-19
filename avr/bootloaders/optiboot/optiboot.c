@@ -470,7 +470,7 @@ static addr16_t buff = {(uint8_t *)(RAMSTART)};
 #elif defined (WDT_vect_num)
 #define save_vect_num (WDT_vect_num)
 #else
-#error Can't find SPM or WDT interrupt vector for this CPU
+#error "Can't find SPM or WDT interrupt vector for this CPU"
 #endif
 #endif //save_vect_num
 // check if it's on the same page (code assumes that)
@@ -666,6 +666,11 @@ int main(void) {
     #endif // LIN_UART
   #endif // mega8/etc
 #endif // soft_uart
+
+#ifdef RS485
+  RS485_DDR |= _BV(RS485);
+  RS485_PORT &= ~_BV(RS485);
+#endif
 
   // Set up watchdog to trigger after 1s
   watchdogConfig(WATCHDOG_1S);
@@ -912,14 +917,37 @@ int main(void) {
 void putch(char ch) {
 #ifndef SOFT_UART
   #ifndef LIN_UART
-    while (!(UART_SRA & _BV(UDRE0))) {  /* Spin */ }
-  #else
-    while (!(LINSIR & _BV(LTXOK)))   {  /* Spin */ }
-  #endif
-
-  UART_UDR = ch;
+	#ifdef RS485
+	  uint8_t x;
+	  do {
+	    x = UART_SRA;
+	  } while (!(x & _BV(UDRE0)));
+	  // clear transmitted flag
+	  x |= _BV(TXC0);
+	  UART_SRA = x;
+	  // put transceiver to output mode
+	  RS485_PORT |= _BV(RS485);
+	  // put char
+	  UART_UDR = ch;
+	  // wait for char transmitted
+	  while (!(UART_SRA & _BV(TXC0)));
+	  // put transceiver to input mode
+	  RS485_PORT &= ~_BV(RS485);
+	#else //not RS485
+    	while (!(UART_SRA & _BV(UDRE0))) {  /* Spin */ }
+  		UART_UDR = ch;
+  	#endif
+  	#else //is LIN UART
+    	while (!(LINSIR & _BV(LTXOK)))   {  /* Spin */ }
+	 	UART_UDR = ch;
+  	#endif
 
 #else
+
+#ifdef RS485
+  // put transceiver to output mode
+  RS485_PORT |= _BV(RS485);
+#endif
   __asm__ __volatile__ (
     "   com %[ch]\n" // ones complement, carry set
     "   sec\n"
@@ -942,6 +970,11 @@ void putch(char ch) {
     :
       "r25"
   );
+
+#ifdef RS485
+  // put transceiver to input mode
+  RS485_PORT &= ~_BV(RS485);
+#endif
 #endif
 }
 
