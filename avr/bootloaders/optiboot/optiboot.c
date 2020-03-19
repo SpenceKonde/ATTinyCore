@@ -917,31 +917,30 @@ int main(void) {
 void putch(char ch) {
 #ifndef SOFT_UART
   #ifndef LIN_UART
-	#ifdef RS485
-	  uint8_t x;
-	  do {
-	    x = UART_SRA;
-	  } while (!(x & _BV(UDRE0)));
-	  // clear transmitted flag
-	  x |= _BV(TXC0);
-	  UART_SRA = x;
-	  // put transceiver to output mode
-	  RS485_PORT |= _BV(RS485);
-	  // put char
-	  UART_UDR = ch;
-	  // wait for char transmitted
-	  while (!(UART_SRA & _BV(TXC0)));
-	  // put transceiver to input mode
-	  RS485_PORT &= ~_BV(RS485);
-	#else //not RS485
-    	while (!(UART_SRA & _BV(UDRE0))) {  /* Spin */ }
-  		UART_UDR = ch;
-  	#endif
-  	#else //is LIN UART
-    	while (!(LINSIR & _BV(LTXOK)))   {  /* Spin */ }
-	 	UART_UDR = ch;
-  	#endif
-
+    #ifdef RS485
+       uint8_t x;
+      do {
+        x = UART_SRA;
+      } while (!(x & _BV(UDRE0)));
+      // clear transmitted flag
+      x |= _BV(TXC0);
+      UART_SRA = x;
+      // put transceiver to output mode
+      RS485_PORT |= _BV(RS485);
+      // put char
+      UART_UDR = ch;
+      // wait for char transmitted
+      while (!(UART_SRA & _BV(TXC0)));
+      // put transceiver to input mode
+      RS485_PORT &= ~_BV(RS485);
+    #else //not RS485
+      while (!(UART_SRA & _BV(UDRE0))) {  /* Spin */ }
+        UART_UDR = ch;
+    #endif
+  #else //is LIN UART
+    while (!(LINSIR & _BV(LTXOK)))   {  /* Spin */ }
+      UART_UDR = ch;
+  #endif
 #else
 
 #ifdef RS485
