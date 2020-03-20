@@ -1,0 +1,10 @@
+
+call omake attiny1634at8_5v_rs485_B3_noLED_2S
+call omake attiny1634at8_5v_rs485_B3_noLED_4S
+call omake attiny1634at8_5v_rs485_B3_noLED_8S
+call omake attiny1634at8_5v_rs485_C0_noLED_2S
+call omake attiny1634at8_5v_rs485_C0_noLED_4S
+call omake attiny1634at8_5v_rs485_C0_noLED_8S
+call omake attiny1634at8_5v_rs485_B3_2S
+call omake attiny1634at8_5v_rs485_B3_4S
+call omake attiny1634at8_5v_rs485_B3_8S

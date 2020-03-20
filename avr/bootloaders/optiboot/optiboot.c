@@ -645,10 +645,11 @@ int main(void) {
      * If START_APP_ON_EXTR is defined, don't run bootloader after
      * an external reset - only useful in combination with above,
      * for some unusual use cases.
+     *
      */
 #if (!(defined(START_APP_ON_EXTR)||defined(NO_START_APP_ON_POR))) //normal behavior
-    if ((ch & (_BV(WDRF) | _BV(EXTRF))) != _BV(EXTRF)) {                      // WDRF is set or EXTRF is NOT set - go to app
-      if (ch & _BV(EXTRF)) {                                                  // Both WDRF and EXTRF set         - reset WDRF first
+    if ((ch & (_BV(WDRF) | _BV(EXTRF))) != _BV(EXTRF)) {                      // Run app if EXTRF not set, or WDRF and EXTRF set
+      if (ch & _BV(EXTRF)) {                                                  // Both WDRF and EXTRF are set
         /*
          * Clear WDRF because it was most probably set by wdr in bootloader.
          * It's also needed to avoid loop by broken application which could
@@ -659,8 +660,8 @@ int main(void) {
         MCUSTATUSREG = ~(_BV(WDRF));
       }
 #elif (defined(START_APP_ON_EXTR)&&defined(NO_START_APP_ON_POR))
-    if ((ch & (_BV(WDRF) | _BV(PORF))) != _BV(PORF)) {                       // WDRF is set or PORF is NOT set - go to app
-      if (ch & _BV(PORF)) {                                                  // Both WDRF and POR set
+    if ((ch & (_BV(PORF) | _BV(WDRF) | _BV(EXTRF))) != _BV(PORF)) {              // Run app unless only PORF is set
+      if ((ch & (_BV(PORF) | _BV(WDRF)))==(_BV(PORF) | _BV(WDRF))) {              // If PORF and WDRF are set, could be from us, so reset WDRF.
         /*
          * Clear WDRF because it was most probably set by wdr in bootloader.
          * It's also needed to avoid loop by broken application which could
@@ -671,8 +672,8 @@ int main(void) {
         MCUSTATUSREG = ~(_BV(WDRF));
       }
 #elif ((!defined(START_APP_ON_EXTR))&&defined(NO_START_APP_ON_POR))
-    if (ch & _BV(WDRF) )  {                                                  // WDRF is set                     - go to app
-      if (ch & (_BV(PORF) | _BV(EXTRF))) {                                   // Either EXTRF or PORF are set    - reset WDRF first
+    if (ch & _BV(WDRF) )  {                                                     // WDRF is set, go to app
+      if (ch & (_BV(PORF) | _BV(EXTRF))) {                                      // Unless ONLY WDRF is set, it could be from us, so reset WDRF
         /*
          * Clear WDRF because it was most probably set by wdr in bootloader.
          * It's also needed to avoid loop by broken application which could
