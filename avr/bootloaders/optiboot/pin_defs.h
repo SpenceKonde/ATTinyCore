@@ -1533,6 +1533,8 @@
 #pragma GCC diagnostic warning "-Wfatal-errors"
 #error Unrecognized LED name.  Should be like "B5"
 #endif
+
+
 #ifdef RS485
 #if RS485 == B0
 #undef RS485
@@ -2072,10 +2074,636 @@
 #define RS485_PORT    PORTA
 #define RS485_PIN     PINA
 #define RS485         PINA7
+#elif RS485 == B0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB0
+#elif RS485 == B1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB1
+#elif RS485 == B2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB2
+#elif RS485 == B3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB3
+#elif RS485 == B4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB4
+#elif RS485 == B5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB5
+#elif RS485 == B6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB6
+#elif RS485 == B7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRB
+#define RS485_PORT    PORTB
+#define RS485_PIN     PINB
+#define RS485         PINB7
 
+#elif RS485 == C0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC0
+#elif RS485 == C1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC1
+#elif RS485 == C2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC2
+#elif RS485 == C3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC3
+#elif RS485 == C4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC4
+#elif RS485 == C5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC5
+#elif RS485 == C6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC6
+#elif RS485 == C7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRC
+#define RS485_PORT    PORTC
+#define RS485_PIN     PINC
+#define RS485         PINC7
+
+#elif RS485 == D0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND0
+#elif RS485 == D1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND1
+#elif RS485 == D2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND2
+#elif RS485 == D3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND3
+#elif RS485 == D4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND4
+#elif RS485 == D5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND5
+#elif RS485 == D6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND6
+#elif RS485 == D7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRD
+#define RS485_PORT    PORTD
+#define RS485_PIN     PIND
+#define RS485         PIND7
+
+#elif RS485 == E0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE0
+#elif RS485 == E1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE1
+#elif RS485 == E2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE2
+#elif RS485 == E3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE3
+#elif RS485 == E4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE4
+#elif RS485 == E5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE5
+#elif RS485 == E6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE6
+#elif RS485 == E7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRE
+#define RS485_PORT    PORTE
+#define RS485_PIN     PINE
+#define RS485         PINE7
+
+#elif RS485 == F0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF0
+#elif RS485 == F1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF1
+#elif RS485 == F2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF2
+#elif RS485 == F3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF3
+#elif RS485 == F4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF4
+#elif RS485 == F5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF5
+#elif RS485 == F6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF6
+#elif RS485 == F7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRF
+#define RS485_PORT    PORTF
+#define RS485_PIN     PINF
+#define RS485         PINF7
+
+#elif RS485 == G0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING0
+#elif RS485 == G1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING1
+#elif RS485 == G2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING2
+#elif RS485 == G3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING3
+#elif RS485 == G4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING4
+#elif RS485 == G5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING5
+#elif RS485 == G6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING6
+#elif RS485 == G7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRG
+#define RS485_PORT    PORTG
+#define RS485_PIN     PING
+#define RS485         PING7
+
+#elif RS485 == H0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH0
+#elif RS485 == H1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH1
+#elif RS485 == H2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH2
+#elif RS485 == H3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH3
+#elif RS485 == H4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH4
+#elif RS485 == H5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH5
+#elif RS485 == H6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH6
+#elif RS485 == H7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRH
+#define RS485_PORT    PORTH
+#define RS485_PIN     PINH
+#define RS485         PINH7
+
+#elif RS485 == J0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ0
+#elif RS485 == J1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ1
+#elif RS485 == J2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ2
+#elif RS485 == J3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ3
+#elif RS485 == J4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ4
+#elif RS485 == J5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ5
+#elif RS485 == J6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ6
+#elif RS485 == J7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRJ
+#define RS485_PORT    PORTJ
+#define RS485_PIN     PINJ
+#define RS485         PINJ7
+
+#elif RS485 == K0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK0
+#elif RS485 == K1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK1
+#elif RS485 == K2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK2
+#elif RS485 == K3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK3
+#elif RS485 == K4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK4
+#elif RS485 == K5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK5
+#elif RS485 == K6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK6
+#elif RS485 == K7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRK
+#define RS485_PORT    PORTK
+#define RS485_PIN     PINK
+#define RS485         PINK7
+
+#elif RS485 == L0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL0
+#elif RS485 == L1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL1
+#elif RS485 == L2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL2
+#elif RS485 == L3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL3
+#elif RS485 == L4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL4
+#elif RS485 == L5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL5
+#elif RS485 == L6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL6
+#elif RS485 == L7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRL
+#define RS485_PORT    PORTL
+#define RS485_PIN     PINL
+#define RS485         PINL7
+
+#elif RS485 == A0_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA0
+#elif RS485 == A1_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA1
+#elif RS485 == A2_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA2
+#elif RS485 == A3_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA3
+#elif RS485 == A4_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA4
+#elif RS485 == A5_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA5
+#elif RS485 == A6_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA6
+#elif RS485 == A7_INV
+#undef RS485
+#define RS485_INVERT
+#define RS485_DDR     DDRA
+#define RS485_PORT    PORTA
+#define RS485_PIN     PINA
+#define RS485         PINA7
 #else
 #error -------------------------------------------
 #error Unrecognized RS485 name.  Should be like "B5"
+#error or "B5_INV" for active high
 #error -------------------------------------------
 #endif
 #endif

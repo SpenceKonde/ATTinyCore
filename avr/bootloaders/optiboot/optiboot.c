@@ -44,9 +44,6 @@
 /* Alpha test                                             */
 /*   ATmega32                                             */
 /*                                                        */
-/* Work in progress:                                      */
-/*   ATtiny84 based devices (Luminet)                     */
-/*                                                        */
 /* Does not support:                                      */
 /*   USB based devices (eg. Teensy, Leonardo)             */
 /*                                                        */
@@ -67,7 +64,7 @@
 /*   Adaboot               http://www.ladyada.net/library/arduino/bootloader.html */
 /*   AVR305                Atmel Application Note         */
 /*                                                        */
-
+/*                                                        */
 /* Copyright 2013-2015 by Bill Westfield.                 */
 /* Copyright 2010 by Peter Knight.                        */
 /*                                                        */
@@ -129,6 +126,32 @@
 /* UART number (0..n) for devices with more than          */
 /* one hardware uart (644P, 1284P, etc)                   */
 /*                                                        */
+/* RS485:                                                 */
+/* Either a pin (ex: "B5") or a pin followed by _INV      */
+/* (ex: "B5_INV") which indicates inverted polarity.      */
+/* This pin will be held low while transmitting in order  */
+/* to control the direction pin of an RS485 tranciever    */
+/*                                                        */
+/* NO_START_APP_ON_POR:                                   */
+/* If NO_START_APP_ON_POR is set, the bootloader will     */
+/* also run on power-on                                   */
+/*                                                        */
+/* START_APP_ON_EXTR:                                     */
+/* If START_APP_ON_EXTR is set, the bootloader will not   */
+/* run in the event of an external reset.                 */
+/*                                                        */
+/* If both are set, the bootloader will only run if the   */
+/* app jumps directly to it.                              */
+/*                                                        */
+/* TIMEOUT                                                */
+/* Specify how long to wait for an upload before jumping  */
+/* to the app. Default is 1 (second). Valid options are   */
+/* 1, 2, 4, and 8, as well as 5 and 25 which will run for */
+/* 500ms or 250ms and 125ms respectively.                 */
+/* As the timeout gets shorter, it becomes harder to time */
+/* the start of upload correctly to communicate with the  */
+/* bootloader. Shorter timeouts are not viable.           */
+/*                                                        */
 /**********************************************************/
 
 /**********************************************************/
@@ -163,49 +186,59 @@
 /**********************************************************/
 
 /**********************************************************/
-/* Edit History:                      */
-/*                              */
-/* Sep 2018                          */
-/* 8.0  WestfW (and Majekw and MCUDude)              */
+/* Edit History:                                          */
+/*                                                        */
+/* Mar 2020 Spence Konde for ATTinyCore                   */
+/*           github.com/SpenceKonde                       */
+/* 58.0 Pull in RS485 support by Vladimir Dronnikov       */
+/*      ( github.com/dvv ) as used in                     */
+/*      github.com/SodaqMoja/optiboot                     */
+/*      Add support for active high RS485 TX harware,     */
+/*      which apparently exists (?!)                      */
+/*      Add support for options to control behavior based */
+/*      on the reset cause flags                          */
+/*                                                        */
+/* Sep 2018                                               */
+/* 8.0  WestfW (and Majekw and MCUDude)                   */
 /*      Include do_spm routine callable from the app      */
 /*      at BOOTSTART+2, controllable with compile option  */
-/* July 2018                          */
-/* 7.0    WestfW (with much input from Others)          */
-/*    Fix MCUSR treatment as per much discussion,      */
-/*     Patches by MarkG55, majekw.  Preserve value      */
-/*     for the application, as much as possible.      */
+/* July 2018                                              */
+/* 7.0    WestfW (with much input from Others)            */
+/*    Fix MCUSR treatment as per much discussion,         */
+/*     Patches by MarkG55, majekw.  Preserve value        */
+/*     for the application, as much as possible.          */
 /*     see https://github.com/Optiboot/optiboot/issues/97 */
 /*    Optimize a bit by implementing a union for the      */
-/*     various 16bit address values used (based on      */
+/*     various 16bit address values used (based on        */
 /*     observation by "aweatherguy", but different.)      */
-/*    Slightly optimize math in VIRTUAL_BOOT code      */
-/*    Add some virboot targets, fix some fuses.      */
+/*    Slightly optimize math in VIRTUAL_BOOT code         */
+/*    Add some virboot targets, fix some fuses.           */
 /*    Implement LED_START_ON; less code than flashes      */
-/* Aug 2014                          */
+/* Aug 2014                                               */
 /* 6.2 WestfW: make size of length variables dependent    */
 /*              on the SPM_PAGESIZE.  This saves space    */
 /*              on the chips where it's most important.   */
-/* 6.1 WestfW: Fix OPTIBOOT_CUSTOMVER (send it!)      */
-/*             Make no-wait mod less picky about      */
-/*               skipping the bootloader.          */
-/*             Remove some dead code              */
-/* Jun 2014                          */
-/* 6.0 WestfW: Modularize memory read/write functions      */
-/*             Remove serial/flash overlap          */
-/*              (and all references to NRWWSTART/etc)      */
+/* 6.1 WestfW: Fix OPTIBOOT_CUSTOMVER (send it!)          */
+/*             Make no-wait mod less picky about          */
+/*               skipping the bootloader.                 */
+/*             Remove some dead code                      */
+/* Jun 2014                                               */
+/* 6.0 WestfW: Modularize memory read/write functions     */
+/*             Remove serial/flash overlap                */
+/*              (and all references to NRWWSTART/etc)     */
 /*             Correctly handle pagesize > 255bytes       */
 /*             Add EEPROM support in BIGBOOT (1284)       */
 /*             EEPROM write on small chips now causes err */
 /*             Split Makefile into smaller pieces         */
-/*             Add Wicked devices Wildfire          */
-/*           Move UART=n conditionals into pin_defs.h   */
-/*           Remove LUDICOUS_SPEED option          */
-/*           Replace inline assembler for .version      */
+/*             Add Wicked devices Wildfire                */
+/*           Move UART=n conditionals into pin_defs.h     */
+/*           Remove LUDICOUS_SPEED option                 */
+/*           Replace inline assembler for .version        */
 /*              and add OPTIBOOT_CUSTOMVER for user code  */
 /*             Fix LED value for Bobuino (Makefile)       */
 /*             Make all functions explicitly inline or    */
 /*              noinline, so we fit when using gcc4.8     */
-/*             Change optimization options for gcc4.8      */
+/*             Change optimization options for gcc4.8     */
 /*             Make ENV=arduino work in 1.5.x trees.      */
 /* May 2014                                               */
 /* 5.0 WestfW: Add support for 1Mbps UART                 */
@@ -217,7 +250,7 @@
 /* 4.6 WestfW/Pito: Add ATmega32 support                  */
 /* 4.6 WestfW/radoni: Don't set LED_PIN as an output if   */
 /*                    not used. (LED_START_FLASHES = 0)   */
-/* Jan 2013                          */
+/* Jan 2013                                               */
 /* 4.6 WestfW/dkinzer: use autoincrement lpm for read     */
 /* 4.6 WestfW/dkinzer: pass reset cause to app in R2      */
 /* Mar 2012                                               */
@@ -261,7 +294,7 @@
  */
 
 #if !defined(OPTIBOOT_CUSTOMVER)
-#define OPTIBOOT_CUSTOMVER 0
+#define OPTIBOOT_CUSTOMVER 50
 #endif
 
 unsigned const int __attribute__((section(".version")))
@@ -381,6 +414,42 @@ typedef union {
 #define WATCHDOG_4S     (_BV(WDP3) | _BV(WDE))
 #define WATCHDOG_8S     (_BV(WDP3) | _BV(WDP0) | _BV(WDE))
 #endif
+
+#ifdef TIMEOUT
+#if TIMEOUT==1
+#define WDTPERIOD WATCHDOG_1S
+#elif TIMEOUT==2
+#define WDTPERIOD WATCHDOG_2S
+#elif TIMEOUT==4
+#define WDTPERIOD WATCHDOG_4S
+#elif TIMEOUT==8
+#define WDTPERIOD WATCHDOG_8S
+#elif TIMEOUT==5 //half second
+#define WDTPERIOD WATCHDOG_500MS
+#elif TIMEOUT==25 //quarter second
+#define WDTPERIOD WATCHDOG_250MS
+#elif TIMEOUT==12 //eighth second
+#define WDTPERIOD WATCHDOG_125MS
+#else
+#error "TIMEOUT specified but invalid"
+#endif
+#else
+#define WDTPERIOD WATCHDOG_1S
+#endif
+
+/*
+ * These parts use different name, this macro improves readability
+ */
+
+#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||    \
+    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||    \
+    defined (__AVR_ATmega128__)
+#define MCUSTATUSREG MCUCSR
+#else
+#define MCUSTATUSREG MCUSR
+#endif
+
+
 
 
 /*
@@ -553,44 +622,71 @@ int main(void) {
    * Code by MarkG55
    * see discussion in https://github.com/Optiboot/optiboot/issues/97
    */
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||    \
-    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||    \
-    defined (__AVR_ATmega128__)
-  ch = MCUCSR;
-#else
-  ch = MCUSR;
-#endif
+
+  ch = MCUSTATUSREG;
+
   // Skip all logic and run bootloader if MCUSR is cleared (application request)
   if (ch != 0) {
-      /*
-       * To run the boot loader, External Reset Flag must be set.
-       * If not, we could make shortcut and jump directly to application code.
-       * Also WDRF set with EXTRF is a result of Optiboot timeout, so we
-       * shouldn't run bootloader in loop :-) That's why:
-       *  1. application is running if WDRF is cleared
-       *  2. we clear WDRF if it's set with EXTRF to avoid loops
-       * One problematic scenario: broken application code sets watchdog timer
-       * without clearing MCUSR before and triggers it quickly. But it's
-       * recoverable by power-on with pushed reset button.
-       */
-      if ((ch & (_BV(WDRF) | _BV(EXTRF))) != _BV(EXTRF)) {
-      if (ch & _BV(EXTRF)) {
-          /*
-           * Clear WDRF because it was most probably set by wdr in bootloader.
-           * It's also needed to avoid loop by broken application which could
-           * prevent entering bootloader.
-           * '&' operation is skipped to spare few bytes as bits in MCUSR
-           * can only be cleared.
-           */
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||    \
-    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||    \
-    defined(__AVR_ATmega128__)
-               // Fix missing definitions in avr-libc
-          MCUCSR = ~(_BV(WDRF));
-#else
-          MCUSR = ~(_BV(WDRF));
-#endif
+    /*
+     * To run the boot loader, External Reset Flag must be set.
+     * If not, we could make shortcut and jump directly to application code.
+     * Also WDRF set with EXTRF is a result of Optiboot timeout, so we
+     * shouldn't run bootloader in loop :-) That's why:
+     *  1. application is running if WDRF is cleared
+     *  2. we clear WDRF if it's set with EXTRF to avoid loops
+     * One problematic scenario: broken application code sets watchdog timer
+     * without clearing MCUSR before and triggers it quickly. But it's
+     * recoverable by power-on with pushed reset button.
+     *
+     * If NO_START_APP_ON_POR is defined, run bootloader after POR.
+     * This allows use with reset disabled: power on and immediately
+     * program.
+     *
+     * If START_APP_ON_EXTR is defined, don't run bootloader after
+     * an external reset - only useful in combination with above,
+     * for some unusual use cases.
+     */
+#if (!(defined(START_APP_ON_EXTR)||defined(NO_START_APP_ON_POR))) //normal behavior
+    if ((ch & (_BV(WDRF) | _BV(EXTRF))) != _BV(EXTRF)) {                      // WDRF is set or EXTRF is NOT set - go to app
+      if (ch & _BV(EXTRF)) {                                                  // Both WDRF and EXTRF set         - reset WDRF first
+        /*
+         * Clear WDRF because it was most probably set by wdr in bootloader.
+         * It's also needed to avoid loop by broken application which could
+         * prevent entering bootloader.
+         * '&' operation is skipped to spare few bytes as bits in MCUSR
+         * can only be cleared.
+         */
+        MCUSTATUSREG = ~(_BV(WDRF));
       }
+#elif (defined(START_APP_ON_EXTR)&&defined(NO_START_APP_ON_POR))
+    if ((ch & (_BV(WDRF) | _BV(PORF))) != _BV(PORF)) {                       // WDRF is set or PORF is NOT set - go to app
+      if (ch & _BV(PORF)) {                                                  // Both WDRF and POR set
+        /*
+         * Clear WDRF because it was most probably set by wdr in bootloader.
+         * It's also needed to avoid loop by broken application which could
+         * prevent entering bootloader.
+         * '&' operation is skipped to spare few bytes as bits in MCUSR
+         * can only be cleared.
+         */
+        MCUSTATUSREG = ~(_BV(WDRF));
+      }
+#elif ((!defined(START_APP_ON_EXTR))&&defined(NO_START_APP_ON_POR))
+    if (ch & _BV(WDRF) )  {                                                  // WDRF is set                     - go to app
+      if (ch & (_BV(PORF) | _BV(EXTRF))) {                                   // Either EXTRF or PORF are set    - reset WDRF first
+        /*
+         * Clear WDRF because it was most probably set by wdr in bootloader.
+         * It's also needed to avoid loop by broken application which could
+         * prevent entering bootloader.
+         * '&' operation is skipped to spare few bytes as bits in MCUSR
+         * can only be cleared.
+         */
+        MCUSTATUSREG = ~(_BV(WDRF));
+      }
+#else // START_APP_ON_EXTR but neither  NO_START_APP_ON_WDR and NO_START_APP_ON_POR
+#warning "Bootloader can only start via app request because "
+#warning "START_APP_ON_EXTR is defined and NO_START_APP_ON_POR isn't"
+    if (1) { //makes the braces line up - always start the app
+#endif
       /*
        * save the reset flags in the designated register
        * This can be saved in a main program by putting code in .init0 (which
@@ -620,8 +716,8 @@ int main(void) {
 #endif //RAMPZ
 #endif //VIRTUAL_BOOT_PARTITION
       );
-      }
-  }
+    }
+  } //end handling of MCUSR !=0
 
 #if LED_START_FLASHES > 0
   // Set up Timer 1 for timeout counter
@@ -669,11 +765,15 @@ int main(void) {
 
 #ifdef RS485
   RS485_DDR |= _BV(RS485);
+  #ifdef RS485_INVERT
+  RS485_PORT |= _BV(RS485);
+  #else
   RS485_PORT &= ~_BV(RS485);
+  #endif
 #endif
 
   // Set up watchdog to trigger after 1s
-  watchdogConfig(WATCHDOG_1S);
+  watchdogConfig(WDTPERIOD);
 
 #if (LED_START_FLASHES > 0) || defined(LED_DATA_FLASH) || defined(LED_START_ON)
   /* Set LED pin as output */
@@ -926,13 +1026,21 @@ void putch(char ch) {
       x |= _BV(TXC0);
       UART_SRA = x;
       // put transceiver to output mode
+      #ifdef RS485_INVERT
+      RS485_PORT &= ~_BV(RS485);
+      #else
       RS485_PORT |= _BV(RS485);
+      #endif
       // put char
       UART_UDR = ch;
       // wait for char transmitted
       while (!(UART_SRA & _BV(TXC0)));
       // put transceiver to input mode
+      #ifdef RS485_INVERT
+      RS485_PORT |= _BV(RS485);
+      #else
       RS485_PORT &= ~_BV(RS485);
+      #endif
     #else //not RS485
       while (!(UART_SRA & _BV(UDRE0))) {  /* Spin */ }
         UART_UDR = ch;
@@ -945,7 +1053,11 @@ void putch(char ch) {
 
 #ifdef RS485
   // put transceiver to output mode
+  #ifdef RS485_INVERT
+  RS485_PORT &= ~_BV(RS485);
+  #else
   RS485_PORT |= _BV(RS485);
+  #endif
 #endif
   __asm__ __volatile__ (
     "   com %[ch]\n" // ones complement, carry set
@@ -972,7 +1084,11 @@ void putch(char ch) {
 
 #ifdef RS485
   // put transceiver to input mode
+  #ifdef RS485_INVERT
+  RS485_PORT |= _BV(RS485);
+  #else
   RS485_PORT &= ~_BV(RS485);
+  #endif
 #endif
 #endif
 }

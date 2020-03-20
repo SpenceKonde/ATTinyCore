@@ -249,12 +249,31 @@ APPSPM_CMD = -DAPP_NOSPM=1
 endif
 endif
 
+ifdef TIMEOUT
+TIMEOUT_CMD = -DTIMEOUT=$(TIMEOUT)
+dummy = FORCE
+endif
+
+ifdef NO_START_APP_ON_POR
+ifneq ($(NO_START_APP_ON_POR),0)
+POR_CMD = -DNO_START_APP_ON_POR
+dummy = FORCE
+endif
+endif
+
+ifdef START_APP_ON_EXTR
+ifneq ($(START_APP_ON_EXTR),0)
+EXTR_CMD = -DSTART_APP_ON_EXTR
+dummy = FORCE
+endif
+endif
+
 
 COMMON_OPTIONS = $(BAUD_RATE_CMD) $(LED_START_FLASHES_CMD) $(BIGBOOT_CMD)
 COMMON_OPTIONS += $(SOFT_UART_CMD) $(LED_DATA_FLASH_CMD) $(LED_CMD) $(SS_CMD)
 COMMON_OPTIONS += $(SUPPORT_EEPROM_CMD) $(LED_START_ON_CMD) $(APPSPM_CMD)
 COMMON_OPTIONS += $(VERSION_CMD)
-COMMON_OPTIONS += $(RS485_CMD)
+COMMON_OPTIONS += $(RS485_CMD) $(TIMEOUT_CMD) $(POR_CMD) $(EXTR_CMD)
 
 #UART is handled separately and only passed for devices with more than one.
 HELPTEXT += "Option UART=n                - use UARTn for communications\n"
