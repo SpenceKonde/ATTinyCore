@@ -143,6 +143,14 @@
 /* If both are set, the bootloader will only run if the   */
 /* app jumps directly to it.                              */
 /*                                                        */
+/* Regardless of what method you use (even neither, ie    */
+/* you have it run on external reset only, if you do a    */
+/* watchdog reset from within the app, and the flag that  */
+/* is associated with a reset cause that would enter the  */
+/* is set in MCUSR, because you didn't ever reset it the  */
+/* bootloader will assume that it ran and timed out via   */
+/* watchdog reset and reset WDRF before starting the app  */
+/*                                                        */
 /* TIMEOUT                                                */
 /* Specify how long to wait for an upload before jumping  */
 /* to the app. Default is 1 (second). Valid options are   */
