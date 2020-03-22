@@ -652,6 +652,7 @@ include Makefile.1284
 include Makefile.custom
 include Makefile.2560
 include Makefile.tiny
+include Makefile.special
 include Makefile.MCUdude
 
 ifndef PRODUCTION
