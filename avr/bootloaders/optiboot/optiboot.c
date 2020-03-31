@@ -201,7 +201,7 @@
 /* 58.0 Pull in RS485 support by Vladimir Dronnikov       */
 /*      ( github.com/dvv ) as used in                     */
 /*      github.com/SodaqMoja/optiboot                     */
-/*      Add support for active high RS485 TX harware,     */
+/*      Add support for active high RS485 TX hardware,    */
 /*      which apparently exists (?!)                      */
 /*      Add support for options to control behavior based */
 /*      on the reset cause flags                          */
