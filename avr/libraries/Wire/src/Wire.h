@@ -1,6 +1,7 @@
 /*
   TwoWire.h - TWI/I2C library for Arduino & Wiring
   Copyright (c) 2006 Nicholas Zambetti.  All right reserved.
+  
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,6 +18,25 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
   Modified 2012 by Todd Krein (todd@krein.org) to implement repeated starts
+  Modified 2017~2019 by Spence Konde (spencekonde@gmail.com) to create the
+  universal Wire library for ATTinyCore. 
+  
+  This has caused some confusion - here's how the universal wire library works:
+  The src directory (the one with this file in it) contains the files needed
+  for THREE implementations of I2C. #ifdef's are used to select the 
+  appropriate implementation for the hardware:
+  
+  * ATtiny 88: Standard Wire implementation - it has a hardware 
+        I2C master/slave peripheral (twi.h/twi.cpp)
+  * ATtiny 828, 441, 841: Software I2C master (no hardware I2C or USI 
+        on the chip), hardware I2C slave (WireS.h/WireS.cpp)
+  * All others, including the 1634 - USI (USIWire.h/USIWire.cpp)
+  
+  Each of these may pull in additional files if required, refer to the
+  source code for those files for more information.
+  
+  Regardless of which implementation is used, the class is called TwoWire,
+  and the library provides an instance of it named Wire
 */
 
 #include <avr/io.h>
