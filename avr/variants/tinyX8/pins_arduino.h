@@ -31,7 +31,10 @@
 
 #include <avr/pgmspace.h>
 
-#define TUNED_OSCCAL_VALUE                        OSCCAL
+//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
+//Change the value here with the tuned value.
+//e.g
+//#define TUNED_OSCCAL_VALUE                        0x57
 
 #define ADC_TEMPERATURE 8
 
