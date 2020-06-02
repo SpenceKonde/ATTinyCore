@@ -25,9 +25,11 @@
 #define core_build_options_h
 
 #if defined(ARDUINO) && (defined( __AVR_ATtiny441__ ) || defined( __AVR_ATtiny841__ ))
-#if (ARDUINO < 10806)
-#error "This version of the Arduino IDE is not supported for this part, upgrade Arduino 1.8.6 or higher or downgrade ATTinyCore to 1.2.1"
-#endif
+  #if (ARDUINO < 10806 && ARDUINO != 10607)
+    #error "This version of the Arduino IDE is not supported for this part, upgrade Arduino 1.8.6 or higher or downgrade ATTinyCore to 1.2.1"
+  #elif (ARDUINO == 10607)
+    #warning "Arduino 1.6.7 or arduino-cli detected - Arduino 1.6.7 is not compatible with the tiny841/441 in ATTinyCore 1.2.2 and later - Arduino 1.8.6 or later is required. Versions of arduino-cli not based on Arduino 1.8.6 and later may also have same issue, but arduino-cli version cannot be detected due to a bug in arduino-cli."
+  #endif
 #endif
 /*=============================================================================
   Low power / smaller code options
