@@ -867,7 +867,7 @@ void init(void)
   sei();
 
   #ifndef DISABLEMILLIS
-  // Enable the overlow interrupt (this is the basic system tic-toc for millis)
+  // Enable the overflow interrupt (this is the basic system tic-toc for millis)
   #if defined(TIMSK) && defined(TOIE0) && (TIMER_TO_USE_FOR_MILLIS == 0)
   sbi(TIMSK, TOIE0);
   #elif defined(TIMSK0) && defined(TOIE0) && (TIMER_TO_USE_FOR_MILLIS == 0)
