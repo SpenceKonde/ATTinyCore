@@ -46,7 +46,20 @@ Despite having 28 ADC input channels, the 828 only has the two basic reference o
 * DEFAULT: Vcc
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
+### Weird I/O-pin related features
+There are a few strange features relating to the GPIO pins on the ATtiny x41 family which are found only in a small number of other parts released around the same time. 
 
+#### Special "high sink" port
+All pins on PORTC have unusually high sink capability - when sinking a given amount of current, the voltage on these pins is about half that of typical pins. Using the `PHDE` register, these can be set to sink even more aggressively. 
+
+```
+PHDE=(1<<PHDEC);
+```
+
+This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts. The PWM outputs of the timers can be remapped to this port as well, making it of obvious utility for driving LEDs and similar. 
+
+#### Separate pullup-enable register
+Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). 
 
 ### Purchasing ATTiny828 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your purchases support the continued development of this core.
