@@ -86,8 +86,7 @@ static const uint8_t A10 = 0x80 | 10;
 //Core Configuration (used to be in core_build_options.h)
 
 //If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
-#define TUNED_OSCCAL_VALUE                        OSCCAL
+//Change the value here with the tuned value.
 //e.g
 //#define TUNED_OSCCAL_VALUE                        0x57
 
