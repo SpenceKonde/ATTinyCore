@@ -76,8 +76,28 @@ static const uint8_t SCL = 6;
 static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
 static const uint8_t A2 = 0x80 | 2;
-static const uint8_t A3 = 0x80 | 3;
+static const uint8_t A3 = 0x80 |
 
+
+#define PIN_PA0  ( 8)
+#define PIN_PA1  ( 9)
+#define PIN_PA2  (10)
+#define PIN_PA3  (11)
+#define PIN_PA4  (12)
+#define PIN_PA5  (13)
+#define PIN_PA6  (14)
+#define PIN_PA7  (15) /* RESET */
+#define PIN_PB0  ( 0)
+#define PIN_PB1  ( 1)
+#define PIN_PB2  ( 2)
+#define PIN_PB3  ( 3)
+#define PIN_PB4  ( 4)
+#define PIN_PB5  ( 5)
+#define PIN_PB6  ( 6)
+#define PIN_PB7  ( 7)
+
+
+//Legacy
 #define PIN_A0  ( 8)
 #define PIN_A1  ( 9)
 #define PIN_A2  (10)

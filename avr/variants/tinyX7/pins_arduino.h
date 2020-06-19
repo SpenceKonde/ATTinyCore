@@ -81,6 +81,24 @@ static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
 #define LED_BUILTIN (4)
 
+
+#define PIN_PA0  ( 0)
+#define PIN_PA1  ( 1)
+#define PIN_PB6  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PB0  ( 4)
+#define PIN_PB1  ( 5)
+#define PIN_PB2  ( 6)
+#define PIN_PB3  ( 7)
+#define PIN_PB4  ( 8)
+#define PIN_PB5  ( 9)
+#define PIN_PA6  ( 10)
+#define PIN_PA4  ( 11)
+#define PIN_PA2  ( 12)
+#define PIN_PA5  ( 13)
+#define PIN_PA7  ( 14)
+#define PIN_PB7  ( 15)
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)

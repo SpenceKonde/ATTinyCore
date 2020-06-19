@@ -68,6 +68,27 @@
 static const uint8_t SDA = 14;
 static const uint8_t SCL = 16;
 
+
+#define PIN_PD0   ( 0 )
+#define PIN_PD1   ( 1 )
+#define PIN_PA1   ( 2 )
+#define PIN_PA0   ( 3 )
+#define PIN_PD2   ( 4 )
+#define PIN_PD3   ( 5 )
+#define PIN_PD4   ( 6 )
+#define PIN_PD5   ( 7 )
+#define PIN_PD6   ( 8 )
+#define PIN_PB0   ( 9 )
+#define PIN_PB1   (10 )
+#define PIN_PB2   (11 )
+#define PIN_PB3   (12 )
+#define PIN_PB4   (13 )
+#define PIN_PB5   (14 )
+#define PIN_PB6   (15 )
+#define PIN_PB7   (16 )
+#define PIN_PA2   (17 )
+
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)

@@ -85,6 +85,27 @@ static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
 #define LED_BUILTIN (3)
 
+
+
+#define PIN_PA0  ( 0)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PA4  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 8)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 10)
+#define PIN_PB3  ( 11)
+#define PIN_PB4  ( 12)
+#define PIN_PB5  ( 13)
+#define PIN_PB6  ( 14)
+#define PIN_PB7  ( 15)
+
+
+//Legacy
 #define PIN_A0  ( 0)
 #define PIN_A1  ( 1)
 #define PIN_A2  ( 2)

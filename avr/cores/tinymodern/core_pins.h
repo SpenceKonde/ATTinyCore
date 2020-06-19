@@ -47,7 +47,33 @@
 #define PIN_B1  ( 1)
 #define PIN_B2  ( 2)
 #define PIN_B3  (11)  /* RESET */
+
+#define PIN_PA0  (10)
+#define PIN_PA1  ( 9)
+#define PIN_PA2  ( 8)
+#define PIN_PA3  ( 7)
+#define PIN_PA4  ( 6)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 4)
+#define PIN_PA7  ( 3)
+#define PIN_PB0  ( 0)
+#define PIN_PB1  ( 1)
+#define PIN_PB2  ( 2)
+#define PIN_PB3  (11)  /* RESET */
 #else
+
+#define PIN_PA0  ( 0)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PA4  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 10)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 8)
+#define PIN_PB3  (11)  /* RESET */
 
 #define PIN_A0  ( 0)
 #define PIN_A1  ( 1)
@@ -63,7 +89,7 @@
 #define PIN_B3  (11)  /* RESET */
 #endif
 
-#define LED_BUILTIN (PIN_B2)
+#define LED_BUILTIN (PIN_PB2)
 
 #define CORE_DIGITAL_FIRST    (0)
 #define CORE_DIGITAL_LAST     (11)
@@ -80,12 +106,12 @@
 #define CORE_INT0_PIN  PIN_B1
 #define digitalPinToInterrupt(p)  ((p) == CORE_INT0_PIN ? 0 : NOT_AN_INTERRUPT)
 // ATtiny841 Datasheet Table 12-7, TOCCn pins can be assigned various OCnX. Rationale for these choices is that - TOCC0/1 are the primary pins for UART0, while TOCC3/4 are shared with UART1. So might as well make them the least desirable timer.
-#define CORE_OC0A_PIN  PIN_A4 // TOCC3
-#define CORE_OC0B_PIN  PIN_A5 // TOCC4
-#define CORE_OC1A_PIN  PIN_A6 // TOCC5
-#define CORE_OC1B_PIN  PIN_A3 // TOCC2
-#define CORE_OC2A_PIN  PIN_B2 // TOCC7
-#define CORE_OC2B_PIN  PIN_A7 // TOCC6
+#define CORE_OC0A_PIN  PIN_PA4 // TOCC3
+#define CORE_OC0B_PIN  PIN_PA5 // TOCC4
+#define CORE_OC1A_PIN  PIN_PA6 // TOCC5
+#define CORE_OC1B_PIN  PIN_PA3 // TOCC2
+#define CORE_OC2A_PIN  PIN_PB2 // TOCC7
+#define CORE_OC2B_PIN  PIN_PA7 // TOCC6
 
 #define CORE_PWM0_PIN       CORE_OC0A_PIN
 #define CORE_PWM0_TIMER     0
@@ -141,6 +167,25 @@
 #define PIN_B1  (16)
 #define PIN_C3  (17)  /* RESET */
 
+#define PIN_PB0  ( 0)
+#define PIN_PA7  ( 1)
+#define PIN_PA6  ( 2)
+#define PIN_PA5  ( 3)
+#define PIN_PA4  ( 4)
+#define PIN_PA3  ( 5)
+#define PIN_PA2  ( 6)
+#define PIN_PA1  ( 7)
+#define PIN_PA0  ( 8)
+#define PIN_PC5  ( 9)
+#define PIN_PC4  (10)
+#define PIN_PC2  (11)
+#define PIN_PC1  (12)
+#define PIN_PC0  (13)
+#define PIN_PB3  (14)
+#define PIN_PB2  (15)
+#define PIN_PB1  (16)
+#define PIN_PC3  (17)  /* RESET */
+
 #define LED_BUILTIN (13)
 
 #define CORE_DIGITAL_FIRST    (0)
@@ -156,12 +201,12 @@
 #define NUM_DIGITAL_PINS            18
 #define NUM_ANALOG_INPUTS           18
 
-#define CORE_INT0_PIN  PIN_C2
+#define CORE_INT0_PIN  PIN_PC2
 
-#define CORE_OC0A_PIN  PIN_C0
-#define CORE_OC0B_PIN  PIN_A5
-#define CORE_OC1A_PIN  PIN_B3
-#define CORE_OC1B_PIN  PIN_A6
+#define CORE_OC0A_PIN  PIN_PC0
+#define CORE_OC0B_PIN  PIN_PA5
+#define CORE_OC1A_PIN  PIN_PB3
+#define CORE_OC1B_PIN  PIN_PA6
 
 #define CORE_PWM0_PIN       CORE_OC0A_PIN
 #define CORE_PWM0_TIMER     0
@@ -186,6 +231,35 @@
 #endif
 
 #if defined( __AVR_ATtiny828__ )
+
+#define PIN_PA0  ( 0)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PA4  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 8)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  (10)
+#define PIN_PB3  (11)
+#define PIN_PB4  (12)
+#define PIN_PB5  (13)
+#define PIN_PB6  (14)
+#define PIN_PB7  (15)
+#define PIN_PC0  (16)
+#define PIN_PC1  (17)
+#define PIN_PC2  (18)
+#define PIN_PC3  (19)
+#define PIN_PC4  (20)
+#define PIN_PC5  (21)
+#define PIN_PC6  (22)
+#define PIN_PC7  (23)
+#define PIN_PD0  (24)
+#define PIN_PD1  (25)
+#define PIN_PD2  (26)  /* RESET */
+#define PIN_PD3  (27)
 
 #define PIN_A0  ( 0)
 #define PIN_A1  ( 1)
@@ -230,13 +304,13 @@
 #define NUM_DIGITAL_PINS            28
 #define NUM_ANALOG_INPUTS           28
 
-#define CORE_INT0_PIN  PIN_C1
-#define CORE_INT1_PIN  PIN_C2
+#define CORE_INT0_PIN  PIN_PC1
+#define CORE_INT1_PIN  PIN_PC2
 
-#define CORE_OC0A_PIN  PIN_C0
-#define CORE_OC0B_PIN  PIN_C4
-#define CORE_OC1A_PIN  PIN_C5
-#define CORE_OC1B_PIN  PIN_C6
+#define CORE_OC0A_PIN  PIN_PC0
+#define CORE_OC0B_PIN  PIN_PC4
+#define CORE_OC1A_PIN  PIN_PC5
+#define CORE_OC1B_PIN  PIN_PC6
 
 #define CORE_PWM0_PIN       CORE_OC0A_PIN
 #define CORE_PWM0_TIMER     0

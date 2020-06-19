@@ -84,6 +84,25 @@ static const uint8_t A8 = 0x80 | 8;
 static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
 
+
+#define PIN_PA0  (0)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 14)
+#define PIN_PA4  ( 10)
+#define PIN_PA5  ( 11)
+#define PIN_PA6  ( 12)
+#define PIN_PA7  ( 13)
+#define PIN_PB0  ( 9)
+#define PIN_PB1  ( 8)
+#define PIN_PB2  ( 7)
+#define PIN_PB3  (6)
+#define PIN_PB4  ( 5)
+#define PIN_PB5  ( 4)
+#define PIN_PB6  ( 3)
+#define PIN_PB7  ( 15) /* RESET */
+
+//Legacy
 #define PIN_A0  (0)
 #define PIN_A1  ( 1)
 #define PIN_A2  ( 2)
