@@ -668,7 +668,6 @@ PLLCSR |= PCKE;
 #if (F_CPU == 16500000L && CLOCK_SOURCE==6)
 byte read_factory_calibration(void)
   {
-    byte SIGRD = 5;
     byte value = boot_signature_byte_get(1);
     return value;
   }

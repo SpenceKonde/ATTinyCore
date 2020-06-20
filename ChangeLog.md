@@ -1,5 +1,6 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
 1.3.4
+* Support PIN_Pxn notation.
 * Document a few really odd GPIO features on ATtiny841, 441, 828.
 * Document minimum baud rate of builtin software serial "Serial" for parts without hardware serial.
 * Remove TUNED_OSCCAL_VALUE defines from pins_arduino.h for variants; this was set to OSCCAL in those files (despite the fact that we tested for whether it was defined before trying to use it!), leading to compiled binaries copying OSCCAL to a register and then writing it back. (thanks @ArminJo)
