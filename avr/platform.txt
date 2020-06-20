@@ -130,3 +130,19 @@ tools.avrdude.bootloader.params.verbose=-v
 tools.avrdude.bootloader.params.quiet=-q -q
 #The bootloader is written in erase.pattern, so this is just a dummy line now
 tools.avrdude.bootloader.pattern=
+
+# Micronucleus Loader
+# -------------------
+
+tools.micronucleus.cmd.path={runtime.tools.micronucleus.path}/launcher
+
+tools.micronucleus.upload.params.verbose=
+tools.micronucleus.upload.params.quiet=
+#tools.micronucleus.upload.pattern="{cmd.path}" --run --timeout 60 "{build.path}/{build.project_name}.hex"
+tools.micronucleus.upload.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{build.path}/{build.project_name}.hex:i
+ 
+# USB Default Flags
+# Default blank usb manufacturer will be filled it at compile time
+# - from numeric vendor ID, set to Unknown otherwise
+build.usb_manufacturer=
+build.usb_flags=

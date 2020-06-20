@@ -81,3 +81,10 @@ stk500.protocol=stk500
 stk500.program.protocol=stk500
 stk500.program.tool=avrdude
 stk500.program.extra_params=-P{serial.port}
+
+micronucleusprog.name=Micronucleus 
+micronucleusprog.communication=usb
+micronucleusprog.protocol=micronucleus
+micronucleusprog.program.tool={runtime.tools.micronucleus.path}/micronucleus
+micronucleusprog.program.extra_params=-Pusb
+
