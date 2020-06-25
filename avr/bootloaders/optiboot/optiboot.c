@@ -1228,7 +1228,7 @@ void verifySpace() {
 
 #if LED_START_FLASHES > 0
 void flash_led(uint8_t count) {
-    //LED_PIN |= _BV(LED);
+  //LED_PIN |= _BV(LED);
   do {
     #if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
         TCNT1 = 0xFF&(-(F_CPU/(8192L*16)));

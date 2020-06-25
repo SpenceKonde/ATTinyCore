@@ -1,5 +1,7 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
 1.4.0
+* Remove the HAVE_BOOTLOADER mechanism, which existed to clean up timer registers that a bootloader may have left configured. Neither Optiboot not Micronucleus do this, so HAVE_BOOTLOADER had no function. Is now commented out everywhere, as is the code it enabled. Saves a small amount of flash, and makes init() in wiring.c far easier to follow once the do-nothing code isn't visible.
+* Correct a number of typos in boards.txt
 * Fix several missing optiboot bootloaders
 * Add support for setting CLKPR so bootloaders off internal at speeds other than 8 and 1 MHz can work at less agonizing baud rates.
 * Fix inverted LED blinking on all parts

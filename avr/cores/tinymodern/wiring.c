@@ -486,7 +486,13 @@ void initToneTimer(void)
     uint8_t value = boot_signature_byte_get(1);
     return value;
   }
-
+  #ifdef INSTANT_BOOST
+  //Not supposed to be "safe" - but in my testing, it seemed to work fine...
+  void oscSlow(uint8_t newcal) {
+    OSCCAL0=newcal;
+  }
+  #else
+  //The safe way, per datasheet recommendations.
   void oscSlow(uint8_t newcal) {
     uint8_t i=OSCCAL0;
     // We do it this way so we can avoid constantly having to re-read OSCCAL0; might as well get this done as fast as possible (this whole bit may not even be necessary, but it's what the datasheet says)
@@ -494,6 +500,7 @@ void initToneTimer(void)
       OSCCAL0=--i;
     }
   }
+  #endif
 
 #endif
 
@@ -502,7 +509,14 @@ void initToneTimer(void)
   //functions related to the 16 MHz internal option on ATtiny841/441.
   // 174 CALBOOST was empirically determined from a few parts I had lying around.
   #define CALBOOST 174
+  #define MAXINITCAL (255-CALBOOST)
   static uint8_t saveTCNT=0;
+  #ifdef INSTANT_BOOST
+  //Not supposed to be "safe" - but in my testing, it seemed to work fine...
+  void oscBoost() {
+    OSCCAL0=(origOSC>MAXINITCAL?255:(origOSC+CALBOOST));
+  }
+  #else
   void oscBoost() {
     uint8_t i=OSCCAL0;
     // We do it this way so we can avoid constantly having to re-read OSCCAL0; might as well get this done as fast as possible (this whole bit may not even be necessary, but it's what the datasheet says)
@@ -510,6 +524,7 @@ void initToneTimer(void)
       OSCCAL0=++i;
     }
   }
+  #endif
 
   void oscSafeNVM() { //called immediately prior to writing to EEPROM.
     TIMSK0&=~(_BV(TOIE0)); //turn off millis interrupt - let PWM keep running (Though at half frequency, of course!)
@@ -562,7 +577,8 @@ void init(void)
   #endif
   // this needs to be called before setup() or some functions won't work there
   #if (F_CPU==4000000L && CLOCK_SOURCE==0)
-  cli();
+  //Ordinarily, this absolutely must be within cli() / sei() - however at this point in the code, we KNOW it isn't, because we have not enabled any
+  //cli();
   #ifdef CCP
   CCP=0xD8; //enable change of protected register
   #else
@@ -570,12 +586,16 @@ void init(void)
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
-  sei();
+  //sei();
+
+
+  /*
   // In case the bootloader left our millis timer in a bad way
+  // but none of the supported bootloaders do this - so this can be commented out entirely
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
     MillisTimer_SetToPowerup();
   #endif
-
+  */
   // Use the Millis Timer for fast PWM
   MillisTimer_SetWaveformGenerationMode( MillisTimer_(Fast_PWM_FF) );
 

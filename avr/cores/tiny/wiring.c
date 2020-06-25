@@ -685,7 +685,7 @@ void init(void)
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
-  #if (F_CPU == 16500000L && CLOCK_SOURCE==6)
+  #if (F_CPU == 16500000L && CLOCK_SOURCE== 6 && (!defined(PRETUNED165)))
   if (OSCCAL == read_factory_calibration()) {
     // adjust the calibration up from 16.0mhz to 16.5mhz
     if (OSCCAL >= 128) {
@@ -695,10 +695,21 @@ void init(void)
       OSCCAL += 5;
     }
   }
+  #elif (F_CPU == 16000000L && CLOCK_SOURCE== 6 && (defined(PRETUNED165)))
+    OSCCAL = read_factory_calibration();
+    // adjust the calibration back to factory cal to lower clock back to 16.0 MHz
   #endif
   sei();
 
+
+/*
+
   // In case the bootloader left our millis timer in a bad way
+  // Note that all occurences of HAVE_BOOTLOADER are commented out, because all of the included bootloaders
+  // are known to be free of such bad behavior, so this just wastes flash setting things to values they are already set to.
+  // code retained in case a less polite bootloader is ever added to the core for some reason.
+  // but hidden behind a block comment for readability.
+
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
   // Ensure the timer is in the same state as power-up
   #if (TIMER_TO_USE_FOR_MILLIS == 0) && defined(WGM01)
@@ -825,6 +836,9 @@ void init(void)
 
   #endif
   #endif
+
+  // end of the code for clearing timer disruption left by errant bootloaded....
+  */
 
   // Use the Millis Timer for fast PWM (unless it doesn't have an output).
   #if (TIMER_TO_USE_FOR_MILLIS == 0) && defined(WGM01)
