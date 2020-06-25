@@ -566,7 +566,7 @@ attinyx5micr.menu.millis.enabled=Enabled
 attinyx5micr.menu.millis.disabled=Disabled (saves flash)
 attinyx5micr.menu.millis.enabled.build.millis=
 attinyx5micr.menu.millis.disabled.build.millis=-DDISABLEMILLIS
-attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} -DPRETUNED
+attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} -DPRETUNED165
 
 
 attinyx8.name=ATtiny48/88 (No bootloader)
