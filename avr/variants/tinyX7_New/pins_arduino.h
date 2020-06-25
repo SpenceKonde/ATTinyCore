@@ -178,7 +178,7 @@ static const uint8_t A10 = 0x80 | 10;
 #define digitalPinToPCMSK(p)    ((p) >= 8 ?(&PCMSK1) : (&PCMSK0))
 #define digitalPinToPCMSKbit(p) (p&15)
 
-#define digitalPinToInterrupt(p)  ((p) == 14 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)  ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
 #ifdef ARDUINO_MAIN
 
 // On the Arduino board, digital pins are also used

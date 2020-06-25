@@ -7,9 +7,9 @@ call omake attiny841at20
 call omake attiny841at16
 call omake attiny841at12
 call omake attiny841at8
-call omake attiny841at8_5v
+call omake attiny841at8_int
 call omake attiny841at1
-call omake attiny841at1_5v
+call omake attiny841at1_int
 
 call omake attiny841at184ser1
 call omake attiny841at147ser1
@@ -21,8 +21,8 @@ call omake attiny841at16ser1
 call omake attiny841at12ser1
 call omake attiny841at8ser1
 call omake attiny841at1ser1
-call omake attiny841at8_5vser1
-call omake attiny841at1_5vser1
+call omake attiny841at8_intser1
+call omake attiny841at1_intser1
 
 call omake attiny441at184
 call omake attiny441at147
@@ -33,9 +33,9 @@ call omake attiny441at20
 call omake attiny441at16
 call omake attiny441at12
 call omake attiny441at8
-call omake attiny441at8_5v
+call omake attiny441at8_int
 call omake attiny441at1
-call omake attiny441at1_5v
+call omake attiny441at1_int
 
 call omake attiny441at184ser1
 call omake attiny441at147ser1
@@ -78,9 +78,9 @@ call omake attiny1634at20
 call omake attiny1634at16
 call omake attiny1634at12
 call omake attiny1634at8
-call omake attiny1634at8_5v
+call omake attiny1634at8_int
 call omake attiny1634at1
-call omake attiny1634at1_5v
+call omake attiny1634at1_int
 
 call omake attiny1634at147ser1
 call omake attiny1634at110ser1
@@ -97,16 +97,22 @@ call omake attiny828at8
 call omake attiny828at12
 call omake attiny828at16
 call omake attiny828at20
-call omake attiny828at8_5v
+call omake attiny828at8_int
 call omake attiny828at1
-call omake attiny828at1_5v
+call omake attiny828at1_int
 
-call omake attiny88at8
+call omake attiny88at20
 call omake attiny88at16
+call omake attiny88at12
+call omake attiny88at8
+call omake attiny88at4
 call omake attiny88at1
 
-call omake attiny48at8
+call omake attiny48at20
 call omake attiny48at16
+call omake attiny48at12
+call omake attiny48at8
+call omake attiny48at4
 call omake attiny48at1
 
 call omake attiny85at184

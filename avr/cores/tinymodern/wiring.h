@@ -191,6 +191,18 @@ unsigned long millis(void);
 unsigned long micros(void);
 #endif
 
+
+#if ((F_CPU==16000000 || defined(LOWERCAL)) && CLOCK_SOURCE==0 )
+  uint8_t read_factory_calibration(void);
+  void oscSlow(uint8_t newcal);
+#endif
+
+#if (defined( __AVR_ATtinyX41__) && F_CPU==16000000 && CLOCK_SOURCE==0)
+  void oscBoost();
+  void oscSafeNVM();
+  void oscDoneNVM(uint8_t bytes_written);
+#endif
+
 void delay(unsigned long);
 void delayMicroseconds(unsigned int us);
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);

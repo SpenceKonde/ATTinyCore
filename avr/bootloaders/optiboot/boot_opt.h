@@ -23,6 +23,30 @@ asm(".macro __wr_spmcsr p, v \n\t"
     ".endif     \n\t"
     ".endm      \n");
 
+#ifdef LOWERCAL
+
+// For a few parts, we need to support reading OSCCAL setting
+// __BOOT_SIGROW_READ macro from boot.h doesn't work here
+// so using hardcoded value which works for all of the parts
+// in question - 0x21
+
+#define boot_signature_byte_get_short(addr) \
+(__extension__({                      \
+      uint8_t __result;                         \
+      __asm__ __volatile__                      \
+      (                                         \
+        "__wr_spmcsr %1, %2\n\t"                \
+        "lpm %0, Z" "\n\t"                      \
+        : "=r" (__result)                       \
+        : "i" (_SFR_MEM_ADDR(__SPM_REG)),       \
+          "r" ((uint8_t)(0x21)),  \
+          "z" ((uint16_t)(addr))                \
+      );                                        \
+      __result;                                 \
+}))
+
+#endif
+
 
 #if defined(__SPM_REG)
 
@@ -35,7 +59,7 @@ asm(".macro __wr_spmcsr p, v \n\t"
         "spm\n\t"                                \
         "clr  r1\n\t"                            \
         :                                        \
-        : "i" (_SFR_MEM_ADDR(__SPM_REG)),         \
+        : "i" (_SFR_MEM_ADDR(__SPM_REG)),        \
           "r" ((uint8_t)__BOOT_PAGE_FILL),       \
           "z" ((uint16_t)address),               \
           "r" ((uint16_t)data)                   \
@@ -50,7 +74,7 @@ asm(".macro __wr_spmcsr p, v \n\t"
         "__wr_spmcsr %0, %1\n\t"                 \
         "spm\n\t"                                \
         :                                        \
-        : "i" (_SFR_MEM_ADDR(__SPM_REG)),         \
+        : "i" (_SFR_MEM_ADDR(__SPM_REG)),        \
           "r" ((uint8_t)__BOOT_PAGE_ERASE),      \
           "z" ((uint16_t)address)                \
     );                                           \
@@ -63,7 +87,7 @@ asm(".macro __wr_spmcsr p, v \n\t"
         "__wr_spmcsr %0, %1\n\t"                 \
         "spm\n\t"                                \
         :                                        \
-        : "i" (_SFR_MEM_ADDR(__SPM_REG)),         \
+        : "i" (_SFR_MEM_ADDR(__SPM_REG)),        \
           "r" ((uint8_t)__BOOT_PAGE_WRITE),      \
           "z" ((uint16_t)address)                \
     );                                           \
@@ -76,10 +100,12 @@ asm(".macro __wr_spmcsr p, v \n\t"
         "__wr_spmcsr %0, %1\n\t"                 \
         "spm\n\t"                                \
         :                                        \
-        : "i" (_SFR_MEM_ADDR(__SPM_REG)),         \
+        : "i" (_SFR_MEM_ADDR(__SPM_REG)),        \
           "r" ((uint8_t)__BOOT_RWW_ENABLE)       \
     );                                           \
 }))
+
+
 
 #endif // __SPM_REG
 

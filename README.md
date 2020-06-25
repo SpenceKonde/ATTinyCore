@@ -92,8 +92,9 @@ Internal:
 * 8 MHz
 * 1 MHz
 * 16 MHz (PLL clock,  x5, x61 only)
+* 16 MHz (aggressiovely configured 441/841, with caveats)
 * 4 MHz*** (except on x313, starts up at 1MHz and immediately switches to 4MHz before setup() is run)
-* 16.5MHz**** (PLL clock, tweaked, x5, x61 only - only use if you know you need this)
+* 16.5MHz**** (PLL clock, tweaked, x5, x61 - usually for digiSpark-like boards)
 * 0.5 MHz** (x313 only)
 * 512 kHz** (ULP - x41 only)
 * 256 kHz** (ULP - x41 only)

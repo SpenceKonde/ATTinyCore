@@ -1,5 +1,13 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
-1.3.4
+1.4.0
+* Fix several missing optiboot bootloaders
+* Add support for setting CLKPR so bootloaders off internal at speeds other than 8 and 1 MHz can work at less agonizing baud rates.
+* Fix inverted LED blinking on all parts
+* Fix LED blinking on x61 family (#264)
+* Add support for VUSB uploads to Digispark (t85, t167), Micronucleus/California STEAM (t84a)  Wattuino (841). Requires board manager installation, or another compatible board, in order tp pick up the support files.1
+* Add support for the DigiSpark Pro pin mapping for the ATtiny87/167 with other bootloader options.
+* Add support for 16MHz with *INTERNAL* oscillator on ATtiny841, 441. Support is still experimental; there are a few caveats - see [ATtiny441, 841](avr/extras/ATtiny_x41.md)
+* Tested voltage dependence of internal oscillator, allowing significant simplification of the bootloader files for the ATtiny841/441,828,1643.
 * Support PIN_Pxn notation.
 * Document a few really odd GPIO features on ATtiny841, 441, 828.
 * Document minimum baud rate of builtin software serial "Serial" for parts without hardware serial.

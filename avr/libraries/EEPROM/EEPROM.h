@@ -25,6 +25,7 @@
 #include <avr/eeprom.h>
 #include <avr/io.h>
 
+
 /***
     EERef class.
 
@@ -32,6 +33,16 @@
     Its purpose is to mimic a typical byte of RAM, however its storage is the EEPROM.
     This class has an overhead of two bytes, similar to storing a pointer to an EEPROM cell.
 ***/
+#if  (defined(__AVR_ATtinyX41__) && F_CPU==16000000 && CLOCK_SOURCE==0)
+#include <wiring.h>
+//this wacky rigmarole required to write EEPROM safely when abusing the internal oscillator like this.
+  void safe_eeprom_write_byte(uint8_t *__p, uint8_t __value) {
+      oscSafeNVM();
+      eeprom_write_byte( __p, __value);
+      eeprom_busy_wait();
+      oscDoneNVM(1);
+  }
+#endif
 
 struct EERef{
 
@@ -44,7 +55,11 @@ struct EERef{
 
     //Assignment/write members.
     EERef &operator=( const EERef &ref ) { return *this = *ref; }
-    EERef &operator=( uint8_t in )       { return eeprom_write_byte( (uint8_t*) index, in ), *this;  }
+    #if  (defined(__AVR_ATtinyX41__) && F_CPU==16000000 && CLOCK_SOURCE==0)
+      EERef &operator=( uint8_t in )       { return safe_eeprom_write_byte( (uint8_t*) index, in ), *this;  }
+    #else
+      EERef &operator=( uint8_t in )       { return eeprom_write_byte( (uint8_t*) index, in ), *this;  }
+    #endif
     EERef &operator +=( uint8_t in )     { return *this = **this + in; }
     EERef &operator -=( uint8_t in )     { return *this = **this - in; }
     EERef &operator *=( uint8_t in )     { return *this = **this * in; }
