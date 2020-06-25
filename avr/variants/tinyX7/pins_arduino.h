@@ -114,7 +114,11 @@ static const uint8_t A10 = 0x80 | 10;
 
 #define TIMER_TO_USE_FOR_MILLIS                   0
 
-#define HAVE_BOOTLOADER                           1
+// This is commented out. The only place where HAVE_BOOTLOADER is checked is in wiring.c, where it wastes precious bytes of flash resetting timer-related registers out of fear that the bootloader has scribbled on them.
+// However, Optiboot does a WDR before jumping straight to app to start after running.
+// This means that optiboot leaves all the registers clean. Meanwhile, Micronucleus doesn't even USE any of the timers, and that's all the wiring.c code checks on (to make sure millis will work)
+// commenting out instead of setting to 0, as that would allow a hypothetical badly behaved bootloader to be supported in the future by having it add -DHAVE_BOOTLOADER from boards.txt
+// #define HAVE_BOOTLOADER                           1
 
 /*
   Where to put the software serial? (Arduino Digital pin numbers)
