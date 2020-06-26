@@ -40,11 +40,9 @@ Example of a "guard" against wrong pin mapping:
 #endif
 ```
 The pin mapping for the Digispark Pro is very, very strange.
-It is worth noting that if the Digispark Pro pinout is selected, one of the PWM channels PWM will be on PIN_PB1, not PIN_PB3, in an attempt to make the PWM more useful vis-a-vis the USB pins.
 
-### Flexible PWM support (Coming 1.4.1)
-In 1.4.0 and earlier, PWM is available on PA2, PB3, and PB6 for OLD and NEW pinouts. In 1.4.0, it is available on and PA2, PB1, and PB6 for Digispark Pro pinout.
-In 1.4.1, we will introduce Flexible PWM pins - PWM will be available on PA2, as well as one pin out of PB0/2/4/6 and one pin out of PB1/3/5/7. Calling analogWrite() on any pin in one of those sets will turn it off on all other pins in that set.
+### Flexible PWM support (Coming 1.4.0)
+The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core.

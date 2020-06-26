@@ -133,10 +133,10 @@ void analogWrite(uint8_t pin, int val)
     //Timer 1
     TCCR1A|=(1<<COM1B1)|(1<<COM1A1);
     if (timer&0x04){
-      TCCR1D&=(0x0F); //clear all PWM on same channel
+      //TCCR1D&=(0x0F); //clear all PWM on same channel
       OCR1B=val;
     } else {
-      TCCR1D&=(0xF0); //clear all PWM on same channel
+      //TCCR1D&=(0xF0); //clear all PWM on same channel
       OCR1A=val;
     }
     TCCR1D|=(1<<(timer&0x07));
