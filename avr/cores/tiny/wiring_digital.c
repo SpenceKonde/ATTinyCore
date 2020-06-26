@@ -77,6 +77,7 @@ static void turnOffPWM(uint8_t timer)
   } else
   #endif
 
+  #ifndef __AVR_ATtinyX7__
   #if defined(TCCR1A) && defined(COM1A1)
   if( timer == TIMER1A){
     cbi(TCCR1A, COM1A1);
@@ -105,9 +106,6 @@ static void turnOffPWM(uint8_t timer)
   if(timer == TIMER1A){
     cbi(TCCR1, COM1A1);
     //cbi(TCCR1, COM1A0);
-  #ifdef OC1AX
-    cbi(TCCR1D, OC1AX);
-  #endif
   } else
   #endif
 
@@ -115,9 +113,6 @@ static void turnOffPWM(uint8_t timer)
   if( timer == TIMER1B){
     cbi(TCCR1A, COM1B1);
     //cbi(TCCR1A, COM1B0);
-  #ifdef OC1BV
-    cbi(TCCR1D, OC1BV);
-  #endif
   } else
   #endif
 
@@ -127,10 +122,11 @@ static void turnOffPWM(uint8_t timer)
     //cbi(GTCCR, COM1B1);
   } else
   #endif
-
-    {
-    }
-
+  #else // then it IS an ATtiny x7
+  if (timer&0x10) {
+    TCCR1D&=(~(1<<(timer&0x07)));
+  }
+  #endif
 }
 
 void digitalWrite(uint8_t pin, uint8_t val)

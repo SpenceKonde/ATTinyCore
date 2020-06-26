@@ -524,6 +524,9 @@ static void initToneTimerInternal(void)
   cbi(TCCR1D, WGM11);
   sbi(TCCR1D, WGM10);
   TCCR1B |= (ToneTimer_Prescale_Index << CS10);
+  #elif (TIMER_TO_USE_FOR_TONE == 1 ) && defined(__AVR_ATtinyX7__)
+  TCCR1A=(1<<COM1A1)|(1<<COM1B1)|(1<<WGM10);
+  TCCR1B |= (ToneTimer_Prescale_Index << CS10)|(1<<WGM12);
   #elif (TIMER_TO_USE_FOR_TONE == 1)
   TCCR1B &= ~((1<<CS12) | (1<<CS11) | (1<<CS10)); //stop the clock to configure
   // Use the Tone Timer for phase correct PWM
@@ -532,9 +535,11 @@ static void initToneTimerInternal(void)
   cbi(TCCR1B, WGM12);
   cbi(TCCR1B, WGM13);
   TCCR1B |= (ToneTimer_Prescale_Index << CS10); //set the clock
+
   #endif
 }
  #endif
+
 
 void initToneTimer(void)
 {

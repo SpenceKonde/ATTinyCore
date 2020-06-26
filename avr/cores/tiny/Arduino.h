@@ -170,6 +170,15 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define TIMER1A 3
 #define TIMER1B 4
 #define TIMER1D 5
+#define TIM1AU (0x10)
+#define TIM1AV (0x11)
+#define TIM1AW (0x12)
+#define TIM1AX (0x13)
+#define TIM1BU (0x14)
+#define TIM1BV (0x15)
+#define TIM1BW (0x16)
+#define TIM1BX (0x17)
+
 
 #include "pins_arduino.h"
 

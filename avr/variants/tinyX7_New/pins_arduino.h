@@ -282,21 +282,19 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIMER1B,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIMER1A,
-  NOT_ON_TIMER,
+  TIM1AU,
+  TIM1BU,
+  TIM1AV,
+  TIM1BV,
+  TIM1AW,
+  TIM1BW,
+  TIM1AX,
+  TIM1BX
 };
 
 #endif
 
 #endif
-
-
 
 
 //Old code, just here for temporary backup until I decide it is not needed.
