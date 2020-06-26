@@ -31,7 +31,7 @@ This core includes a Micronucleus bootloader that supports the ATtiny85, allowin
 Tone() uses Timer1. For best results, use PIN_PB3 or PIN_PB6, as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable all PWM on PORTB (leaving only the single PWM channel on PIN_PA2)
 
 ### Alternate pinout options
-There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatability purposes, via the "OLD" pinmapping option. The "NEW" one is recommended - unless using Digispark Pro boards labeled with those pin numbers. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 1.4.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
+There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "OLD" pinmapping option. The "NEW" one is recommended - unless using Digispark Pro boards labeled with those pin numbers. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 1.4.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
 
 Example of a "guard" against wrong pin mapping:
 ```
@@ -78,20 +78,20 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 0 | 0x0000/0x0000 | RESET_vect | External Pin, Power-on Res
 1 | 0x0001/0x0002 | INT0_vect | External Interrupt Request 0
 2 | 0x0002/0x0004 | INT1_vect | External Interrupt Request 1
-3 | 0x0003/0x0006 | PCINT0_vect | Pin Change Interrupt
-4 | 0x0004/0x0008 | PCINT1_vect | Pin Change Interrupt
+3 | 0x0003/0x0006 | PCINT0_vect | Pin Change Interrupt (PORT A)
+4 | 0x0004/0x0008 | PCINT1_vect | Pin Change Interrupt (PORT B)
 5 | 0x0005/0x000A | WDT_vect | Watchdog Time-out (Interrupt Mode)
-6 | 0x0006/0x000C | TIMER1_CAPT_vect | Timer/Counter1 Capture Ev
-7 | 0x0007/0x000E | TIMER1_COMPA_vect | Timer/Counter1 Compare M
-8 | 0x0008/0x0010 | TIMER1_COMPB_vect | Timer/Coutner1 Compare M
+6 | 0x0006/0x000C | TIMER1_CAPT_vect | Timer/Counter1 Capture
+7 | 0x0007/0x000E | TIMER1_COMPA_vect | Timer/Counter1 Compare Match
+8 | 0x0008/0x0010 | TIMER1_COMPB_vect | Timer/Coutner1 Compare Match
 9 | 0x0009/0x0012 | TIMER1_OVF_vect | Timer/Counter1 Overflow
-10 | 0x000A/0x0014 | TIMER0_COMPA_vect | Timer/Counter0 Compare M
+10 | 0x000A/0x0014 | TIMER0_COMPA_vect | Timer/Counter0 Compare Match
 11 | 0x000B/0x0016 | TIMER0_OVF_vect | Timer/Counter0 Overflow
-12 | 0x000C/0x0018 | LIN_TC_vect | LIN/UART Transfer Complet
+12 | 0x000C/0x0018 | LIN_TC_vect | LIN/UART Transfer Complete
 13 | 0x000D/0x001A | LIN_ERR_vect | LIN/UART Error
 14 | 0x000E/0x001C | SPI_STC_vect | SPI Serial Transfer Complete
 15 | 0x000F/0x001E | ADC_READY_vect | Conversion Complete
 16 | 0x0010/0x0020 | EE_READY_vect | EEPROM Ready
 17 | 0x0011/0x0022 | ANALOG_COMP_vect | Analog Comparator
-18 | 0x0012/0x0024 | USI_START_vect | USI Start Condition Detec
+18 | 0x0012/0x0024 | USI_START_vect | USI Start Condition
 19 | 0x0013/0x0026 | USI_OVF_vect | USI Counter Overflow

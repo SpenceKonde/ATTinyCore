@@ -707,7 +707,7 @@ void init(void)
 /*
 
   // In case the bootloader left our millis timer in a bad way
-  // Note that all occurences of HAVE_BOOTLOADER are commented out, because all of the included bootloaders
+  // Note that all occurrences of HAVE_BOOTLOADER are commented out, because all of the included bootloaders
   // are known to be free of such bad behavior, so this just wastes flash setting things to values they are already set to.
   // code retained in case a less polite bootloader is ever added to the core for some reason.
   // but hidden behind a block comment for readability.

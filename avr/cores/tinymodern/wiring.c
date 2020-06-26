@@ -537,7 +537,7 @@ void initToneTimer(void)
     }
     oscSlow(origOSC);
   }
-  void oscDoneNVM(uint8_t bytes_written) { //mumber of bytes of eeprom written.
+  void oscDoneNVM(uint8_t bytes_written) { // number of bytes of eeprom written.
     // EEPROM does it one at a time, but user code could call these two methods when doing block writes (up to 64 bytes). Just be sure to do the eeprom_busy_wait(); at the end, as in EEPROM.h.
     // 3.3ms is good approximation of the duration of writing a byte - it'll be about 3~4% faaster since we're running around 5V at default call - hence, we're picking 3.3ms - the oscillator
     // adjustment loops and these calculations should be fast enough that the time they dont take long enough to worry about...
