@@ -136,7 +136,7 @@ void analogWrite(uint8_t pin, int val)
     // connect pwm to pin on timer 1, channel A
     sbi(TCCR1A, COM1A1);
     //cbi(TCCR1A, COM1A0);
-  #ifdef OC1AX
+  #ifdef OC1AX //means an x7
     cbi(TCCR1D, OC1AV);
     cbi(TCCR1D, OC1AU);
     cbi(TCCR1D, OC1AW);
@@ -182,11 +182,18 @@ void analogWrite(uint8_t pin, int val)
     // connect pwm to pin on timer 1, channel B
     sbi(TCCR1A, COM1B1);
     //cbi(TCCR1A, COM1B0);
-  #ifdef OC1BV
-    sbi(TCCR1D, OC1BV);
-    cbi(TCCR1D, OC1BU);
-    cbi(TCCR1D, OC1BW);
-    cbi(TCCR1D, OC1BX);
+  #ifdef OC1BV //means an x7
+    #ifdef PINMAPPING_DIGI //Digispark Pro pin mapping has PWM on PB1 instead of PB3...
+      cbi(TCCR1D, OC1BV);
+      sbi(TCCR1D, OC1BU);
+      cbi(TCCR1D, OC1BW);
+      cbi(TCCR1D, OC1BX);
+    #else
+      sbi(TCCR1D, OC1BV);
+      cbi(TCCR1D, OC1BU);
+      cbi(TCCR1D, OC1BW);
+      cbi(TCCR1D, OC1BX);
+    #endif
   #endif
     OCR1B = val; // set pwm duty
   } else

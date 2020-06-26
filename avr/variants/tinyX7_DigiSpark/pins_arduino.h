@@ -33,10 +33,11 @@
 
 #define NUM_DIGITAL_PINS            14
 #define NUM_ANALOG_INPUTS           10
-#define analogInputToDigitalPin(p)  ((p == 3) ? 23 : (p == 5) ? 21 : (p < 13 && p > 5) ? p+14 : (p ==13) ? 24 : -1)
+#define analogInputToDigitalPin(p)  (((p == 9) ? 3 : (p == 7) ? 5 : (p < 13 && p > 5) ? (p-6) : (p ==13) ? 13 : -1))
 #define ADC_TEMPERATURE 11
 
-#define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1)
+#define digitalPinHasPWM(p)         ((p) == 3 || (p) == 1 || (p)==8)
+
 
 #define SS   12
 #define MOSI 10
@@ -67,17 +68,16 @@
 #  define USI_START_COND_INT USISIF
 #endif
 
-//Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A3 = NUM_DIGITAL_PINS+9;
-static const uint8_t A5 = NUM_DIGITAL_PINS+7;
-static const uint8_t A6 = NUM_DIGITAL_PINS+0;
-static const uint8_t A7 = NUM_DIGITAL_PINS+1;
-static const uint8_t A8 = NUM_DIGITAL_PINS+2;
-static const uint8_t A9 = NUM_DIGITAL_PINS+3;
-static const uint8_t A10 = NUM_DIGITAL_PINS+4;
-static const uint8_t A11 = NUM_DIGITAL_PINS+5;
-static const uint8_t A12 = NUM_DIGITAL_PINS+6;
-static const uint8_t A13 = NUM_DIGITAL_PINS+10;
+static const uint8_t A3 = 0x80|9;
+static const uint8_t A5 = 0x80|7;
+static const uint8_t A6 = 0x80|0;
+static const uint8_t A7 = 0x80|1;
+static const uint8_t A8 = 0x80|2;
+static const uint8_t A9 = 0x80|3;
+static const uint8_t A10 = 0x80|4;
+static const uint8_t A11 = 0x80|5;
+static const uint8_t A12 = 0x80|6;
+static const uint8_t A13 = 0x80|10;
 
 
 
@@ -99,6 +99,10 @@ static const uint8_t A13 = NUM_DIGITAL_PINS+10;
 #define PIN_PB5  ( 15 )
 
 #define LED_BUILTIN (PIN_PB1)
+
+#define Serial1 Serial
+
+#define PINMAPPING_DIGI
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -255,11 +259,11 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
-  TIMER1A,
+  NOT_ON_TIMER, //TIMER1A,
   TIMER1B,
+  NOT_ON_TIMER, //TIMER1A,
   TIMER1A,
-  TIMER1A,
-  TIMER1B,
+  NOT_ON_TIMER, //TIMER1B,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,

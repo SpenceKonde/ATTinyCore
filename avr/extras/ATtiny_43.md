@@ -1,4 +1,4 @@
-### ATtiny 43
+### ATtiny43U
 ![43 pin mapping](Pinout_43.jpg "Arduino Pin Mapping for ATtiny 43")
 
  Specifications |  .
@@ -20,7 +20,7 @@ The ATtiny43 is a very unusual microcontroller - the featureset is unremarkable,
 The boost converter will start up as long as the battery voltage is 1.2v or higher (in my testing, it seems to start at 1.1v), generating 3v. It will keep running as long as VBat is at least 0.8v, possibly even lower. It is capable of supplying 30mA to external devices as long as VBat > 1.0v (at lower VBat, the maximum current is lower - if overloaded, 3v output is not guaranteed)
 
 ### Tone Support
-Tone() uses timer1. For best results, use pin 6 and 5, as this will use the hardware output compare to generate the square wave instead of using interrupts. This will take out PWM on pins 5 amd 6.
+Tone() uses Timer1. For best results, use pin 5 or 6 (PIN_PB5, PIN_PB6) as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will take out PWM on pins 5 amd 6.
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core.
@@ -45,5 +45,28 @@ ACSR |=~(1<<ACD);
 
 ### Purchasing ATtiny43 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core.
-### [Assembled Boards](https://www.tindie.com/products/16617/)
-### **Bare Boards** Coming soon
+* [Assembled Board, including boost converter](https://www.tindie.com/products/16617/)
+* **Bare Boards** Coming soon
+
+
+## Interrupt Vectors
+This table lists all of the interrupt vectors available on the ATtiny43, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number that you will be shown if you get a duplicate vector number.
+
+vect_num | Vector Address | Vector Name | Interrupt Definition
+------------ | ------------- | ------------ | -------------
+0 | 0x0000 | RESET_vect | Any reset (pin, WDT, power-on, BOD)
+1 | 0x0001 | INT0_vect | External Interrupt Request 0
+2 | 0x0002 | PCINT0_vect | Pin Change Interrupt 0 (PORT A)
+3 | 0x0003 | PCINT1_vect | Pin Change Interrupt 1 (PORT B)
+4 | 0x0004 | WDT_vect | Watchdog Time-out (interrupt mode)
+5 | 0x0005 | TIMER1_COMPA_vect | Timer/Counter1 Compare Match A
+6 | 0x0006 | TIMER1_COMPB_vect | Timer/Counter1 Compare Match B
+7 | 0x0007 | TIMER1_OVF_vect | Timer/Counter1 Overflow
+8 | 0x0008 | TIMER0_COMPA_vect | Timer/Counter0 Compare Match A
+9 | 0x0009 | TIMER0_COMPB_vect | Timer/Counter0 Compare Match B
+10 | 0x000A | TIMER0_OVF_vect | Timer/Counter0 Overflow
+11 | 0x000B | ANA_COMP_vect | Analog Comparator
+12 | 0x000C | ADC_vect | ADC Conversion Complete
+13 | 0x000D | EE_RDY_vect | EEPROM Ready
+14 | 0x000E | USI_START_vect | USI Start
+15 | 0x000F | USI_OVF_vect | USI Overflow

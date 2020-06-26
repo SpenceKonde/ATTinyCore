@@ -58,7 +58,7 @@
  * _Nbr_16timers indicates how many 16 bit timers are available.
  */
 #if (defined(__AVR_ATtiny43__))
-#error "The Servo library does not support the ATTiny43"
+#error "The Servo library does not support the ATtiny43"
 
 #elif (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
 

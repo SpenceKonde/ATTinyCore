@@ -165,15 +165,17 @@ void digitalWrite(uint8_t pin, uint8_t val)
 int digitalRead(uint8_t pin)
 {
   if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
-  uint8_t timer = digitalPinToTimer(pin);
+  //uint8_t timer = digitalPinToTimer(pin);
   uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
 
   if (port == NOT_A_PIN) return LOW;
 
-  // If the pin that support PWM output, we need to turn it off
-  // before getting a digital reading.
-  if (timer != NOT_ON_TIMER) turnOffPWM(timer);
+  // There is no need to turn off PWM on a pin before doing digitalRead().
+  // "read" should *NEVER* change the behavior of the thing you're using it on.
+  // That's why it's called "read" not "write". As an added bonus, sets the
+  // stage for auto-fast-digitalRead() for compiletime known pins.
+  // if (timer != NOT_ON_TIMER) turnOffPWM(timer);
 
   if (*portInputRegister(port) & bit) return HIGH;
   return LOW;

@@ -99,6 +99,8 @@ static const uint8_t A10 = 0x80 | 10;
 #define PIN_PA7  ( 14)
 #define PIN_PB7  ( 15)
 
+#define PINMAPPING_OLD
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)

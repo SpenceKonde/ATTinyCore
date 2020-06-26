@@ -167,6 +167,9 @@ unsigned long micros()
 #if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) // Can we just do it the naive way? If so great!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
   // Otherwise we do clock-specific calculations
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 12800000L)  //64/12.8=5, but the compiler wouldn't realize it because of integer math - this is a supported speed for Micronucleus.
+  return ((m << 8) + t) * 5;
+  // Otherwise we do clock-specific calculations
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 24000000L) // 2.6875 vs real value 2.67
   m = (m << 8) + t;
   return (m<<1) + (m >> 1) + (m >> 3) + (m >> 4); // multiply by 2.6875
@@ -176,7 +179,7 @@ unsigned long micros()
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
   m=(m << 8) + t;
   return m+(m<<1)+(m>>1);
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU==14745600L) //4.375  vs real value 4.34
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 14745600L) //4.375  vs real value 4.34
   m=(m << 8) + t;
   return (m<<2)+(m>>1)-(m>>3);
 #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything

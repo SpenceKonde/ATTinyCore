@@ -42,7 +42,7 @@ useful list of ATTinyCore options for your chosen processor (selected from the l
 
 **grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt**
 
-At the time this was written, these are the ATTiny chips supported by ATTinyCore:
+At the time this was written, these are the ATtiny chips supported by ATTinyCore:
 
 * attinyx4
 * attinyx5

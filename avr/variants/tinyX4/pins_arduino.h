@@ -113,6 +113,8 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_B3  (11)  /* RESET */
 #define LED_BUILTIN (2)
 
+#define PINMAPPING_CCW
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)

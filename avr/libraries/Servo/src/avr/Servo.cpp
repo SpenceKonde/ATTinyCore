@@ -699,7 +699,7 @@ void ServoSequencer::timerCompareMatchISR()
 
 
 //=============================================================================
-// FUNCTION:    Interrupt service routine for timer1 compare A match
+// FUNCTION:    Interrupt service routine for Timer1 compare A match
 //
 // DESCRIPTION: AVR Libc provided function that is vectored into when the
 //              timer0 compare A match interrupt fires.

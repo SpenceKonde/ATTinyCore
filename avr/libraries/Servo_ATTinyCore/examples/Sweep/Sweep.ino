@@ -6,7 +6,7 @@
  by Scott Fitzgerald
  http://www.arduino.cc/en/Tutorial/Sweep
 
- If Servo library is installed to libraries, then that version (which doesn't support ATTiny parts)
+ If Servo library is installed to libraries, then that version (which doesn't support ATtiny parts)
  will be used instead of the one included with the core, which does. To get around this,
  include  Servo_ATTinyCore.h instead - this will always use the version that came with core.
 */

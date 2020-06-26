@@ -226,6 +226,8 @@ unsigned long micros()
 #if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) // Can we just do it the naive way? If so great!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
   // Otherwise we do clock-specific calculations
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 12800000L) //64/12.8=5, but the compiler wouldn't realize it because of integer math - this is a supported speed for Micronucleus.
+  return ((m << 8) + t) * 5;
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 24000000L) // 2.6875 vs real value 2.67
   m = (m << 8) + t;
   return (m<<1) + (m >> 1) + (m >> 3) + (m >> 4); // multiply by 2.6875

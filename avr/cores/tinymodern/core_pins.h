@@ -60,6 +60,9 @@
 #define PIN_PB1  ( 1)
 #define PIN_PB2  ( 2)
 #define PIN_PB3  (11)  /* RESET */
+
+#define PINMAPPING_CCW
+
 #else
 
 #define PIN_PA0  ( 0)
@@ -87,6 +90,9 @@
 #define PIN_B1  ( 9)
 #define PIN_B2  ( 8)
 #define PIN_B3  (11)  /* RESET */
+
+#define PINMAPPING_CW
+
 #endif
 
 #define LED_BUILTIN (PIN_PB2)

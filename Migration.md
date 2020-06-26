@@ -11,7 +11,7 @@ Migration to ATTinyCore from other ATtiny hardware packages is typically straigh
 * When using a serial bootloader on any part except the ATtiny828, the EERDY vector may not be used by the application (this is not used by the EEPROM library, and is usually not an issue). Additionally, if the part is reset during the very start of a serial upload, the bootloader will be corrupted - if this happens, the sketch will not work and the bootloader cannot be entered. To resolve this, connect an ISP programmer and "Burn Bootloader" again. Neither of these caveats apply when the serial bootloader is not used.
 * When using direct port manipulation on the ATtiny828/841/441/1634, pullups are controlled by the PUEx register (see datasheet for details)
 
-### From ATTiny84 to ATTiny841 (and from ATtiny44 to ATtiny441)
+### From ATtiny84 to ATtiny841 (and from ATtiny44 to ATtiny441)
 The ATtiny841 is largely compatible with the ATtiny84, only with additional features. There are a few differences to be aware of:
 * The ATtiny841 has an additional timer, Timer2, which behaves identically to Timer1 - it is a 16-bit timer with all the same functionality.
 * The ATtiny841 PWM channels can be remapped to different pins. If this is done, analogWrite() will not work (you must directly manipulate the relevant registers).

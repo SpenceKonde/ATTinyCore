@@ -100,7 +100,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     TIFR1 |= ((1<<OCF1B) | (1<<OCF1A) | (1<<TOV1));
 
 
-#elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1) //START OF ATTINY 85
+#elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1) //START OF ATtiny85
     // Turn off Clear on Compare Match, turn off PWM A, disconnect the timer from the output pin, stop the clock
     TCCR1 = (0<<CTC1) | (0<<PWM1A) | (0<<COM1A1) | (0<<COM1A0) | (0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10);
     // Turn off PWM A, disconnect the timer from the output pin, no Force Output Compare Match, no Prescaler Reset
@@ -116,7 +116,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     // Clear the Timer1 interrupt flags
     TIFR |= ((1<<OCF1A) | (1<<OCF1B) | (1<<TOV1));
 
-      //END OF ATTINY 85
+      //END OF ATtiny85
 #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E) //
     TCCR1A = 0;
     TCCR1B = 0;
@@ -175,7 +175,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   cbi(TCCR1B,WGM02);
 #else
   #if TIMER_TO_USE_FOR_TONE == 1
-    #if defined(TCCR1)//START OF ATTINY 85
+    #if defined(TCCR1)//START OF ATtiny85
   sbi(TCCR1,CTC1);
     cbi(TCCR1,PWM1A);
     cbi(GTCCR,PWM1B);
