@@ -27,9 +27,6 @@ This core includes a Micronucleus bootloader that supports the ATtiny85, allowin
 
 ## Features
 
-### Tone Support
-Tone() uses Timer1. For best results, use PIN_PB3 or PIN_PB6, as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable all PWM on PORTB (leaving only the single PWM channel on PIN_PA2)
-
 ### Alternate pinout options
 There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "OLD" pinmapping option. The "NEW" one is recommended - unless using Digispark Pro boards labeled with those pin numbers. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 1.4.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
 
@@ -43,6 +40,9 @@ The pin mapping for the Digispark Pro is very, very strange.
 
 ### Flexible PWM support (Coming 1.4.0)
 The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
+
+### Tone Support
+Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core.
