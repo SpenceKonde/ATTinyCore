@@ -127,6 +127,9 @@ static void turnOffPWM(uint8_t timer)
     TCCR1D&=(~(1<<(timer&0x07)));
   }
   #endif
+  {
+    // dummy block to fill in the else statement
+  }
 }
 
 void digitalWrite(uint8_t pin, uint8_t val)
