@@ -1,10 +1,10 @@
 ### ATtiny 2313/4313
 ![x4 pin mapping](Pinout_x313.jpg "Arduino Pin Mapping for ATtiny x313-family")
 
- Specifications |  .
+ Specifications | .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b
-RAM  | 128/256 bytes
+Flash (program memory) | 2048b/4096b
+RAM | 128/256 bytes
 EEPROM | 128/256 bytes
 Bootloader | No
 GPIO Pins | 17
@@ -49,25 +49,25 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 4 | 0x0004 | TIMER1_COMPA_vect | Timer/Counter1 Compare Match A
 5 | 0x0005 | TIMER1_OVF_vect | Timer/Counter1 Overflow
 6 | 0x0006 | TIMER0_OVF_vect | Timer/Counter0 Overflow
-7 | 0x0007 | USART0_RX_vect * | USART0 Rx Complete
-7 | 0x0007 | USART_RX_vect | Alias
-8 | 0x0008 | USART0_UDRE_vect * | USART0 Data Register Empty
-8 | 0x0008 | USART_UDRE_vect | Alias
-9 | 0x0009 | USART0_TX_vect * | USART0 Tx Complete
-9 | 0x0009 | USART_TX_vect | Alias
+7 | 0x0007 | USART0_RX_vect | USART0 Rx Complete
+7 | 0x0007 | USART_RX_vect | Alias - provided by io.h
+8 | 0x0008 | USART0_UDRE_vect | USART0 Data Register Empty
+8 | 0x0008 | USART_UDRE_vect | Alias - provided by io.h
+9 | 0x0009 | USART0_TX_vect | USART0 Tx Complete
+9 | 0x0009 | USART_TX_vect | Alias - provided by io.h
 10 | 0x000A | ANALOG_COMP_vect | Analog Comparator
 11 | 0x000B | PCINT0_vect | Pin Change Interrupt 0 (PORT B)
-19 | 0x000B | PCINT_B_vect | Alias **
+19 | 0x000B | PCINT_B_vect | Alias - provided by io.h
 12 | 0x000C | TIMER1_COMPB_vect | Timer/Counter1 Compare Match B
 13 | 0x000D | TIMER0_COMPA_vect | Timer/Counter0 Compare Match A
 14 | 0x000E | TIMER0_COMPB_vect | Timer/Counter0 Compare Match B
 15 | 0x000F | USI_START_vect | USI Start Condition
 16 | 0x0010 | USI_OVERFLOW_vect | USI Overflow
-17 | 0x0011 | EE_READY_vect |  EEPROM Ready
+17 | 0x0011 | EE_READY_vect | EEPROM Ready
 18 | 0x0012 | WDT_OVERFLOW_vect | Watchdog Time-out (interrupt mode)
-19 | 0x0013 | PCINT1_vect | Pin Change Interrupt 1 (PORT A) **
-19 | 0x0013 | PCINT_A_vect | Alias **
-20 | 0x0014 | PCINT2_vect | Pin Change Interrupt 2 (PORT D) **
-20 | 0x0014 | PCINT_D_vect | Alias **
-* Name not present in ATtiny2313, only ATtiny2313a and ATtiny4313
-** Vector not available in ATtiny2313 (although it is defined in the io headers!)
+19 | 0x0013 | PCINT1_vect | Pin Change Interrupt 1 (PORT A) *
+19 | 0x0013 | PCINT_A_vect | Alias - provided by io.h
+20 | 0x0014 | PCINT2_vect | Pin Change Interrupt 2 (PORT D) *
+20 | 0x0014 | PCINT_D_vect | Alias - provided by io.h
+*This core alwauys compiles with ATtiny2313a, not ATtiny2313 as the target*
+* Vector not available in ATtiny2313 (although it is defined in the io headers!)

@@ -259,11 +259,11 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
-  TIMER1AU,
-  TIMER1BU,
-  TIMER1AV,
-  TIMER1AX,
-  TIMER1BV,
+  TIM1AU,
+  TIM1BU,
+  TIM1AV,
+  TIM1AX,
+  TIM1BV,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -274,9 +274,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER1BX,
-  TIMER1AW,
-  TIMER1BW,
+  TIM1BX,
+  TIM1AW,
+  TIM1BW,
 };
 
 #endif

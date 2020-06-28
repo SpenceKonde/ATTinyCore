@@ -8,7 +8,7 @@
 Flash (program memory)   | 4096b/8192b (3456b/7552b with optiboot)
 RAM  | 256/512 bytes
 EEPROM | 64 bytes
-Bootloader |  Yes, Optiboot w/virtualboot
+Bootloader |  Yes, Optiboot (serial)
 GPIO Pins | 27
 ADC Channels | 8
 PWM Channels | 4

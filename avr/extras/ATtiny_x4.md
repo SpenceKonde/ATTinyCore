@@ -1,12 +1,12 @@
-### ATtiny 24a/44a/84a
+### ATtiny 24/44/84(a)
 ![x4 pin mapping](http://drazzy.com/e/img/PinoutT84a.jpg "Arduino Pin Mapping for ATtiny x4-family")
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with optiboot)
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6658b with Micronucleus)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
-Bootloader | Yes, Optiboot w/virtualboot
+Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
 GPIO Pins | 11
 ADC Channels | 8, plus many differential channels
 PWM Channels | 4
@@ -84,12 +84,19 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 3 | 0x0003 | PCINT1_vect | Pin Change Interrupt 1 (PORT B)
 4 | 0x0004 | WDT_vect | Watchdog Time-out (Interrupt Mode)
 5 | 0x0005 | TIM1_CAPT_vect | Timer/Counter1 Capture Event
+5 | 0x0005 | TIMER1_CAPT_vect | Alias - provided by ATTinyCore
 6 | 0x0006 | TIM1_COMPA_vect | Timer/Counter1 Compare Match A
+6 | 0x0006 | TIMER1_COMPA_vect | Alias - provided by ATTinyCore
 7 | 0x0007 | TIM1_COMPB_vect | Timer/Counter1 Compare Match B
+7 | 0x0007 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore
 8 | 0x0008 | TIM1_OVF_vect | Timer/Counter1 Overflow
+8 | 0x0008 | TIMER1_OVF_vect | Alias - provided by ATTinyCore
 9 | 0x0009 | TIM0_COMPA_vect | Timer/Counter0 Compare Match A
+9 | 0x0009 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore
 10 | 0x000A | TIM0_COMPB_vect | Timer/Counter0 Compare Match B
+10 | 0x000A | TIMER0_COMPB_vect | Alias - provided by ATTinyCore
 11 | 0x000B | TIM0_OVF_vect | Timer/Counter0 Overflow
+11 | 0x000B | TIMER0_OVF_vect | Alias - provided by ATTinyCore
 12 | 0x000C | ANA_COMP_vect | Analog Comparator
 13 | 0x000D | ADC_vect | ADC Conversion Complete
 14 | 0x000E | EE_RDY_vect | EEPROM Ready

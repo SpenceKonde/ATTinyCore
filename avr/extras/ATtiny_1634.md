@@ -3,10 +3,10 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 16384b ( 15744b with bootloader)
+Flash (program memory)   | 16384b ( 15744b with Optiboot)
 RAM  | 1024 bytes
 EEPROM | 256 bytes
-Bootloader | Yes, Optiboot w/Virtual Boot
+Bootloader | Yes, Optiboot (serial)
 GPIO Pins | 17
 ADC Channels | 12
 PWM Channels | 4
@@ -80,12 +80,19 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 4 | 0x0008 | PCINT2_vect | Pin Change Interrupt 2 (PORT C)
 5 | 0x000A | WDT_vect | Watchdog Time-out (Interrupt Mode)
 6 | 0x000C | TIM1_CAPT_vect | Timer/Counter1 Input Capture
+6 | 0x000C | TIMER1_CAPT_vect | Alias - provided by ATTinyCore
 7 | 0x000E | TIM1_COMPA_vect | Timer/Counter1 Compare Match A
+7 | 0x000E | TIMER1_COMPA_vect | Alias - provided by ATTinyCore
 8 | 0x0010 | TIM1_COMPB_vect | Timer/Counter1 Compare Match B
+8 | 0x0010 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore
 9 | 0x0012 | TIM1_OVF_vect | Timer/Counter1 Overflow
+9 | 0x0012 | TIMER1_OVF_vect | Alias - provided by ATTinyCore
 10 | 0x0014 | TIM0_COMPA_vect | Timer/Counter0 Compare Match A
+10 | 0x0014 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore
 11 | 0x0016 | TIM0_COMPB_vect | Timer/Counter0 Compare Match B
+11 | 0x0016 | TIMER0_COMPB_vect | Alias - provided by ATTinyCore
 12 | 0x0018 | TIM0_OVF_vect | Timer/Counter0 Overflow
+12 | 0x0018 | TIMER0_OVF_vect | Alias - provided by ATTinyCore
 13 | 0x001A | ANA_COMP_vect | Analog Comparator
 14 | 0x001C | ADC_READY_vect | ADC Conversion Complete
 15 | 0x001E | USART0_RXS_vect | USART0 Rx Start

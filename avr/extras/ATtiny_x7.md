@@ -7,7 +7,7 @@
 Flash (program memory)   | 8096b/16768b ( 7552b/15744b with Optiboot, 14844 with Micronucleus)
 RAM  | 512 bytes
 EEPROM | 512 bytes
-Bootloader | Yes, Optiboot w/Virtual Boot
+Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
 GPIO Pins | 15
 ADC Channels | 11
 PWM Channels | 3

@@ -4,10 +4,10 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6604 with Micronucleus)
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6604b with Micronucleus)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
-Bootloader | Yes, Optiboot w/virtualboot
+Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
 GPIO Pins | 5
 ADC Channels | 4 (including the one on reset)
 PWM Channels | 3

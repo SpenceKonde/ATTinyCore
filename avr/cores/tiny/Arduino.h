@@ -270,6 +270,11 @@ long map(long, long, long, long, long);
   doesn't have to be riddled with #ifdefs.
 =============================================================================*/
 
+
+#if defined( TIM0_CAPT_vect ) && ! defined( TIMER0_CAPT_vect )
+#define TIMER0_CAPT_vect TIM0_CAPT_vect
+#endif
+
 #if defined( TIM0_COMPA_vect ) && ! defined( TIMER0_COMPA_vect )
 #define TIMER0_COMPA_vect TIM0_COMPA_vect
 #endif
@@ -280,6 +285,10 @@ long map(long, long, long, long, long);
 
 #if defined( TIM0_OVF_vect ) && ! defined( TIMER0_OVF_vect )
 #define TIMER0_OVF_vect TIM0_OVF_vect
+#endif
+
+#if defined( TIM1_CAPT_vect ) && ! defined( TIMER1_CAPT_vect )
+#define TIMER1_CAPT_vect TIM1_CAPT_vect
 #endif
 
 #if defined( TIM1_COMPA_vect ) && ! defined( TIMER1_COMPA_vect )
@@ -293,5 +302,22 @@ long map(long, long, long, long, long);
 #if defined( TIM1_OVF_vect ) && ! defined( TIMER1_OVF_vect )
 #define TIMER1_OVF_vect TIM1_OVF_vect
 #endif
+
+#if defined( TIM2_CAPT_vect ) && ! defined( TIMER2_CAPT_vect )
+#define TIMER2_CAPT_vect TIM2_CAPT_vect
+#endif
+
+#if defined( TIM2_COMPA_vect ) && ! defined( TIMER2_COMPA_vect )
+#define TIMER2_COMPA_vect TIM2_COMPA_vect
+#endif
+
+#if defined( TIM2_COMPB_vect ) && ! defined( TIMER2_COMPB_vect )
+#define TIMER2_COMPB_vect TIM2_COMPB_vect
+#endif
+
+#if defined( TIM2_OVF_vect ) && ! defined( TIMER2_OVF_vect )
+#define TIMER2_OVF_vect TIM2_OVF_vect
+#endif
+
 
 #endif

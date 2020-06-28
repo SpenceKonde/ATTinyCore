@@ -3,10 +3,10 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 4096b / 8192b ( 3456b/7552b with bootloader)
+Flash (program memory)   | 4096b / 8192b ( 3456b/7552b with Optiboot, 6606b with Micronucleus)
 RAM  | 256/512 bytes
 EEPROM | 256/512 bytes
-Bootloader | Yes, Optiboot w/Virtual Boot
+Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
 GPIO Pins | 11
 ADC Channels | 12 (including the one on reset), many differential channels
 PWM Channels | 6
@@ -113,20 +113,31 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 3 | 0x0003 | PCINT1_vect | Pin Change Interrupt 1 (PORT B)
 4 | 0x0004 | WDT_vect | Watchdog Time-out (Interrupt Mode)
 5 | 0x0005 | TIM1_CAPT_vect | Timer/Counter1 Capture Event
+5 | 0x0005 | TIMER1_CAPT_vect | Alias - provided by ATTinyCore
 6 | 0x0006 | TIM1_COMPA_vect | Timer/Counter1 Compare Match A
+6 | 0x0006 | TIMER1_COMPA_vect | Alias - provided by ATTinyCore
 7 | 0x0007 | TIM1_COMPB_vect | Timer/Counter1 Compare Match B
+7 | 0x0007 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore
 8 | 0x0008 | TIM1_OVF_vect | Timer/Counter1 Overflow
+8 | 0x0008 | TIMER1_OVF_vect | Alias - provided by ATTinyCore
 9 | 0x0009 | TIM0_COMPA_vect | Timer/Counter0 Compare Match A
+9 | 0x0009 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore
 10 | 0x000A | TIM0_COMPB_vect | Timer/Counter0 Compare Match B
+10 | 0x000A | TIMER0_COMPB_vect | Alias - provided by ATTinyCore
 11 | 0x000B | TIM0_OVF_vect | Timer/Counter0 Overflow
+11 | 0x000B | TIMER0_OVF_vect | Alias - provided by ATTinyCore
 12 | 0x000C | ANA_COMP0_vect | Analog Comparator 0
 13 | 0x000D | ADC_READY_vect | ADC Conversion Complete
 14 | 0x000E | EE_RDY_vect | EEPROM Ready
 15 | 0x000F | ANA_COMP1_vect | Analog Comparator 1
 16 | 0x0010 | TIM2_CAPT_vect | Timer/Counter2 Capture Event
+16 | 0x0010 | TIMER2_CAPT_vect | Alias - provided by ATTinyCore
 17 | 0x0011 | TIM2_COMPA_vect | Timer/Counter2 Compare Match A
+17 | 0x0011 | TIMER2_COMPA_vect | Alias - provided by ATTinyCore
 18 | 0x0012 | TIM2_COMPB_vect | Timer/Counter2 Compare Match B
+18 | 0x0012 | TIMER2_COMPB_vect | Alias - provided by ATTinyCore
 19 | 0x0013 | TIM2_OVF_vect | Timer/Counter2 Overflow
+19 | 0x0013 | TIMER2_OVF_vect | Alias - provided by ATTinyCore
 20 | 0x0014 | SPI_vect | SPI Serial Transfer Complete
 21 | 0x0015 | USART0_RXS_vect | USART0 Rx Start
 22 | 0x0016 | USART0_RXC_vect | USART0 Rx Complete
