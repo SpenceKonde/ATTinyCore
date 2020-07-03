@@ -15,28 +15,52 @@
 
 #define digitalPinHasPWM(p)         ((p) == 7 || (p) == 11 || (p) == 12 || (p) == 13)
 
-//The 2313 and 2313a use different mneumonics for the names of the bits in DDRA. This ensures they're all there for all parts
+//The 2313 and 2313a use different names for a few things in the headers. This makes sure all of them are there for all x313 parts...
 #ifndef DDA0
 #define DDA0 DDRA0
-#endif
-#ifndef DDA1
 #define DDA1 DDRA1
-#endif
-#ifndef DDA2
 #define DDA2 DDRA2
 #endif
-
-//for compatibility
 #ifndef DDAR0
 #define DDAR0 DDA0
-#endif
-#ifndef DDAR1
 #define DDAR1 DDA1
-#endif
-#ifndef DDAR2
 #define DDAR2 DDA2
 #endif
-
+#ifndef EEPROM_Ready_vect
+#define EEPROM_Ready_vect EEPROM_READY_vect
+#define EEPROM_Ready_vect_num EEPROM_READY_vect_num
+#endif
+#ifndef EEPROM_READY_vect
+#define EEPROM_READY_vect EEPROM_Ready_vect
+#define EEPROM_READY_vect_num EEPROM_Ready_vect_num
+#endif
+#ifndef EEARL
+#define EEARL EEAR
+#endif
+#ifndef GIFR
+#define GIFR EIFR
+#endif
+#ifndef OCR1
+#define OCR1 OCR1A
+#define OCR1H OCR1AH
+#define OCR1L OCR1AL
+#endif
+#ifndef UMSEL
+#define UMSEL UMSEL0
+#endif
+#ifndef UMSEL0
+#define UMSEL0 UMSEL
+#endif
+#ifndef WDTCR
+#define WDTCR WDTCSR
+#endif
+#ifndef WDTCSR
+#define WDTCSR WDTCR
+#endif
+#ifndef TXB
+#define TXB UDR
+#define RXB UDR
+#endif
 //This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
 
 #define SS   10
