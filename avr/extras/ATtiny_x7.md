@@ -1,5 +1,5 @@
 ### ATtiny 87/167
-![x7 pin mapping](Pinout_x7.jpg "Arduino Pin Mapping for ATtiny x7-family")
+![x7 pin mapping](Pinout_x7.png "Arduino Pin Mapping for ATtiny x7-family")
 ![Digispark Pro pin mapping](DigisparkPro.png "Digispark Pro Pin Mapping for ATtiny 167")
 
  Specifications |  .
@@ -28,11 +28,11 @@ This core includes a Micronucleus bootloader that supports the ATtiny85, allowin
 ## Features
 
 ### Alternate pinout options
-There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "OLD" pinmapping option. The "NEW" one is recommended - unless using Digispark Pro boards labeled with those pin numbers. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 1.4.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
+There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "Legacy" pinmapping option. It should be used only if you are trying to use an old sketch that was written for that pin mapping. The Digispark Pro boards have pins labeled with yet another pin mapping. All pin mappings can be chosen for both Digispark/VUSB and non-VUSB boards, for compatibility. This is selected from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 1.4.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
 
 Example of a "guard" against wrong pin mapping:
 ```
-#ifdef PINMAPPING_NEW
+#ifndef PINMAPPING_NEW
 #error "Sketch was written for new pinmapping!"
 #endif
 ```
