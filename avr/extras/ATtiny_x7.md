@@ -36,7 +36,7 @@ Example of a "guard" against wrong pin mapping:
 #error "Sketch was written for new pinmapping!"
 #endif
 ```
-The pin mapping for the Digispark Pro is very, very strange.
+The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel!
 
 ### Flexible PWM support (Coming 1.4.0)
 The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
