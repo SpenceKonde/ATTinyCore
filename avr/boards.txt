@@ -2,7 +2,7 @@
 
 menu.chip=Chip
 menu.clock=Clock
-menu.sketchclock=Clock (controlls sketch only)
+menu.sketchclock=Clock (controls sketch only)
 menu.bod=B.O.D. Level
 menu.bodact=B.O.D. Mode (active)
 menu.bodpd=B.O.D. Mode (sleep)

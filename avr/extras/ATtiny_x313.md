@@ -69,5 +69,5 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 19 | 0x0013 | PCINT_A_vect | Alias - provided by io.h
 20 | 0x0014 | PCINT2_vect | Pin Change Interrupt 2 (PORT D) *
 20 | 0x0014 | PCINT_D_vect | Alias - provided by io.h
-*This core alwauys compiles with ATtiny2313a, not ATtiny2313 as the target*
+*This core always compiles with ATtiny2313a, not ATtiny2313 as the target*
 * Vector not available in ATtiny2313 (although it is defined in the io headers!)
