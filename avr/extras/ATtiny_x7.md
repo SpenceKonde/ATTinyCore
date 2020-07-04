@@ -1,6 +1,5 @@
 ### ATtiny 87/167
 ![x7 pin mapping](Pinout_x7.png "Arduino Pin Mapping for ATtiny x7-family")
-![Digispark Pro pin mapping](DigisparkPro.png "Digispark Pro Pin Mapping for ATtiny 167")
 
  Specifications |  .
 ------------ | -------------
