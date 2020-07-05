@@ -76,7 +76,7 @@ static const uint8_t SCL = 6;
 static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
 static const uint8_t A2 = 0x80 | 2;
-static const uint8_t A3 = 0x80 |
+static const uint8_t A3 = 0x80 | 3;
 
 
 #define PIN_PA0  ( 8)

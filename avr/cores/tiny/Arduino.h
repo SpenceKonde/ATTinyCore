@@ -65,7 +65,7 @@ void yield(void);
 
 #if F_CPU < 1000000L
 //Prevent a divide by 0 is
-#warning Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1.
+#warning "Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1."
 //static inline unsigned long clockCyclesPerMicrosecond() __attribute__ ((always_inline));
 //static inline unsigned long clockCyclesPerMicrosecond()
 //{//
@@ -183,8 +183,8 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #include "pins_arduino.h"
 
 #ifndef USE_SOFTWARE_SERIAL
-//Default to hardware serial.
-#define USE_SOFTWARE_SERIAL 0
+  //Default to hardware serial.
+  #define USE_SOFTWARE_SERIAL 0
 #endif
 
 /*=============================================================================
@@ -192,15 +192,15 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 =============================================================================*/
 
 #ifndef TIMER_TO_USE_FOR_MILLIS
-#define TIMER_TO_USE_FOR_MILLIS                     0
+  #define TIMER_TO_USE_FOR_MILLIS                     0
 #endif
 /*
   Tone goes on whichever timer was not used for millis.
 */
 #if TIMER_TO_USE_FOR_MILLIS == 1
-#define TIMER_TO_USE_FOR_TONE                     0
+  #define TIMER_TO_USE_FOR_TONE                     0
 #else
-#define TIMER_TO_USE_FOR_TONE                     1
+  #define TIMER_TO_USE_FOR_TONE                     1
 #endif
 
 #if NUM_ANALOG_INPUTS > 0
