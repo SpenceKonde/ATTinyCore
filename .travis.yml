@@ -77,8 +77,7 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4opti:LTO=disable,chip=84,clock=184external,bod=1v8,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
     # attinyx4micr
-    # clock=8internal
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4micr:LTO=disable,clock=8internal,bod=4v3,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4micr:LTO=disable,bod=4v3,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
 
     # attinyx5
