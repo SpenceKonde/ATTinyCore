@@ -75,7 +75,7 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4opti:LTO=disable,chip=84,clock=14external,bod=1v8,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     # clock=184external
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4opti:LTO=disable,chip=84,clock=184external,bod=1v8,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
-    
+
     # attinyx4micr
     # clock=8internal
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4micr:LTO=disable,clock=8internal,bod=4v3,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
@@ -164,7 +164,7 @@ env:
     # clock=184external
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5opti:LTO=disable,TimerClockSource=default,chip=85,clock=184external,bod=1v8,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
-    
+
     # attinyx5micr
     # sketchclock=165pll
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
@@ -256,7 +256,7 @@ env:
     # No option for clock - always 16external, different pin mapping, no chip selection
     # bod=4v3, pinmapping=digi
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx7micr:LTO=disable,bod=4v3,neopixelport=portb,millis=enabled,pinmapping=digi" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
-    
+
     # attinyx61
     # LTO=disable, TimerClockSource=default, chip=861, clock=8internal, eesave=aenable, bod=1v8
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx61:LTO=disable,TimerClockSource=default,chip=861,clock=8internal,eesave=aenable,bod=1v8,neopixelport=portb,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
