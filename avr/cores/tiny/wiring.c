@@ -322,7 +322,7 @@ void delayMicroseconds(unsigned int us)
   // 2 microseconds) gives delays longer than desired.
   //delay_us(us);
 #if F_CPU >= 24000000L
-  // for the 24 MHz clock for the aventurous ones, trying to overclock
+  // for the 24 MHz clock for the adventurous ones, trying to overclock
 
   // zero delay fix
   if (!us) return; //  = 3 cycles, (4 when true)

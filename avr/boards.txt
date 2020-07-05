@@ -1587,6 +1587,13 @@ attinyx41micr.build.f_cpu=8000000L
 attinyx41micr.build.clocksource=0
 attinyx41micr.bootloader.high_fuses=0b11011{bootloader.bod_bits}
 attinyx41micr.bootloader.extended_fuses=0b1111{bootloader.bodact_bits}0
+attinyx41micr.menu.sketchclock.8internal=8 MHz (internal)
+attinyx41micr.menu.sketchclock.8internal.build.f_cpu=8000000L
+attinyx41micr.menu.sketchclock.8internal.build.clocksource=0
+attinyx41opti.menu.sketchclock.8internal.build.speedfix=-DLOWERCAL=6
+attinyx41micr.menu.sketchclock.16internal=16 MHz (internal, warning - see docs!)
+attinyx41micr.menu.sketchclock.16internal.build.f_cpu=16000000L
+attinyx41micr.menu.sketchclock.16internal.build.clocksource=0
 attinyx41micr.menu.bod.4v3=B.O.D. Enabled (4.3v)
 attinyx41micr.menu.bod.4v3.bootloader.bod_bits=100
 attinyx41micr.menu.bod.2v7=B.O.D. Enabled (2.7v)
@@ -1621,7 +1628,7 @@ attinyx41micr.menu.neopixelport.porta=Port A (CW:0~7,CCW:3~10)
 attinyx41micr.menu.neopixelport.portb=Port B (CW:8~11,CCW:0~2,11)
 attinyx41micr.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
 attinyx41micr.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
-attinyx41micr.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode}
+attinyx41micr.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode} {build.speedfix}
 
 
 attiny43.name=ATtiny43 (No bootloader)
