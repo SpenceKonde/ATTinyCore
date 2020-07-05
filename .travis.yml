@@ -405,7 +405,7 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41micr:LTO=enable,sketchclock=8internal,bod=4v3,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # attinyx41micr
     # LTO=enable, clock=8internal, bod=4v3, bodact=disabled, bodpd=disabled, pinmapping=anew,wiremode=amaster, wiremode=amaster
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41micr:LTO=enable,clock=sketchclock=16internal,bod=4v3,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41micr:LTO=enable,sketchclock=16internal,bod=4v3,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
 
     # attiny43
     # LTO=disable, clock=8internal, eesave=aenable, bod=disable

@@ -1568,6 +1568,7 @@ attinyx41micr.bootloader.lock_bits=0xFF
 attinyx41micr.build.mcu=attiny841
 attinyx41micr.build.core=tinymodern
 attinyx41micr.build.board=AVR_ATTINYX41
+attinyx41micr.build.speedfix=
 attinyx41micr.build.export_merged_output=false
 attinyx41micr.bootloader.file=empty/empty_all.hex
 attinyx41micr.bootloader.extended_fuses=0xFE
@@ -1590,7 +1591,7 @@ attinyx41micr.bootloader.extended_fuses=0b1111{bootloader.bodact_bits}0
 attinyx41micr.menu.sketchclock.8internal=8 MHz (internal)
 attinyx41micr.menu.sketchclock.8internal.build.f_cpu=8000000L
 attinyx41micr.menu.sketchclock.8internal.build.clocksource=0
-attinyx41opti.menu.sketchclock.8internal.build.speedfix=-DLOWERCAL=6
+attinyx41micr.menu.sketchclock.8internal.build.speedfix=-DLOWERCAL=6
 attinyx41micr.menu.sketchclock.16internal=16 MHz (internal, warning - see docs!)
 attinyx41micr.menu.sketchclock.16internal.build.f_cpu=16000000L
 attinyx41micr.menu.sketchclock.16internal.build.clocksource=0
