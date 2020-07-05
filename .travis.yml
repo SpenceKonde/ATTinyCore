@@ -77,8 +77,8 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4opti:LTO=disable,chip=84,clock=184external,bod=1v8,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
     
     # attinyx4micr
-    # clock=184external
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4micr:LTO=disable,clock=184external,bod=1v8,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
+    # clock=8internal
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx4micr:LTO=disable,clock=8internal,bod=4v3,neopixelport=portb,millis=enabled,pinmapping=anew" ALLOW_FAILURE="false" IDE_VERSION_LIST="$FULL_IDE_VERSION_LIST"
 
 
     # attinyx5
@@ -400,6 +400,10 @@ env:
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART0,LTO=disable,chip=841,clock=147external,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # clock=184external
     - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41opti:bootUART=UART0,LTO=disable,chip=841,clock=184external,bod=1v8,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+
+    # attinyx41micr
+    # LTO=enable, clock=8internal, bod=4v3, bodact=disabled, bodpd=disabled, pinmapping=anew,wiremode=amaster, wiremode=amaster
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx41micr:LTO=enable,clock=8internal,bod=4v3,neopixelport=portb,millis=enabled,bodact=disabled,bodpd=disabled,pinmapping=anew,wiremode=amaster" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
 
     # attiny43
     # LTO=disable, clock=8internal, eesave=aenable, bod=disable
