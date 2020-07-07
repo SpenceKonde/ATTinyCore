@@ -1,6 +1,6 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
 1.4.0
-* Included Servo library now works with PLL as Timer1 clock source (trivial fix - I clearly never looked into it when I merged in the 8-bit servo code!). Now it also lets you use Servo if you have external crystal running at unsupported speed if you use the PLL for Timer1... 
+* Included Servo library now works with PLL as Timer1 clock source (trivial fix - I clearly never looked into it when I merged in the 8-bit servo code!). Now it also lets you use Servo if you have external crystal running at unsupported speed if you use the PLL for Timer1...
 * Major improvements to part-specific documentation pages.
 * Remove the HAVE_BOOTLOADER mechanism, which existed to clean up timer registers that a bootloader may have left configured. Neither Optiboot not Micronucleus do this, so HAVE_BOOTLOADER had no function. Is now commented out in the pins_arduino's where it existed, as is the code it enabled. Saves a small amount of flash, and makes init() in wiring.c far easier to follow once the do-nothing code isn't visible.
 * Correct a number of typos in boards.txt
