@@ -3,7 +3,7 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 8096b/16768b ( 7552b/15744b with Optiboot, 14844 with Micronucleus)
+Flash (program memory)   | 8096b/16768b ( 7552b/15744b with Optiboot, 14842 with Micronucleus)
 RAM  | 512 bytes
 EEPROM | 512 bytes
 Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
@@ -22,7 +22,9 @@ Any of these parts can be programmed by use of any ISP programmer. If using a ve
 This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on the hardware UART/LIN port at 115200 baud for 12 or 16 MHz clock speed, and 57600 when running at 8 MHz. In order to work on the x7 series, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application.  This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
 ### Micronucleus VUSB Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
+This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
+
+**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader upon power-on only. This will be made an option in future versions**
 
 ## Features
 

@@ -5,7 +5,7 @@
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
 
 name=ATTinyCore
-version=1.3.4-dev
+version=1.4.0-dev
 
 # AVR compile variables
 # ---------------------
@@ -138,8 +138,11 @@ tools.micronucleus.cmd.path={runtime.tools.micronucleus.path}/launcher
 
 tools.micronucleus.upload.params.verbose=
 tools.micronucleus.upload.params.quiet=
-#tools.micronucleus.upload.pattern="{cmd.path}" --run --timeout 60 "{build.path}/{build.project_name}.hex"
 tools.micronucleus.upload.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{build.path}/{build.project_name}.hex:i
+
+tools.micronucleus.bootloader.params.verbose=
+tools.micronucleus.bootloader.params.quiet=
+tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i
 
 # USB Default Flags
 # Default blank usb manufacturer will be filled it at compile time

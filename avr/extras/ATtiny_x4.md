@@ -3,7 +3,7 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6658b with Micronucleus)
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6522b with Micronucleus)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
 Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
@@ -29,6 +29,8 @@ Programming the ATtiny84/44 via ISP without the bootloader is fully supported; t
 
 ### Micronucleus Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny84(a), allowing sketches to be uploaded directly over USB. It runs at 8 MHz via the internal oscillator. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz, but is set back down before running the sketch. D- is on PIN_PB0, D+ is on PIN_PB1.
+
+**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader for all reset sources. This will be made an option in future versions**
 
 ## Features
 

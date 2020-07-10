@@ -4,7 +4,7 @@
 
  Specifications |  .
 ------------ | -------------
-Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6604b with Micronucleus)
+Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6586b with Micronucleus)
 RAM  | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
 Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
@@ -25,6 +25,8 @@ This core includes an Optiboot bootloader for the ATtiny85/45, operating using s
 
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on pin 3, D+ is on pin 4.
+
+**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader upon power-on only. This will be made an option in future versions**
 
 ## Features
 
