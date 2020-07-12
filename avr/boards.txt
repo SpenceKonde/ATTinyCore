@@ -594,7 +594,7 @@ attinyx5micr.menu.resetpin.reset=Reset
 attinyx5micr.menu.resetpin.reset.bootloader.rstbit=1
 attinyx5micr.menu.resetpin.gpio=GPIO (Danger - Read docs first!)
 attinyx5micr.menu.resetpin.gpio.bootloader.rstbit=0
-attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} -DPRETUNED165
+attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} -DBOOTTUNED165
 
 
 attinyx8.name=ATtiny48/88 (No bootloader)
@@ -2213,7 +2213,7 @@ attinyx313.menu.chip.4313.build.mcu=attiny4313
 attinyx313.menu.chip.4313.upload.maximum_size=4096
 attinyx313.menu.chip.4313.upload.maximum_data_size=256
 attinyx313.menu.chip.2313=ATtiny2313/ATtiny2313A
-attinyx313.menu.chip.2313.build.mcu=attiny2313
+attinyx313.menu.chip.2313.build.mcu=attiny2313a
 attinyx313.menu.chip.2313.upload.maximum_size=2048
 attinyx313.menu.chip.2313.upload.maximum_data_size=128
 attinyx313.menu.clock.8internal=8 MHz (internal)
