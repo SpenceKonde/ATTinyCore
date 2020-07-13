@@ -270,6 +270,10 @@ long map(long, long, long, long, long);
   doesn't have to be riddled with #ifdefs.
 =============================================================================*/
 
+#ifndef SIGRD
+#define SIGRD 5
+#endif
+
 
 #if defined( TIM0_CAPT_vect ) && ! defined( TIMER0_CAPT_vect )
 #define TIMER0_CAPT_vect TIM0_CAPT_vect

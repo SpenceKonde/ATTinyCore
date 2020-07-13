@@ -167,7 +167,7 @@ env:
     # attinyx5micr
     # sketchclock=165pll
     # Servo library only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 and adding additional jobs for each library/example is not possible due to Travis CI's 200 job limit, so I am forced to only do a single test compilation
-    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5micr:LTO=disable,TimerClockSource=default,sketchclock=165pll,bod=disabled,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
+    - SKETCH_PATH="${APPLICATION_FOLDER}/arduino/examples/01.Basics/BareMinimum/BareMinimum.ino" BOARD_ID="ATTinyCore:avr:attinyx5micr:LTO=disable,TimerClockSource=default,sketchclock=165pll,bod=disable,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
     # sketchclock=16pll
     - SKETCH_PATH="${SKETCHBOOK_FOLDER}/hardware/ATTinyCore/avr/libraries" BOARD_ID="ATTinyCore:avr:attinyx5micr:LTO=disable,TimerClockSource=default,sketchclock=16pll,bod=4v3,millis=enabled" ALLOW_FAILURE="false" IDE_VERSION_LIST="$MAX_PATH_SAFE_IDE_VERSION_LIST"
 

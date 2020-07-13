@@ -1,5 +1,12 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
 1.4.0
+* Add support for the DigiSpark Pro pin mapping for the ATtiny87/167 with other bootloader options.
+* Trim out references to unsupported parts from Servo library. I am almost positive it did not work on a significant number of parts! I think it does now.
+* Servo will clean up after itself if you detach all the servos.
+* Fix ATtiny2313/2313A related issues (getting the #defines from the headers for the A, while still being able to upload)
+* PLL as Timer1 clock source now actually enables the PLL.
+* noTone() now correctly cleans up after Tone().
+* Signifiant cleanup in wiring.c
 * Included Servo library now works with PLL as Timer1 clock source (trivial fix - I clearly never looked into it when I merged in the 8-bit servo code!). Now it also lets you use Servo if you have external crystal running at unsupported speed if you use the PLL for Timer1...
 * Major improvements to part-specific documentation pages.
 * Remove the HAVE_BOOTLOADER mechanism, which existed to clean up timer registers that a bootloader may have left configured. Neither Optiboot not Micronucleus do this, so HAVE_BOOTLOADER had no function. Is now commented out in the pins_arduino's where it existed, as is the code it enabled. Saves a small amount of flash, and makes init() in wiring.c far easier to follow once the do-nothing code isn't visible.
@@ -9,7 +16,6 @@
 * Fix inverted LED blinking on all parts
 * Fix LED blinking on x61 family (#264)
 * Add support for VUSB uploads to Digispark (t85, t167), Micronucleus/California STEAM (t84a)  Wattuino (841). Requires board manager installation, or another compatible board, in order tp pick up the support files.
-* Add support for the DigiSpark Pro pin mapping for the ATtiny87/167 with other bootloader options.
 * Add support for 16 MHz with *INTERNAL* oscillator on ATtiny841, 441. Support is still experimental; there are a few caveats - see [ATtiny441, 841](avr/extras/ATtiny_x41.md)
 * Tested voltage dependence of internal oscillator, allowing significant simplification of the bootloader files for the ATtiny841/441,828,1643.
 * Support PIN_Pxn notation.
