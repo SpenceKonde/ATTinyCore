@@ -611,22 +611,22 @@ uint8_t read_factory_calibration(void)
 void init(void)
 {
   /*
-  If clocked from the PLL (CLOCKSOURCE==6) then there are three special cases all involving 
+  If clocked from the PLL (CLOCKSOURCE==6) then there are three special cases all involving
   the 16.5 MHz clock option used to support VUSB on PLL-clocked parts.
   If F_CPU is set to 16.5, and the Micronucleus bootloader is in use (indicated by BOOTTUNED165
   being defined), the bootloader has already set OSCCAL to run at 16.5; if that is set while
   F_CPU is set to 16, we reload that from factory.
   If it is set to 16.5 but BOOTTUNED165 is not set, we're not using the micronucleus bootloader
-  and we need to increase OSCCAL; this is a guess, but works better than nothing. 
+  and we need to increase OSCCAL; this is a guess, but works better than nothing.
   */
 
   #if (CLOCK_SOURCE==6) //handle weird frequencies when using the PLL clock
-    #if (defined(BOOTTUNED165)) // If it's a micronucleus board, it will either run at 16.5 after 
+    #if (defined(BOOTTUNED165)) // If it's a micronucleus board, it will either run at 16.5 after
       // adjusting the internal oscillator for that speed (in which case we are done) or we want
       // it to be set to run at 16, in which case we need to reload the factory cal.
-      #if (F_CPU==16000000L) 
+      #if (F_CPU==16000000L)
         OSCCAL = read_factory_calibration();
-      #elif (F_CPU!=16500000L) 
+      #elif (F_CPU!=16500000L)
         #error "Unsupperted CPU speed selected for micronucleus board with PLL in current version of ATTinyCore, this will be added in a future release"
       #endif
     #elif (F_CPU == 16500000L) // not pretuned to 16.5 (no micronucleus), but 16.5 requested, presumably for VUSB.
@@ -639,7 +639,7 @@ void init(void)
           OSCCAL += 5;
         }
       }
-    #else // We're using PLL, and it's not a VUSB special case speed. 
+    #else // We're using PLL, and it's not a VUSB special case speed.
       #if (F_CPU!=16000000) // 16MHz is speed of unprescaled PLL clock.
         #ifdef CCP
           CCP=0xD8; //enable change of protected register
