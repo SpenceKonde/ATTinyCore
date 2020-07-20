@@ -149,7 +149,7 @@ The use of an external clock - that is, a single wire with an appropriate clock 
 #### Determining clock speed and source from within the sketch
 The clock speed is made available via the F_CPU #define - you can test this using #if macro
 
-In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values:
+In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values (as of 1.4.0, it is expanded to cover a few weird clocking situations: the low 4 bits identify the source, and high 4 bits identify special things regarding it:
 
 > 0 - Internal 8MHz oscillator (with or without prescaling to a speed lower than 8MHz)
 
@@ -164,6 +164,12 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 > 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
 
 > 6 - Internal PLL (x5 and x61 only)
+
+> 17 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
+
+> 18 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88). 
+
+
 
 ### Refer to pins by port/pin
 Instead of referring to pins by the digital pin numbers, it is now (as of 1.4.0) possible to refer to pins based on their port and pin number within the port. **We recommend this method of referring to pins in all cases**, as it can be more easily cross-referenced with the datasheet, and is independent of pin mapping (for devices with multiple pin mapping options). It also helps to build good mental habits with regards to thinking about pins in the context of ports, which is helpful when writing code where more advanced techniques are needed. For every pin, the core supplies a constant of the form `PIN_Pxn`, where `x` is the port letter, and `n` is the bit of the pin within that port; this is a #define set to the digital pin number corresponding to it. For example, `PIN_PA2` refers to bit 2 in PORTA. On the ATtiny167, where there are three different pin mappings, all radically different, `analogWrite(PIN_PA2,128)` will always generate a squarewave on the same pin, and the code can be moved between pinmappings without concern.
