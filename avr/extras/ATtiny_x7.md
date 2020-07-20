@@ -1,5 +1,5 @@
 ### ATtiny 87/167
-![x7 pin mapping](Pinout_x7.png "Arduino Pin Mapping for ATtiny x7-family")
+![x7 pin mapping](Pinout_x7.jpg "Arduino Pin Mapping for ATtiny x7-family")
 
  Specifications |  .
 ------------ | -------------
