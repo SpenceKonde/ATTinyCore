@@ -4,10 +4,10 @@
 menu.chip=Chip
 menu.clock=Clock
 menu.sketchclock=Clock (controls sketch only)
-menu.bod=B.O.D. Level
+menu.bod=B.O.D. Level (Only set by bootload w/ISP)
 menu.bodact=B.O.D. Mode (active)
 menu.bodpd=B.O.D. Mode (sleep)
-menu.eesave=Save EEPROM
+menu.eesave=Save EEPROM (Only set by bootload w/ISP)
 menu.pinmapping=Pin Mapping
 menu.INITIALIZE_SECONDARY_TIMERS=Initialize Secondary Timers
 menu.TimerClockSource=Timer 1 Clock
@@ -17,7 +17,7 @@ menu.wiremode=Wire Modes
 menu.neopixelport=tinyNeoPixel port
 menu.millis=millis()/micros()
 menu.burnmode=Burn Bootloader Mode
-menu.resetpin=Reset Pin Mode
+menu.resetpin=Reset Pin (Only set by bootload w/ISP)
 
 
 
@@ -244,6 +244,7 @@ attinyx4opti.build.extra_flags={build.millis} {build.neopixelport}
 attinyx4micr.name=ATtiny84a (Micronucleus / California STEAM)
 attinyx4micr.upload.tool=micronucleus
 attinyx4micr.upload.protocol=usb
+attinyx4micr.menu.build.usb=
 attinyx4micr.build.board=AVR_ATTINYX4
 attinyx4micr.bootloader.tool=avrdude
 attinyx4micr.bootloader.unlock_bits=0xFF
@@ -292,9 +293,9 @@ attinyx4micr.menu.burnmode.install.bootloader.file=micronucleus/t84_default.hex
 attinyx4micr.menu.burnmode.install.bootloader.tool=avrdude
 attinyx4micr.menu.resetpin.reset=Reset
 attinyx4micr.menu.resetpin.reset.bootloader.rstbit=1
-attinyx4micr.menu.resetpin.gpio=GPIO (Danger - Read docs first!)
+attinyx4micr.menu.resetpin.gpio=GPIO (Danger - disables ISP)
 attinyx4micr.menu.resetpin.gpio.bootloader.rstbit=0
-attinyx4micr.build.extra_flags={build.millis} {build.neopixelport}
+attinyx4micr.build.extra_flags={build.millis} {build.usb} {build.neopixelport}
 
 
 attinyx5.name=ATtiny25/45/85 (No bootloader)
@@ -531,6 +532,7 @@ attinyx5micr.name=ATtiny85 (Micronucleus / DigiSpark)
 attinyx5micr.upload.tool=micronucleus
 attinyx5micr.upload.protocol=usb
 attinyx5micr.build.mcu=attiny85
+attinyx5micr.build.usb=
 attinyx5micr.build.core=tiny
 attinyx5micr.build.board=AVR_ATTINYX5
 attinyx5micr.build.variant=tinyX5
@@ -556,22 +558,23 @@ attinyx5micr.menu.TimerClockSource.pll=66 MHz/64 MHz
 attinyx5micr.menu.TimerClockSource.pll.build.pllsettings=-DPLLTIMER1
 attinyx5micr.menu.TimerClockSource.lowpll=33 MHz/32 MHz
 attinyx5micr.menu.TimerClockSource.lowpll.build.pllsettings=-DLOWPLLTIMER1
-attinyx5micr.menu.sketchclock.165pll=16.5 MHz (USB, no Servo, more?)
+attinyx5micr.menu.sketchclock.165pll=16.5 MHz (USB)
 attinyx5micr.menu.sketchclock.165pll.bootloader.low_fuses=0xF1
 attinyx5micr.menu.sketchclock.165pll.build.f_cpu=16500000L
+attinyx5micr.menu.sketchclock.165pll.build.usb=-DHASUSB
 attinyx5micr.menu.sketchclock.165pll.build.clocksource=6
-attinyx5micr.menu.sketchclock.16pll=16 MHz (no USB?)
+attinyx5micr.menu.sketchclock.16pll=16 MHz (No USB)
 attinyx5micr.menu.sketchclock.16pll.bootloader.low_fuses=0xF1
 attinyx5micr.menu.sketchclock.16pll.build.f_cpu=16000000L
 attinyx5micr.menu.sketchclock.16pll.build.clocksource=6
-#attinyx5micr.menu.sketchclock.8pll=8 MHz (no USB)
-#attinyx5micr.menu.sketchclock.8pll.bootloader.low_fuses=0xF1
-#attinyx5micr.menu.sketchclock.8pll.build.f_cpu=8000000L
-#attinyx5micr.menu.sketchclock.8pll.build.clocksource=6
-#attinyx5micr.menu.sketchclock.1pll=1 MHz (no USB)
-#attinyx5micr.menu.sketchclock.1pll.bootloader.low_fuses=0xF1
-#attinyx5micr.menu.sketchclock.1pll.build.f_cpu=1000000L
-#attinyx5micr.menu.sketchclock.1pll.build.clocksource=6
+attinyx5micr.menu.sketchclock.8pll=8 MHz (no USB)
+attinyx5micr.menu.sketchclock.8pll.bootloader.low_fuses=0xF1
+attinyx5micr.menu.sketchclock.8pll.build.f_cpu=8000000L
+attinyx5micr.menu.sketchclock.8pll.build.clocksource=6
+attinyx5micr.menu.sketchclock.1pll=1 MHz (no USB)
+attinyx5micr.menu.sketchclock.1pll.bootloader.low_fuses=0xF1
+attinyx5micr.menu.sketchclock.1pll.build.f_cpu=1000000L
+attinyx5micr.menu.sketchclock.1pll.build.clocksource=6
 attinyx5micr.build.pllsettings=
 attinyx5micr.bootloader.low_fuses=0xE1
 attinyx5micr.build.clocksource=6
@@ -592,9 +595,9 @@ attinyx5micr.menu.burnmode.install.bootloader.file=micronucleus/t85_entry_on_pow
 attinyx5micr.menu.burnmode.install.bootloader.tool=avrdude
 attinyx5micr.menu.resetpin.reset=Reset
 attinyx5micr.menu.resetpin.reset.bootloader.rstbit=1
-attinyx5micr.menu.resetpin.gpio=GPIO (Danger - Read docs first!)
+attinyx5micr.menu.resetpin.gpio=GPIO (Danger - disables ISP)
 attinyx5micr.menu.resetpin.gpio.bootloader.rstbit=0
-attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} -DBOOTTUNED165
+attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} {build.usb} -DBOOTTUNED165
 
 
 attinyx8.name=ATtiny48/88 (No bootloader)
@@ -761,6 +764,79 @@ attinyx8opti.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
 attinyx8opti.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
 attinyx8opti.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
 attinyx8opti.build.extra_flags={build.millis} {build.neopixelport}
+
+
+attinyx8micr.name=ATtiny88 (Micronucleus, MH-ET t88 w/16MHz CLOCK)
+attinyx8micr.upload.tool=micronucleus
+attinyx8micr.upload.protocol=usb
+attinyx8micr.build.board=AVR_ATTINYX8
+attinyx8micr.bootloader.tool=avrdude
+attinyx8micr.bootloader.unlock_bits=0xFF
+attinyx8micr.bootloader.lock_bits=0xFF
+attinyx8micr.build.core=tiny
+attinyx8micr.build.export_merged_output=false
+attinyx8micr.menu.LTO.enable=Enabled
+attinyx8micr.menu.LTO.enable.ltocflags=-flto -fno-fat-lto-objects
+attinyx8micr.menu.LTO.enable.ltoelfflags=-g -flto -fuse-linker-plugin
+attinyx8micr.menu.LTO.enable.ltocppflags=-flto
+attinyx8micr.menu.LTO.enable.ltoarcmd=gcc-
+attinyx8micr.menu.LTO.disable=Disabled
+attinyx8micr.menu.LTO.disable.ltocflags=
+attinyx8micr.menu.LTO.disable.ltoelfflags=
+attinyx8micr.menu.LTO.disable.ltocppflags=
+attinyx8micr.menu.LTO.disable.ltoarcmd=
+attinyx8micr.build.mcu=attiny88
+attinyx8micr.upload.maximum_size=6650
+attinyx8micr.upload.maximum_data_size=512
+attinyx8micr.menu.sketchclock.16external=16 MHz (external 16MHz, USB)
+attinyx8micr.menu.sketchclock.16external.bootloader.low_fuses=0xE1
+attinyx8micr.menu.sketchclock.16external.build.f_cpu=16000000L
+attinyx8micr.menu.sketchclock.16external.build.clocksource=18
+attinyx8micr.menu.sketchclock.8external16=8 MHz (external 16MHz, no USB)
+attinyx8micr.menu.sketchclock.8external16.bootloader.low_fuses=0xE1
+attinyx8micr.menu.sketchclock.8external16.build.f_cpu=8000000L
+attinyx8micr.menu.sketchclock.8external16.build.clocksource=18
+attinyx8micr.menu.sketchclock.4external16=4 MHz (external 16MHz, no USB)
+attinyx8micr.menu.sketchclock.4external16.bootloader.low_fuses=0xE1
+attinyx8micr.menu.sketchclock.4external16.build.f_cpu=4000000L
+attinyx8micr.menu.sketchclock.4external16.build.clocksource=18
+attinyx8micr.menu.sketchclock.1external16=1 MHz (external 16MHz, no USB)
+attinyx8micr.menu.sketchclock.1external16.bootloader.low_fuses=0xE1
+attinyx8micr.menu.sketchclock.1external16.build.f_cpu=1000000L
+attinyx8micr.menu.sketchclock.1external16.build.clocksource=18
+attinyx8micr.bootloader.high_fuses=0b{bootloader.rstbit}1011{bootloader.bod_bits}
+attinyx8micr.bootloader.extended_fuses=0xfe
+attinyx8micr.menu.bod.2v7=B.O.D. Enabled (2.7v)
+attinyx8micr.menu.bod.2v7.bootloader.bod_bits=101
+attinyx8micr.menu.bod.disable=B.O.D. Disabled (saves power)
+attinyx8micr.menu.bod.disable.bootloader.bod_bits=111
+attinyx8micr.menu.bod.4v3=B.O.D. Enabled (4.3v)
+attinyx8micr.menu.bod.4v3.bootloader.bod_bits=100
+attinyx8micr.menu.resetpin.reset=Reset
+attinyx8micr.menu.resetpin.reset.bootloader.rstbit=1
+attinyx8micr.menu.resetpin.gpio=GPIO (Danger - disables ISP)
+attinyx8micr.menu.resetpin.gpio.bootloader.rstbit=0
+attinyx8micr.menu.burnmode.upgrade=Upgrade (via USB, fuses unchanged)
+attinyx8micr.menu.burnmode.upgrade.bootloader.file=micronucleus/upgrade-t88_entry_on_power_on_no_pullup_fast_exit_on_no_USB.hex
+attinyx8micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
+attinyx8micr.menu.burnmode.install=Fresh Install (via ISP, set fuses)
+attinyx8micr.menu.burnmode.install.bootloader.file=micronucleus/t88_entry_on_power_on_no_pullup_fast_exit_on_no_USB.hex
+attinyx8micr.menu.burnmode.install.bootloader.tool=avrdude
+attinyx8micr.build.variant=tinyX8
+attinyx8micr.menu.millis.enabled=Enabled
+attinyx8micr.menu.millis.disabled=Disabled (saves flash)
+attinyx8micr.menu.millis.enabled.build.millis=
+attinyx8micr.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attinyx8micr.menu.neopixelport.porta=Port A (pins 23~26)
+attinyx8micr.menu.neopixelport.portb=Port B (pins 16~22,27)
+attinyx8micr.menu.neopixelport.portc=Port C (pins 9~13)
+attinyx8micr.menu.neopixelport.portd=Port D (pins 0~7)
+attinyx8micr.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
+attinyx8micr.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
+attinyx8micr.menu.neopixelport.portc.build.neopixelport=-DNEOPIXELPORT=PORTC
+attinyx8micr.menu.neopixelport.portd.build.neopixelport=-DNEOPIXELPORT=PORTD
+attinyx8micr.build.extra_flags={build.millis} {build.usb} {build.neopixelport}
+
 
 attinyx7.name=ATtiny87/167 (No bootloader)
 attinyx7.upload.maximum_data_size=512
@@ -984,6 +1060,7 @@ attinyx7micr.upload.maximum_size=14842
 attinyx7micr.upload.maximum_data_size=512
 attinyx7micr.upload.tool=micronucleus
 attinyx7micr.upload.protocol=usb
+attinyx7micr.build.usb=
 attinyx7micr.build.board=AVR_ATTINYX7
 attinyx7micr.bootloader.unlock_bits=0xFF
 attinyx7micr.bootloader.lock_bits=0xFF
@@ -1002,8 +1079,19 @@ attinyx7micr.menu.LTO.disable.ltoarcmd=
 attinyx7micr.build.mcu=attiny167
 attinyx7micr.build.export_merged_output=false
 attinyx7micr.bootloader.low_fuses=0xFF
-attinyx7micr.build.f_cpu=16000000L
-attinyx7micr.build.clocksource=1
+attinyx7micr.menu.sketchclock.16external=16 MHz (16MHz xtal, USB)
+attinyx7micr.menu.sketchclock.16external.build.f_cpu=16000000L
+attinyx7micr.menu.sketchclock.16external.build.clocksource=17
+attinyx7micr.menu.sketchclock.16external.build.usb=-DHASUSB
+attinyx7micr.menu.sketchclock.8external16=8 MHz (16MHz xtal, no USB)
+attinyx7micr.menu.sketchclock.8external16.build.f_cpu=8000000L
+attinyx7micr.menu.sketchclock.8external16.build.clocksource=17
+attinyx7micr.menu.sketchclock.4external16=4 MHz (16MHz xtal, no USB)
+attinyx7micr.menu.sketchclock.4external16.build.f_cpu=4000000L
+attinyx7micr.menu.sketchclock.4external16.build.clocksource=17
+attinyx7micr.menu.sketchclock.1external16=1 MHz (16MHz xtal, no USB)
+attinyx7micr.menu.sketchclock.1external16.build.f_cpu=1000000L
+attinyx7micr.menu.sketchclock.1external16.build.clocksource=17
 attinyx7micr.menu.bod.disable=B.O.D. Disabled (saves power)
 attinyx7micr.menu.bod.disable.bootloader.high_fuses=0xD7
 attinyx7micr.menu.bod.4v3=B.O.D. Enabled (4.3v)
@@ -1030,9 +1118,9 @@ attinyx7micr.menu.burnmode.install.bootloader.file=micronucleus/t167_entry_on_po
 attinyx7micr.menu.burnmode.install.bootloader.tool=avrdude
 attinyx7micr.menu.resetpin.reset=Reset
 attinyx7micr.menu.resetpin.reset.bootloader.rstbit=1
-attinyx7micr.menu.resetpin.gpio=GPIO (Danger - Read docs first!)
+attinyx7micr.menu.resetpin.gpio=GPIO (Danger - disables ISP)
 attinyx7micr.menu.resetpin.gpio.bootloader.rstbit=0
-attinyx7micr.build.extra_flags={build.millis} {build.neopixelport}
+attinyx7micr.build.extra_flags={build.millis} {build.usb} {build.neopixelport}
 
 
 attinyx61.name=ATtiny261/461/861(a)
@@ -1611,6 +1699,7 @@ attinyx41micr.build.mcu=attiny841
 attinyx41micr.build.core=tinymodern
 attinyx41micr.build.board=AVR_ATTINYX41
 attinyx41micr.build.speedfix=
+attinyx41micr.build.usb=
 attinyx41micr.build.export_merged_output=false
 attinyx41micr.bootloader.extended_fuses=0xFE
 attinyx41micr.bootloader.high_fuses=0xD7
@@ -1629,10 +1718,13 @@ attinyx41micr.build.f_cpu=8000000L
 attinyx41micr.build.clocksource=0
 attinyx41micr.bootloader.high_fuses=0b11011{bootloader.bod_bits}
 attinyx41micr.bootloader.extended_fuses=0b1111{bootloader.bodact_bits}0
-attinyx41micr.menu.sketchclock.8internal=8 MHz (internal, Vcc > 4.5V)
+attinyx41micr.menu.sketchclock.8internal5v=8 MHz (internal, Vcc > 4.5V)
+attinyx41micr.menu.sketchclock.8internal5v.build.f_cpu=8000000L
+attinyx41micr.menu.sketchclock.8internal5v.build.clocksource=0
+attinyx41micr.menu.sketchclock.8internal5v.build.speedfix=-DLOWERCAL=6
+attinyx41micr.menu.sketchclock.8internal=8 MHz (internal, Vcc < 4.5V)
 attinyx41micr.menu.sketchclock.8internal.build.f_cpu=8000000L
 attinyx41micr.menu.sketchclock.8internal.build.clocksource=0
-attinyx41micr.menu.sketchclock.8internal.build.speedfix=-DLOWERCAL=6
 attinyx41micr.menu.sketchclock.16internal=16 MHz (internal, Vcc > 4.5V warning - see docs!)
 attinyx41micr.menu.sketchclock.16internal.build.f_cpu=16000000L
 attinyx41micr.menu.sketchclock.16internal.build.clocksource=0
@@ -1676,7 +1768,7 @@ attinyx41micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
 attinyx41micr.menu.burnmode.install=Fresh Install (via ISP)
 attinyx41micr.menu.burnmode.install.bootloader.file=micronucleus/Nanite841.hex.hex
 attinyx41micr.menu.burnmode.install.bootloader.tool=avrdude
-attinyx41micr.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode} {build.speedfix}
+attinyx41micr.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode} {build.usb} {build.speedfix}
 
 
 attiny43.name=ATtiny43 (No bootloader)
