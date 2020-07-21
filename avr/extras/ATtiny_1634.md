@@ -23,7 +23,7 @@ See workaround below.
 
 
 ### Warning: When internal reference is in use, an external voltage must not be applied to PA0 (AREF) pin.
-It appears that the pin is connected to the internal reference. 
+It appears that pin is always connected to the reference with reference other than Vcc is used. Using that pin for other purposes 
 
 ## Programming
 The ATtiny1634 can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
