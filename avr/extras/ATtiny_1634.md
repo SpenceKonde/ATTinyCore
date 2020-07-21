@@ -21,10 +21,6 @@ The ATtiny1634R has a more tightly factory calibrated internal oscillator. It is
 This is a design flaw in the chip, as noted in the datasheet errata.
 See workaround below.
 
-
-### Warning: When internal reference is in use, an external voltage must not be applied to PA0 (AREF) pin.
-It appears that pin is always connected to the reference with reference other than Vcc is used. Using that pin for other purposes 
-
 ## Programming
 The ATtiny1634 can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
 
@@ -57,7 +53,7 @@ UCSR0B&=~(1<<RXEN0); // disable RX
 ```
 
 ### ADC Reference options
-Note that **when using the Internal 1.1v reference, you must not apply an external voltage to AREF pin** - this sometimes appears to work, but other times results in erroneous ADC readings. Unlike some parts, there is no option to use the internal reference without the AREF pin being used.
+Note that **when using the Internal 1.1v reference, you must not apply an external voltage to AREF pin** - this sometimes appears to work, but other times results in erroneous ADC readings. Unlike some parts, there is no option to use the internal reference without the AREF pin being connected to it!
 
 * DEFAULT: Vcc
 * EXTERNAL: External voltage applied to AREF pin
@@ -75,7 +71,7 @@ I (Spence Konde / Dr. Azzy) sell ATtiny1634 boards through my Tindie store - you
 * [Bare Boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/)
 
 ### PB3 silicon errata workaround
-If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, and an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below).  
+If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, and an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below).
 
 ```c
 //put these lines in setup
@@ -84,7 +80,7 @@ WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt with longest presca
 //put this empty WDT ISR outside of all functions
 EMPTY_INTERRUPT(WDT_vect) //empty ISR to work around bug with PB3. EMPTY_INTERRUPT uses 26 bytes less than ISR(WDT_vect){;}
 ```
-If you are using sleep modes, you also need to turn the WDT off while sleeping (both because the interrupts would wake it, and because the WDT is consuming power, and presumably that's what you're trying to avoid by sleeping). Doing so as shown below only uses an extra 12-16 bytes if you call it from a single place, 20 if called from two places, and 2 bytes when you call it thereafter, compared to calling sleep_cpu() directly in those places, as you would on a part that didn't need this workaround. 
+If you are using sleep modes, you also need to turn the WDT off while sleeping (both because the interrupts would wake it, and because the WDT is consuming power, and presumably that's what you're trying to avoid by sleeping). Doing so as shown below only uses an extra 12-16 bytes if you call it from a single place, 20 if called from two places, and 2 bytes when you call it thereafter, compared to calling sleep_cpu() directly in those places, as you would on a part that didn't need this workaround.
 ```c
 void startSleep() { //call instead of sleep_cpu()
   CCP=0xD8; //write key to configuration change protection register
