@@ -307,8 +307,8 @@ ATTinyCore will never set lock bits automatically, nor will it set fuses to disa
 ![x7 Pin Mapping](avr/extras/Pinout_x7.jpg "Arduino Pin Mapping for ATtiny167/87")
 
 ### ATtiny48/88
-![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88.jpg "Arduino Pin Mapping for ATtiny88/48 in TQFP")
-![x8 Pin Mapping](avr/extras/Pinout_x8.jpg "Arduino Pin Mapping for ATtiny88/48 in DIP")
+![x8 SMD Pin Mapping](avr/extras/Pinout_x8.jpg "Arduino Pin Mapping for ATtiny88/48 in TQFP")
+![x8 DIP Pin Mapping](avr/extras/Pinout_x8_PU.jpg "Arduino Pin Mapping for ATtiny88/48 in DIP")
 
 ### ATtiny2313/4313
 ![x313 Pin Mapping](avr/extras/Pinout_x313.jpg "Arduino Pin Mapping for ATtiny4313/2313")
