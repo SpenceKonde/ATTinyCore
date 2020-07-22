@@ -33,7 +33,7 @@ The tinyAVR 0-series and 1-series ATtiny parts (x12/x14/x16/x17/x02/x04/x06/x07)
 
 **Windows users must download and install Micronucleus drivers manually**
 If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to obvious security considerations. The drivers are downloaded by the install process and buried in your Arduino15 folder, or they can be downloaded from the following URL. Unzip, run the installer.
-https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip 
+https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip
 
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
