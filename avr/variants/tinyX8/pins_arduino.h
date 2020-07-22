@@ -111,7 +111,7 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_PB5  ( 13)
 #define PIN_PB6  ( 14)
 #define PIN_PB7  ( 15)
-#define PIN_PB7  ( 16)
+#define PIN_PC7  ( 16)
 #define PIN_PC0  ( 17)
 #define PIN_PC1  ( 18)
 #define PIN_PC2  ( 19)
