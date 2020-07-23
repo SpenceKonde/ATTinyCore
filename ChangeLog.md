@@ -1,7 +1,9 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
 1.4.0
+* Add support for MH-Tiny T88 pin mapping.
+* Add support for MH-Tiny T88 boards, because I just got a bunch and it didn't look too hard.
 * Add support for the DigiSpark Pro pin mapping for the ATtiny87/167 with other bootloader options.
-* Trim out references to unsupported parts from Servo library. I am almost positive it did not work on a significant number of parts! I think it does now.
+* Trim out references to unsupported parts from Servo library. I am almost positive it did not work on a significant number of parts! I think it should generally work now...
 * Servo will clean up after itself if you detach all the servos.
 * Fix ATtiny2313/2313A related issues (getting the #defines from the headers for the A, while still being able to upload)
 * PLL as Timer1 clock source now actually enables the PLL.

@@ -12,6 +12,7 @@ ADC Channels | 11
 PWM Channels | 3
 Interfaces | LIN/UART, USI, SPI
 Clock options | Internal 1/8 MHz, external crystal or clock* up to 20 MHz
+Clock options | Micronucleus 16 MHz w/USB, 8/4/1 MHz w/out USB from 16MHz ext. crystal
 
 * Manual steps required. See notes in README under "Using external CLOCK (not crystal).
 
@@ -24,7 +25,7 @@ This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
 
-**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader upon power-on only. This will be made an option in future versions**
+**Currently the version of Micronucleus supplied with ATTinyCore for this part enters the bootloader upon power-on only. This will be made an option in future versions** The "stock" bootloader found on commercially available boards usually enters the bootloader on all reset sources.
 
 ## Features
 
@@ -39,7 +40,7 @@ Example of a "guard" against wrong pin mapping:
 ```
 The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel!
 
-### Flexible PWM support (Coming 1.4.0)
+### Flexible PWM support (New 1.4.0)
 The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
 
 ### Tone Support

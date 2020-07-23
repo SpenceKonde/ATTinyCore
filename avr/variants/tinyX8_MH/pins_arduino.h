@@ -27,6 +27,7 @@
 
 #define ATTINYX8 1       //backwards compat
 #define __AVR_ATtinyX8__ //recommended
+#define PINMAPPING_MHTINY
 #define USE_SOFTWARE_SPI 0
 
 #include <avr/pgmspace.h>
@@ -38,9 +39,9 @@
 
 #define ADC_TEMPERATURE 8
 
-#define NUM_DIGITAL_PINS            28
+#define NUM_DIGITAL_PINS            27
 #define NUM_ANALOG_INPUTS           8
-#define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 17 : -1)
+#define analogInputToDigitalPin(p)  ((p < 8) ? ((p < 6) ? (p) + 11 :(p) + 19 ): -1)
 
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
 
@@ -82,9 +83,9 @@ static const uint8_t MOSI = 11;
 static const uint8_t MISO = 12;
 static const uint8_t SCK  = 13;
 
-static const uint8_t SDA = 21;
-static const uint8_t SCL = 22;
-static const uint8_t LED_BUILTIN = 13;
+static const uint8_t SDA = 23;
+static const uint8_t SCL = 24;
+static const uint8_t LED_BUILTIN = 0;
 
 static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
@@ -109,63 +110,58 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_PB3  ( 11)
 #define PIN_PB4  ( 12)
 #define PIN_PB5  ( 13)
-#define PIN_PB6  ( 14)
-#define PIN_PB7  ( 15)
-#define PIN_PC7  ( 16)
-#define PIN_PC0  ( 17)
-#define PIN_PC1  ( 18)
-#define PIN_PC2  ( 19)
-#define PIN_PC3  ( 20)
-#define PIN_PC4  ( 21)
-#define PIN_PC5  ( 22)
-#define PIN_PA0  ( 23)
-#define PIN_PA1  ( 24)
-#define PIN_PA2  ( 25)
-#define PIN_PA3  ( 26)
-#define PIN_PC6  ( 27)
+#define PIN_PB7  ( 14)
+#define PIN_PA0  ( 15)
+#define PIN_PA1  ( 16)
+#define PIN_PA2  ( 17)
+#define PIN_PA3  ( 18)
+#define PIN_PC0  ( 19)
+#define PIN_PC1  ( 20)
+#define PIN_PC2  ( 21)
+#define PIN_PA3  ( 22)
+#define PIN_PA4  ( 23)
+#define PIN_PA5  ( 24)
+#define PIN_PA7  ( 25)
+#define PIN_PC6  ( 26)
 
-#define PIN_A0   (17)
-#define PIN_A1   (18)
-#define PIN_A2   (19)
-#define PIN_A3   (20)
-#define PIN_A4   (21)
-#define PIN_A5   (22)
-#define PIN_A6   (23)
-#define PIN_A7   (24)
+#define PIN_A0   (19)
+#define PIN_A1   (20)
+#define PIN_A2   (21)
+#define PIN_A3   (22)
+#define PIN_A4   (23)
+#define PIN_A5   (24)
+#define PIN_A6   (17)
+#define PIN_A7   (18)
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 26) ? (&PCICR) : ((uint8_t *)0))
-#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 22) ? 1 : 3)))
-#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 15) ? (&PCMSK0) : (((p) <= 22) ? (&PCMSK1) : (((p) <= 26) ? (&PCMSK3) : ((uint8_t *)0)))))
-#define digitalPinToPCMSKbit(p) (((p) <= 15) ? ((p) & 0x7) : (((p) == 16) ? (7) : (((p) <= 22) ? ((p) - 17) : ((p) - 23))))
-
+#define digitalPinToPCICR(p)    (&PCICR)
+#define digitalPinToPCICRbit(p) ( ((p) <= 7) ? PCIE2 : ( ((p) <= 14) ? PCIE0 : ( ((p) <= 18) ? PCIE3 : PCIE1 ) ) )
+#define digitalPinToPCMSK(p)    ( ((p) <= 7) ? (&PCMSK2) : ( ((p) <= 14) ? (&PCMSK0) : ( ((p) <= 18) ? (&PCMSK3) : (&PCMSK1) ) ) )
+#define digitalPinToPCMSKbit(p) ( ((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : (((p) == 14) ? 7 : (((p) <= 16) ? ((p) - 14) : (((p) <= 18) ? ((p) - 17) : (((p) == 25) ? 7 : ((p) - 19) ) ) ) ) ) )
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 
-// On the Arduino board, digital pins are also used
-// for the analog output (software PWM).  Analog input
-// pins are a separate set.
 
-// ATMEL ATTINY88
+// ATMEL ATTINY88 - note that MH Tiny boards all use TQFP-32 parts.
 //
 //                   +-\/-+
-//      (D27*) PC6  1|    |28  PC5 (A5/D22)
-//      (D  0) PD0  2|    |27  PC4 (A4/D21)
-//      (D  1) PD1  3|    |26  PC3 (A3/D20)
-//      (D  2) PD2  4|    |25  PC2 (A2/D19)
-//      (D  3) PD3  5|    |24  PC1 (A1/D18)
-//      (D  4) PD4  6|    |23  PC0 (A0/D17)
+//      (D26*) PC6  1|    |28  PC5 (A5/D24)
+//      (D  0) PD0  2|    |27  PC4 (A4/D23)
+//      (D  1) PD1  3|    |26  PC3 (A3/D22)
+//      (D  2) PD2  4|    |25  PC2 (A2/D21)
+//      (D  3) PD3  5|    |24  PC1 (A1/D20)
+//      (D  4) PD4  6|    |23  PC0 (A0/D19)
 //             VCC  7|    |22  GND
-//             GND  8|    |21  PC7 (D 16)
-//      (D 14) PB6  9|    |20  AVCC
-//      (D 15) PB7 10|    |19  PB5 (D 13)
+//             GND  8|    |21  PC7 (D 25)
+//      (CLKI) PB6  9|    |20  AVCC
+//      (D 14) PB7 10|    |19  PB5 (D 13)
 //      (D  5) PD5 11|    |18  PB4 (D 12)
 //      (D  6) PD6 12|    |17  PB3 (D 11)
 //      (D  7) PD7 13|    |16  PB2 (D 10) PWM
 //      (D  8) PB0 14|    |15  PB1 (D  9) PWM
 //                  +----+
-//  Note: For 32pin Packages, PORTA exists. PA0 = A6/D23, PA1 = A7/D24, PA2 = D25, PA3 = D26
+//  Note: For 32pin Packages, PORTA exists. PA0 = A6/D17, PA1 = A7/D18, PA2 = D15, PA3 = D16
 // * Only available if RSTDSBL fuse programmed, which makes further ISP programming impossible.
 
 
@@ -197,7 +193,8 @@ const uint16_t PROGMEM port_to_input_PGM[] = {
   (uint16_t) &PIND,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
+{
   PD, /* 0 */
   PD,
   PD,
@@ -212,24 +209,25 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB,
   PB,
   PB,
+       /* no PB6 */
   PB,
-  PB,
-  PC, /* 16 */
-  PC,
-  PC,
-  PC,
-  PC,
-  PC,
-  PC,
-  PA, /* 23 */
+  PA,  /* 15 */
   PA,
   PA,
   PA,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
   PC
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
-  _BV(0), /* 0, port D */
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
+{
+  _BV(0),  /* 0, port D */
   _BV(1),
   _BV(2),
   _BV(3),
@@ -237,30 +235,30 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(5),
   _BV(6),
   _BV(7),
-  _BV(0), /* 8, port B */
+  _BV(0),  /* 8, port B */
   _BV(1),
   _BV(2),
   _BV(3),
   _BV(4),
   _BV(5),
-  _BV(6),
+           /* no PB6 */
   _BV(7),
-  _BV(7), /* 16, port C */
+  _BV(2),
+  _BV(3),
+  _BV(0),
+  _BV(1),
   _BV(0),
   _BV(1),
   _BV(2),
   _BV(3),
   _BV(4),
   _BV(5),
-  _BV(0), /* 23, port A */
-  _BV(1),
-  _BV(2),
-  _BV(3),
+  _BV(7),
   _BV(6)
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
-  NOT_ON_TIMER, /* 0 - port D */
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
+{
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -268,7 +266,8 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER, /* 8 - port B */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
   TIMER1A,
   TIMER1B,
   NOT_ON_TIMER,
@@ -276,14 +275,13 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER, /* 16 - port C */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER, /* 23 - port A */
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
