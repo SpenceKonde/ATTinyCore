@@ -58,11 +58,11 @@ In order to make the entry modes work correctly - regardless of sketch behavior 
 ```
 uint8_t resetcause;
 if(!GPIOR0) { //if this isn't 0 at start of setup, bootloader must have set it.
-	resetcause = MCUSR;
-	MCUSR=0;
+  resetcause = MCUSR;
+  MCUSR=0;
 } else {
-	resetcause=GPIOR0;
-	GPIOR0=0; //not needed if you dont use GPIOR0.
+  resetcause=GPIOR0;
+  GPIOR0=0; //not needed if you dont use GPIOR0.
 }
 ```
 
