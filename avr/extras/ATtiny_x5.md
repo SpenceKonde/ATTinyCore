@@ -12,7 +12,8 @@ GPIO Pins | 5
 ADC Channels | 4 (including the one on reset)
 PWM Channels | 3
 Interfaces | USI, high speed timer
-Clock options | Internal 1/8MHz, Internal PLL at 16MHz or 16.5MHz, external crystal or clock* up to 20MHz
+Clock options | Internal 1/8MHz, Internal PLL at 16MHz or ~16.5MHz, external crystal or clock* up to 20MHz
+Clock options | Micronucleus 16.5MHz Int. PLL (tuned) w/USB, 16/8/4/1 MHz w/out USB from 16 MHz Int. PLL
 
 * Manual steps required. See notes in README under "Using external CLOCK (not crystal).
 
@@ -24,14 +25,14 @@ Any of these parts can be programmed by use of any ISP programmer. If using a ve
 This core includes an Optiboot bootloader for the ATtiny85/45, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 85/45, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
 ### Micronucleus VUSB Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on pin 3, D+ is on pin 4.
+This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched unless a slower clock speed is selected. These lower clock speeds are not compatible with USB libraries. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on pin 3, D+ is on pin 4.
 
 **Currently the version of micronucleus supplied with ATTinyCore enters the bootloader upon power-on only. This will be made an option in future versions**
 
 ## Features
 
 ### PLL Clock
-The ATtiny x5-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. It is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
+The ATtiny x5-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. It is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below. For use with USB libraries, a 16.5 MHz clock option is available; with the Micronucleus bootloader, a tuned value calculated from the USB clock is used, and this is the default clock option, otherwise, a heuristic is used to determine the tuned speed.
 
 ### Timer1 Clock Source option
 The ATtiny x5-family parts are equipped with a special high speed 8-bit timer, Timer1 (this is very different from the traditional 16-bit Timer1 used on the atmega328p and almost every other chip in the 8-bit AVR product line). This timer can be clocked off the system clock (default), OR from the PLL at 64 MHz or 32MHz - this is then fed into the prescaler, which can prescale it by any power of two from 1 to 16384. When opperating below 2.7v, the 64MHz PLL clock source option should not be used and may result in bad behavior. Changing this option will impact the frequency of PWM output on Pin 3, as well as the maximum frequency possible with tone(). See chapter 12 of the datasheet for more information on the high speed timer.
