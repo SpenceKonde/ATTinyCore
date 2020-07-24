@@ -3,6 +3,7 @@
   Part of Arduino - http://www.arduino.cc/
 
   Copyright (c) 2007 David A. Mellis
+  Copyright (c) 2020 Spence Konde
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -32,10 +33,7 @@
 
 #include <avr/pgmspace.h>
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value.
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 #define ADC_TEMPERATURE 8
 

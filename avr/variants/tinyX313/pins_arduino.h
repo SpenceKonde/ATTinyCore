@@ -117,10 +117,7 @@ static const uint8_t SCL = 16;
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value.
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 
 //Choosing not to initialise saves power and flash. 1 = initialise.

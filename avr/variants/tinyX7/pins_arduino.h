@@ -3,7 +3,7 @@
   Part of Arduino - http://www.arduino.cc/
 
   Copyright (c) 2007 David A. Mellis
-  Copyright 2015~2018 Spence Konde
+  Copyright (c) 2015~2020 Spence Konde
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -105,10 +105,7 @@ static const uint8_t A10 = 0x80 | 10;
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value.
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
