@@ -12,6 +12,8 @@ ADC Channels | 8, plus many differential channels
 PWM Channels | 4
 Interfaces | USI
 Clock options | Internal 1/8 MHz, external crystal or clock* up to 20 MHz
+Clock options | Micronucleus 8 MHz, 8/4/1 MHz from 8 MHz internal
+Packages | SOIC-14, DIP-14, MLF-20 (QFN)
 
 The 24/44/84 and 24a/44a/84a are functionally identical; the latter replaced the former in 2008, and uses slightly less power, and actual ATtiny84 parts are rarely seen in circulation today. They have the same signatures and are fully interchangible. It is extremely common to refer to the ATtiny84a as an ATtiny84.
 
@@ -28,9 +30,9 @@ This core includes an Optiboot bootloader for the ATtiny84/44, operating using s
 Programming the ATtiny84/44 via ISP without the bootloader is fully supported; the 24 is supported only for ISP programming.
 
 ### Micronucleus Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny84(a), allowing sketches to be uploaded directly over USB. It runs at 8 MHz via the internal oscillator. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz, but is set back down before running the sketch. D- is on PIN_PB0, D+ is on PIN_PB1.
+This core includes a Micronucleus bootloader that supports the ATtiny84(a), allowing sketches to be uploaded directly over USB. It runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz, but is set back down before running the sketch. USB libraries are not supported (yet). D- is on PIN_PB0, D+ is on PIN_PB1.
 
-**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader for all reset sources. This will be made an option in future versions**
+**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader for all reset sources. This will be made an option in a future release, as will higher clock frequencies, including ones high enough for USB libraries**
 
 ## Features
 
@@ -73,8 +75,7 @@ ACSR |=~(1<<ACD);
 As the ATtiny84 is available in an easy-to-solder through-hole DIP package, a board can be easily made by just soldering the part into prototyping board.
 I (Spence Konde) sell a specialized prototyping board that combines an ISP header with prototyping space and outlines to fit common SMD parts.
 * [ATtiny84 prototyping board](https://www.tindie.com/products/drazzy/attiny84-project-board/)
-Micronucleus boards can be bought here, from one of my collaborators:
-* [Micronucleus ATtiny84a](https://www.tindie.com/products/svdbor/tiniest-arduino-compatible-board-with-micronucleus/)
+* Micronucleus boards can be bought from one of my collaborators: [Micronucleus ATtiny84a](https://www.tindie.com/products/svdbor/tiniest-arduino-compatible-board-with-micronucleus/)
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x4-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
