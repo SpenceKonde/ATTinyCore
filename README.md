@@ -1,4 +1,4 @@
-ATtiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828 
+ATtiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828
 ============
 Now with Micronucleus (USB) support!
 ============
