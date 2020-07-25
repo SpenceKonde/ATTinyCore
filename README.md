@@ -1,3 +1,8 @@
+# THIS IS A TEST BRANCH - IT WILL NOT DO WHAT YOU WANT
+# GO TO [github.com/SpenceKonde/ATTinyCore/](https://github.com/SpenceKonde/ATTinyCore/)
+This version ONLY has the ATtiny88 micronucleus board definitions with important F_CPU options. These do not match the frequency on any actual boards - it is solely to test the *math* not the accuracy of the timebase. 
+
+
 ATtiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828
 ============
 Now with Micronucleus (USB) support!
