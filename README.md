@@ -1,6 +1,13 @@
 # THIS IS A TEST BRANCH - IT WILL NOT DO WHAT YOU WANT
 # GO TO [github.com/SpenceKonde/ATTinyCore/](https://github.com/SpenceKonde/ATTinyCore/)
-This version ONLY has the ATtiny88 micronucleus board definitions with important F_CPU options. These do not match the frequency on any actual boards - it is solely to test the *math* not the accuracy of the timebase. 
+This version ONLY has the ATtiny88 micronucleus board definitions with important F_CPU options. These do not match the frequency on any actual boards - it is solely to test the *math* - edit boards.txt for the clock speed you want to check math on, load t88_timing_sanity onto a micronucleus tiny88 (MHTiny - chosen because they are cheap, I had a pile within arms reach when I was doing this, and they have the most common configuration for Timer1 and I can program it without referencing the datasheet). 
+
+TOPVAL should be chosen such that it would take 2*TIMEINT milliseconds to overflow (eg, F_CPU/(1000*TIMEINT)-1), OCVAL half of (TOPVAL+1)/2-1). 
+THOSE NUMBERS **MUST** COME OUT TO INTEGERS (when done with normal, not integer, math) for this to work! Adjust TIMEINT if necessary (this is what was done for 12 MHz)
+
+Upload that sketch, connect scope to pin 9/10 - this pin's timing is correct (it would be 1Hz squarewave if the clock matched F_CPU), and also pin 11, and (ideally) pin 12.
+They should line up almost exactly; scatter of <10us between edge of pin 9/10 and pin 12 (micros), <1ms scatter between edge of pin 9/10 and pin 11 (millis). 
+
 
 
 ATtiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828
