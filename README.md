@@ -46,6 +46,8 @@ https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.
 
 **When using a chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
 
+**Chips sold as "ATtiny85" with wrong signature** - enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
+
 **free(): invalid next size (normal) error** This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
 
 **When using analogRead(), use the A# constant to refer to the pin, not the digital pin number.** Analog channel number (see table in datasheet entry for ADMUX register) can also be used - unlike the official core, you can use analogRead() with the differential ADC channels (for example).
