@@ -27,6 +27,10 @@
   Modified 2015 for Attiny841/1634/828 and for uart clock support S. Konde
 */
 
+#ifndef _NOP
+  #define _NOP() do { __asm__ volatile ("nop"); } while (0)
+#endif
+
 #include "core_build_options.h"
 #include "core_adc.h"
 #include "core_timers.h"
@@ -122,7 +126,6 @@ unsigned long millis()
   cli();
   m = millis_timer_millis;
   SREG = oldSREG;
-
   return m;
 }
 unsigned long micros()
@@ -480,7 +483,6 @@ void initToneTimer(void)
   #endif
 }
 #if ((F_CPU==16000000 || defined(LOWERCAL)) && CLOCK_SOURCE==0 )
-
   static uint8_t origOSC=0;
 
   uint8_t read_factory_calibration(void)
@@ -489,21 +491,10 @@ void initToneTimer(void)
     uint8_t value = boot_signature_byte_get(1);
     return value;
   }
-  #ifdef INSTANT_BOOST
-  //Not supposed to be "safe" - but in my testing, it seemed to work fine...
   void oscSlow(uint8_t newcal) {
     OSCCAL0=newcal;
+    _NOP(); //this is all micronucleus does, and it seems to work fine...
   }
-  #else
-  //The safe way, per datasheet recommendations.
-  void oscSlow(uint8_t newcal) {
-    uint8_t i=OSCCAL0;
-    // We do it this way so we can avoid constantly having to re-read OSCCAL0; might as well get this done as fast as possible (this whole bit may not even be necessary, but it's what the datasheet says)
-    while (i>newcal) {
-      OSCCAL0=--i;
-    }
-  }
-  #endif
 
 #endif
 
@@ -514,20 +505,10 @@ void initToneTimer(void)
   #define CALBOOST 174
   #define MAXINITCAL (255-CALBOOST)
   static uint8_t saveTCNT=0;
-  #ifdef INSTANT_BOOST
-  //Not supposed to be "safe" - but in my testing, it seemed to work fine...
   void oscBoost() {
     OSCCAL0=(origOSC>MAXINITCAL?255:(origOSC+CALBOOST));
+    __NOP();
   }
-  #else
-  void oscBoost() {
-    uint8_t i=OSCCAL0;
-    // We do it this way so we can avoid constantly having to re-read OSCCAL0; might as well get this done as fast as possible (this whole bit may not even be necessary, but it's what the datasheet says)
-    while (i<255 &&i<(origOSC+CALBOOST)) {
-      OSCCAL0=++i;
-    }
-  }
-  #endif
 
   void oscSafeNVM() { //called immediately prior to writing to EEPROM.
     TIMSK0&=~(_BV(TOIE0)); //turn off millis interrupt - let PWM keep running (Though at half frequency, of course!)
@@ -580,7 +561,6 @@ void init(void)
   #endif
   // this needs to be called before setup() or some functions won't work there
   #if (F_CPU==4000000L && CLOCK_SOURCE==0)
-  //Ordinarily, this absolutely must be within cli() / sei() - however at this point in the code, we KNOW it isn't, because we have not enabled any
   //cli();
   #ifdef CCP
   CCP=0xD8; //enable change of protected register
@@ -589,7 +569,7 @@ void init(void)
   #endif
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
-  //sei();
+  sei();
 
 
   /*
