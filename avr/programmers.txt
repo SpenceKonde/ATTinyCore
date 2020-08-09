@@ -21,10 +21,12 @@ avrispmkii.program.protocol=stk500v2
 avrispmkii.program.tool=avrdude
 avrispmkii.program.extra_params=-Pusb
 
-usbtinyisp.name=USBtinyISP (ATTinyCore)
+usbtinyisp.name=USBtinyISP FAST (ATTinyCore)
 usbtinyisp.protocol=usbtiny
 usbtinyisp.program.tool=avrdude
 usbtinyisp.program.extra_params=
+usbtinyisp2.program.speed=0.5
+usbtinyisp2.program.extra_params=-B{program.speed}
 
 usbasp.name=USBasp (ATTinyCore)
 usbasp.communication=usb
