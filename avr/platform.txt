@@ -144,6 +144,10 @@ tools.micronucleus.bootloader.params.verbose=
 tools.micronucleus.bootloader.params.quiet=
 tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i
 
+tools.micronucleus.erase.params.verbose=
+tools.micronucleus.erase.params.quiet=
+tools.micronucleus.erase.pattern=
+
 # USB Default Flags
 # Default blank usb manufacturer will be filled it at compile time
 # - from numeric vendor ID, set to Unknown otherwise
