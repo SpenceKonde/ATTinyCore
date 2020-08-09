@@ -507,7 +507,7 @@ void initToneTimer(void)
   static uint8_t saveTCNT=0;
   void oscBoost() {
     OSCCAL0=(origOSC>MAXINITCAL?255:(origOSC+CALBOOST));
-    __NOP();
+    _NOP();
   }
 
   void oscSafeNVM() { //called immediately prior to writing to EEPROM.
