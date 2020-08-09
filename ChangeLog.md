@@ -1,4 +1,11 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
+1.4.1
+* Correct massive regression in timekeeping on 841, 441, 1634, and 828
+* Correct issue with included bootloaders for MH ET tiny88 micronucleus boards actually not working... re-bootload with ISP programmer to fix with the new bootloaders.
+* Add full suite of entry mode bootloaders for tiny88 micronucleus.
+* Fix issue with upgrading bootloader with Micronucleus.
+* Issue with timekeeping on x61 parts is acknowledged, has not yet been fixed.
+
 1.4.0
 * Add support for MH-Tiny T88 pin mapping.
 * Add support for MH-Tiny T88 boards, because I just got a bunch and it didn't look too hard.
