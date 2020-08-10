@@ -902,8 +902,10 @@ void init(void)
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
     #if defined(WGM01) // if Timer0 has PWM
       TCCR0A = (1<<WGM01) | (1<<WGM00);
+    #endif
+    #if defined(TCCR0B) //The x61 has a wacky Timer0!
       TCCR0B = (MillisTimer_Prescale_Index << CS00);
-    #else //Timer0 does not have PWM - it's an x8
+    #else  //I think this means t's an x8
       TCCR0A = (MillisTimer_Prescale_Index << CS00);
     #endif
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1) //ATtiny x5

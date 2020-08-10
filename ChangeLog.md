@@ -1,10 +1,11 @@
 ### This document lists significant changes and bugfixes, including those not in yet in a release.
 1.4.1
-* Correct massive regression in timekeeping on 841, 441, 1634, and 828
-* Correct issue with included bootloaders for MH ET tiny88 micronucleus boards actually not working... re-bootload with ISP programmer to fix with the new bootloaders.
+* Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
+* Correct issue with included bootloaders for MH ET tiny88 micronucleus boards actually not working... re-bootload with ISP programmer to fix with the new bootloaders. (#439)
 * Add full suite of entry mode bootloaders for tiny88 micronucleus.
 * Fix issue with upgrading bootloader with Micronucleus.
-* Issue with timekeeping on x61 parts is acknowledged, has not yet been fixed.
+* Correct with timekeeping on x61 parts (1.4.0 regression in timer initialization).
+* Use learnings from Micronucleus f/w source code to safely change internal oscillator by dramatic amounts on the t841 (and others, but most relevant here)
 
 1.4.0
 * Add support for MH-Tiny T88 pin mapping.
