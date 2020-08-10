@@ -846,7 +846,7 @@ attinyx8micr.menu.bootentry.fastpoweron.bootloader.entryversion=t88_fastpoweron.
 attinyx8micr.menu.bootentry.saferesetwdt.bootloader.entryversion=t88_saferesetwdt.hex
 attinyx8micr.menu.bootentry.fastpoweronwdt.bootloader.entryversion=t88_fastpoweronwdt.hex
 attinyx8micr.menu.bootentry.aggressive.bootloader.entryversion=t88_aggressive.hex
-attinyx8micr.menu.bootentry.aggressive.upload.maximum_size=6780
+attinyx8micr.menu.bootentry.aggressive.upload.maximum_size=6844
 attinyx8micr.build.variant=tinyX8_MH
 attinyx8micr.menu.millis.enabled=Enabled
 attinyx8micr.menu.millis.disabled=Disabled (saves flash)
@@ -1788,7 +1788,7 @@ attinyx41micr.menu.neopixelport.portb=Port B (CW:8~11,CCW:0~2,11)
 attinyx41micr.menu.neopixelport.porta.build.neopixelport=-DNEOPIXELPORT=PORTA
 attinyx41micr.menu.neopixelport.portb.build.neopixelport=-DNEOPIXELPORT=PORTB
 attinyx41micr.menu.burnmode.upgrade=Upgrade (via USB)
-attinyx41micr.menu.burnmode.upgrade.bootloader.file=micronucleus/upgrade-Nanite841.hex.hex
+attinyx41micr.menu.burnmode.upgrade.bootloader.file=micronucleus/upgrade-Nanite841.hex
 attinyx41micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
 attinyx41micr.menu.burnmode.install=Fresh Install (via ISP)
 attinyx41micr.menu.burnmode.install.bootloader.file=micronucleus/Nanite841.hex.hex

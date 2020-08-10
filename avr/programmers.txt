@@ -25,8 +25,8 @@ usbtinyisp.name=USBtinyISP FAST (ATTinyCore)
 usbtinyisp.protocol=usbtiny
 usbtinyisp.program.tool=avrdude
 usbtinyisp.program.extra_params=
-usbtinyisp2.program.speed=0.5
-usbtinyisp2.program.extra_params=-B{program.speed}
+usbtinyisp.program.speed=0.3
+usbtinyisp.program.extra_params=-B{program.speed}
 
 usbasp.name=USBasp (ATTinyCore)
 usbasp.communication=usb
