@@ -158,11 +158,35 @@ static const uint8_t A7 = 0x80 | 7;
 //      (D  6) PD6 12|    |17  PB3 (D 11)
 //      (D  7) PD7 13|    |16  PB2 (D 10) PWM
 //      (D  8) PB0 14|    |15  PB1 (D  9) PWM
-//                  +----+
-//  Note: For 32pin Packages, PORTA exists. PA0 = A6/D17, PA1 = A7/D18, PA2 = D15, PA3 = D16
+//                   +----+
+//
+//                    (D 2) (D 0) (D22/ (D20/
+//                                 /A5)  /A3)
+//                       (D 1) (D27) (D21/ (D19/
+//                                    /A4)  /A2)
+//                     PD2   PD0   PC5   PC3
+//                        PD1   PC6   PC4   PC2
+//                     32    30    28    26
+//                        31    29    27    25
+//                    ┌ ─  ─  ─  ─  ─  ─  ─  ─ ┐
+//    (D 3)  PD3   1  |°                       |  24  PC1  (D18/A1)
+//    (D 4)  PD4   2  |                        |  23  PC0  (D17/A0)
+//    (D25)  PA2   3  |        ATtiny88        |  22  PA1  (D24/A7)
+//           VCC   4  |           on           |  21  GND
+//           GND   5  |   "MH-ET" or "HW-tiny" |  20  PC7  (D16   )
+//    (D26)  PA3   6  |          board         |  19  PA0  (D23/A6)
+//    (D14)  PB6   7  |                        |  18  AVCC
+//    (D15)  PB7   8  |                        |  17  PB5  (D13   )
+//                    └ ─  ─  ─  ─  ─  ─  ─  ─ ┘
+//                      9    11    13    15
+//                        10    12    14    16
+//                     PD5   PD7   PB1   PB3
+//                        PD6   PB0   PB2   PB4
+//                    (D 5) (D 7) (D 9) (D11)
+//                       (D 6) (D 8) (D10) (D12)
+//
 // * Only available if RSTDSBL fuse programmed, which makes further ISP programming impossible.
-
-
+//   unlike some ATtiny85-based digispark clones,
 // these arrays map port names (e.g. port B) to the
 // appropriate addresses for various functions (e.g. reading
 // and writing)

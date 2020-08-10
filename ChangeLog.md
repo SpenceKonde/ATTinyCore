@@ -6,6 +6,8 @@
 * Fix issue with upgrading bootloader with Micronucleus.
 * Correct with timekeeping on x61 parts (1.4.0 regression in timer initialization).
 * Use learnings from Micronucleus f/w source code to safely change internal oscillator by dramatic amounts on the t841 (and others, but most relevant here)
+* Change "USB tinyISP" to "USB tinyISP FAST", and increase bit clock significantly. Previously we had the normal version at 200kHz and the SLOW at 125kHz, which was redundant, and made the USBtinyISP agonizingly slow, even with the tiny memory of these parts.
+* Add in ASCII art pinout to pins_arduino.c for TinyX8_MH pin mapping (#434 - thanks @AingeruJM!)
 
 1.4.0
 * Add support for MH-Tiny T88 pin mapping.
