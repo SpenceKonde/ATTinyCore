@@ -1,5 +1,7 @@
-### This document lists significant changes and bugfixes, including those not in yet in a release.
-1.4.1
+# This document lists significant changes and bugfixes, including those not in yet in a release.
+Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
+
+### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
 * Correct issue with included bootloaders for MH ET tiny88 micronucleus boards actually not working... re-bootload with ISP programmer to fix with the new bootloaders. (#439)
 * Add full suite of entry mode bootloaders for tiny88 micronucleus.
@@ -9,7 +11,7 @@
 * Change "USB tinyISP" to "USB tinyISP FAST", and increase bit clock significantly. Previously we had the normal version at 200kHz and the SLOW at 125kHz, which was redundant, and made the USBtinyISP agonizingly slow, even with the tiny memory of these parts.
 * Add in ASCII art pinout to pins_arduino.c for TinyX8_MH pin mapping (#434 - thanks @AingeruJM!)
 
-1.4.0
+### 1.4.0
 * Add support for MH-Tiny T88 pin mapping.
 * Add support for MH-Tiny T88 boards, because I just got a bunch and it didn't look too hard.
 * Add support for the DigiSpark Pro pin mapping for the ATtiny87/167 with other bootloader options.
@@ -39,7 +41,7 @@
 * Add pulseInLong()
 * (untested) Don't generate .lst unless told to 'export compiled binary' (#379 - though note that that issue also appears to involve a problem with their compiler, or maybe just an extremely perverse username that's breaking things)
 
-1.3.3
+### 1.3.3
 * Add support for external CLOCK on 48/88/828. Document how to use external clock on other parts via manual AVRdude step (#355).
 * Fix bug with using 32K ULP as clock source on 828.
 * A bit of boards.txt cleanup.

@@ -11,29 +11,31 @@ On Windows, Micronucleus requires drivers to be installed; this can be done by r
 ### Uploading to a Micronucleus board
 When you upload to a Micronucleus board, you will be prompted to "Please plug in the device" (there is a 60-second timeout on this). At this point, the board must be reset and/or plugged in. Depending on the bootloader version it is running, only certain types of reset will enter the bootloader (see below); almost all will enter the bootloader on a power-on reset when it detects that it is connected to a USB port (as opposed to just power). About a second after this reset, the computer will recognize the device, and the upload will commence. By scrolling up in the console output, you can also see the maximum sketch size that the bootloader reported was available. Often, this is not the same as what the ATTinyCore part-specific documentation specifies or what the compiler tests against. This is expected because have a different version of the bootloader; as Micronucleus development has progressed, improvements have been made to reduce the size of the bootloader. The bootloader entry mode also has an impact on flash usage. Additionally, "aggressive" versions of the bootloader have been made - these use optimizations to reduce the size of the bootloader which come at the cost of it doing a worse job at USB, which may cause it to malunction on specific chips, or with specific USB hosts (currently we do not supply such firmware with this core). While, as supplied, most of these boards come with recent versions of Micronucleus with (nearly) the same amount of usable space as the ones included with this package *many ATtiny85 based boards in the wild have a primitive version* that leaves only around 6k free for your sketch! Fortunately, upgrading is easy, even if reset has been disabled.
 
-In a future release, when multiple bootloader versions are supplied, if they have different amounts of app space available, ATTinyCore will test against the largest available, and Micronucleus will stop you from uploading the too-big sketch.
+Currently, where multiple versions of the bootloader are included with different amounts of free space, the currently selected one is used (and if the bootloader actually on the board has less, Micronucleus will stop you); I may revisit this decision in a future version
 
 ### Entering the Bootloader
-The Micronucleus bootloader supports five options for bootloader entry (the reset conditions under which the bootloader is entered)
-* Always - Anything that resets the board will enter the bootloader.
-* Power-on - Only enter bootloader immediately on power-on.
-* Watchdog - Only a watchdog reset will enter the bootloader *
-* External Reset - Only a reset from the Reset pin will enter the bootloader **
-* Jumper - Only enter the bootloader when a specific pin is connected ("jumpered") to ground.
+The Micronucleus bootloader supports a number of methods for entering the bootloader, and several were added during the course of adding support for it to ATTinyCore; the best choice will depend on your development methodology, end use, and personal preferences (many people seem to favor running only on power on so they can disable reset - I'm happy to sacrifice that pin for the convenience of pressing a reset button instead of having to plug and unplug something, especially considering how dismally far from the USBIF's design . On parts which have had the bootloaders updated, the following are supported:
+* Always (any sort of reset will run the bootloader)
+* External reset (or power on with reset tied to Vcc if-and-only-if reset disabled)
+* External reset (as above) or WDT reset
+* Power On
+* Power On or WDT reset
+* Any except WDT reset
+* Always w/unsafe optimizations (only on parts where this gets an extra page)
 
-*The Watchdog entry method allows the application to enter the bootloader; however it is extremely dangerous, as it relies on there never being an application that doesn't do this under the right conditions! (ie, uploading blink will brick the board)
-**The External Reset option, if installed onto a board where reset is disabled, will brick the board!
+All are built with fast exit if no USB, `START_WITHOUT_PULLUP` and `ENABLE_SAFE_OPTIMIZATIONS`, and all that depend on reset cause will clear MCUSR after reading it and copying it's contents to the `GPIOR0` register so that user code can access it, while the bootloader can clear the flags so that they do notconfused by them after the next reset.
 
-Currently, each supported board has only a single entry option available. In a future version of ATTinyCore, more options for the entry mode will be provided, with a submenu to select the desired entry mode. Due to the concerns mentioned above, regarding external and watchdog resets, the tentative plan is to include a backup condition, even if it comes at the expense of a 64-byte page of flash memory.
+The Micronucleus codebase also supports more tightly constrained options, including jumpered power-on only, reset only (don't "upgrade" a board with reset disabled to that...), watchdog only (if the sketch doesn't do what you expect with the watchdog, it'll require ISP reinstall  to fix, or if reset disabled, brick the part).
+In 1.4.0, each supported board had only a single entry option available. In a future version of ATTinyCore, more options for the entry mode will be provided.
 
 The included firmware uses the following settings.
-For the ATtiny85 (Digispark), ATtiny167 (Digispark Pro), and ATtiny88 (MH_Tiny) parts, the most widely "recommended" configuration is used - the bootloader is entered only upon power on reset.
+For the ATtiny85 (Digispark), ATtiny167 (Digispark Pro), ~and ATtiny88 (MH_Tiny)~ parts, the most widely "recommended" configuration is used - the bootloader is entered only upon power on reset.
 
 For the ATtiny84, the bootloader is always entered.
 
 For the ATtiny841, the bootloader is only entered upon external reset.
 
-The entry behavior of the included versions of Micronucleus does not always match the version that the boards ship with.
+The entry behavior of the included versions of Micronucleus does not always match the version that the boards ship with - it looks like most of the boards ship with the "always" entry mode.
 
 ### Clock Speed
 Micronucleus is built with a specific clock speed in mind; only a few are supported by the codebase, and generally the fastest that is an option is used: 12 MHz, 12.8 MHz, 15 MHz, 16 MHz, 16.5 MHz or 20 MHz. The 12.8 and 16.5 configurations are only used with the internal oscillator - and this extra speed gives the bootloader some room to correct for the lower clock accuracy. 16.5 is only possible on parts that can be clocked from an on-chip PLL (the ATtiny85 and ATtiny861 - though the internal oscillator on some (not all) ATtiny841 can reach those speeds as well - note that this is higher than the maximum spec for the chip, not just the internal oscillator!), and is within spec above 4.5v for those parts, while 12.8 MHz can be reached by the internal oscillator on other parts (although it is far outside spec for that). Where the internal oscillator is used, it is "tuned" to the needed frequency based on the USB clock.
