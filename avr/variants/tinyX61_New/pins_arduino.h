@@ -34,19 +34,19 @@
 
 #define NUM_DIGITAL_PINS            16
 #define NUM_ANALOG_INPUTS           11
-#define analogInputToDigitalPin(p)  ((p < 3) ? (p): (((p) >= 3 && (p) <= 6) ? ((p) + 7) : (((p) >= 7 && (p) <= 9) ? (12 - (p)) : -1)))
+#define analogInputToDigitalPin(p)  ((p < 3) ? (p): (((p)<7)?((p)+1):((p)<11)?((p)+5):NOT_A_PIN))
 
-#define digitalPinHasPWM(p)          ((p) == 4 || (p) == 6 || (p) == 8)
+#define digitalPinHasPWM(p)          ((p) == 9 || (p) == 11 || (p) == 13)
 
 #define ADC_TEMPERATURE 63
 
 //This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
 
 
-#define SS   6
-#define MOSI 8
-#define MISO 9
-#define SCK  7
+#define MOSI 9
+#define MISO 8
+#define SCK  10
+#define SS   11
 
 #define USI_DDR_PORT DDRB
 #define USI_SCK_PORT DDRB
@@ -69,8 +69,8 @@
 #  define USI_START_COND_INT USISIF
 #endif
 
-static const uint8_t SDA = 9;
-static const uint8_t SCL = 7;
+static const uint8_t SDA = 8;
+static const uint8_t SCL = 10;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = 0x80 | 0;
@@ -86,41 +86,25 @@ static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
 
 
-#define PIN_PA0  (0)
+#define PIN_PA0  ( 0)
 #define PIN_PA1  ( 1)
 #define PIN_PA2  ( 2)
-#define PIN_PA3  ( 14)
-#define PIN_PA4  ( 10)
-#define PIN_PA5  ( 11)
-#define PIN_PA6  ( 12)
-#define PIN_PA7  ( 13)
-#define PIN_PB0  ( 9)
-#define PIN_PB1  ( 8)
-#define PIN_PB2  ( 7)
-#define PIN_PB3  (6)
-#define PIN_PB4  ( 5)
-#define PIN_PB5  ( 4)
-#define PIN_PB6  ( 3)
+#define PIN_PA3  ( 3)
+#define PIN_PA4  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 8)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 10)
+#define PIN_PB3  ( 11)
+#define PIN_PB4  ( 12)
+#define PIN_PB5  ( 13)
+#define PIN_PB6  ( 14)
 #define PIN_PB7  ( 15) /* RESET */
 
-//Legacy
-#define PIN_A0  (0)
-#define PIN_A1  ( 1)
-#define PIN_A2  ( 2)
-#define PIN_A3  ( 14)
-#define PIN_A4  ( 10)
-#define PIN_A5  ( 11)
-#define PIN_A6  ( 12)
-#define PIN_A7  ( 13)
-#define PIN_B0  ( 9)
-#define PIN_B1  ( 8)
-#define PIN_B2  ( 7)
-#define PIN_B3  (6)
-#define PIN_B4  ( 5)
-#define PIN_B5  ( 4)
-#define PIN_B6  ( 3)
-#define PIN_B7  ( 15) /* RESET */
-#define LED_BUILTIN (6)
+
+#define LED_BUILTIN (PIN_PB6)
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -173,12 +157,12 @@ static const uint8_t A10 = 0x80 | 10;
 
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) >= 6 && (p) <= 9) ? 4 : 5)
-#define digitalPinToPCMSK(p)    ((((p) >= 0 && (p) <= 2) || ((p) >= 10 && (p) <= 14)) ? (&PCMSK0) : ((((p) >= 3 && (p) <= 9) || ((p) == 15)) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) >= 0 && (p) <= 2) ? (p) :(((p) >= 10 && (p) <= 13) ? ((p) - 6) : (((p) == 14) ? (3) : (((p) >= 3 && (p) <= 9) ? (9 - (p)) : (7)))))
+#define digitalPinToPCICRbit(p) (((p) >= 8 )? 5 : 4)
+#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 16) ? ((p<8)?(&PCMSK0) : (&PCMSK0)) : ((uint8_t *)NULL))
+#define digitalPinToPCMSKbit(p) (1<<((p)&0x07))
 
 
-#define digitalPinToInterrupt(p)  ((p) == 3 ? 0 : ((p)==2?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)  ((p) == 14 ? 0 : ((p)==2?1: NOT_AN_INTERRUPT))
 
 #ifdef ARDUINO_MAIN
 
@@ -189,16 +173,16 @@ static const uint8_t A10 = 0x80 | 10;
 // ATMEL ATTINY861
 //
 //                   +-\/-+
-//      (D  9) PB0  1|    |20  PA0 (D  0)
-//     *(D  8) PB1  2|    |19  PA1 (D  1)
-//      (D  7) PB2  3|    |18  PA2 (D  2) INT1
-//     *(D  6) PB3  4|    |17  PA3 (D 14)
+//      (D  8) PB0  1|    |20  PA0 (D  0)
+//     *(D  9) PB1  2|    |19  PA1 (D  1)
+//      (D 10) PB2  3|    |18  PA2 (D  2) INT1
+//     *(D 11) PB3  4|    |17  PA3 (D  3)
 //             VCC  5|    |16  AGND
 //             GND  6|    |15  AVCC
-//      (D  5) PB4  7|    |14  PA4 (D 10)
-//     *(D  4) PB5  8|    |13  PA5 (D 11)
-// INT0 (D  3) PB6  9|    |12  PA6 (D 12)
-//      (D 15) PB7 10|    |11  PA7 (D 13)
+//      (D 12) PB4  7|    |14  PA4 (D  4)
+//     *(D 13) PB5  8|    |13  PA5 (D  5)
+// INT0 (D 14) PB6  9|    |12  PA6 (D  6)
+//      (D 15) PB7 10|    |11  PA7 (D  7)
 //                   +----+
 //
 
@@ -231,18 +215,18 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PA, /* 0 */
   PA,
   PA,
-  PB, /* 3 */
-  PB,
-  PB,
-  PB,
-  PB,
-  PB,
-  PB,
-  PA, /* 10 */
   PA,
   PA,
   PA,
   PA,
+  PA,
+  PB, /* 8 */
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
   PB, /* 15 */
 };
 
@@ -251,18 +235,18 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(0), /* 0 */
   _BV(1),
   _BV(2),
-  _BV(6), /* 3 */
-  _BV(5),
-  _BV(4),
   _BV(3),
-  _BV(2),
-  _BV(1),
-  _BV(0),
-  _BV(4), /* 10 */
+  _BV(4),
   _BV(5),
   _BV(6),
   _BV(7),
+  _BV(0), /* 8 */
+  _BV(1),
+  _BV(2),
   _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
   _BV(7), /* 15 */
 };
 
@@ -272,16 +256,16 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER1D,
   NOT_ON_TIMER,
-  TIMER1B,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER1A,
   NOT_ON_TIMER,
+  TIMER1B,
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIMER1D,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
 };
@@ -289,16 +273,3 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 #endif
 
 #endif
-
-
-
-
-//Old code, just here for temporary backup until I decide it is not needed.
-//WARNING, if using software, RX must be on a pin which has a Pin change interrupt <= 7 (e.g. PCINT6, or PCINT1, but not PCINT8)
-/*#define USE_SOFTWARE_SERIAL           1
-//These are set to match Optiboot pins.
-
-#define SOFTWARE_SERIAL_PORT            PORTB
-#define SOFTWARE_SERIAL_TX              0
-#define SOFTWARE_SERIAL_PIN             PINB
-#define SOFTWARE_SERIAL_RX              1*/

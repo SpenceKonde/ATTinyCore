@@ -1,6 +1,10 @@
 # This document lists significant changes and bugfixes, including those not in yet in a release.
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
 
+### planned 1.4.2
+* Add new rationalized pinout for x61
+* Correct bug with pin definitions for I2C pins on the ATtiny x61 series.
+
 ### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
 * Correct issue with included bootloaders for MH ET tiny88 micronucleus boards actually not working... re-bootload with ISP programmer to fix with the new bootloaders. (#439)
