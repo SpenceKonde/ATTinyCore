@@ -11,11 +11,11 @@ Note that the above includes spelling/grammar check - I write these in code edit
 ## Library Listing
 There are open issues on ATTinyCore and megaTinyCore for information on which libraries are and are not compatible. Thus far, I have not gotten any feedback on this, which is disappointing. It would be, I think, a great help to users if there were a list of which libraries do and do not work with these cores (and, for cases where they do not work - any information on alternatives to those libraries). For libraries that are particular priorities, I can intervene to try to add support or get support added (I recently did that with OneWire for the megaTinyCore parts (as well as non-4809 megaAVR 0-series and new Dx-series). Similarly, if you're a library designer wondering how to make their libraries work with any of my cores, I am more than happy to assist!
 
-## Spread the word 
+## Spread the word
 They say that "big news travels fast" - tinyNews needs all the help it can get. Tell your maker friends about ATTinyCore, megaTinyCore, and DxCore. There are a lot of tutorials and guides out there that point people to other cores, cores which are now minimally maintained, if they are maintained at all - so there's plenty of word-spreading to be done. The more people using ATTinyCore, the more people will be finding, reporting and/or fixing bugs, and the faster ATTinyCore will get better - so everyone wins here.
 
 ## Last but by no means least - give me money!
 I will be launching a Patreon in the near future. Additionally, you can support me buy buying things from my Tindie store. Everyone needs prototyping board - and even if **you** don't, they make a great gift for your loved ones! And for your unloved ones, for that matter...
 
 ## Rewards?
-While I can't promise anything beyond ecognition for pull requests or other contributions - if you submit a particularly large or impactful contribution. that's a good way to get some free stuff from my Tindie store ;-) Which, naturally, is focused on thing relating to the parts my cores supports, so it should be of particular use to you. 
+While I can't promise anything beyond ecognition for pull requests or other contributions - if you submit a particularly large or impactful contribution. that's a good way to get some free stuff from my Tindie store ;-) Which, naturally, is focused on thing relating to the parts my cores supports, so it should be of particular use to you.
