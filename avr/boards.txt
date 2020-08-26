@@ -1801,7 +1801,7 @@ attinyx41micr.menu.burnmode.upgrade=Upgrade (via USB)
 attinyx41micr.menu.burnmode.upgrade.bootloader.file=micronucleus/upgrade-Nanite841.hex
 attinyx41micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
 attinyx41micr.menu.burnmode.install=Fresh Install (via ISP)
-attinyx41micr.menu.burnmode.install.bootloader.file=micronucleus/Nanite841.hex.hex
+attinyx41micr.menu.burnmode.install.bootloader.file=micronucleus/Nanite841.hex
 attinyx41micr.menu.burnmode.install.bootloader.tool=avrdude
 attinyx41micr.build.extra_flags={build.millis} {build.neopixelport} {build.pinmap} {build.wiremode} {build.usb} {build.speedfix}
 
