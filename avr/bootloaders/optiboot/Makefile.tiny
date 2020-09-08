@@ -351,9 +351,9 @@ ifndef PRODUCTION
 endif
 attiny841at1_intser1:
 	$(MAKE) attiny841	 AVR_FREQ=1000000L BAUD_RATE=4800 LOWERCAL=4 UART=1
-	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_1025000L_ser1_int.hex
+	mv $(PROGRAM)_attiny841.hex $(PROGRAM)_attiny841_1000000L_ser1_int.hex
 ifndef PRODUCTION
-	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_1025000L_ser1_int.lst
+	mv $(PROGRAM)_attiny841.lst $(PROGRAM)_attiny841_1000000L_ser1_int.lst
 endif
 
 #-----------------------
@@ -474,6 +474,19 @@ ifndef PRODUCTION
 	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_8000000L_int.lst
 endif
 
+attiny441at1:
+	$(MAKE) attiny441	 AVR_FREQ=1000000L BAUD_RATE=4800
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_1000000L.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_1000000L.lst
+endif
+
+attiny441at1_int:
+	$(MAKE) attiny441	 AVR_FREQ=1000000L BAUD_RATE=4800 LOWERCAL=4
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_1000000L_int.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_1000000L_int.lst
+endif
 
 
 #-----------------------
@@ -548,6 +561,22 @@ attiny441at8_intser1:
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_8000000L_ser1_int.lst
 endif
+
+
+attiny441at1ser1:
+	$(MAKE) attiny441	 AVR_FREQ=1000000L BAUD_RATE=4800
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_1000000L_ser1.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_1000000L_ser1.lst
+endif
+
+attiny441at1_intser1:
+	$(MAKE) attiny441	 AVR_FREQ=1000000L BAUD_RATE=4800 LOWERCAL=4
+	mv $(PROGRAM)_attiny441.hex $(PROGRAM)_attiny441_1000000L_ser1_int.hex
+ifndef PRODUCTION
+	mv $(PROGRAM)_attiny441.lst $(PROGRAM)_attiny441_1000000L_ser1_int.lst
+endif
+
 
 
 #-----------------------
@@ -638,7 +667,7 @@ ifndef PRODUCTION
 endif
 
 attiny828at1_int:
-	$(MAKE) attiny828 AVR_FREQ=1025000L BAUD_RATE=4800 LOWERCAL=5
+	$(MAKE) attiny828 AVR_FREQ=1000000L BAUD_RATE=4800 LOWERCAL=5
 	mv $(PROGRAM)_attiny828.hex $(PROGRAM)_attiny828_1000000L_int.hex
 ifndef PRODUCTION
 	mv $(PROGRAM)_attiny828.lst $(PROGRAM)_attiny828_1000000L_int.lst

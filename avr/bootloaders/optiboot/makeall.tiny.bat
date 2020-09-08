@@ -47,6 +47,8 @@ call omake attiny441at16ser1
 call omake attiny441at12ser1
 call omake attiny441at8ser1
 call omake attiny441at1ser1
+call omake attiny441at8_intser1
+call omake attiny441at1_intser1
 
 call omake attiny87at184
 call omake attiny87at147
@@ -90,7 +92,9 @@ call omake attiny1634at20ser1
 call omake attiny1634at16ser1
 call omake attiny1634at12ser1
 call omake attiny1634at8ser1
-call omake attiny1634at8ser1
+call omake attiny1634at8_intser1
+call omake attiny1634at1ser1
+call omake attiny1634at1_intser1
 
 
 call omake attiny828at8
