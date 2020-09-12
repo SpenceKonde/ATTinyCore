@@ -27,27 +27,18 @@
 
 #include <avr/io.h>
 #ifndef TWDR
+#include <util/delay_basic.h>
 
-#if __GNUC__
-#ifndef F_CPU
-#define F_CPU 4000000
-#endif
-#include <util/delay.h>
-#endif
 //********** Defines **********//
-// Defines controlling timing limits
-#define TWI_FAST_MODE
-
-#define SYS_CLK 4000.0 // [kHz]
-
-#ifdef TWI_FAST_MODE                            // TWI FAST mode timing limits. SCL = 100-400kHz
-#define T2_TWI ((SYS_CLK * 1300) / 1000000) + 1 // >1,3us
-#define T4_TWI ((SYS_CLK * 600) / 1000000) + 1  // >0,6us
-
-#else                                           // TWI STANDARD mode timing limits. SCL <= 100kHz
-#define T2_TWI ((SYS_CLK * 4700) / 1000000) + 1 // >4,7us
-#define T4_TWI ((SYS_CLK * 4000) / 1000000) + 1 // >4,0us
-#endif
+// Generalized way of getting a correct delay that is acceptable by standard or fast mode I2C
+// round up to nearest 1mhz if not even multiple of 1 MHz and divide by 1000000 to get clock/us rounded up (safe)
+// these are the number of passes through _delay_loop1()
+#define CLKBASE ((F_CPU+999999)/1000000)
+#define T2_TWI (5*CLKBASE) //5us
+#define T4_TWI (4*CLKBASE) //4us
+// these all err in the direction of being too slow, which is fine
+#define T2_TWI_FM (2*CLKBASE-(CLKBASE>>1)) //1.5us
+#define T4_TWI_FM (CLKBASE-(CLKBASE>>2)) //0.75us
 
 // Defines controlling code generating
 //#define PARAM_VERIFICATION
@@ -81,22 +72,15 @@
 #define TRUE 1
 #define FALSE 0
 
-#if __GNUC__
-#define DELAY_T2TWI (_delay_us(T2_TWI / 4))
-#define DELAY_T4TWI (_delay_us(T4_TWI / 4))
-#else
-#define DELAY_T2TWI (__delay_cycles(T2_TWI))
-#define DELAY_T4TWI (__delay_cycles(T4_TWI))
-#endif
+#define DELAY_T2TWI_FM (_delay_loop_1(T2_TWI_FM))
+#define DELAY_T4TWI_FM (_delay_loop_1(T4_TWI_FM))
+#define DELAY_T2TWI (_delay_loop_1(T2_TWI))
+#define DELAY_T4TWI (_delay_loop_1(T4_TWI))
 //********** Prototypes **********//
 
 void USI_TWI_Master_Initialise(void);
-#ifndef __GNUC__
-__x // AVR compiler
-#endif
-    unsigned char
-    USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *, unsigned char, unsigned char);
+void USI_TWI_Master_Speed(uint8_t);
+unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *, unsigned char, unsigned char);
 unsigned char USI_TWI_Start_Transceiver_With_Data(unsigned char *, unsigned char);
-
 unsigned char USI_TWI_Get_State_Info(void);
 #endif

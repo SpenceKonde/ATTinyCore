@@ -36,7 +36,7 @@ const uint8_t WIRE_BUFFER_LENGTH = TWI_BUFFER_SIZE - 1; //reserve slave addr
 uint8_t *TwoWire::Buffer = TWI_Buffer;
 uint8_t TwoWire::BufferIndex = 0;
 uint8_t TwoWire::BufferLength = 0;
-
+uint8_t TwoWire::fastmode = 0;
 uint8_t TwoWire::transmitting = 0;
 
 // Constructors ////////////////////////////////////////////////////////////////
@@ -49,7 +49,6 @@ TwoWire::TwoWire() {
 void TwoWire::begin(void) {
   BufferIndex = 0;
   BufferLength = 0;
-
   transmitting = 0;
 
   USI_TWI_Master_Initialise();
@@ -76,8 +75,7 @@ void TwoWire::end(void) {
 }
 
 void TwoWire::setClock(uint32_t clock) {
-  // XXX: to be implemented.
-  (void)clock; //disable warning
+  USI_TWI_Master_Speed(clock>200000);
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity,
