@@ -84,6 +84,13 @@ stk500.program.protocol=stk500
 stk500.program.tool=avrdude
 stk500.program.extra_params=-P{serial.port}
 
+atmel_ice.name=Atmel-ICE (ATTinyCore)
+atmel_ice.communication=usb
+atmel_ice.protocol=atmelice_isp
+atmel_ice.program.protocol=atmelice_isp
+atmel_ice.program.tool=avrdude
+atmel_ice.program.extra_params=-Pusb
+
 micronucleusprog.name=Micronucleus
 micronucleusprog.communication=usb
 micronucleusprog.protocol=micronucleus
