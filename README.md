@@ -264,7 +264,7 @@ Note that when using the internal oscillator or pll clock, you may need to tune 
 
 The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v, or with a Micronucleus bootloader) use an external crystal** until a tuning solution is available.
 
-A tuning sketch is planned for a future version of this core. Progress on this has been made - slowly and fitfully. The current plan is for Optiboot bootloader to be optionally burnable with a "tuning" sketch - this will write the calibration value to the space between the end of the bootloader and the end of flash, and the bootloader will load this value if it is set.  (#139) Micronucleus using internal oscillator already does this using the USB clock as a timebase, and loads it before the sketch
+A tuning sketch is planned for a future version of this core. Progress on this has been made - slowly and fitfully. The current plan is for Optiboot bootloader to be optionally burnable with a "tuning" sketch - this will write the calibration value to the space between the end of the bootloader and the end of flash, and the bootloader will load this value if it is set.  ( #139 ) Micronucleus using internal oscillator already does this using the USB clock as a timebase, and loads it before the sketch
 
 ### ADC Support
 
