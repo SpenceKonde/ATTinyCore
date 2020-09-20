@@ -4,7 +4,7 @@ Now with Micronucleus (USB) support!
 ============
 [![Join the chat at https://gitter.im/SpenceKonde/ATTinyCore](https://badges.gitter.im/SpenceKonde/ATTinyCore.svg)](https://gitter.im/SpenceKonde/ATTinyCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-### Current recommended IDE version: 1.8.13
+### Current **strongly** recommended IDE version: 1.8.13
 
 ### [Installation](Installation.md)
 ### [Wiring and required external components](Wiring.md)
@@ -30,7 +30,7 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 
 The tinyAVR 0-series and 1-series ATtiny parts (x12/x14/x16/x17/x02/x04/x06/x07) are be supported by https://github.com/SpenceKonde/megaTinyCore - they are sufficiently different from the classic AVR ATtiny parts that they need a separate core.
 
-## Quick Gotcha list:
+## Quick Gotcha list - having trouble, read these!
 
 **Windows users must download and install Micronucleus drivers manually**
 If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to obvious security considerations. The drivers are downloaded by the install process and buried in your Arduino15 folder, or they can be downloaded from the following URL. Unzip, run the installer.
@@ -40,13 +40,15 @@ https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.
 
 **problems dynamically linking libusb-0.1 on linux** can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
 
-**There is a bug in the IDE that causes compilation errors with some combinations of boards and submenu options** on 1.8.5 and earlier on Windows. The symptom of this is an error ending in something like C:\Users\yourusername\AppData\Local\Temp\arduino_build_131884/..\arduino_cache_186227\core\core_ATTinyCore_avr_attinyx4_LTO_enable,chip_84,clock_8internal,eesave_aenable,bod_disable,pinmapping_anew,millis_enabled,neopixelport_porta_1bc5d2d7fe299bbd4d4a668366e76c74.a: No such file or directory - this is caused by the way it includes all options in the name of the file; where there are many menu options, this will exceed the maximum file name length under windows. This issue impacts many parts on ATTinyCore 1.3.0 and later, and the 841/441 on ATTinyCore 1.2.2 and later. To fix this issue without downgrading ATTinyCore, update to 1.8.6 or later of the IDE - 1.8.9 or later is recommended (it is also the most recent version of the IDE which supports Windows XP)
+**There is a bug in the IDE that causes compilation errors with some combinations of boards and submenu options** on 1.8.5 and earlier on Windows. The symptom of this is an error ending in something like C:\Users\yourusername\AppData\Local\Temp\arduino_build_131884/..\arduino_cache_186227\core\core_ATTinyCore_avr_attinyx4_LTO_enable,chip_84,clock_8internal,eesave_aenable,bod_disable,pinmapping_anew,millis_enabled,neopixelport_porta_1bc5d2d7fe299bbd4d4a668366e76c74.a: No such file or directory - this is caused by the way it includes all options in the name of the file; where there are many menu options, this will exceed the maximum file name length under windows. This issue impacts many parts on ATTinyCore 1.3.0 and later, and the 841/441 on ATTinyCore 1.2.2 and later. To fix this issue without downgrading ATTinyCore, update to 1.8.6 or later of the IDE - 1.8.13 is STRONGLY recommended
 
 **Windows store version sometimes experiences strange issues**. The windows store issues are difficult to reproduce on other systems, and no reliable solutions to them are currently known. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version.
 
-**When uploading sketches via ISP using the Arduino IDE, you must select a programmer marked ATTinyCore from the programmers menu (or any other programmer added by an installed third party core) in order to upload properly to most supported chips - this is due to a limitation in the IDE. This limitation has been sidestepped in Arduino 1.8.13, so that version is recommended**
+**On IDEs prior to 1.8.13, you need to select the correct version of the programmer. In 1.8.13 only these programmers are shown. As of 1.4.2, the (ATTinyCore) note is removed, as 1.8.13 has had excellent uptake (because it lacks new bugs and greatly improves UX)**
 
 **When using a chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
+
+**Problems programming some parts for first time, especially ATtiny841/441** These parts are less forgiving of the SCK clock rate. I'm not sure why USBAsp doesn't seem to be working anymore (it used to, and I haven't changed anything), looking into options there. Arduino as ISP or USBTinyISP SLOW will program without issue.
 
 **Chips sold as "ATtiny85" with wrong signature** - enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
 
@@ -56,7 +58,7 @@ https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.
 
 **When using I2C on anything other than the ATtiny48/88** you **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). 4.7k or 10k is a good default value. On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. **That said, for maximum reliability, you should always use external pullups, even on the t48/88**, as the internal pullups are not as strong as the specification requires.
 
-**You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_Pxn (ex, PIN_PB2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used.
+**You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_Pxn (ex, PIN_PB2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used. We recommend this method of referring to pins, especially on parts with multiple pinmapping options 
 
 **All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.**
 
@@ -104,9 +106,10 @@ Internal:
 * 8 MHz
 * 1 MHz
 * 16 MHz (PLL clock, x5, x61 only)
-* 16 MHz (aggressively configured 441/841, with caveats)
+* 16 MHz ‡ (aggressively configured 441/841 only)
 * 4 MHz*** (except on x313, starts up at 1MHz and immediately switches to 4MHz before setup() is run)
-* 16.5MHz**** (PLL clock, tweaked, x5, x61 - for digiSpark-like boards)
+* 16.5MHz † (PLL clock, tweaked, x5, x61 Micronucleus only, for USB support)
+* 12.8MHz † ‡ (Internal, tweaked hardcore, Micronucleus only, for USB support)
 * 0.5 MHz** (x313 only)
 * 512 kHz** (ULP - x41 only)
 * 256 kHz** (ULP - x41 only)
@@ -130,18 +133,22 @@ External crystal (all except 828, 43 and x8-family):
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 
-Options marked with a * are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies. These are not available for chips without a UART in versions of ATTinyCore older than 1.1.5.
+`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies. These are not available for chips without a UART in versions of ATTinyCore older than 1.1.5.
 
-** **Warning** Options marked with ** are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
+`**` These options are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
 
-*** The 4MHz internal option is useful if you are running near the minimum voltage - the lowest voltage for most of these parts is 1.8v, and at that voltage, they are only rated for 4MHz maximum.
+`***` The 4MHz internal option is useful if you are running near the minimum voltage - the lowest voltage for most of these parts is 1.8v, and at that voltage, they are only rated for 4MHz maximum. This starts up at 1 MHz and then switches to 4 MHz. Hence, bootloader performance is very slow, as it doesn't (yet) do this itself.
 
-**Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~ 110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate. millis() is not effected, only micros() and delay().
+`†` These speeds support USB when used with the internal clock. Available on Micronucleus boards only.
 
-This differs from the behavior of official Arduino core - the "stock" micros() executes equally fast at all clock speeds, but simply returns wrong values for "weird" clock speeds.
+`‡` Aggressively tuned internal oscillators have to be slowed down when writing to EEPROM, and then sped back up. We attempt to correct millis timekeeping for this, but you may still see timing glitches. Please report any hangs or other bad behavior you observe with these, as this is a very new feature, and more aggressive measures to prevent CPU glitches may be required.
+
+**Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~ 110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate, and reflect the time when it was called. millis() is not effected, only micros() and delay().
+
+This differs from the behavior of official Arduino core - the "stock" micros() executes equally fast at all clock speeds, but simply returns wrong values for "weird" clock speeds (64/(clock speed in microseconds, rounded down to integer), rounded down to integer. 12.8 MHz is a special case and is handled exactly. 
 
 #### Using external CLOCK on 48, 88, and 828 (new in 1.3.3)
-These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. Unlike the parts which support a crystal, where this "potentially dangerous" clock option is not available in the menus because there are menu options for the supported speeds with a crystal as a clock source, so the procedure below can be used. On the 48/88/828, these menu options will enable the external CLOCK option. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!**
+These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE only for parts which don't support an external crystal. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6~5.5v (ie, the entire operating range of these parts!). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%)
 
 #### Using external CLOCK (instead of crystal) on other parts
 The use of an external clock - that is, a single wire with an appropriate clock signal is supplied to the XTAL1 pin from an external source, is possible using this core. This is an advanced feature, and is not supported directly through the IDE (except as noted above) to reduce the risk of people confusing it with external crystal and bricking their chips (if external clock is set as clock source when actually using external crystal, you must supply a clock signal on XTAL1 to program the chip again, including to set it to use a crystal again). To use an external clock:
