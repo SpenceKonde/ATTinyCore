@@ -100,7 +100,7 @@ Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCor
 After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
 
 #### Supported clock speeds:
-Supported clock speeds are shown in the menus in descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom
+Supported clock speeds are shown in the menus in descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds. 
 
 Internal:
 * 8 MHz
@@ -108,26 +108,26 @@ Internal:
 * 16 MHz (PLL clock, x5, x61 only)
 * 16 MHz ‡ (aggressively configured 441/841 only)
 * 4 MHz*** (except on x313, starts up at 1MHz and immediately switches to 4MHz before setup() is run)
-* 16.5MHz † (PLL clock, tweaked, x5, x61 Micronucleus only, for USB support)
+* 16.5MHz † ! (PLL clock, tweaked, x5, x61 Micronucleus only, for USB support)
 * 12.8MHz † ‡ (Internal, tweaked hardcore, Micronucleus only, for USB support)
-* 0.5 MHz** (x313 only)
-* 512 kHz** (ULP - x41 only)
-* 256 kHz** (ULP - x41 only)
-* 128 kHz** (watchdog or ULP, all except 1643, 828)
-* 64 kHz** (ULP - x41 only)
-* 32 kHz** (ULP - 1634, 828, x41 only)
+* 0.5 MHz** ‼ (x313 only)
+* 512 kHz** ‼ (ULP - x41 only)
+* 256 kHz** ‼ (ULP - x41 only)
+* 128 kHz** ‼ (watchdog or ULP, all except 1643, 828)
+* 64 kHz** ‼ (ULP - x41 only)
+* 32 kHz** ‼ (ULP - 1634, 828, x41 only)
 
 External crystal (all except 828, 43 and x8-family):
-* 20 MHz
-* 18.432 MHz*
+* 20 MHz !
+* 18.432 MHz* ! 
 * 16 MHz
-* 14.7456 MHz*
-* 12 MHz
-* 11.0592 MHz*
-* 9.216 MHz*
+* 14.7456 MHz* !
+* 12 MHz !
+* 11.0592 MHz* !
+* 9.216 MHz* !
 * 8 MHz
-* 7.3728 MHz*
-* 6 MHz
+* 7.3728 MHz* !
+* 6 MHz !
 * 4 MHz
 
 
@@ -143,12 +143,16 @@ All available clock options for the selected processor will be shown in the Tool
 
 `‡` Aggressively tuned internal oscillators have to be slowed down when writing to EEPROM, and then sped back up. We attempt to correct millis timekeeping for this, but you may still see timing glitches. Please report any hangs or other bad behavior you observe with these, as this is a very new feature, and more aggressive measures to prevent CPU glitches may be required.
 
+`!` Micros takes longer to return on these clocks (64/clock cycles per microsecond is not an integer).
+
+`‼` micros() and delayMicroseconds will not work correctly on these slow clocks.
+
 **Warning** When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is 4-5 times slower (~ 110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality - w/in 1% or so). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate, and reflect the time when it was called. millis() is not effected, only micros() and delay().
 
 This differs from the behavior of official Arduino core - the "stock" micros() executes equally fast at all clock speeds, but simply returns wrong values for "weird" clock speeds (64/(clock speed in microseconds, rounded down to integer), rounded down to integer. 12.8 MHz is a special case and is handled exactly. 
 
 #### Using external CLOCK on 48, 88, and 828 (new in 1.3.3)
-These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE only for parts which don't support an external crystal. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6~5.5v (ie, the entire operating range of these parts!). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%)
+These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE only for parts which don't support an external crystal. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6~5.5v (ie, the entire operating range of these parts!). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%, though some work from wider ranges). Through-hole units are available, but expensive, and all have the restrictive supply voltage requirements. If selecting your own oscillator, you want an "XO" type. 
 
 #### Using external CLOCK (instead of crystal) on other parts
 The use of an external clock - that is, a single wire with an appropriate clock signal is supplied to the XTAL1 pin from an external source, is possible using this core. This is an advanced feature, and is not supported directly through the IDE (except as noted above) to reduce the risk of people confusing it with external crystal and bricking their chips (if external clock is set as clock source when actually using external crystal, you must supply a clock signal on XTAL1 to program the chip again, including to set it to use a crystal again). To use an external clock:
@@ -167,11 +171,11 @@ The clock speed is made available via the F_CPU #define - you can test this usin
 
 In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values (as of 1.4.0, it is expanded to cover a few weird clocking situations: the low 4 bits identify the source, and high 4 bits identify special things regarding it:
 
-> 0 - Internal 8MHz oscillator (with or without prescaling to a speed lower than 8MHz)
+> 0 - Internal 8MHz oscillator, not prescaled, or prescaled to 1 MHz (ie, fully set by fuses)
 
 > 1 - External Crystal
 
-> 2 - External Clock (only available within the core on the 48, 88 and 828, as described above)
+> 2 - External Clock (only available within the core on the 48, 88 and 828, as described above - note that above steps to use external clock on other parts, this will still be 1, not 2; as far as the core knows, it's a crystal)
 
 > 3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
 
@@ -181,9 +185,11 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 > 6 - Internal PLL (x5 and x61 only)
 
-> 17 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
+> 15 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
 
-> 18 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
+> 17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
+
+> 18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
 
 
 
@@ -196,7 +202,7 @@ In version 1.2.2 and later, Sketch -> Export compiled binary will generate an as
 
 ### Link-time Optimization (LTO) support
 
-In version 1.1.2 and later, this core supports Link Time Optimization (lto). This can substantially reduce the compiled size of your sketch. Version 1.6.13 or later of the official AVR boards package (included with 1.6.11 and later of the IDE) is required for this functionality. Link time optimization can be enabled from the option in the tools menu.
+Link time optimization is enabled by default. If compiling with very old versions of the IDE, this must be disabled. Cases do exist where this setting can change behavior of a sketch; in all cases where this has been observed, a bug in the code was hidden by one setting or the other, and/or undefined behavior was invoked. This is a problem with your code, not the core.
 
 ### Makefile Support
 
@@ -256,9 +262,9 @@ This core is also fully compatible with the usual SoftwareSerial library if you 
 **Warning: Internal oscillator and Serial**
 Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. That said, for the ATtiny x4, x5, x8, and x61-family I have yet to encounter a chip that was not close enough for serial using the internal oscillator at 3.3-5v at room temperature - This is consistent with the Typical Characteristics section of the datasheet, which indicates that the oscillator is fairly stable w/respect to voltage, but highly dependent on temperature.
 
-The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v) use an external crystal.**
+The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v, or with a Micronucleus bootloader) use an external crystal** until a tuning solution is available.
 
-A tuning sketch is planned for a future version of this core. (#139)
+A tuning sketch is planned for a future version of this core. Progress on this has been made - slowly and fitfully. The current plan is for Optiboot bootloader to be optionally burnable with a "tuning" sketch - this will write the calibration value to the space between the end of the bootloader and the end of flash, and the bootloader will load this value if it is set.  (#139) Micronucleus using internal oscillator already does this using the USB clock as a timebase, and loads it before the sketch
 
 ### ADC Support
 
