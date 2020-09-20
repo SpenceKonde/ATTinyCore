@@ -6,7 +6,7 @@ avrisp.program.protocol=stk500v1
 avrisp.program.tool=avrdude
 avrisp.program.extra_params=-P{serial.port}
 
-diamexusbisp.name=Diamex USB ISP 
+diamexusbisp.name=Diamex USB ISP
 diamexusbisp.communication=serial
 diamexusbisp.protocol=stk500v2
 diamexusbisp.program.tool=avrdude

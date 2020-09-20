@@ -203,12 +203,7 @@ __interrupt void USI_Start_Condition_ISR(void)
  Handles all the communication. Is disabled only when waiting
  for new Start Condition.
 ----------------------------------------------------------*/
-#ifdef __GNUC__
 ISR(USI_OVERFLOW_VECTOR)
-#elif __ICCAVR__
-#pragma vector = USI_OVERFLOW_VECTOR
-__interrupt void USI_Counter_Overflow_ISR(void)
-#endif
 {
   unsigned char tmpRxHead;
   unsigned char tmpTxTail; // Temporary variables to store volatiles
@@ -247,6 +242,7 @@ __interrupt void USI_Counter_Overflow_ISR(void)
   // From here we just drop straight into USI_SLAVE_SEND_DATA if the master sent an ACK
 
   // Copy data from buffer to USIDR and set USI to shift byte. Next USI_SLAVE_REQUEST_REPLY_FROM_SEND_DATA
+  /* Falls through. */
   case USI_SLAVE_SEND_DATA:
 
     // Get data from Buffer
