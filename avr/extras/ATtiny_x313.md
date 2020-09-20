@@ -9,7 +9,7 @@ EEPROM | 128/256 bytes
 Bootloader | No
 GPIO Pins | 17
 ADC Channels | None
-PWM Channels | 3
+PWM Channels | 4
 Interfaces | UART, USI
 Clock options | Internal 0.5/1/4/8 MHz, external crystal or clock* up to 20 MHz
 
