@@ -4,6 +4,12 @@ Any changes listed at the top, without a version number above thenm, have not be
 ### planned 1.4.2
 * Add new rationalized pinout for x61
 * Correct bug with pin definitions for I2C pins on the ATtiny x61 series.
+* Correct SCL/SDA definitions for x61
+* Improve timing calculations for Wire on USI devices
+* Correct name of bootloader file for 841 Micronucleus
+* Add missing bootloader options for 841/441 parts
+* Correct documentation for x313 parts to correctly reflect number of available PWM pins
+* Add several missing programmers, improve programmers list
 
 ### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
