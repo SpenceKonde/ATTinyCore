@@ -832,7 +832,7 @@ void init(void)
       PLLCSR = (1<<PCKE)|(1<<PLLE);
     }
   #endif
-  #if defined(LOWPLLTIMER1) && ((CLOCK_SOURCE==6) || (!defined(PLLCSR))
+  #if defined(LOWPLLTIMER1) && ((CLOCK_SOURCE==6) || (!defined(PLLCSR)))
     #error "LOW SPEED PLL Timer1 clock source is NOT SUPPORTED when PLL is used as system clock source; the bit to enable it cannot be set, per datasheet (section Timer/Counter1->Register Descriotion->PLLCSR, x5 / x61 only) or chip does not have PLL"
   #endif
   #ifdef LOWPLLTIMER1 // option on x5 and x61
