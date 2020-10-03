@@ -557,7 +557,7 @@ void initToneTimer(void)
     // Normal, well-behaved 16-bit Timer 1.
     // Turn off Input Capture Noise Canceler, Input Capture Edge Select on Falling, stop the clock
     TCCR1B = (0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
-    // TCCR1B=0; But above is compiletime known, so optimized out, and will fail if
+    // TCCR1B=0; But above is compile time known, so optimized out, and will fail if
     // Disconnect the timer from the output pins, Set Waveform Generation Mode to Normal
     TCCR1A = (0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<WGM11) | (0<<WGM10);
     // TCCR1A = 0, same logic as above
