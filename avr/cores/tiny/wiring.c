@@ -506,18 +506,24 @@ void initToneTimer(void)
     OCR0B = 0;
     #if defined(TIMSK)
       // Disable all Timer0 interrupts
-      TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
       // Clear the Timer0 interrupt flags
-      TIFR = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
+      #if defined(TICIE0) // x61-series has an additional input capture interrupt vector...
+        TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)|(1<<TICIE0));
+        TIFR = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0)|(1<<ICF0));
+      #else
+        TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
+        TIFR = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
+      #endif
     #elif defined(TIMSK0)
       // Disable all Timer0 interrupts
-      TIMSK0 = 0;
+      TIMSK0 = 0; //can do this because all of TIMSK0 is timer 0 interrupt masks
       // Clear the Timer0 interrupt flags
-      TIFR0 = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
+      TIFR0 = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0)); //no ICF0 interrupt on any supported part with TIMSK0
     #endif
   #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1)
     // Turn off Clear on Compare Match, turn off PWM A, disconnect the timer from the output pin, stop the clock
     TCCR1 = (0<<CTC1) | (0<<PWM1A) | (0<<COM1A1) | (0<<COM1A0) | (0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+    // 0 out TCCR1
     // Turn off PWM A, disconnect the timer from the output pin, no Force Output Compare Match, no Prescaler Reset
     GTCCR &= ~((1<<PWM1B) | (1<<COM1B1) | (1<<COM1B0) | (1<<FOC1B) | (1<<FOC1A) | (1<<PSR1));
     // Reset the count to zero
@@ -548,10 +554,13 @@ void initToneTimer(void)
     // Clear the Timer1 interrupt flags
     TIFR = ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<OCF1D));
   #elif (TIMER_TO_USE_FOR_TONE == 1)
+    // Normal, well-behaved 16-bit Timer 1.
     // Turn off Input Capture Noise Canceler, Input Capture Edge Select on Falling, stop the clock
     TCCR1B = (0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+    // TCCR1B=0; But above is compiletime known, so optimized out, and will fail if
     // Disconnect the timer from the output pins, Set Waveform Generation Mode to Normal
     TCCR1A = (0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<WGM11) | (0<<WGM10);
+    // TCCR1A = 0, same logic as above
     // Reset the count to zero
     TCNT1 = 0;
     // Set the output compare registers to zero
@@ -763,140 +772,10 @@ void init(void)
 /*
 
   // In case the bootloader left our millis timer in a bad way
-  // Note that all occurrences of HAVE_BOOTLOADER are commented out, because all of the included bootloaders
-  // are known to be free of such bad behavior, so this just wastes flash setting things to values they are already set to.
-  // code retained in case a less polite bootloader is ever added to the core for some reason.
-  // but hidden behind a block comment for readability.
-
-  #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
-  // Ensure the timer is in the same state as power-up
-  #if (TIMER_TO_USE_FOR_MILLIS == 0) && defined(WGM01)
-  #ifdef TCCR0B
-  TCCR0B = 0;
-  TCCR0A = 0;
-  #else
-  TCCR0A = 0;
-  #endif
-  // Reset the count to zero
-  TCNT0 = 0;
-  // Set the output compare registers to zero
-  OCR0A = 0;
-  #ifdef OCR0B
-  OCR0B = 0;
-  #endif
-  #if defined(TIMSK)
-  // Disable all Timer0 interrupts
-  TIMSK = 0; //safer - the bootloader may have made a mess of this.
-  // TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
-  // Clear the Timer0 interrupt flags
-  TIFR |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
-
-  #elif defined(TIMSK1)
-  #ifdef OCIE0B
-  // Disable all Timer0 interrupts
-  //TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
-  // Clear the Timer0 interrupt flags
-  TIMSK0=0;
-  TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
-  #else
-  // Disable all Timer0 interrupts
-  //TIMSK0 &= ~((1<<OCIE0A) | (1<<TOIE0));
-  TIMSK0=0;
-  // Clear the Timer0 interrupt flags
-  TIFR0 |= ((1<<OCF0A) | (1<<TOV0));
-  #endif
-  #endif
-
-  #elif (TIMER_TO_USE_FOR_MILLIS == 0) && defined(TCW0)
-  TCCR0A = 0;
-  TCCR0B = 0;
-  // Reset the count to zero
-  TCNT0 = 0;
-  #if defined(TIMSK)
-  // Disable all Timer0 interrupts
-  TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
-  // Clear the Timer0 interrupt flags
-  TIFR |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
-  #if defined(TICIE0)
-  cbi(TIMSK,TICIE0);
-  sbi(TIFR0,ICF0);
-  #endif
-  #elif defined(TIMSK1)
-  // Disable all Timer0 interrupts
-  TIMSK0=0;
-  //TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
-  // Clear the Timer0 interrupt flags
-  TIFR0 |= ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
-  #if defined(TICIE0)
-  cbi(TIMSK0,TICIE0);
-  sbi(TIFR0,ICF0);
-  #endif
-  #endif
-
-  #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1)
-  // Turn off Clear on Compare Match, turn off PWM A, disconnect the timer from the output pin, stop the clock
-  TCCR1 = (0<<CTC1) | (0<<PWM1A) | (0<<COM1A1) | (0<<COM1A0) | (0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10);
-  // Turn off PWM A, disconnect the timer from the output pin, no Force Output Compare Match, no Prescaler Reset
-  GTCCR &= ~((1<<PWM1B) | (1<<COM1B1) | (1<<COM1B0) | (1<<FOC1B) | (1<<FOC1A) | (1<<PSR1));
-  // Reset the count to zero
-  TCNT1 = 0;
-  // Set the output compare registers to zero
-  OCR1A = 0;
-  OCR1B = 0;
-  OCR1C = 0;
-  // Disable all Timer1 interrupts
-  TIMSK = 0;
-  // Clear the Timer1 interrupt flags
-  TIFR |= ((1<<OCF1A) | (1<<OCF1B) | (1<<TOV1));
-
-
-  #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1E)
-  TCCR1A = 0;
-  TCCR1B = 0;
-  TCCR1C = 0;
-  TCCR1D = 0;
-  TCCR1E = 0;
-  // Reset the count to zero
-  TCNT1 = 0;
-  // Set the output compare registers to zero
-  OCR1A = 0;
-  OCR1B = 0;
-  // Disable all Timer1 interrupts
-  TIMSK=0;
-  //TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<OCIE1D));
-  // Clear the Timer1 interrupt flags
-  TIFR |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<OCF1D));
-
-
-  #elif (TIMER_TO_USE_FOR_MILLIS == 1)
-  // Turn off Input Capture Noise Canceler, Input Capture Edge Select on Falling, stop the clock
-  TCCR1B = (0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
-  // Disconnect the timer from the output pins, Set Waveform Generation Mode to Normal
-  TCCR1A = (0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<WGM11) | (0<<WGM10);
-  // Reset the count to zero
-  TCNT1 = 0;
-  // Set the output compare registers to zero
-  OCR1A = 0;
-  OCR1B = 0;
-  // Disable all Timer1 interrupts
-  #if defined(TIMSK)
-  TIMSK=0;
-  //TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
-  // Clear the Timer1 interrupt flags
-  TIFR |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<ICF1));
-  #elif defined(TIMSK1)
-  // Disable all Timer1 interrupts
-  TIMSK1=0;
-  //TIMSK1 &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
-  // Clear the Timer1 interrupt flags
-  TIFR1 |= ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<ICF1));
-  #endif
-
-  #endif
-  #endif
-
-  // end of the code for clearing timer disruption left by errant bootloaded....
-  */
+  there had been some very dubious code here that reinitialized registers.
+  ATTinyCore does not include any bootloaders that mess with timers without ensuring that they are reset.
+  so this code has been removed.
+*/
 
   // Use the Millis Timer for fast PWM (unless it doesn't have an output).
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
@@ -941,23 +820,29 @@ void init(void)
       #error Millis() Timer overflow interrupt not set correctly
     #endif
   #endif
-
-  #ifdef PLLTIMER1
+  #if defined(PLLTIMER1) && (!defined(PLLCSR))
+    #error "Chip does not have PLL (only x5, x61 series do), yet you somehow selected PLL as timer1 source. If you have not modified the core, please report this to core maintainer."
+  #endif
+  #ifdef PLLTIMER1 // option on x5 and x61
     if (!PLLCSR) {
       PLLCSR = (1<<PLLE);
         while (!(PLLCSR&1)) {
           ; //wait for lock
         }
-      PLLCSR |= PCKE;
+      PLLCSR = (1<<PCKE)|(1<<PLLE);
     }
   #endif
-  #ifdef LOWPLLTIMER1
+  #if defined(LOWPLLTIMER1) && ((CLOCK_SOURCE==6) || (!defined(PLLCSR))
+    #error "LOW SPEED PLL Timer1 clock source is NOT SUPPORTED when PLL is used as system clock source; the bit to enable it cannot be set, per datasheet (section Timer/Counter1->Register Descriotion->PLLCSR, x5 / x61 only) or chip does not have PLL"
+  #endif
+  #ifdef LOWPLLTIMER1 // option on x5 and x61
     if (!PLLCSR) {
       PLLCSR = (1<<LSM) | (1<<PLLE);
       while (!(PLLCSR&1)) {
         ; //wait for lock
       }
-      PLLCSR |= PCKE;
+      // faster than |= since we know the value we want (OUT vs )
+      PLLCSR = (1<<PCKE)|(1<<LSM)|(1<<PLLE);
     }
   #endif
   // Initialize the timer used for Tone
@@ -969,9 +854,11 @@ void init(void)
   #if defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER ) && INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
     #if defined(ADCSRA)
       // set a2d prescale factor
-      ADCSRA = (ADCSRA & ~((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0))) | (ADC_ARDUINO_PRESCALER << ADPS0) | (1<<ADEN);
+      // ADCSRA = (ADCSRA & ~((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0))) | (ADC_ARDUINO_PRESCALER << ADPS0) | (1<<ADEN);
+      // dude, this is being called on startup. We know that ADCSRA is 0! Why add a RMW cycle?!
+      ADCSRA = (ADC_ARDUINO_PRESCALER << ADPS0) | (1<<ADEN);
       // enable a2d conversions
-      sbi(ADCSRA, ADEN);
+      // sbi(ADCSRA, ADEN); //we already set this!!!
     #endif
   #endif
 }
