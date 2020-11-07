@@ -41,6 +41,7 @@ class TinySoftwareSerial : public Stream
   public:
     TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit);
     void begin(long);
+    void setTxBit(uint8_t);
     void end();
     virtual int available(void);
     virtual int peek(void);
