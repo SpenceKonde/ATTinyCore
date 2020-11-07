@@ -497,8 +497,8 @@ void initToneTimer(void)
     TIFR1 = 0x07;
   #elif (TIMER_TO_USE_FOR_TONE == 0)
     // Just zero the registers out, instead of trying to name all the bits, as there are combinations of hardware and settings where that doesn't work
-    TCCR0B = 0 //  (0<<FOC0A) | (0<<FOC0B) | (0<<WGM02) | (0<<CS02) | (0<<CS01) | (0<<CS00);
-    TCCR0A = 0 // (0<<COM0A1) | (0<<COM0A0) | (0<<COM0B1) | (0<<COM0B0) | (0<<WGM01) | (0<<WGM00);
+    TCCR0B = 0; //  (0<<FOC0A) | (0<<FOC0B) | (0<<WGM02) | (0<<CS02) | (0<<CS01) | (0<<CS00);
+    TCCR0A = 0; // (0<<COM0A1) | (0<<COM0A0) | (0<<COM0B1) | (0<<COM0B0) | (0<<WGM01) | (0<<WGM00);
     // Reset the count to zero
     TCNT0 = 0;
     // Set the output compare registers to zero
