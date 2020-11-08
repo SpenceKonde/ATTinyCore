@@ -13,7 +13,8 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Fix Timer1 PLL clock source menu option on x5, x61 (1.4.0 fix still didn't do it)
 * Fix x313 pinout image to reflect OC0B's existence
 * Add in new adafruit neopixel functions to tinyNeoPixel
-* Add Serial.setTxBit() for parts that use software serial. Call it before Serial.begin() to move the Tx pin to another pin/bit on the same PORT.
+* Add Serial.setTxBit() for parts that use tinySoftSerial. Call it before Serial.begin() to move the Tx pin to another pin/bit on the same PORT. (#443)
+* Fix Serial RX on parts that use tinySoftSerial - LTO broke this because the ring buffer was updated in the ISR but none of the variables were declared volatile... (#472)
 
 ### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
