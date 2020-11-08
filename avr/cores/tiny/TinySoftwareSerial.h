@@ -19,9 +19,9 @@
 #endif
 struct soft_ring_buffer
 {
-  unsigned char buffer[SERIAL_BUFFER_SIZE];
-  int head;
-  int tail;
+  volatile unsigned char buffer[SERIAL_BUFFER_SIZE];
+  volatile int head;
+  volatile int tail;
 };
 
 extern "C"{
