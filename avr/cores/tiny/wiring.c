@@ -34,34 +34,49 @@
 #if F_CPU >= 3000000L
 
   #if defined(__AVR_ATtiny167__) || defined(__AVR_ATtiny87__)
-    //TODO: use 32 prescale at 3~8 MHz on x7
-    #define timer0Prescaler (0b100)
+    #if F_CPU < 8000000L // 4 and 6 MHz get PWM within the target range of 500-1kHz now on the one pin that is driven by timer0.
+      #define timer0Prescaler (0b011)
+      #define timer0_Prescale_Value  (32)
+    #else
+      #define timer0Prescaler (0b100)
+      #define timer0_Prescale_Value  (64)
+    #endif
   #else
     #define timer0Prescaler (0b011)
+    #define timer0_Prescale_Value  (64)
   #endif
-  #if (defined(TCCR1) || defined(TCCR1E))
-    #define timer1Prescaler (0b0111)
+  #if (defined(TCCR1) || defined(TCCR1E)) // x5 and x61
+    #if F_CPU < 8000000L // 4 and 6 MHz get PWM within the target range of 500-1kHz now on 2 pins of t85, and all PWM pins of the x61, since it's weirdo timer0 has "output" compare that just fires an ISR...
+      #define timer1Prescaler (0b0110)
+      #define timer1_Prescale_Value  (32)
+    #else
+      #define timer1Prescaler (0b0111)
+      #define timer1_Prescale_Value  (64)
+    #endif
   #else
     #define timer1Prescaler (0b011)
+    #define timer1_Prescale_Value  (64)
   #endif
-  #define MillisTimer_Prescale_Value  (64)
-  #define ToneTimer_Prescale_Value    (64)
-#else
+#else // 1 or 2 MHz system clock
   #define timer0Prescaler (0b010)
   #if (defined(TCCR1) || defined(TCCR1E))
-    #define timer1Prescaler (0b0110)
+    #define timer1Prescaler (0b0100)
   #else
     #define timer1Prescaler (0b010)
   #endif
-  #define MillisTimer_Prescale_Value  (8)
-  #define ToneTimer_Prescale_Value    (8)
+  #define timer0_Prescale_Value    (8)
+  #define timer1_Prescale_Value    (8)
 #endif
 
 #if (TIMER_TO_USE_FOR_MILLIS == 0)
+  #define MillisTimer_Prescale_Value  (timer0_Prescale_Value)
+  #define ToneTimer_Prescale_Value    (timer1_Prescale_Value)
   #define MillisTimer_Prescale_Index  (timer0Prescaler)
   #define ToneTimer_Prescale_Index    (timer1Prescaler)
 #else
   #warning "WARNING: Use of Timer1 for millis has been configured - this option is untested and unsupported!"
+  #define MillisTimer_Prescale_Value  (timer1_Prescale_Value)
+  #define ToneTimer_Prescale_Value    (timer0_Prescale_Value)
   #define MillisTimer_Prescale_Index  (timer1Prescaler)
   #define ToneTimer_Prescale_Index    (timer0Prescaler)
 #endif
@@ -249,6 +264,12 @@ static void initToneTimerInternal(void);
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU==6000000L) // 10.625, vs real value 10.67
       m=(m << 8) + t;
       return (m<<3)+(m<<1)+(m>>2)+(m>>3);
+    #elif (MillisTimer_Prescale_Value == 32 && F_CPU==7372800L) // 4.3125, vs real value 4.34 - x7 now runs timer0 twice as fast at speeds under 8 MHz
+      m=(m << 8) + t;
+      return (m<<2)+(m>>3)+(m>>4);
+    #elif (MillisTimer_Prescale_Value == 32 && F_CPU==6000000L) // 5.3125, vs real value 5.33 - x7 now runs timer0 twice as fast at speeds under 8 MHz
+      m=(m << 8) + t;
+      return (m<<2)+(m)+(m>>3)+(m>>4);
     #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) // For 9mhz, this is a little off, but for 9.21, it's very close!
       return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
     #else
@@ -643,7 +664,7 @@ void init(void)
     #if (defined(BOOTTUNED165)) // If it's a micronucleus board, it will either run at 16.5 after
       // adjusting the internal oscillator for that speed (in which case we are done) or we want
       // it to be set to run at 16, in which case we need to reload the factory cal.
-      #if (F_CPU!=16500000L) //if not 16.5, it's 16, or that divided by prime factor
+      #if (F_CPU!=16500000L) //if not 16.5, it's 16, or that divided by power of two
         OSCCAL = read_factory_calibration(); //we do this if it was tuned by micronucleus, but we don't want USB.
         #if (F_CPU!=16000000) // 16MHz is speed of unprescaled PLL clock - if we don't want that...
           #ifdef CCP
