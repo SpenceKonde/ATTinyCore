@@ -15,6 +15,9 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Add in new adafruit neopixel functions to tinyNeoPixel
 * Add Serial.setTxBit() for parts that use tinySoftSerial. Call it before Serial.begin() to move the Tx pin to another pin/bit on the same PORT. (#443)
 * Fix Serial RX on parts that use tinySoftSerial - LTO broke this because the ring buffer was updated in the ISR but none of the variables were declared volatile... (#472)
+* Correct PWM frequency on ATtiny x5 and x61 parts operating below 3 MHz (#463)
+* Move PWM on pin 1 (PB1) on x5 to timer1 instead of timer0.
+* Select /32 prescaler where available when operating with a system clock between 3 and 8 MHz, moving PWM on those pins back to the targeted 500 Hz to 1 kHz range
 
 ### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
