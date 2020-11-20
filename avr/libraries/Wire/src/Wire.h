@@ -122,6 +122,8 @@ class TwoWire {
     static uint8_t *Buffer;
     static uint8_t BufferIndex;
     static uint8_t BufferLength;
+    
+    static uint8_t fastmode;
 
     static uint8_t transmitting;
   public:
