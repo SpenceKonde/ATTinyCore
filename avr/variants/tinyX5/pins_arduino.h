@@ -103,8 +103,12 @@ static const uint8_t A3 = 0x80 | 3;
 
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
-#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-#define INITIALIZE_SECONDARY_TIMERS               1
+#ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+  #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
+#endif
+#ifndef INITIALIZE_SECONDARY_TIMERS
+  #define INITIALIZE_SECONDARY_TIMERS               1
+#endif
 /*
   For various reasons, Timer 0 is a better choice for the millis timer on the
   '85 processor.
