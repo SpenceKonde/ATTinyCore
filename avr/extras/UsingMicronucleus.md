@@ -23,9 +23,9 @@ The Micronucleus bootloader supports a number of methods for entering the bootlo
 * Any except WDT reset
 * Always w/unsafe optimizations (only on parts where this gets an extra page)
 
-All are built with fast exit if no USB, `START_WITHOUT_PULLUP` and `ENABLE_SAFE_OPTIMIZATIONS`, and all that depend on reset cause will clear MCUSR after reading it and copying it's contents to the `GPIOR0` register so that user code can access it, while the bootloader can clear the flags so that they do notconfused by them after the next reset.
+All are built with fast exit if no USB, `START_WITHOUT_PULLUP` and `ENABLE_SAFE_OPTIMIZATIONS`, and all that depend on reset cause will clear MCUSR after reading it and copying it's contents to the `GPIOR0` register so that user code can access it, while the bootloader can clear the flags so that they do not get confused by them after the next reset.
 
-The Micronucleus codebase also supports more tightly constrained options, including jumpered power-on only, reset only (don't "upgrade" a board with reset disabled to that...), watchdog only (if the sketch doesn't do what you expect with the watchdog, it'll require ISP reinstall  to fix, or if reset disabled, brick the part).
+The Micronucleus codebase also supports more tightly constrained options, including jumpered power-on only, reset only (don't "upgrade" a board with reset disabled to that...), watchdog only (if the sketch doesn't do what you expect with the watchdog, it'll require ISP reinstall to fix, or if reset disabled, brick the part).
 In 1.4.0, each supported board had only a single entry option available. In a future version of ATTinyCore, more options for the entry mode will be provided.
 
 The included firmware uses the following settings.

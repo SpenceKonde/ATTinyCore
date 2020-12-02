@@ -632,10 +632,10 @@ void initToneTimer(void)
       TCCR1B = (ToneTimer_Prescale_Index << CS10);
     #elif (TIMER_TO_USE_FOR_TONE == 1 ) && defined(__AVR_ATtinyX7__)
       TCCR1A = (1<<COM1A1)|(1<<COM1B1)|(1<<WGM10);
-      TCCR1B = (ToneTimer_Prescale_Index << CS10)|(1<<WGM12);
+      TCCR1B = (ToneTimer_Prescale_Index << CS10);
     #elif (TIMER_TO_USE_FOR_TONE == 1) // x4, x8, x313,
       // Use the Tone Timer for phase correct PWM
-      TCCR1A = (1<<WGM10) | (1<<WGM11);
+      TCCR1A = (1<<WGM10);
       TCCR1B = (0<<WGM12) | (0<<WGM13) | (ToneTimer_Prescale_Index << CS10); //set the clock
     #endif
   }
