@@ -117,8 +117,9 @@
 #define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
 #endif
 #else
-// The key is not to multiply by (1000000L / F_CPU), which may lose precision.
-// The formula below is correct for all F_CPU times that evenly divide by 100.
+// The key is never to compute (F_CPU / 1000000L), which may lose precision.
+// The formula below is correct for all F_CPU times that evenly divide by 100,
+// with prescaler values up to and including 512.
 #define MICROSECONDS_PER_MILLIS_OVERFLOW \
   (MillisTimer_Prescale_Value * 256L * 10000L / (F_CPU / 100L))
 #endif
