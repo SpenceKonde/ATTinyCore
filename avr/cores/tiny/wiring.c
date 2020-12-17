@@ -106,6 +106,7 @@
 
 // the prescaler is set so that the millis timer ticks every MillisTimer_Prescale_Value (64) clock cycles, and the
 // the overflow handler is called every 256 ticks.
+#if 0 // generally valid scaling formula follows below in the #else branch
 #if (F_CPU==12800000)
 //#define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
 //#define MICROSECONDS_PER_MILLIS_OVERFLOW ((64 * 256)/12.8) = 256*(64/12.8) = 256*5 = 1280
@@ -115,6 +116,13 @@
 #else
 #define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
 #endif
+#else
+// The key is not to multiply by (1000000L / F_CPU), which may lose precision.
+// The formula below is correct for all F_CPU times that evenly divide by 100.
+#define MICROSECONDS_PER_MILLIS_OVERFLOW \
+  (MillisTimer_Prescale_Value * 256L * 10000L / (F_CPU / 100L))
+#endif
+
 // the whole number of milliseconds per millis timer overflow
 #define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000)
 
