@@ -331,6 +331,8 @@ static void initToneTimerInternal(void);
 /* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
 void delayMicroseconds(unsigned int us)
 {
+  #define _MORENOP_ "" // redefine to include NOPs depending on frequency
+
   // call = 4 cycles + 2 to 4 cycles to init us(2 for constant delay, 4 for variable)
 
   // calling avrlib's delay_us() function with low values (e.g. 1 or
@@ -407,6 +409,28 @@ void delayMicroseconds(unsigned int us)
       // us is at least 10, so we can subtract 8
       us -= 8; // 2 cycles
     }
+
+  #elif F_CPU >= 18000000L
+    // for the 18 MHz clock, if somebody is working with USB
+    // or otherwise relating to 12 or 24 MHz clocks
+
+    // for a 1 microsecond delay, simply return.  the overhead
+    // of the function call takes 14 (16) cycles, which is .8 us
+    if (us <= 1) return; // = 3 cycles, (4 when true)
+
+    // make the loop below last 6 cycles
+  #undef  _MORENOP_
+  #define _MORENOP_ " nop \n\t  nop \n\t"
+
+    // the following loop takes 1/3 of a microsecond (6 cycles) per iteration,
+    // so execute it three times for each microsecond of delay requested.
+    us = (us << 1) + us; // x3 us, = 5 cycles
+
+    // account for the time taken in the preceeding commands.
+    // we just burned 20 (22) cycles above, remove 3 (3*6=18),
+    // us is at least 6 so we may subtract 3
+    us -= 3; // = 2 cycles
+
   #elif F_CPU >= 16000000L
     // for the 16 MHz clock on most Arduino boards
 
@@ -499,6 +523,7 @@ void delayMicroseconds(unsigned int us)
   // busy wait
   __asm__ __volatile__ (
     "1: sbiw %0,1" "\n\t" // 2 cycles
+        _MORENOP_         // more cycles according to definition
     "brne 1b" : "=w" (us) : "0" (us) // 2 cycles
   );
   // return = 4 cycles
