@@ -171,8 +171,7 @@ static void initToneTimerInternal(void);
     if (f >= FRACT_MAX)
     {
       f -= FRACT_MAX;
-    m += 1;
-      m += MILLIS_INC;
+      m += MILLIS_INC + 1;
     }
     else
     {
