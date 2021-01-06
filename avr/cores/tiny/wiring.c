@@ -168,6 +168,7 @@
  */
 #if EXACT_REMAINDER > 0
 #define CORRECT_EXACT_MILLIS // enable zero drift correction in millis()
+#define CORRECT_EXACT_MICROS // enable zero drift correction in micros()
 #define CORRECT_EXACT_ROLL (135)
 #define CORRECT_EXACT_ROLL_MINUS1 (CORRECT_EXACT_ROLL - 1)
 #define CORRECT_EXACT_MANY (135L * EXACT_REMAINDER / EXACT_DENOMINATOR)
@@ -175,7 +176,7 @@
 #error "Miscalculation in millis() exactness correction"
 #endif
 #if CORRECT_EXACT_MANY == 0 // corner case when the ideal n is in [0, 1)
-#undef CORRECT_EXACT_MILLIS // go back to nothing
+#undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
 #endif
 #endif // EXACT_REMAINDER > 0
 /* End of preparations for exact millis() with oddball frequencies */
@@ -194,9 +195,11 @@ static void initToneTimerInternal(void);
 #endif
 
 #ifndef DISABLEMILLIS
+#ifndef CORRECT_EXACT_MICROS
   volatile unsigned long millis_timer_overflow_count = 0;
+#endif
   volatile unsigned long millis_timer_millis = 0;
-  static unsigned char millis_timer_fract = 0;
+  volatile unsigned char millis_timer_fract = 0;
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
     #if defined(TIMER0_OVF_vect)
       ISR(TIMER0_OVF_vect)
@@ -245,8 +248,9 @@ static void initToneTimerInternal(void);
 
     millis_timer_fract = f;
     millis_timer_millis = m;
+#ifndef CORRECT_EXACT_MICROS
     millis_timer_overflow_count++;
-
+#endif
   }
 
   unsigned long millis()
@@ -265,11 +269,20 @@ static void initToneTimerInternal(void);
 
   unsigned long micros()
   {
+#ifdef CORRECT_EXACT_MICROS
+    unsigned long lt;
+    unsigned char f;
+#endif
     unsigned long m;
-    uint8_t oldSREG = SREG, t;
+    uint8_t t, oldSREG = SREG;
 
     cli();
+#ifdef CORRECT_EXACT_MICROS
+    m = millis_timer_millis;
+    f = millis_timer_fract;
+#else
     m = millis_timer_overflow_count;
+#endif
   #if defined(TCNT0) && (TIMER_TO_USE_FOR_MILLIS == 0) && !defined(TCW0)
     t = TCNT0;
   #elif defined(TCNT0L) && (TIMER_TO_USE_FOR_MILLIS == 0)
@@ -284,21 +297,50 @@ static void initToneTimerInternal(void);
 
   #if defined(TIFR0) && (TIMER_TO_USE_FOR_MILLIS == 0)
     if ((TIFR0 & _BV(TOV0)) && (t < 255))
+    #ifndef CORRECT_EXACT_MICROS
       m++;
+    #else
+      lt = (1U << 8) + t;
+    else
+      lt = t;
+    #endif
   #elif defined(TIFR) && (TIMER_TO_USE_FOR_MILLIS == 0)
     if ((TIFR & _BV(TOV0)) && (t < 255))
+    #ifndef CORRECT_EXACT_MICROS
       m++;
+    #else
+      lt = (1U << 8) + t;
+    else
+      lt = t;
+    #endif
   #elif defined(TIFR1) && (TIMER_TO_USE_FOR_MILLIS == 1)
     if ((TIFR1 & _BV(TOV1)) && (t < 255))
+    #ifndef CORRECT_EXACT_MICROS
       m++;
+    #else
+      lt = (1U << 8) + t;
+    else
+      lt = t;
+    #endif
   #elif defined(TIFR) && (TIMER_TO_USE_FOR_MILLIS == 1)
     if ((TIFR & _BV(TOV1)) && (t < 255))
+    #ifndef CORRECT_EXACT_MICROS
       m++;
+    #else
+      lt = (1U << 8) + t;
+    else
+      lt = t;
+    #endif
   #endif
 
     SREG = oldSREG;
 
-
+  #ifdef CORRECT_EXACT_MICROS
+    /* We convert milliseconds, fractional part and timer value
+       into a microsecond value.  Relies on CORRECT_EXACT_MILLIS. */
+    return (((m << 7) - (m << 1) - m + f) << 3) +
+      ((lt * MICROSECONDS_PER_MILLIS_OVERFLOW) >> 8);
+  #else
   #if F_CPU < 1000000L
     return ((m << 8) + t) * MillisTimer_Prescale_Value * (1000000L/F_CPU);
   #else
@@ -357,9 +399,8 @@ static void initToneTimerInternal(void);
       return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + (t * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
     #endif
   #endif
+  #endif // !CORRECT_EXACT_MICROS
   }
-
-
 
   static void __empty() {
     // Empty
