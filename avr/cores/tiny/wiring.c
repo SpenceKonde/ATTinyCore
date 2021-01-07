@@ -181,6 +181,56 @@
 #endif // EXACT_REMAINDER > 0
 /* End of preparations for exact millis() with oddball frequencies */
 
+/* More preparations to optimize calculation of exact micros().
+   The idea is to reduce microseconds per overflow to unsigned char.
+   Then we find the leading one-bits to add, avoiding multiplication.
+
+   This way of calculating micros is currently enabled whenever
+   *both* the millis() exactness correction is enabled *and*
+   128 <= MICROSECONDS_PER_MILLIS_OVERFLOW < 8192.
+   Otherwise we fall back to the existing micros().
+ */
+#ifdef CORRECT_EXACT_MICROS
+#if MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 13)
+#undef CORRECT_EXACT_MICROS // add cases for higher values if relevant
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 12)
+#define CORRECT_BITS 5
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 11)
+#define CORRECT_BITS 4
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 10)
+#define CORRECT_BITS 3
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 9)
+#define CORRECT_BITS 2
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 8)
+#define CORRECT_BITS 1
+#else
+#define CORRECT_BITS 0
+#endif
+#ifdef CORRECT_BITS // usecs per ovf is in the expected range of values
+#define USPEROF_BYTE (MICROSECONDS_PER_MILLIS_OVERFLOW >> CORRECT_BITS)
+#if USPEROF_BYTE >= (1U << 8)
+#error "Miscalculation in micros() exactness correction"
+#endif
+#if (USPEROF_BYTE & (1U << 7))
+#define CORRECT_BIT7 // defined if MICROSECONDS_PER_MILLIS_OVERFLOW >= 128
+#else
+#undef CORRECT_EXACT_MICROS // we don't treat this case as relevant
+#endif
+#if (USPEROF_BYTE & (1U << 6))
+#define CORRECT_BIT6
+#endif
+#if (USPEROF_BYTE & (1U << 5))
+#define CORRECT_BIT5
+#endif
+#if (USPEROF_BYTE & (1U << 4))
+#define CORRECT_BIT4
+#endif
+/* The bits below 4 are ignored for an error of at most 1 in 32.
+   This error affects micros() short-term jitter only.
+   Its long-term drift remains at zero. */
+#endif // CORRECT_BITS
+#endif // CORRECT_EXACT_MICROS
+
 // the whole number of milliseconds per millis timer overflow
 #define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000)
 
@@ -270,8 +320,8 @@ static void initToneTimerInternal(void);
   unsigned long micros()
   {
 #ifdef CORRECT_EXACT_MICROS
-    unsigned long lt;
     unsigned char f;
+    unsigned char q = 0; // record whether an interrupt is flagged
 #endif
     unsigned long m;
     uint8_t t, oldSREG = SREG;
@@ -300,36 +350,28 @@ static void initToneTimerInternal(void);
     #ifndef CORRECT_EXACT_MICROS
       m++;
     #else
-      lt = (1U << 8) + t;
-    else
-      lt = t;
+      q = 1;
     #endif
   #elif defined(TIFR) && (TIMER_TO_USE_FOR_MILLIS == 0)
     if ((TIFR & _BV(TOV0)) && (t < 255))
     #ifndef CORRECT_EXACT_MICROS
       m++;
     #else
-      lt = (1U << 8) + t;
-    else
-      lt = t;
+      q = 1;
     #endif
   #elif defined(TIFR1) && (TIMER_TO_USE_FOR_MILLIS == 1)
     if ((TIFR1 & _BV(TOV1)) && (t < 255))
     #ifndef CORRECT_EXACT_MICROS
       m++;
     #else
-      lt = (1U << 8) + t;
-    else
-      lt = t;
+      q = 1;
     #endif
   #elif defined(TIFR) && (TIMER_TO_USE_FOR_MILLIS == 1)
     if ((TIFR & _BV(TOV1)) && (t < 255))
     #ifndef CORRECT_EXACT_MICROS
       m++;
     #else
-      lt = (1U << 8) + t;
-    else
-      lt = t;
+      q = 1;
     #endif
   #endif
 
@@ -338,8 +380,22 @@ static void initToneTimerInternal(void);
   #ifdef CORRECT_EXACT_MICROS
     /* We convert milliseconds, fractional part and timer value
        into a microsecond value.  Relies on CORRECT_EXACT_MILLIS. */
-    return (((m << 7) - (m << 1) - m + f) << 3) +
-      ((lt * MICROSECONDS_PER_MILLIS_OVERFLOW) >> 8);
+    #if !defined CORRECT_BITS || !defined CORRECT_BIT7
+    #error "micros() correction relies on bit 7 to be defined"
+    #endif
+    m = (((m << 7) - (m << 1) - m + f) << 3) + (
+      ( ((unsigned int) t << 7)
+    #ifdef CORRECT_BIT6
+      + ((unsigned int) t << 6)
+    #endif
+    #ifdef CORRECT_BIT5
+      + ((unsigned int) t << 5)
+    #endif
+    #ifdef CORRECT_BIT4
+      + ((unsigned int) t << 4)
+    #endif
+      ) >> (8 - CORRECT_BITS));
+    return q ? m + MICROSECONDS_PER_MILLIS_OVERFLOW : m;
   #else
   #if F_CPU < 1000000L
     return ((m << 8) + t) * MillisTimer_Prescale_Value * (1000000L/F_CPU);
