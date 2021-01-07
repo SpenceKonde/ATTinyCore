@@ -117,11 +117,19 @@
 #define MICROSECONDS_PER_MILLIS_OVERFLOW (clockCyclesToMicroseconds(MillisTimer_Prescale_Value * 256))
 #endif
 #else
-// The key is never to compute (F_CPU / 1000000L), which may lose precision.
-// The formula below is correct for all F_CPU times that evenly divide by 100,
-// with prescaler values up to and including 512.
+/* The key is never to compute (F_CPU / 1000000L), which may lose precision.
+   The formula below is correct for all F_CPU times that evenly divide by 10,
+   at least for prescaler values up and including 64 as used in this file. */
+#if MillisTimer_Prescale_Value <= 64
 #define MICROSECONDS_PER_MILLIS_OVERFLOW \
-  (MillisTimer_Prescale_Value * 256L * 10000L / (F_CPU / 100L))
+  (MillisTimer_Prescale_Value * 256L * 1000L * 100L / (F_CPU / 10L))
+#else
+/* It may be sufficient to swap the 100L and 10L in the above formula,
+   but please double-check the EXACT_NUMERATOR macro below as well
+   and make sure it does not roll over. */
+#define MICROSECONDS_PER_MILLIS_OVERFLOW 0
+#error "Please adjust MICROSECONDS_PER_MILLIS_OVERFLOW formula"
+#endif
 #endif
 
 /* Correct millis to zero long term drift
