@@ -402,11 +402,14 @@ static void initToneTimerInternal(void);
   #ifdef CORRECT_EXACT_MICROS
     /* We convert milliseconds, fractional part and timer value
        into a microsecond value.  Relies on CORRECT_EXACT_MILLIS. */
+    m = (((m << 7) - (m << 1) - m + f) << 3) + ((
+    #if F_CPU == 16500000L // special purpose faster correction
+        ((unsigned int) t << 8) - ((unsigned int) t << 3)
+    #else // general catch-all case
     #if !defined CORRECT_BITS || !defined CORRECT_BIT7
     #error "micros() correction relies on bit 7 to be defined"
     #endif
-    m = (((m << 7) - (m << 1) - m + f) << 3) + (
-      ( ((unsigned int) t << 7)
+        ((unsigned int) t << 7)
     #ifdef CORRECT_BIT6
       + ((unsigned int) t << 6)
     #endif
@@ -419,6 +422,7 @@ static void initToneTimerInternal(void);
     #ifdef CORRECT_BIT3
       + ((unsigned int) t << 3)
     #endif
+    #endif // general case
       ) >> (8 - CORRECT_BITS));
     return q ? m + MICROSECONDS_PER_MILLIS_OVERFLOW : m;
   #else
