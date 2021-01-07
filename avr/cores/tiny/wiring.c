@@ -241,9 +241,14 @@
 #if (USPEROF_BYTE & (1U << 4))
 #define CORRECT_BIT4
 #endif
-/* The bits below 4 are ignored for an error of at most 1 in 32.
-   This error affects micros() short-term jitter only.
-   Its long-term drift remains at zero. */
+#if (USPEROF_BYTE & (1U << 3))
+#define CORRECT_BIT3
+#endif
+/* The bits below 3 are ignored for a worst case jitter of 1 in 16.
+   This refers to micros() jitter during one timer cycle, meaning
+   that the increasing TCNT may be underestimated by this ratio.
+   The error resets to zero at the beginning of each cycle.
+   The long-term drift of micros() thus remains zero. */
 #endif // CORRECT_BITS
 #endif // CORRECT_EXACT_MICROS
 
@@ -410,6 +415,9 @@ static void initToneTimerInternal(void);
     #endif
     #ifdef CORRECT_BIT4
       + ((unsigned int) t << 4)
+    #endif
+    #ifdef CORRECT_BIT3
+      + ((unsigned int) t << 3)
     #endif
       ) >> (8 - CORRECT_BITS));
     return q ? m + MICROSECONDS_PER_MILLIS_OVERFLOW : m;
