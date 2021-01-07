@@ -167,25 +167,33 @@
    The value n is used inside millis() to effect long-term exactness.
 
    Whenever the approximation is not exact, the relative drift of millis() is
-   less than 1. / (135. * (MICROSECONDS_PER_MILLIS_OVERFLOW >> 3)), which is
-   in the several dozen ppm range.  Thus, even for hitherto untested future
+   less than 1. / (2 * 135. * (MICROSECONDS_PER_MILLIS_OVERFLOW >> 3)),
+   which is in the dozen ppm range.  Thus, even for hitherto untested future
    clock frequencies, millis() timing will be highly accurate by construction.
    In these hypothetical cases, n is a close approximation to the exact value.
 
-   We compute n by scaling down the remainder to the range [0, 135).
+   We compute n by scaling down the remainder to the range [0, 135].
+   The two extreme cases 0 and 135 require only trivial correction.
+   All others are handled by an unsigned char counter in millis().
  */
+#define CORRECT_FRACT_PLUSONE // possibly needed for high/cheap corner case
 #if EXACT_REMAINDER > 0
 #define CORRECT_EXACT_MILLIS // enable zero drift correction in millis()
 #define CORRECT_EXACT_MICROS // enable zero drift correction in micros()
 #define CORRECT_EXACT_ROLL (135)
 #define CORRECT_EXACT_ROLL_MINUS1 (CORRECT_EXACT_ROLL - 1)
-#define CORRECT_EXACT_MANY (135L * EXACT_REMAINDER / EXACT_DENOMINATOR)
-#if CORRECT_EXACT_MANY < 0 || CORRECT_EXACT_MANY >= 135
+#define CORRECT_EXACT_MANY \
+  ((2L * 135L + 1L) * EXACT_REMAINDER / (2L * EXACT_DENOMINATOR))
+#if CORRECT_EXACT_MANY < 0 || CORRECT_EXACT_MANY > 135
 #error "Miscalculation in millis() exactness correction"
 #endif
-#if CORRECT_EXACT_MANY == 0 // corner case when the ideal n is in [0, 1)
+#if CORRECT_EXACT_MANY == 0 // low/cheap corner case
 #undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
-#endif
+#elif CORRECT_EXACT_MANY == 135 // high/cheap corner case
+#undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
+#undef CORRECT_FRACT_PLUSONE // but use this macro...
+#define CORRECT_FRACT_PLUSONE + 1 // ...to add 1 more to fract every time
+#endif // cheap corner cases
 #endif // EXACT_REMAINDER > 0
 /* End of preparations for exact millis() with oddball frequencies */
 
@@ -245,7 +253,8 @@
 // the fractional number of milliseconds per millis timer overflow. we shift right
 // by three to fit these numbers into a byte. (for the clock speeds we care
 // about - 8 and 16 MHz - this doesn't lose precision.)
-#define FRACT_INC ((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000) >> 3)
+#define FRACT_INC (((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000) >> 3) \
+                   CORRECT_FRACT_PLUSONE)
 #define FRACT_MAX (1000 >> 3)
 
 #if INITIALIZE_SECONDARY_TIMERS
