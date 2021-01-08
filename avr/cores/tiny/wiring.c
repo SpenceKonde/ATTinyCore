@@ -342,8 +342,9 @@ static void initToneTimerInternal(void);
   unsigned long micros()
   {
 #ifdef CORRECT_EXACT_MICROS
-    unsigned char f;
-    unsigned char q = 0; // record whether an interrupt is flagged
+    unsigned int r; // needed for some frequencies, optimized away otherwise
+    unsigned char f; // temporary storage for millis fraction counter
+    unsigned char q = 0; // record whether an overflow is flagged
 #endif
     unsigned long m;
     uint8_t t, oldSREG = SREG;
@@ -401,11 +402,27 @@ static void initToneTimerInternal(void);
 
   #ifdef CORRECT_EXACT_MICROS
     /* We convert milliseconds, fractional part and timer value
-       into a microsecond value.  Relies on CORRECT_EXACT_MILLIS. */
+       into a microsecond value.  Relies on CORRECT_EXACT_MILLIS.
+       The leading part by m and f is long-term accurate.
+       For the timer we just need to be close from below.
+       Must never be too high, or micros jumps backwards. */
     m = (((m << 7) - (m << 1) - m + f) << 3) + ((
-    #if F_CPU == 16500000L // special purpose faster correction
+    /* Of the hand-tuned corrected frequencies, 18.432, 18 and 16.5 MHz
+       have the highest possible accuracy concerning the timer counter,
+       at the same time being cheaper than most other odd frequencies. */
+    #if   F_CPU == 20000000L // hand-tuned correction: 816
+        (r = ((unsigned int) t << 8) - ((unsigned int) t << 6), r + (r >> 4))
+    #elif F_CPU == 18432000L // hand-tuned correction: 888
+        ((unsigned int) t << 8) - ((unsigned int) t << 5) - ((unsigned int) t << 1)
+    #elif F_CPU == 18000000L // hand-tuned correction: 910
+        (r = ((unsigned int) t << 8) - ((unsigned int) t << 5), r + (r >> 6))
+    #elif F_CPU == 16500000L // hand-tuned correction: 992
         ((unsigned int) t << 8) - ((unsigned int) t << 3)
-    #else // general catch-all case
+    #elif F_CPU == 14745600L // hand-tuned correction: 1104, 552
+        ((unsigned int) t << 7) + ((unsigned int) t << 3) + ((unsigned int) t << 1)
+    #elif F_CPU == 11059200L // hand-tuned correction: 1472, 736
+        ((unsigned int) t << 8) - ((unsigned int) t << 6) - ((unsigned int) t << 3)
+    #else // general catch-all
     #if !defined CORRECT_BITS || !defined CORRECT_BIT7
     #error "micros() correction relies on bit 7 to be defined"
     #endif
