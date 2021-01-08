@@ -54,7 +54,7 @@ Example of a "guard" against wrong pin mapping:
 The standard Tone() function is supported on these parts. For best results, use PA5 (pin 5 on either pinout) or PA6 (pin 4 on counterclockwise, pin 6 on clockwise), as this will use hardware output compare to generate the square wave, instead of interrupts.
 
 ### I2C support
-There is no I2C master functionality implemented in hardware. As of version 1.1.3, the included Wire.h library will use a software implementation to provide I2C master functionality, and the hardware I2C slave for slave functionality, and can be used as a drop-in replacement for Wire.h with the caveat that clock speed cannot be set.
+There is no I2C master functionality implemented in hardware. As of version 1.1.3, the included Wire.h library will use a software implementation to provide I2C master functionality, and the hardware I2C slave for slave functionality, and can be used as a drop-in replacement for Wire.h with the caveat that clock speed cannot be set. **You must have external pullup resistors installed** in order for I2C functionality to work reliably.
 
 ### Advanced Differential ADC
 The ATtinyx41 family boasts one of the most advanced ADCs in the entire classic tinyAVR/megaAVR product line, with no fewer than 62 channels (counting single ended and differential pairs - admittedly, some of the differential pairs are of dubious usefulness, consisting of the same channel compared to itself; presumably this is meant as a way to adjust for differences between the positive and negative sides of the ADC), 8 reference options, and - for the differential pairs, selectable gain of 1x, 20x, or 100x - if you happen to need insane ADC capability in a small AVR, there is still, as of mid-2020, no other 8-bit AVR - to my knowledge - that can compete. See the table at the bottom of this page for a list of the channels; they can all be used with analogRead(). Of course, it can also just be used as an normal AVR where analogRead() happens to work on every pin, too.
@@ -84,7 +84,9 @@ PA5 and PA7 have strongler sink capability than other pins - that is, the output
 PHDE=(1<<PHDEA0)|(1<<PHDEA1); //PHDEA0 controls PA5, PHDEA1 controls PA7.
 ```
 
-This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts; as far as I can tell it is only found on on the x41 family and the closely related ATtiny828. Which is also the only classic AVR I know of that allows you to map the timer PWM outputs to different pins so freely. This also means that, if you are attempting to generate an analog voltage with a PWM pin and an RC filter, your result may be lower than expected, as the pin drivers are not symmetric.
+This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts; as far as I can tell it is only found on on the x41 family and the closely related ATtiny828. Which is also the only classic AVR I know of that allows you to map the timer PWM outputs to different pins the way these parts do.
+
+**These high-sink pins have asymmetric drivers - thus PA5 and PA7 should not be used with PWM + RC filter to generate analog voltages** as the resulting voltage will be lower than expected.
 
 #### Separate pullup-enable register
 Like the ATtiny828 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Unlike those other parts, though, these are not IO-space (they're normal registers, unlike the PORTx/PINx/DDRx registers, which can be used with the CBI/SBI/OUT/IN instructions).

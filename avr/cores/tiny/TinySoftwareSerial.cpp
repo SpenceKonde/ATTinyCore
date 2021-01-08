@@ -110,6 +110,11 @@ TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBi
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
+void TinySoftwareSerial::setTxBit(uint8_t txbit)
+{
+  _txmask=_BV(txbit);
+  _txunmask=~txbit;
+}
 
 void TinySoftwareSerial::begin(long baud)
 {
@@ -198,34 +203,34 @@ size_t TinySoftwareSerial::write(uint8_t ch)
   cli(); //Prevent interrupts from breaking the transmission. Note: TinySoftwareSerial is half duplex.
   //it can either receive or send, not both (because receiving requires an interrupt and would stall transmission
   __asm__ __volatile__ (
-    "   com %[ch]\n" // ones complement, carry set
-    "   sec\n"
-    "1: brcc 2f\n"
-  "   in r23,%[uartPort] \n"
-    "   and r23,%[uartUnmask]\n"
-  "   out %[uartPort],r23 \n"
-    "   rjmp 3f\n"
-  "2: in r23,%[uartPort] \n"
-    "   or r23,%[uartMask]\n"
-  "   out %[uartPort],r23 \n"
-    "   nop\n"
-    "3: rcall uartDelay\n"
-    "   rcall uartDelay\n"
-    "   rcall uartDelay\n"
-    "   rcall uartDelay\n"
-    "   lsr %[ch]\n"
-    "   dec %[count]\n"
-    "   brne 1b\n"
+    "   com %[ch]             \n" // ones complement, carry set
+    "   sec                   \n"
+    "1: brcc 2f               \n"
+    "   in r23,%[uartPort]    \n"
+    "   and r23,%[uartUnmask] \n"
+    "   out %[uartPort],r23   \n"
+    "   rjmp 3f               \n"
+    "2: in r23,%[uartPort]    \n"
+    "   or r23,%[uartMask]    \n"
+    "   out %[uartPort],r23   \n"
+    "   nop                   \n"
+    "3: rcall uartDelay       \n"
+    "   rcall uartDelay       \n"
+    "   rcall uartDelay       \n"
+    "   rcall uartDelay       \n"
+    "   lsr %[ch]             \n"
+    "   dec %[count]          \n"
+    "   brne 1b               \n"
     :
     :
       [ch] "r" (ch),
-    [count] "r" ((uint8_t)10),
+      [count] "r" ((uint8_t)10),
       [uartPort] "I" (_SFR_IO_ADDR(ANALOG_COMP_PORT)),
       [uartMask] "r" (_txmask),
       [uartUnmask] "r" (_txunmask)
-  : "r23",
-    "r24",
-    "r25"
+    : "r23",
+      "r24",
+      "r25"
   );
   SREG = oldSREG;
   return 1;

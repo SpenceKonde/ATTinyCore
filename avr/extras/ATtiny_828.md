@@ -36,7 +36,7 @@ The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the sligh
 Tone() uses Timer1. For best results, use pin 21 or 22 (PIN_PC5, PIN_PC6), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins 21 and 22.
 
 ### I2C Support
-Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library.
+Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably.
 
 ### SPI Support
 There is full Hardware SPI support.

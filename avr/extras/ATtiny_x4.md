@@ -50,7 +50,7 @@ Example of a "guard" against wrong pin mapping:
 Tone() uses Timer1. For best results, use pin 6 and 5 (4 and 5 with alternate pinout - PA6 and PA5), as this will use the hardware output compare to generate the square wave instead of using interrupts.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
 
 ### SPI Support
 There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common).

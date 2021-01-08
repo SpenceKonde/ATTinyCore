@@ -349,6 +349,8 @@ uint8_t *TwoWire::Buffer = TWI_Buffer;
 uint8_t TwoWire::BufferIndex = 0;
 uint8_t TwoWire::BufferLength = 0;
 
+uint8_t TwoWire::fastmode = 0;
+
 uint8_t TwoWire::transmitting = 0;
 
 // Constructors ////////////////////////////////////////////////////////////////
@@ -370,6 +372,7 @@ void TwoWire::begin(void) {
 void TwoWire::begin(uint8_t address) {
   BufferIndex = 0;
   BufferLength = 0;
+  transmitting = 0;
 
   USI_TWI_Slave_Initialise(address);
 }
@@ -380,11 +383,14 @@ void TwoWire::begin(int address) {
 
 void TwoWire::end(void) {
   USI_TWI_Slave_Disable();
+  DDR_USI_CL &= ~(1 << PIN_USI_SCL); // Enable SCL as input.
+  DDR_USI &= ~(1 << PIN_USI_SDA); // Enable SDA as input.
+  PORT_USI &= ~(1 << PIN_USI_SDA); // Disable pullup on SDA.
+  PORT_USI_CL &= ~(1 << PIN_USI_SCL); // Disable pullup on SCL.
 }
 
 void TwoWire::setClock(uint32_t clock) {
-  // XXX: to be implemented.
-  (void)clock; //disable warning
+  USI_TWI_Master_Speed(clock>200000);
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity,

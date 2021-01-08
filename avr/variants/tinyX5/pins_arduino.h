@@ -97,6 +97,8 @@ static const uint8_t A3 = 0x80 | 3;
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
+//Why not? It's one of the special features of these parts, why not use it?
+#define TIMER1_PWM
 
 
 
