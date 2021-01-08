@@ -203,53 +203,78 @@
    Then we find the leading one-bits to add, avoiding multiplication.
 
    This way of calculating micros is currently enabled whenever
-   *both* the millis() exactness correction is enabled *and*
-   128 <= MICROSECONDS_PER_MILLIS_OVERFLOW < 8192.
+   *both* the millis() exactness correction is enabled
+   *and* MICROSECONDS_PER_MILLIS_OVERFLOW < 65536.
    Otherwise we fall back to the existing micros().
  */
 #ifdef CORRECT_EXACT_MICROS
-#if MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 13)
-#undef CORRECT_EXACT_MICROS // add cases for higher values if relevant
-#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 12)
+#if MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 16)
+#undef CORRECT_EXACT_MICROS // disable correction for such long intervals
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 15)
+#define CORRECT_BITS 8
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 14)
+#define CORRECT_BITS 7
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 13)
+#define CORRECT_BITS 6
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 12)
 #define CORRECT_BITS 5
-#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 11)
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 11)
 #define CORRECT_BITS 4
-#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 10)
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 10)
 #define CORRECT_BITS 3
-#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 9)
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 9)
 #define CORRECT_BITS 2
-#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1U << 8)
+#elif MICROSECONDS_PER_MILLIS_OVERFLOW >= (1 << 8)
 #define CORRECT_BITS 1
 #else
 #define CORRECT_BITS 0
 #endif
-#ifdef CORRECT_BITS // usecs per ovf is in the expected range of values
-#define USPEROF_BYTE (MICROSECONDS_PER_MILLIS_OVERFLOW >> CORRECT_BITS)
-#if USPEROF_BYTE >= (1U << 8)
+#ifdef CORRECT_BITS // microsecs per overflow in the expected range of values
+#define CORRECT_BIT7S (0)
+#define CORRECT_BIT6
+#define CORRECT_BIT5
+#define CORRECT_BIT4
+#define CORRECT_BIT3
+#define CORRECT_BIT2
+#define CORRECT_BIT1
+#define CORRECT_BIT0
+#define CORRECT_UINT ((unsigned int) t)
+#define CORRECT_BYTE (MICROSECONDS_PER_MILLIS_OVERFLOW >> CORRECT_BITS)
+#if CORRECT_BYTE >= (1 << 8)
 #error "Miscalculation in micros() exactness correction"
 #endif
-#if (USPEROF_BYTE & (1U << 7))
-#define CORRECT_BIT7 // defined if MICROSECONDS_PER_MILLIS_OVERFLOW >= 128
-#else
-#undef CORRECT_EXACT_MICROS // we don't treat this case as relevant
+#if (CORRECT_BYTE & (1 << 7))
+#undef  CORRECT_BIT7S
+#define CORRECT_BIT7S (CORRECT_UINT << 1)
 #endif
-#if (USPEROF_BYTE & (1U << 6))
-#define CORRECT_BIT6
+#if (CORRECT_BYTE & (1 << 6))
+#undef  CORRECT_BIT6
+#define CORRECT_BIT6 + CORRECT_UINT
 #endif
-#if (USPEROF_BYTE & (1U << 5))
-#define CORRECT_BIT5
+#if (CORRECT_BYTE & (1 << 5))
+#undef  CORRECT_BIT5
+#define CORRECT_BIT5 + CORRECT_UINT
 #endif
-#if (USPEROF_BYTE & (1U << 4))
-#define CORRECT_BIT4
+#if (CORRECT_BYTE & (1 << 4))
+#undef  CORRECT_BIT4
+#define CORRECT_BIT4 + CORRECT_UINT
 #endif
-#if (USPEROF_BYTE & (1U << 3))
-#define CORRECT_BIT3
+#if (CORRECT_BYTE & (1 << 3))
+#undef  CORRECT_BIT3
+#define CORRECT_BIT3 + CORRECT_UINT
 #endif
-/* The bits below 3 are ignored for a worst case jitter of 1 in 16.
-   This refers to micros() jitter during one timer cycle, meaning
-   that the increasing TCNT may be underestimated by this ratio.
-   The error resets to zero at the beginning of each cycle.
-   The long-term drift of micros() thus remains zero. */
+#if (CORRECT_BYTE & (1 << 2))
+#undef  CORRECT_BIT2
+#define CORRECT_BIT2 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 1))
+#undef  CORRECT_BIT1
+#define CORRECT_BIT1 + CORRECT_UINT
+#endif
+#if (CORRECT_BYTE & (1 << 0))
+#undef  CORRECT_BIT0
+#define CORRECT_BIT0 + CORRECT_UINT
+#endif
 #endif // CORRECT_BITS
 #endif // CORRECT_EXACT_MICROS
 
@@ -428,25 +453,15 @@ static void initToneTimerInternal(void);
     #elif F_CPU == 14745600L || F_CPU == 7372800L || F_CPU == 3686400L // 1104, 552
         ((unsigned int) t << 7) + ((unsigned int) t << 3) + ((unsigned int) t << 1)
     #else // general catch-all
-    #if !defined CORRECT_BITS || !defined CORRECT_BIT7
-    #error "micros() correction relies on bit 7 to be defined"
+        (((((((((((((CORRECT_BIT7S
+                     CORRECT_BIT6) << 1)
+                     CORRECT_BIT5) << 1)
+                     CORRECT_BIT4) << 1)
+                     CORRECT_BIT3) << 1)
+                     CORRECT_BIT2) << 1)
+                     CORRECT_BIT1) << 1)
+                     CORRECT_BIT0)
     #endif
-        /* This code takes a lot of cycles due to one loop for each shift.
-           If you ever get here, optimize by ((((t << 1) + t) << 1) + t)... */
-        ((unsigned int) t << 7)
-    #ifdef CORRECT_BIT6
-      + ((unsigned int) t << 6)
-    #endif
-    #ifdef CORRECT_BIT5
-      + ((unsigned int) t << 5)
-    #endif
-    #ifdef CORRECT_BIT4
-      + ((unsigned int) t << 4)
-    #endif
-    #ifdef CORRECT_BIT3
-      + ((unsigned int) t << 3)
-    #endif
-    #endif // general case
       ) >> (8 - CORRECT_BITS));
     return q ? m + MICROSECONDS_PER_MILLIS_OVERFLOW : m;
   #else
