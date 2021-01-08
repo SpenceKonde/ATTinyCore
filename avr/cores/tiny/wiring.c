@@ -422,12 +422,16 @@ static void initToneTimerInternal(void);
         ((unsigned int) t << 8) - ((unsigned int) t << 3)
     #elif F_CPU == 14745600L || F_CPU == 7372800L // 1104, 552
         ((unsigned int) t << 7) + ((unsigned int) t << 3) + ((unsigned int) t << 1)
+    #elif F_CPU == 12000000L || F_CPU == 6000000L // 1360, 680
+        (r = ((unsigned int) t << 7) + ((unsigned int) t << 5), r + (r >> 4))
     #elif F_CPU == 11059200L // hand-tuned correction: 1472, 736
         ((unsigned int) t << 8) - ((unsigned int) t << 6) - ((unsigned int) t << 3)
     #else // general catch-all
     #if !defined CORRECT_BITS || !defined CORRECT_BIT7
     #error "micros() correction relies on bit 7 to be defined"
     #endif
+        /* This code takes a lot of cycles due to one loop for each shift.
+           If you ever get here, optimize by ((((t << 1) + t) << 1) + t)... */
         ((unsigned int) t << 7)
     #ifdef CORRECT_BIT6
       + ((unsigned int) t << 6)
