@@ -122,7 +122,7 @@
    at least for prescaler values up and including 64 as used in this file. */
 #if MillisTimer_Prescale_Value <= 64
 #define MICROSECONDS_PER_MILLIS_OVERFLOW \
-  (MillisTimer_Prescale_Value * 256L * 1000L * 100L / (F_CPU / 10L))
+  (MillisTimer_Prescale_Value * 256UL * 1000UL * 100UL / (F_CPU / 10UL))
 #else
 /* It may be sufficient to swap the 100L and 10L in the above formula,
    but please double-check the EXACT_NUMERATOR macro below as well
@@ -152,8 +152,8 @@
    and divide the numerator by 8.  The calculation fits into a long int
    and produces the same right shift by 3 as the original code.
  */
-#define EXACT_NUMERATOR (MillisTimer_Prescale_Value * 256L * 12500L)
-#define EXACT_DENOMINATOR (F_CPU / 10L)
+#define EXACT_NUMERATOR (MillisTimer_Prescale_Value * 256UL * 12500UL)
+#define EXACT_DENOMINATOR (F_CPU / 10UL)
 
 /* The remainder is an integer in the range [0, EXACT_DENOMINATOR). */
 #define EXACT_REMAINDER \
@@ -181,10 +181,10 @@
 #if EXACT_REMAINDER > 0
 #define CORRECT_EXACT_MILLIS // enable zero drift correction in millis()
 #define CORRECT_EXACT_MICROS // enable zero drift correction in micros()
-#define CORRECT_EXACT_ROLL (135)
+#define CORRECT_EXACT_ROLL 135
 #define CORRECT_EXACT_ROLL_MINUS1 (CORRECT_EXACT_ROLL - 1)
 #define CORRECT_EXACT_MANY \
-  ((2L * 135L + 1L) * EXACT_REMAINDER / (2L * EXACT_DENOMINATOR))
+  ((2U * 135U + 1U) * EXACT_REMAINDER / (2U * EXACT_DENOMINATOR))
 #if CORRECT_EXACT_MANY < 0 || CORRECT_EXACT_MANY > 135
 #error "Miscalculation in millis() exactness correction"
 #endif
@@ -279,14 +279,14 @@
 #endif // CORRECT_EXACT_MICROS
 
 // the whole number of milliseconds per millis timer overflow
-#define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000)
+#define MILLIS_INC (MICROSECONDS_PER_MILLIS_OVERFLOW / 1000U)
 
 // the fractional number of milliseconds per millis timer overflow. we shift right
 // by three to fit these numbers into a byte. (for the clock speeds we care
 // about - 8 and 16 MHz - this doesn't lose precision.)
-#define FRACT_INC (((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000) >> 3) \
+#define FRACT_INC (((MICROSECONDS_PER_MILLIS_OVERFLOW % 1000U) >> 3) \
                    CORRECT_FRACT_PLUSONE)
-#define FRACT_MAX (1000 >> 3)
+#define FRACT_MAX (1000U >> 3)
 
 #if INITIALIZE_SECONDARY_TIMERS
 static void initToneTimerInternal(void);
