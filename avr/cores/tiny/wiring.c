@@ -412,7 +412,11 @@ static void initToneTimerInternal(void);
     /* Of the hand-tuned corrected frequencies, 18.432, 18, 16.5, 9.216 MHz
        have the highest possible accuracy concerning the timer counter,
        at the same time being cheaper than most other odd frequencies. */
-    #if   F_CPU == 20000000L // hand-tuned correction: 816
+    #if   F_CPU == 24000000L || F_CPU == 12000000L || F_CPU == 6000000L // 1360, 680
+        (r = ((unsigned int) t << 7) + ((unsigned int) t << 5), r + (r >> 4))
+    #elif F_CPU == 22118400L || F_CPU == 11059200L // 1472, 736
+        ((unsigned int) t << 8) - ((unsigned int) t << 6) - ((unsigned int) t << 3)
+    #elif F_CPU == 20000000L // 816
         (r = ((unsigned int) t << 8) - ((unsigned int) t << 6), r + (r >> 4))
     #elif F_CPU == 18432000L || F_CPU == 9216000L // 888, 444, etc.
         ((unsigned int) t << 8) - ((unsigned int) t << 5) - ((unsigned int) t << 1)
@@ -420,12 +424,8 @@ static void initToneTimerInternal(void);
         (r = ((unsigned int) t << 8) - ((unsigned int) t << 5), r + (r >> 6))
     #elif F_CPU == 16500000L // hand-tuned correction: 992
         ((unsigned int) t << 8) - ((unsigned int) t << 3)
-    #elif F_CPU == 14745600L || F_CPU == 7372800L // 1104, 552
+    #elif F_CPU == 14745600L || F_CPU == 7372800L || F_CPU == 3686400L // 1104, 552
         ((unsigned int) t << 7) + ((unsigned int) t << 3) + ((unsigned int) t << 1)
-    #elif F_CPU == 12000000L || F_CPU == 6000000L // 1360, 680
-        (r = ((unsigned int) t << 7) + ((unsigned int) t << 5), r + (r >> 4))
-    #elif F_CPU == 11059200L // hand-tuned correction: 1472, 736
-        ((unsigned int) t << 8) - ((unsigned int) t << 6) - ((unsigned int) t << 3)
     #else // general catch-all
     #if !defined CORRECT_BITS || !defined CORRECT_BIT7
     #error "micros() correction relies on bit 7 to be defined"
