@@ -378,7 +378,7 @@ void delayMicroseconds(unsigned int us)
 
   #elif F_CPU >= 18432000L
     // for a one-microsecond delay, simply return.  the overhead
-    // of the function call takes 17 (19) cycles, which is aprox. 1us
+    // of the function call takes 18 (20) cycles, which is aprox. 1us
     __asm__ __volatile__ (
       "nop" "\n\t"
       "nop" "\n\t"
@@ -392,17 +392,35 @@ void delayMicroseconds(unsigned int us)
     // delay requested.
     us = (us << 2) + us; // x5 us, = 7 cycles
 
-    // user wants to wait longer than 9us - here we can use approximation with multiplication
-    if (us > 36) { // 3 cycles
+    // user wants to wait 7us or more -- here we can use approximation
+    if (us > 34) { // 3 cycles
       // Since the loop is not accurately 1/5 of a microsecond we need
-      // to multiply us by 0,9216 (18.432 / 20)
-      us = (us >> 1) + (us >> 2) + (us >> 3) + (us >> 4); // x0.9375 us, = 20 cycles (TODO: the cycle count needs to be validated)
+      // to multiply us by (18.432 / 20), very close to 60398 / 2.**16.
 
-      // account for the time taken in the preceding commands.
-      // we just burned 45 (47) cycles above, remove 12, (12*4=48) (TODO: calculate real number of cycles burned)
-      // additionally, since we are not 100% precise (we are slower), subtract a bit more to fit for small values
-      // us is at least 46, so we can subtract 18
-      us -= 19; // 2 cycles
+      // Approximate (60398UL * us) >> 16 by using 60384 instead.
+      // This leaves a relative error of 232ppm, or 1 in 4321.
+      unsigned int r = us - (us >> 5);  // 30 cycles
+      us = r + (r >> 6) - (us >> 4);    // 55 cycles
+      // careful: us is generally less than before, so don't underrun below
+
+      // account for the time taken in the preceding and following commands.
+      // we are burning 114 (116) cycles, remove 29 iterations: 29*4=116.
+
+      /* TODO: is this calculation correct.  Right now, we do
+                function call           6 (+ 2) cycles
+                wait at top             4
+                comparison false        3
+                multiply by 5           7
+                comparison false        3
+                compute r               30
+                update us               55
+                subtraction             2
+                return                  4
+                total                   --> 114 (116) cycles
+       */
+
+      // us dropped to no less than 32, so we can subtract 29
+      us -= 29; // 2 cycles
     } else {
       // account for the time taken in the preceding commands.
       // we just burned 30 (32) cycles above, remove 8, (8*4=32)
