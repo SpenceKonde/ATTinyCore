@@ -466,6 +466,40 @@ void delayMicroseconds(unsigned int us)
     // us is at least 8 so we can subtract 5
     us -= 5; // = 2 cycles,
 
+  #elif F_CPU >= 14745600L
+    // for a one-microsecond delay, simply return.  the overhead
+    // of the function call takes 14 (16) cycles, which is aprox. 1us
+
+    if (us <= 1) return; //  = 3 cycles, (4 when true)
+
+    // the following loop takes nearly 1/4 (0.271%) of a microsecond (4 cycles)
+    // per iteration, so execute it four times for each microsecond of
+    // delay requested.
+    us <<= 2; // x4 us, = 4 cycles
+
+    // user wants to wait 8us or more -- here we can use approximation
+    if (us > 31) { // 3 cycles
+      // Since the loop is not accurately 1/4 of a microsecond we need
+      // to multiply us by (14.7456 / 16), very close to 60398 / 2.**16.
+
+      // Approximate (60398UL * us) >> 16 by using 60384 instead.
+      // This leaves a relative error of 232ppm, or 1 in 4321.
+      unsigned int r = us - (us >> 5);  // 30 cycles
+      us = r + (r >> 6) - (us >> 4);    // 55 cycles
+      // careful: us is generally less than before, so don't underrun below
+
+      // account for the time taken in the preceding and following commands.
+      // we are burning 107 (109) cycles, remove 27 iterations: 27*4=108.
+
+      // us dropped to no less than 29, so we can subtract 27
+      us -= 27; // 2 cycles
+    } else {
+      // account for the time taken in the preceding commands.
+      // we just burned 23 (25) cycles above, remove 6, (6*4=24)
+      // us is at least 8, so we can subtract 6
+      us -= 6; // 2 cycles
+    }
+
   #elif F_CPU >= 12000000L
     // for the 12 MHz clock if somebody is working with USB
 
