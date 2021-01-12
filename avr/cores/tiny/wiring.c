@@ -444,7 +444,7 @@ void delayMicroseconds(unsigned int us)
     // so execute it three times for each microsecond of delay requested.
     us = (us << 1) + us; // x3 us, = 5 cycles
 
-    // account for the time taken in the preceeding commands.
+    // account for the time taken in the preceding commands.
     // we just burned 20 (22) cycles above, remove 3 (3*6=18),
     // us is at least 6 so we may subtract 3
     us -= 3; // = 2 cycles
