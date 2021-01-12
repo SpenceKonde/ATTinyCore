@@ -521,7 +521,7 @@ void delayMicroseconds(unsigned int us)
     // for the 12 MHz clock if somebody is working with USB
 
     // for a 1 microsecond delay, simply return.  the overhead
-    // of the function call takes 14 (16) cycles, which is 1.5us
+    // of the function call takes 14 (16) cycles, which is 1.3us
     if (us <= 1) return; //  = 3 cycles, (4 when true)
 
     // the following loop takes 1/3 of a microsecond (4 cycles)
@@ -550,30 +550,35 @@ void delayMicroseconds(unsigned int us)
     // we just burned 17 (19) cycles above, remove 4, (4*4=16)
     // us is at least 6 so we can subtract 4
     us -= 4; // = 2 cycles
+
   #elif F_CPU >= 6000000L
     // for that unusual 6mhz clock...
 
-    // for a 1 and 2 microsecond delay, simply return.  the overhead
-    // of the function call takes 14 (16) cycles, which is 2us
-    if (us <= 2) return; //  = 3 cycles, (4 when true)
+    // for a 1 to 3 microsecond delay, simply return.  the overhead
+    // of the function call takes 14 (16) cycles, which is 2.5us
+    if (us <= 3) return; //  = 3 cycles, (4 when true)
 
-    // the following loop takes 2/3rd microsecond (4 cycles)
-    // per iteration, so we want to add it to half of itself
-    us +=us>>1;
-    us -= 2; // = 2 cycles
+    // make the loop below last 6 cycles
+  #undef  _MORENOP_
+  #define _MORENOP_ " nop \n\t  nop \n\t"
+
+    // the following loop takes 1 microsecond (6 cycles) per iteration
+    // we burned 15 (17) cycles above, plus 2 below, remove 3 (3 * 6 = 18)
+    // us is at least 4 so we can subtract 3
+    us -= 3; // = 2 cycles
 
   #elif F_CPU >= 4000000L
     // for that unusual 4mhz clock...
 
-    // for a 1 and 2 microsecond delay, simply return.  the overhead
-    // of the function call takes 14 (16) cycles, which is 2us
-    if (us <= 2) return; //  = 3 cycles, (4 when true)
+    // for a 1 to 4 microsecond delay, simply return.  the overhead
+    // of the function call takes 14 (16) cycles, which is 4us
+    if (us <= 4) return; //  = 3 cycles, (4 when true)
 
     // the following loop takes 1 microsecond (4 cycles)
     // per iteration, so nothing to do here! \o/
-
-    us -= 2; // = 2 cycles
-
+    // ... in terms of rescaling.  We burned 15 (17) above plus 2 below,
+    // so remove 5 (5 * 4 = 20), but we may at most remove 4 to keep us > 0.
+    us -= 4; // = 2 cycles
 
   #else
     // for the 1 MHz internal clock (default settings for common AVR microcontrollers)
