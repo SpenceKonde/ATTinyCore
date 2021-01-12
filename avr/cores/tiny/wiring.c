@@ -445,9 +445,9 @@ void delayMicroseconds(unsigned int us)
     us = (us << 1) + us; // x3 us, = 5 cycles
 
     // account for the time taken in the preceding commands.
-    // we just burned 20 (22) cycles above, remove 3 (3*6=18),
-    // us is at least 6 so we may subtract 3
-    us -= 3; // = 2 cycles
+    // we burned 20 (22) cycles above, plus 2 more below, remove 4 (4*6=24),
+    // us is at least 6 so we may subtract 4
+    us -= 4; // = 2 cycles
 
   #elif F_CPU >= 16500000L
     // for the special 16.5 MHz clock
@@ -461,7 +461,7 @@ void delayMicroseconds(unsigned int us)
     us = (us << 2) + (us >> 3); // x4.125 with 23 cycles
 
     // account for the time taken in the preceding commands.
-    // we just burned 38 (40) cycles above, remove 10, (4*10=40)
+    // we burned 38 (40) cycles above, plus 2 below, remove 10 (4*10=40)
     // us is at least 8, so we subtract only 7 to keep it positive
     // the error is below one microsecond and not worth extra code
     us -= 7; // = 2 cycles
