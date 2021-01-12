@@ -580,6 +580,22 @@ void delayMicroseconds(unsigned int us)
     // so remove 5 (5 * 4 = 20), but we may at most remove 4 to keep us > 0.
     us -= 4; // = 2 cycles
 
+  #elif F_CPU >= 2000000L
+    // for that unusual 2mhz clock...
+
+    // for a 1 to 9 microsecond delay, simply return.  the overhead
+    // of the function call takes 14 (16) cycles, which is 8us
+    if (us <= 9) return; //  = 3 cycles, (4 when true)
+    // must be at least 10 if we want to do /= 2 -= 4
+
+    // divide by 2 to account for 2us runtime per loop iteration
+    us >>= 1; // = 2 cycles;
+
+    // the following loop takes 2 microseconds (4 cycles) per iteration
+    // we burned 17 (19) above plus 2 below,
+    // so remove 5 (5 * 4 = 20), but we may at most remove 4 to keep us > 0.
+    us -= 4; // = 2 cycles
+
   #else
     // for the 1 MHz internal clock (default settings for common AVR microcontrollers)
     // the overhead of the function calls is 14 (16) cycles
