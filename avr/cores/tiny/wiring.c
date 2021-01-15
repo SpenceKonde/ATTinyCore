@@ -160,9 +160,10 @@
 
    Whenever the approximation is not exact, the relative drift of millis() is
    less than 1. / (135. * (MICROSECONDS_PER_MILLIS_OVERFLOW >> 3)), which is
-   in the several dozen ppm range.  Thus, even for hitherto untested future
+   in the dozen ppm range.  Thus, even for hitherto not implemented, future
    clock frequencies, millis() timing will be highly accurate by construction.
    In these hypothetical cases, n is a close approximation to the exact value.
+   In fact, the 16.5 MHz case is in this category with an error of 3ppm.
 
    We compute n by scaling down the remainder to the range [0, 135).
  */
