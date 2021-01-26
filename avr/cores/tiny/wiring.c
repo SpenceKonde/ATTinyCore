@@ -122,10 +122,10 @@
    at least for prescaler values up and including 64 as used in this file. */
 #if MillisTimer_Prescale_Value <= 64
 #define MICROSECONDS_PER_MILLIS_OVERFLOW \
-  (MillisTimer_Prescale_Value * 256UL * 1000UL * 100UL / (F_CPU / 10UL))
+  (MillisTimer_Prescale_Value * 256UL * 1000UL * 100UL / ((F_CPU + 5UL) / 10UL))
 #else
-/* It may be sufficient to swap the 100L and 10L in the above formula,
-   but please double-check the EXACT_NUMERATOR macro below as well
+/* It may be sufficient to swap the 100L and 10L in the above formula, but
+   please double-check EXACT_NUMERATOR and EXACT_DENOMINATOR below as well
    and make sure it does not roll over. */
 #define MICROSECONDS_PER_MILLIS_OVERFLOW 0
 #error "Please adjust MICROSECONDS_PER_MILLIS_OVERFLOW formula"
@@ -133,16 +133,14 @@
 #endif
 
 /* Correct millis to zero long term drift
-   ======================================
+   --------------------------------------
 
    When MICROSECONDS_PER_MILLIS_OVERFLOW >> 3 is exact, we do nothing.
    In this case, millis() has zero long-term drift, that is,
    it precisely follows the oscillator used for timing.
 
    When it has a fractional part that leads to an error when ignored,
-   we apply a correction.  This correction yields exact zero drift when
-   F_CPU has no more than one prime factor of 5 and three factors of 3.
-   This is the case for all relevant frequencies.
+   we apply a correction.  This correction yields a drift below 4 ppm.
 
    The mathematics of the correction are coded in the preprocessor and
    produce compile-time constants that do not affect size or run time.
@@ -153,7 +151,7 @@
    and produces the same right shift by 3 as the original code.
  */
 #define EXACT_NUMERATOR (MillisTimer_Prescale_Value * 256UL * 12500UL)
-#define EXACT_DENOMINATOR (F_CPU / 10UL)
+#define EXACT_DENOMINATOR ((F_CPU + 5UL) / 10UL)
 
 /* The remainder is an integer in the range [0, EXACT_DENOMINATOR). */
 #define EXACT_REMAINDER \
@@ -161,36 +159,25 @@
 
 /* If the remainder is zero, MICROSECONDS_PER_MILLIS_OVERFLOW is exact.
 
-   Otherwise we compute the fractional part and
-   approximate it by the rational number n / (5 * 3 * 3 * 3) = n / 135.
-   The approximation is exact for all currently relevant frequencies.
-   The value n is used inside millis() to effect long-term exactness.
+   Otherwise we compute the fractional part and approximate it by the closest
+   rational number n / 256.  Effectively, we increase millis accuracy by 512x.
 
-   Whenever the approximation is not exact, the relative drift of millis() is
-   less than 1. / (2 * 135. * (MICROSECONDS_PER_MILLIS_OVERFLOW >> 3)), which is
-   in the dozen ppm range.  Thus, even for hitherto not implemented, future
-   clock frequencies, millis() timing will be highly accurate by construction.
-   In these hypothetical cases, n is a close approximation to the exact value.
-   In fact, the 16.5 MHz case is in this category with an error of 3ppm.
-
-   We compute n by scaling down the remainder to the range [0, 135].
-   The two extreme cases 0 and 135 require only trivial correction.
+   We compute n by scaling down the remainder to the range [0, 256].
+   The two extreme cases 0 and 256 require only trivial correction.
    All others are handled by an unsigned char counter in millis().
  */
 #define CORRECT_FRACT_PLUSONE // possibly needed for high/cheap corner case
 #if EXACT_REMAINDER > 0
 #define CORRECT_EXACT_MILLIS // enable zero drift correction in millis()
 #define CORRECT_EXACT_MICROS // enable zero drift correction in micros()
-#define CORRECT_EXACT_ROLL 135
-#define CORRECT_EXACT_ROLL_MINUS1 (CORRECT_EXACT_ROLL - 1)
 #define CORRECT_EXACT_MANY \
-  ((2U * 135U + 1U) * EXACT_REMAINDER / (2U * EXACT_DENOMINATOR))
-#if CORRECT_EXACT_MANY < 0 || CORRECT_EXACT_MANY > 135
+  ((2U * 256U * EXACT_REMAINDER + EXACT_DENOMINATOR) / (2U * EXACT_DENOMINATOR))
+#if CORRECT_EXACT_MANY < 0 || CORRECT_EXACT_MANY > 256
 #error "Miscalculation in millis() exactness correction"
 #endif
 #if CORRECT_EXACT_MANY == 0 // low/cheap corner case
 #undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
-#elif CORRECT_EXACT_MANY == 135 // high/cheap corner case
+#elif CORRECT_EXACT_MANY == 256 // high/cheap corner case
 #undef CORRECT_EXACT_MILLIS // go back to nothing for millis only
 #undef CORRECT_FRACT_PLUSONE // but use this macro...
 #define CORRECT_FRACT_PLUSONE + 1 // ...to add 1 more to fract every time
@@ -323,12 +310,8 @@ static void initToneTimerInternal(void);
     unsigned long m = millis_timer_millis;
     unsigned char f = millis_timer_fract;
 #ifdef CORRECT_EXACT_MILLIS
-    static unsigned char correct_exact = 0;
-
-    if (correct_exact == CORRECT_EXACT_ROLL_MINUS1) {
-      correct_exact = 0;
-    }
-    else if (++correct_exact <= CORRECT_EXACT_MANY) {
+    static unsigned char correct_exact = 0;     // rollover intended
+    if (++correct_exact <= CORRECT_EXACT_MANY) {
       ++f;
     }
 #endif
