@@ -151,13 +151,14 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 //
 // These perform slightly better as macros compared to inline functions
 //
-#define digitalPinToPort(P) ( pgm_read_byte( digital_pin_to_port_PGM + (P) ) )
-#define digitalPinToBitMask(P) ( pgm_read_byte( digital_pin_to_bit_mask_PGM + (P) ) )
-#define digitalPinToTimer(P) ( pgm_read_byte( digital_pin_to_timer_PGM + (P) ) )
+#define const_array_or_pgm_(FUNC,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : FUNC((ARR)+idx_); })
+#define digitalPinToPort(P) ( const_array_or_pgm_(pgm_read_byte, digital_pin_to_port_PGM, (P) ) )
+#define digitalPinToBitMask(P) ( const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P) ) )
+#define digitalPinToTimer(P) ( const_array_or_pgm_(pgm_read_byte, digital_pin_to_timer_PGM, (P) ) )
 #define analogInPinToBit(P) (P)
-#define portOutputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_output_PGM + (P))) )
-#define portInputRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_input_PGM + (P))) )
-#define portModeRegister(P) ( (volatile uint8_t *)( pgm_read_word( port_to_mode_PGM + (P))) )
+#define portOutputRegister(P) ( (volatile uint8_t *)( const_array_or_pgm_(pgm_read_word, port_to_output_PGM, (P))) )
+#define portInputRegister(P) ( (volatile uint8_t *)( const_array_or_pgm_(pgm_read_word, port_to_input_PGM, (P))) )
+#define portModeRegister(P) ( (volatile uint8_t *)( const_array_or_pgm_(pgm_read_word, port_to_mode_PGM, (P))) )
 
 #define NOT_A_PIN 0
 #define NOT_A_PORT 0
