@@ -418,14 +418,11 @@ static void initToneTimerInternal(void);
        For the timer we just need to be close from below.
        Must never be too high, or micros jumps backwards. */
     m = (((m << 7) - (m << 1) - m + f) << 3) + ((
-    /* Of the hand-tuned corrected frequencies, 18.432, 18, 16.5, 9.216 MHz
-       have the highest possible accuracy concerning the timer counter,
-       at the same time being cheaper than most other odd frequencies. */
     #if   F_CPU == 24000000L || F_CPU == 12000000L || F_CPU == 6000000L // 1360, 680
         (r = ((unsigned int) t << 7) + ((unsigned int) t << 5), r + (r >> 4))
     #elif F_CPU == 22118400L || F_CPU == 11059200L // 1472, 736
         ((unsigned int) t << 8) - ((unsigned int) t << 6) - ((unsigned int) t << 3)
-    #elif F_CPU == 20000000L // 816
+    #elif F_CPU == 20000000L || F_CPU == 10000000L // 816, 408
         (r = ((unsigned int) t << 8) - ((unsigned int) t << 6), r + (r >> 4))
     #elif F_CPU == 18432000L || F_CPU == 9216000L // 888, 444, etc.
         ((unsigned int) t << 8) - ((unsigned int) t << 5) - ((unsigned int) t << 1)
