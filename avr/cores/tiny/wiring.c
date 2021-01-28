@@ -311,7 +311,7 @@ static void initToneTimerInternal(void);
     unsigned char f = millis_timer_fract;
 #ifdef CORRECT_EXACT_MILLIS
     static unsigned char correct_exact = 0;     // rollover intended
-    if (++correct_exact <= CORRECT_EXACT_MANY) {
+    if (++correct_exact < CORRECT_EXACT_MANY) {
       ++f;
     }
 #endif
