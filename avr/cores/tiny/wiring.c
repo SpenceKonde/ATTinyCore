@@ -140,7 +140,8 @@
    it precisely follows the oscillator used for timing.
 
    When it has a fractional part that leads to an error when ignored,
-   we apply a correction.  This correction yields a drift below 4 ppm.
+   we apply a correction.  This correction yields a drift of 30 ppm or less:
+   1e6 / (512 * (minimum_MICROSECONDS_PER_MILLIS_OVERFLOW >> 3)) <= 30.
 
    The mathematics of the correction are coded in the preprocessor and
    produce compile-time constants that do not affect size or run time.
