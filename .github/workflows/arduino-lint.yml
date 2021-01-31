@@ -22,4 +22,4 @@ jobs:
       - name: Arduino Lint
         uses: arduino/arduino-lint-action@v1
         with:
-          path: megaavr
+          path: avr
