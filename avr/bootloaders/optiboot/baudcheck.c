@@ -57,8 +57,3 @@ ERR_TENTHS=$(( ERR_TS > 0 ? ERR_TS: -ERR_TS ))
  * Print a nice message containing the info we've calculated
  */
 echo BAUD RATE CHECK: Desired: $bps,  Real: $BAUD_ACTUAL, UBRRL = $BAUD_SETTING, Difference=$BAUD_ERROR.$ERR_TENTHS\%
-
-
-
-
-
