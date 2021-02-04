@@ -29,4 +29,4 @@ jobs:
           check_hidden: true
           skip: "./.git,*.py,*.gif,*.jpg,*.png"
           # In the event of a false positive, add the word in all lower case to this file:
-          ignore_words_file: megaavr/extras/ci/codespell-ignore-words-list.txt
+          ignore_words_file: avr/extras/ci/codespell-ignore-words-list.txt
