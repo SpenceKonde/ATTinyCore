@@ -27,6 +27,6 @@ jobs:
         with:
           check_filenames: true
           check_hidden: true
-          skip: "./.git,*.py,*.gif,*.jpg,*.png"
+          skip: "./.git,./avr/travis-ci/etc/*,./avr/travis-ci/arduino-ci-script/*,*.py,*.gif,*.jpg,*.png"
           # In the event of a false positive, add the word in all lower case to this file:
           ignore_words_file: avr/extras/ci/codespell-ignore-words-list.txt
