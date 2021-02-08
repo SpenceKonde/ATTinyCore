@@ -1,7 +1,9 @@
 # This document lists significant changes and bugfixes, including those not in yet in a release.
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
 
-### planned 1.4.2
+### planned ~1.4.2~ aw hell, 1.5.0
+* Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
+* Improvements to millis and micros timing, as well as delayMicroseconds particularly for oddball frequencies. (big thanks to @cburstedde)
 * Add new rationalized pinout for x61
 * Correct bug with pin definitions for I2C pins on the ATtiny x61 series.
 * Correct SCL/SDA definitions for x61

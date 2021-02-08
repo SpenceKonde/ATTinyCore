@@ -44,6 +44,7 @@ parallel.name=Parallel Programmer
 parallel.protocol=dapa
 parallel.force=true
 parallel.delay=200
+parallel.program.tool=avrdude
 
 arduinoasisp.name=Arduino as ISP
 arduinoasisp.communication=serial

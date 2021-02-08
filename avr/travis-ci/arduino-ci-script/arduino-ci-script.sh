@@ -1807,13 +1807,13 @@ function check_library_properties() {
         fi
 
         # Check for dead url value
-        local urlStatus
-        urlStatus=$(curl --location --request GET --output /dev/null --silent --head --write-out '%{http_code}' "$urlValue")
-        local errorStatusRegex='^[045]'
-        if [[ "$urlStatus" =~ $errorStatusRegex ]]; then
-          echo "ERROR: ${normalizedLibraryPropertiesPath}/library.properties: url value $urlValue returned error status $urlStatus."
-          exitStatus=$(set_exit_status "$exitStatus" $ARDUINO_CI_SCRIPT_CHECK_LIBRARY_PROPERTIES_DEAD_URL_EXIT_STATUS)
-        fi
+        # local urlStatus
+        # urlStatus=$(curl --location --request GET --output /dev/null --silent --head --write-out '%{http_code}' "$urlValue")
+        # local errorStatusRegex='^[045]'
+        # if [[ "$urlStatus" =~ $errorStatusRegex ]]; then
+        #  echo "ERROR: ${normalizedLibraryPropertiesPath}/library.properties: url value $urlValue returned error status $urlStatus."
+        #  exitStatus=$(set_exit_status "$exitStatus" $ARDUINO_CI_SCRIPT_CHECK_LIBRARY_PROPERTIES_DEAD_URL_EXIT_STATUS)
+        # fi
       fi
     fi
 

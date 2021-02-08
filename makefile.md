@@ -35,12 +35,9 @@ Examining the Makefile below as well as its
 console output, also below, will provide one example to help guide
 you.
 
-Assuming that your installation of ATTinyCore resides at
-~/Arduino/hardware then entering this grep command will provide a
-useful list of ATTinyCore options for your chosen processor (selected from the list below).
+Assuming that your installation of ATTinyCore resides at `~/Arduino/hardware` then entering this grep command will provide a useful list of ATTinyCore options for your chosen processor (selected from the list below).
 **NOTE:** this Linux command requires [Cygwin](https://www.cygwin.com/) on Microsoft Windows.
-
-**grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt**
+`grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt`
 
 At the time this was written, these are the ATtiny chips supported by ATTinyCore:
 
@@ -194,7 +191,7 @@ mkdir -p /home/username/Arduino/ULPFlasher3/attinyx5/bin
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-g++ -x c++ -include Arduino.h -MMD -c -mmcu=attiny85 -DF_CPU=8000000L -DARDUINO=1611 -DARDUINO_ARCH_AVR -D__PROG_TYPES_COMPAT__ -I/home/username/Arduino/hardware/ATTinyCore/avr/cores/tiny -I/home/username/Arduino/hardware/ATTinyCore/avr/variants/tinyX5    -Wall -ffunction-sections -fdata-sections -Os -pedantic -Wall -Wextra -fpermissive -fno-exceptions -std=gnu++11 ULPFlasher3.ino -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-gcc -mmcu=attiny85 -Wl,--gc-sections -Os -flto -fuse-linker-plugin -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o /home/username/Arduino/ULPFlasher3/attinyx5/bin/libcore.a   -lc -lm
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-objcopy -j .eeprom --set-section-flags=.eeprom='alloc,load' \
-		--no-change-warnings --change-section-lma .eeprom=0 -O ihex /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.eep
+    --no-change-warnings --change-section-lma .eeprom=0 -O ihex /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.eep
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-objcopy -O ihex -R .eeprom /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.hex
 
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-size --mcu=attiny85 -C --format=avr /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf
