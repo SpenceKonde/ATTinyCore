@@ -1,6 +1,6 @@
-# ATtiny Core - 1634, x313, x4, x41, x5, x61, x7, x8 and 828
-Now with Micronucleus (USB) support!
-============
+# ATTinyCore
+Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43 and 828.
+Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus) 
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
 Let's use that, not gitter.
 
@@ -15,25 +15,31 @@ Let's use that, not gitter.
 ## ATtinyCore Universal
 This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino. Click the processor name for part-specific information:
 
-* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
-* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
-* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
-* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
+* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
+* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
+* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
+* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
 * [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
-The tinyAVR 0-series and 1-series ATtiny parts (x12/x14/x16/x17/x02/x04/x06/x07) are be supported by https://github.com/SpenceKonde/megaTinyCore - they are sufficiently different from the classic AVR ATtiny parts that they need a separate core.
+### Non-supported parts
+* [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name.
+* [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude
+* ATtiny26 are not supported by any Arduino core. They are the obsolete predecesor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such obsolete parts.
+* ATtiny 4/5/10/11 and any other "AVRrc" (reduced core) parts (hey, do you know of one that works on these? - if you have one that works, but are stymied by the toolchain problems, hit me up in discussions, I can get you a working toolchain package, and am happy to link to your core provided you return that favor)
 
 ## Quick Gotcha list - having trouble, read these!
 
 **Windows users must download and install Micronucleus drivers manually**
-If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to obvious security considerations. The drivers are downloaded by the install process and buried in your Arduino15 folder, or they can be downloaded from the following URL. Unzip, run the installer.
+If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to "security" considerations, despite the fact that it will happily run arbitrary shell commands as the current user once the core to compile or upload. Just not to install! Total nonsense - it's as if they have a vested interest in discouraging people from using third party hardware or something....
+
+The drivers are downloaded by the install process and buried in your Arduino15 folder, or they can be downloaded from the following URL. Unzip, run the installer.
 https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip
 
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
