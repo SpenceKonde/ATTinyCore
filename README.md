@@ -14,7 +14,7 @@ Let's use that, not gitter.
 ### [Migration Guide - moving to ATTinyCore from a different ATtiny board package](Migration.md)
 
 ## ATtinyCore Universal
-This core supports the following processors - essentially every ATtiny processor that makes sense to use with Arduino. Click the processor name for part-specific information:
+This core supports the following processors - essentially every "classic" tinyAVR processor that makes sense to use with Arduino. The modern (post-2016 release) tinyAVR parts have their own core, as there is practically zero code at the core level that can be shared with classic parts (in exchange for the cores being totally different, sketches can often be moved between these with little to no effort - not always, but often) Click the processor name for part-specific information:
 
 * [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
