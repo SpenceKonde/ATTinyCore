@@ -1,4 +1,4 @@
-# ATTinyCore
+# ATTinyCore *Universal*
 Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43 and 828.
 
 Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus) 
