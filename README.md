@@ -1,7 +1,7 @@
 # ATTinyCore **Universal**
 Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43 and 828.
 
-Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus) 
+Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus)
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
 Let's use that, not gitter.
 
@@ -140,7 +140,7 @@ External crystal (all except 828, 43 and x8-family):
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 
-`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies, the usual caveats about software serial and baud rate accuracy on classic (pre-2016) AVR designs notwithstanding. These crystal options are not available for chips without a UART in versions of ATTinyCore older than 1.1.5, and are never recommended for parts without a hardware serial port (software 
+`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies, the usual caveats about software serial and baud rate accuracy on classic (pre-2016) AVR designs notwithstanding. These crystal options are not available for chips without a UART in versions of ATTinyCore older than 1.1.5, and are never recommended for parts without a hardware serial port.
 
 `**` These options are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
 
