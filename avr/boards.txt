@@ -1,7 +1,7 @@
 # Overhauled summer 2015 by Dr. Azzy (Spence Konde) and again in early 2016 to add support for more chips.
 # Significant overhaul again in summer 2020 for micronucleus boards.
 
-# These define the tools submenus. This is the display name and internal name of each menu. 
+# These define the tools submenus. This is the display name and internal name of each menu.
 
 menu.chip=Chip
 menu.clock=Clock Source (Only set on bootload)
