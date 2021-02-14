@@ -1,6 +1,8 @@
 # Overhauled summer 2015 by Dr. Azzy (Spence Konde) and again in early 2016 to add support for more chips.
 # Significant overhaul again in summer 2020 for micronucleus boards.
 
+# These define the tools submenus. This is the display name and internal name of each menu. 
+
 menu.chip=Chip
 menu.clock=Clock Source (Only set on bootload)
 menu.sketchclock=Clock (controls sketch only)
@@ -21,9 +23,7 @@ menu.bodact=B.O.D. Mode (active) (Only set on bootload)
 menu.bodpd=B.O.D. Mode (sleep) (Only set on bootload)
 #menu.micrclock=Clock Source - other options not supported
 
-
-
-
+# Board definitions begin here...
 
 attinyx4.name=ATtiny24/44/84(a) (No bootloader)
 attinyx4.upload.maximum_size=8192
