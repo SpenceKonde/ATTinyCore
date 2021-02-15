@@ -105,7 +105,6 @@ recipe.hooks.savehex.presavehex.4.pattern.linux="{runtime.platform.path}/delete_
 recipe.hooks.savehex.presavehex.5.pattern.linux=cp "{build.path}/{recipe.hexlst_name}.hex.lst" "{sketch_path}"
 recipe.hooks.savehex.presavehex.3.pattern.macosx=chmod +x "{runtime.platform.path}/delete_merged_output.sh"
 recipe.hooks.savehex.presavehex.4.pattern.macosx="{runtime.platform.path}/delete_merged_output.sh" {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
-recipe.hooks.savehex.presavehex.5.pattern.linux=cp "{build.path}/{recipe.hexlst_name}.hex.lst" "{sketch_path}"
 
 recipe.output.tmp_file={build.project_name}.hex
 recipe.output.save_file={recipe.hexlst_name}.hex
