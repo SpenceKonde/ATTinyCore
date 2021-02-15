@@ -874,7 +874,6 @@ attinyx8micr.build.extra_flags={build.millis} {build.usb} {build.neopixelport}
 
 
 attinyx7.name=ATtiny87/167 (No bootloader)
-attinyx7.upload.maximum_data_size=512
 attinyx7.upload.tool=avrdude
 attinyx7.build.board=AVR_ATTINYX7
 attinyx7.bootloader.tool=avrdude
