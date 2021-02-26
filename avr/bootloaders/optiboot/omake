@@ -1,9 +1,0 @@
-#%/bin/bash
-if [ -d ../../../tools ]; then
-  mypath=../../../tools/avr/bin
-else
- mypath=../../../../tools/avr/bin
-fi
-
-echo $mypath/make OS=macosx ENV=arduino $*
-$mypath/make OS=macosx ENV=arduino $*
