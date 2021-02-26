@@ -21,17 +21,16 @@ avrispmkii.program.protocol=stk500v2
 avrispmkii.program.tool=avrdude
 avrispmkii.program.extra_params=-Pusb
 
-usbtinyisp.name=USBtinyISP FAST, for parts running >=2 MHz
+usbtinyisp.name=USBtinyISP (ATTinyCore) SLOW, for new or 1 MHz parts
 usbtinyisp.protocol=usbtiny
 usbtinyisp.program.tool=avrdude
-usbtinyisp.program.extra_params=
-usbtinyisp.program.speed=0.3
+usbtinyisp.program.speed=8
 usbtinyisp.program.extra_params=-B{program.speed}
 
-usbtinyisp2.name=USBtinyISP SLOW for <2 MHz incl new (1 MHz)
+usbtinyisp2.name=USBtinyISP (ATTinyCore) FAST, for parts running >=2 MHz
 usbtinyisp2.protocol=usbtiny
 usbtinyisp2.program.tool=avrdude
-usbtinyisp2.program.speed=8
+usbtinyisp2.program.speed=0.3
 usbtinyisp2.program.extra_params=-B{program.speed}
 
 usbasp.name=USBasp (ATTinyCore)
