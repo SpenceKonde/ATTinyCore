@@ -32,7 +32,7 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 ### Non-supported parts
 * [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great parts and work well with Arduino.
 * [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude
-* ATtiny26 are not supported by any Arduino core. They are the obsolete predecesor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such old and uninspiring parts.
+* ATtiny26 are not supported by any Arduino core. They are the obsolete predecessor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such old and uninspiring parts.
 * ATtiny 4/5/10/11 and any other "AVRrc" (reduced core) parts. [Try this core](https://github.com/technoblogy/attiny10core)
 
 ## Quick Gotcha list - having trouble, read these!
