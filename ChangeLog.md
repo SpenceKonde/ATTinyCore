@@ -3,26 +3,26 @@ Any changes listed at the top, without a version number above thenm, have not be
 
 ### 1.5.0
 * Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
-* Improvements to millis and micros timing, as well as delayMicroseconds particularly for oddball frequencies. (big thanks to @cburstedde)
+* Improvements to millis and micros timing, as well as delayMicroseconds particularly for oddball frequencies. (big thanks to @cburstedde!)
+* Update to Micronucleus 2.5 upload tool, now available for all Arduino platforms (#465, #477)
 * Add new rationalized pinout for x61
-* Correct bug with pin definitions for I2C pins on the ATtiny x61 series.
-* Correct SCL/SDA definitions for x61
-* Improve timing calculations for Wire on USI devices
+* Correct bug with pin definitions for I2C pins on the ATtiny x61 series (#455)
+* Improve timing calculations for Wire on USI devices (#455)
+* Correct critical regression introduced in 1.4.0 where PWM controlled by timer 1 would have 1/4th of the expected duty cycle and frequency (#470)
+* Fix Serial RX on parts that use tinySoftSerial - LTO broke this because the ring buffer was updated in the ISR but none of the variables were declared volatile... (#472)
 * Correct name of bootloader file for 841 Micronucleus
 * Add missing bootloader options for 841/441 parts
 * Correct documentation for x313 parts to correctly reflect number of available PWM pins
+* Clarify USBTinyISP programmer options (#507)
 * Add several missing programmers, improve programmers list
-* Fix Timer1 PLL clock source menu option on x5, x61 (1.4.0 fix still didn't do it)
+* Fix Timer1 PLL clock source menu option on x5, x61 (1.4.0 fix still didn't do it!)
 * Fix x313 pinout image to reflect OC0B's existence
-* Add in new adafruit neopixel functions to tinyNeoPixel
-* Add Serial.setTxBit() for parts that use tinySoftSerial. Call it before Serial.begin() to move the Tx pin to another pin/bit on the same PORT. (#443)
-* Fix Serial RX on parts that use tinySoftSerial - LTO broke this because the ring buffer was updated in the ISR but none of the variables were declared volatile... (#472)
+* Add in new Adafruit_NeoPixel functions to tinyNeoPixel
+* Add Serial.setTxBit() for parts that use tinySoftSerial. Call it before Serial.begin() to move the Tx pin to another pin/bit on the same PORT (#443)
 * Correct PWM frequency on ATtiny x5 and x61 parts operating below 3 MHz (#463)
-* Move PWM on pin 1 (PB1) on x5 to timer1 instead of timer0.
+* Move PWM on pin 1 (PB1) on x5 to timer1 instead of timer0
 * Select /32 prescaler where available when operating with a system clock between 3 and 8 MHz, moving PWM on those pins back to the targeted 500 Hz to 1 kHz range
-* Correct bug in PWM controlled by timer 1 having 1/4th of the expected duty cycle (#470)
-* Correct WGM for Timer 1 PWM on x7 to phase correct (0b0001) rather than fast (0b0101) pwm modes.
-* Update to Micronucleus 2.5 upload tool, now available for all Arduino platforms.
+* Correct WGM for Timer 1 PWM on x7 to phase correct (0b0001) rather than fast (0b0101) pwm modes
 
 ### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
