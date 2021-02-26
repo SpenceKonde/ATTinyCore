@@ -1,7 +1,7 @@
 # This document lists significant changes and bugfixes, including those not in yet in a release.
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
 
-### planned ~1.4.2~ aw hell, 1.5.0
+### 1.5.0
 * Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
 * Improvements to millis and micros timing, as well as delayMicroseconds particularly for oddball frequencies. (big thanks to @cburstedde)
 * Add new rationalized pinout for x61
@@ -22,6 +22,7 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Select /32 prescaler where available when operating with a system clock between 3 and 8 MHz, moving PWM on those pins back to the targeted 500 Hz to 1 kHz range
 * Correct bug in PWM controlled by timer 1 having 1/4th of the expected duty cycle (#470)
 * Correct WGM for Timer 1 PWM on x7 to phase correct (0b0001) rather than fast (0b0101) pwm modes.
+* Update to Micronucleus 2.5 upload tool, now available for all Arduino platforms.
 
 ### 1.4.1
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
