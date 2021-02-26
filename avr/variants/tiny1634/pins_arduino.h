@@ -38,80 +38,85 @@
 
 #define ADC_TEMPERATURE 34
 
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
+#define digitalPinHasPWM(p)         ((p) == PIN_PA5 || (p) == PIN_PA6 || (p) == PIN_PB3 || (p) == PIN_PC0)
+// WACKY pins!
 
-//This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
+// This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
 
 
-#define SS   7
-#define MOSI 5
-#define MISO 4
-#define SCK  6
+#define SS   PIN_PC2  //This one doesn't really matter
+#define MOSI PIN_PB2
+#define MISO PIN_PB1
+#define SCK  PIN_PC1
 
-#define USI_DDR_PORT DDRA
-#define USI_SCK_PORT DDRA
-#define USCK_DD_PIN DDA4
-#define DO_DD_PIN DDA5
-#define DI_DD_PIN DDA6
-#  define DDR_USI DDRA
-#  define PORT_USI PORTA
-#  define PIN_USI PINA
-#  define PORT_USI_SDA PORTA6
-#  define PORT_USI_SCL PORTA4
-#  define PIN_USI_SDA PINA6
-#  define PIN_USI_SCL PINA4
-#  define USI_START_VECTOR USI_START_vect
-#  define USI_OVERFLOW_VECTOR USI_OVF_vect
-#  define DDR_USI_CL DDR_USI
-#  define PORT_USI_CL PORT_USI
-#  define PIN_USI_CL PIN_USI
+#define USI_DATA_DDR    DDRB
+#define USI_DATA_PORT   PORTB
+#define USI_DATA_PIN    PINB
+
+#define USI_CLOCL_DDR   DDRC
+#define USI_CLOCK_PORT  PORTC
+#define USI_CLOCK_BIT   PINC1
+#define USI_DO_BIT      PINB2
+#define USI_DI_BIT      PINB1
+
+#define USI_START_VECTOR USI_START_vect
+#define USI_OVERFLOW_VECTOR USI_OVF_vect
 #ifndef USI_START_COND_INT
-#  define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT USISIF
 #endif
 
 
-static const uint8_t SDA = 4;
-static const uint8_t SCL = 6;
+static const uint8_t SDA = PIN_PB1;
+static const uint8_t SCL = PIN_PC1;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-static const uint8_t A0 = 0x80 | 0;
-static const uint8_t A1 = 0x80 | 1;
-static const uint8_t A2 = 0x80 | 2;
-static const uint8_t A3 = 0x80 | 3;
-static const uint8_t A4 = 0x80 | 4;
-static const uint8_t A5 = 0x80 | 5;
-static const uint8_t A6 = 0x80 | 6;
-static const uint8_t A7 = 0x80 | 7;
+static const uint8_t  A0 = 0x80 |  0;
+static const uint8_t  A1 = 0x80 |  1;
+static const uint8_t  A2 = 0x80 |  2;
+static const uint8_t  A3 = 0x80 |  3;
+static const uint8_t  A4 = 0x80 |  4;
+static const uint8_t  A5 = 0x80 |  5;
+static const uint8_t  A6 = 0x80 |  6;
+static const uint8_t  A7 = 0x80 |  7;
+static const uint8_t  A8 = 0x80 |  8;
+static const uint8_t  A9 = 0x80 |  9;
+static const uint8_t A10 = 0x80 | 10;
+static const uint8_t A11 = 0x80 | 11;
 
 
-#define PIN_PA0  (10)
-#define PIN_PA1  ( 9)
-#define PIN_PA2  ( 8)
-#define PIN_PA3  ( 7)
-#define PIN_PA4  ( 6)
-#define PIN_PA5  ( 5)
-#define PIN_PA6  ( 4)
-#define PIN_PA7  ( 3)
-#define PIN_PB0  ( 0)
-#define PIN_PB1  ( 1)
-#define PIN_PB2  ( 2)
-#define PIN_PB3  (11)  /* RESET */
-#define LED_BUILTIN (2)
+#define PIN_PA0     ( 0)
+#define PIN_PA1     ( 1)
+#define PIN_PA2     ( 2)
+#define PIN_PA3     ( 3)
+#define PIN_PA4     ( 4)
+#define PIN_PA5     ( 5)
+#define PIN_PA6     ( 6)
+#define PIN_PA7     ( 7)
+#define PIN_PB0     ( 8)
+#define PIN_PB1     ( 9)
+#define PIN_PB2     (10)
+#define PIN_PB3     (11)
+#define PIN_PC0     (12)
+#define PIN_PC1     (13)
+#define PIN_PC2     (14)
+#define PIN_PC3     (17)  /* RESET */
+#define PIN_PC4     (15)  /* XTAL2 */
+#define PIN_PC5     (16)  /* XTAL1 */
+#define LED_BUILTIN ( 2)
 
 //legacy
-#define PIN_A0  (10)
-#define PIN_A1  ( 9)
-#define PIN_A2  ( 8)
-#define PIN_A3  ( 7)
-#define PIN_A4  ( 6)
-#define PIN_A5  ( 5)
-#define PIN_A6  ( 4)
-#define PIN_A7  ( 3)
-#define PIN_B0  ( 0)
-#define PIN_B1  ( 1)
-#define PIN_B2  ( 2)
-#define PIN_B3  (11)  /* RESET */
-#define LED_BUILTIN (2)
+#define PIN_A0      (PIN_PA3)
+#define PIN_A1      (PIN_PA4)
+#define PIN_A2      (PIN_PA5)
+#define PIN_A3      (PIN_PA6)
+#define PIN_A4      (PIN_PA7)
+#define PIN_A5      (PIN_PB0)
+#define PIN_A6      (PIN_PB1)
+#define PIN_A7      (PIN_PB2)
+#define PIN_A8      (PIN_PB3)
+#define PIN_A9      (PIN_PC0)
+#define PIN_A10     (PIN_PC1)
+#define PIN_A11     (PIN_PC2)
 
 #define PINMAPPING_CCW
 
@@ -129,17 +134,6 @@ static const uint8_t A7 = 0x80 | 7;
 */
 #define TIMER_TO_USE_FOR_MILLIS                   0
 
-/*
-  Where to put the software serial? (Arduino Digital pin numbers)
-*/
-//WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL           1
-//Please define the port on which the analog comparator is found.
-#define ANALOG_COMP_DDR               DDRA
-#define ANALOG_COMP_PORT              PORTA
-#define ANALOG_COMP_PIN               PINA
-#define ANALOG_COMP_AIN0_BIT          1
-#define ANALOG_COMP_AIN1_BIT          2
 
 
 /*
@@ -160,9 +154,9 @@ static const uint8_t A7 = 0x80 | 7;
 
 
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK)   : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) >= 3 && (p) <= 10) ? 4 : 5)
-#define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0)  : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
@@ -173,25 +167,24 @@ static const uint8_t A7 = 0x80 | 7;
 
 // ATMEL ATTINY1634
 //
-//                   +-\/-+
-// TX   (D  0) PB0  1|a  a|20  PB1 (D  16)
-// RX   (D  1) PA7  2|a  a|19  PB2 (D  15)
-//    * (D  2) PA6  3|a  a|18  PB3 (D  14) *
-//    * (D  3) PA5  4|a  a|17  PC0 (D  13) *
-//      (D  4) PA4  5|a  a|16  PC1 (D  12)
-//      (D  5) PA4  6|a  a|15  PC2 (D  11)
-//      (D  6) PA3  7|    |14  PC3/RESET (D 17)
-//      (D  7) PA2  8|   x|13  PC4 (D  10)
-//      (D  8) PA0  9|   x|12  PC5 (D  9)
-//             GND 10|    |11  VCC
-//                   +----+
+//                 +-\/-+
+// TX   ( 0) PB0  1|a  a|20  PB1 (16)   TX
+// RX   ( 1) PA7  2|a  a|19  PB2 (15)   RX
+//    * ( 2) PA6  3|a  a|18  PB3 (14) *
+//    * ( 3) PA5  4|a  a|17  PC0 (13) *
+//      ( 4) PA4  5|a  a|16  PC1 (12)
+//      ( 5) PA3  6|a  a|15  PC2 (11)
+//      ( 6) PA2  7|    |14  PC3/RESET (17)
+//      ( 7) PA1  8|   x|13  PC4 (10)
+//      ( 8) PA0  9|   x|12  PC5 ( 9)
+//           GND 10|    |11  VCC
+//                 +----+
 //
 // * indicates PWM pin
-// a indicates ACD pin.
+// a indicates ADC pin.
 // x indicates XTAL pin
 // these arrays map port names (e.g. port B) to the
-// appropriate addresses for various functions (e.g. reading
-// and writing)
+// appropriate addresses for various functions (e.g. reading and writing)
 
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
@@ -295,4 +288,3 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 #endif
 
 #endif
-
