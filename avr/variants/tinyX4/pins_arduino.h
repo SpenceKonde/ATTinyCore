@@ -98,7 +98,7 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_PB3  (11)  /* RESET */
 #define LED_BUILTIN (2)
 
-//these are like PIN_An official core, the digital pin corresponding to a given analog channel.
+//legacy
 #define PIN_A0  (10)
 #define PIN_A1  ( 9)
 #define PIN_A2  ( 8)
@@ -107,6 +107,11 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_A5  ( 5)
 #define PIN_A6  ( 4)
 #define PIN_A7  ( 3)
+#define PIN_B0  ( 0)
+#define PIN_B1  ( 1)
+#define PIN_B2  ( 2)
+#define PIN_B3  (11)  /* RESET */
+#define LED_BUILTIN (2)
 
 #define PINMAPPING_CCW
 

@@ -85,31 +85,31 @@ static const uint8_t A6 = 0x80 | 6;
 static const uint8_t A7 = 0x80 | 7;
 
 #define PIN_PA0  (0)
-#define PIN_PA1  (1)
-#define PIN_PA2  (2)
-#define PIN_PA3  (3)
-#define PIN_PA4  (4)
-#define PIN_PA5  (5)
-#define PIN_PA6  (6)
-#define PIN_PA7  (7)
-#define PIN_PB0  (10)
-#define PIN_PB1  (9)
-#define PIN_PB2  (8)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PA4  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 10)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 8)
 #define PIN_PB3  (11)  /* RESET */
 #define LED_BUILTIN (8)
 
 //Legacy
 #define PIN_A0  (0)
-#define PIN_A1  (1)
-#define PIN_A2  (2)
-#define PIN_A3  (3)
-#define PIN_A4  (4)
-#define PIN_A5  (5)
-#define PIN_A6  (6)
-#define PIN_A7  (7)
-#define PIN_B0  (10)
-#define PIN_B1  (9)
-#define PIN_B2  (8)
+#define PIN_A1  ( 1)
+#define PIN_A2  ( 2)
+#define PIN_A3  ( 3)
+#define PIN_A4  ( 4)
+#define PIN_A5  ( 5)
+#define PIN_A6  ( 6)
+#define PIN_A7  ( 7)
+#define PIN_B0  ( 10)
+#define PIN_B1  ( 9)
+#define PIN_B2  ( 8)
 #define PIN_B3  (11)  /* RESET */
 #define LED_BUILTIN (8)
 
@@ -161,9 +161,9 @@ static const uint8_t A7 = 0x80 | 7;
 
 // PCICR = Pin Change Interrupt Control Register
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) <= 7) ? PCIE0 : PCIE1 )
-#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK0) : (((p) <= 10) ? (&PCMSK1) : ((uint8_t *)NULL)) )
-#define digitalPinToPCMSKbit(p) (((p) <= 7) ? (p) : (10 - (p)) )
+#define digitalPinToPCICRbit(p) ( ((p) <= 7) ? PCIE0 : PCIE1 )
+#define digitalPinToPCMSK(p)    ( ((p) <= 7) ? (&PCMSK0) : (((p) <= 10) ? (&PCMSK1) : ((uint8_t *)NULL)) )
+#define digitalPinToPCMSKbit(p) ( ((p) <= 7) ? (p) : (10 - (p)) )
 
 #define digitalPinToInterrupt(p)  ((p) == 8 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN

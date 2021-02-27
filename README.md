@@ -381,7 +381,7 @@ This does not apply to any tools or third party programs used by ATTinyCore. Ins
 ## Acknowledgements
 
 This core was originally based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
-The ATtiny841 support is based on shimniok's ATtiny x41 core, and the 1634 support on Rambo's ATtiny1634 core.
+The ATtiny841 support is based on shimniok's ATtiny x41 core, and the 1634 support on Rambo's ATtiny1634 core.\
 
 @per1234, who has been an invaluable resource for myself and others within the Arduino community, specifically having set up the Travis-based CI testing system (which will cease to be used once the other foot drops wrt. Travis terms) and his years of assistance with board manager releases and more.
 
