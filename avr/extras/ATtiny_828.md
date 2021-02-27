@@ -15,6 +15,10 @@ Clock options | Internal 1/4/8 MHz, external clock (no crystal) up to 20 MHz
 
 The ATtiny828R has a tighter factory calibration of it's internal oscillator. It is otherwise identical to the ATtiny828.
 
+### Warning: Pin 27 (PD3) does not work as an input unless watchdog timer is running
+This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might note that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
+See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT.... Worse still, that's the clock pin for SPI and TWI. And TWI being an open drain bus is going to be pretty well hosed by that defect. It really is a crying shame how the 828 and 1634 were denied the fix they deserved - a fix for the pin errata, and it's crown jewel (the full on fancy-pants ATtiny841-style differential ADC with programmable gain selection)
+
 ## Programming
 The ATtiny828 can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
 
@@ -59,6 +63,32 @@ Despite having 28 ADC input channels, the 828 only has the two basic reference o
 ### Weird I/O-pin related features
 There are a few strange features relating to the GPIO pins on the ATtinyx41 family which are found only in a small number of other parts released around the same time.
 
+
+#### PD4 silicon errata
+As mentioned above, the t828 has a ~silicon bug~ poorly documented feature relating to PD3:
+
+If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below) - so the real impact of this issue is in fact very low, assuming you know about it and don't waste hours or days trying to figure out what is going on.
+
+```c
+//put these lines in setup
+CCP=0xD8; //write key to configuration change protection register
+WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt with longest prescale option (8 seconds)
+//put this empty WDT ISR outside of all functions
+EMPTY_INTERRUPT(WDT_vect) //empty ISR to work around bug with PB3. EMPTY_INTERRUPT uses 26 bytes less than ISR(WDT_vect){;}
+```
+If you are using sleep modes, you also need to turn the WDT off while sleeping (both because the interrupts would wake it, and because the WDT is consuming power, and presumably that's what you're trying to avoid by sleeping). Doing so as shown below only uses an extra 12-16 bytes if you call it from a single place, 20 if called from two places, and 2 bytes when you call it thereafter, compared to calling sleep_cpu() directly in those places, as you would on a part that didn't need this workaround.
+```c
+void startSleep() { //call instead of sleep_cpu()
+  CCP=0xD8; //write key to configuration change protection register
+  WDTCSR=0; //disable WDT interrupt
+  sleep_cpu();
+  CCP=0xD8; //write key to configuration change protection register
+  WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt
+}
+```
+
+
+
 #### Special "high sink" port
 All pins on PORTC have unusually high sink capability - when sinking a given amount of current, the voltage on these pins is about half that of typical pins. Using the `PHDE` register, these can be set to sink even more aggressively.
 
@@ -69,7 +99,7 @@ PHDE=(1<<PHDEC);
 This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts. The PWM outputs of the timers can be remapped to this port as well, making it of obvious utility for driving LEDs and similar. This also means that, if you are attempting to generate an analog voltage with a PWM pin and an RC filter, your result may be lower than expected, as the pin drivers are not symmetric.
 
 #### Separate pullup-enable register
-Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input).
+Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Like the ATtiny1634, and unlike the ATtiny841, all of these pullup registers are located in the low IO space and sensibly relative to eachother and to the other PORT-related registers.
 
 ### Purchasing ATtiny828 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your purchases support the continued development of this core.
