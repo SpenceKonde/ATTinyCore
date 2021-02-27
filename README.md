@@ -38,10 +38,10 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 ## Quick Gotcha list - having trouble, read these!
 
 **Windows users must download and install Micronucleus drivers manually**
-If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to "security" considerations, despite the fact that it will happily run arbitrary shell commands as the current user once the core to compile or upload. Just not to install! Total nonsense - it's as if they have a vested interest in discouraging people from using third party hardware or something....
+If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to "security" considerations, despite the fact that it will happily run arbitrary shell commands as the current user once the core to compile or upload. Just not to install! Total nonsense!  
 
-The drivers are downloaded by the install process and buried in your Arduino15 folder, or they can be downloaded from the following URL. Unzip, run the installer.
-https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip
+During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
+
 
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
