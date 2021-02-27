@@ -55,6 +55,8 @@
  * to each of these loops before they decrement maxloops.
  * Additionally, removed duplication of return sequence to save 12b flash
  * which is conveniently exactly how much the other fix cost.
+ * Feb 2021: Made it beautiful, and made previous added delays into
+ * rjmp .+0 instead of jumping to label placed right ahead of them.
  */
 
 #include <avr/io.h>
@@ -67,45 +69,44 @@ countPulseASM:
 
 .LM0:
 .LFBB1:
-    push r12   ;   ;  130 pushqi1/1 [length = 1]
-    push r13   ;   ;  131 pushqi1/1 [length = 1]
-    push r14   ;   ;  132 pushqi1/1 [length = 1]
-    push r15   ;   ;  133 pushqi1/1 [length = 1]
-    push r16   ;   ;  134 pushqi1/1 [length = 1]
-    push r17   ;   ;  135 pushqi1/1 [length = 1]
+    push r12     ;                     ;  130  pushqi1/1          [length = 1]
+    push r13     ;                     ;  131  pushqi1/1          [length = 1]
+    push r14     ;                     ;  132  pushqi1/1          [length = 1]
+    push r15     ;                     ;  133  pushqi1/1          [length = 1]
+    push r16     ;                     ;  134  pushqi1/1          [length = 1]
+    push r17     ;                     ;  135  pushqi1/1          [length = 1]
 /* prologue: function */
 /* frame size = 0 */
 /* stack size = 6 */
 .L__stack_usage = 6
-    mov r30,r24  ;  port, port   ;  2 *movhi/1  [length = 2]
+    mov r30,r24  ;  port, port         ;    2 *movhi/1            [length = 2]
     mov r31,r25  ;  port, port
 /*     unsigned long width = 0;
 ***     // wait for any previous pulse to end
 ***     while ((*port & bit) == stateMask)
 */
 .LM1:
-    rjmp .L2   ;   ;  181 jump  [length = 1]
+    rjmp .L2     ;                     ;  181  jump               [length = 1]
 .L4:
 /*         if (--maxloops == 0) */
 .LM2:
-    rjmp .LM2A ; waste an extra 5 cycles
-.LM2A:
-    rjmp .LM2B ;
-.LM2B:
+    rjmp .+0     ; waste an extra 5 cycles
+    rjmp .+0     ;
+    nop          ;
     nop ;
-    subi r16,1   ;  maxloops,  ;  17  addsi3/2  [length = 4]
-    sbc r17, r1   ;  maxloops
-    sbc r18, r1   ;  maxloops
-    sbc r19, r1   ;  maxloops
-    breq .L13  ; ,   ;  19  branch  [length = 1]
+    subi r16,1   ;  maxloops,          ;   17  addsi3/2           [length = 4]
+    sbc r17, r1  ;  maxloops
+    sbc r18, r1  ;  maxloops
+    sbc r19, r1  ;  maxloops
+    breq .L13    ; ,                   ;   19  branch             [length = 1]
 .L2:
 /*         if (--maxloops == 0) */
 .LM3:
-    ld r25,Z   ;  D.1554, *port_7(D)   ;  22  movqi_insn/4  [length = 1]
-    and r25,r22  ;  D.1554, bit  ;  24  andqi3/1  [length = 1]
-    cp r25,r20   ;  D.1554, stateMask  ;  25  *cmpqi/2  [length = 1]
-    breq .L4   ; ,   ;  26  branch  [length = 1]
-    rjmp .L6   ;   ;  184 jump  [length = 1]
+    ld r25,Z     ;  D.1554, *port_7(D) ;   22  movqi_insn/4       [length = 1]
+    and r25,r22  ;  D.1554, bit        ;   24  andqi3/1           [length = 1]
+    cp r25,r20   ;  D.1554, stateMask  ;   25 *cmpqi/2            [length = 1]
+    breq .L4     ; ,                   ;   26  branch             [length = 1]
+    rjmp .L6     ;                     ;  184  jump               [length = 1]
 .L7:
 /*             return 0;
 ***
@@ -114,28 +115,26 @@ countPulseASM:
 ***         if (--maxloops == 0)
 */
 .LM4:
-    rjmp .LM4A ; waste an extra 5 cycles
-.LM4A:
-    rjmp .LM4B ;
-.LM4B:
-    nop ;
-    subi r16,1   ;  maxloops,  ;  31  addsi3/2  [length = 4]
-    sbc r17, r1   ;  maxloops
-    sbc r18, r1   ;  maxloops
-    sbc r19, r1   ;  maxloops
-    breq .L13  ; ,   ;  33  branch  [length = 1]
+    rjmp .+0     ; waste an extra 5 cycles
+    rjmp .+0     ;
+    nop          ;
+    subi r16,1   ;  maxloops,          ;   31  addsi3/2           [length = 4]
+    sbc r17, r1  ;  maxloops
+    sbc r18, r1  ;  maxloops
+    sbc r19, r1  ;  maxloops
+    breq .L13    ; ,                   ;   33  branch             [length = 1]
 .L6:
 /*         if (--maxloops == 0) */
 .LM5:
-    ld r25,Z   ;  D.1554, *port_7(D)   ;  41  movqi_insn/4  [length = 1]
-    and r25,r22  ;  D.1554, bit  ;  43  andqi3/1  [length = 1]
-    cpse r25,r20   ;  D.1554, stateMask  ;  44  enable_interrupt-3  [length = 1]
-    rjmp .L7   ;
-    mov r12, r1   ;  width  ;  7 *movsi/2  [length = 4]
-    mov r13, r1   ;  width
-    mov r14, r1   ;  width
-    mov r15, r1   ;  width
-    rjmp .L9   ;   ;  186 jump  [length = 1]
+    ld r25,Z     ;  D.1554, *port_7(D) ;   41  movqi_insn/4       [length = 1]
+    and r25,r22  ;  D.1554, bit        ;   43  andqi3/1           [length = 1]
+    cpse r25,r20 ;  D.1554, stateMask  ;   44  enable_interrupt-3 [length = 1]
+    rjmp .L7     ;
+    mov r12, r1  ;  width              ;    7 *movsi/2            [length = 4]
+    mov r13, r1  ;  width
+    mov r14, r1  ;  width
+    mov r15, r1  ;  width
+    rjmp .L9     ;                     ;  186  jump               [length = 1]
 .L10:
 /*             return 0;
 ***
@@ -144,46 +143,46 @@ countPulseASM:
 ***         if (++width == maxloops)
 */
 .LM6:
-    ldi r24,-1   ; ,   ;  50  addsi3/3  [length = 5]
+    ldi r24,-1   ; ,                   ;   50  addsi3/3            [length = 5]
     sub r12,r24  ;  width,
     sbc r13,r24  ;  width,
     sbc r14,r24  ;  width,
     sbc r15,r24  ;  width,
-    cp r16,r12   ;  maxloops, width  ;  51  *cmpsi/2  [length = 4]
+    cp r16,r12   ;  maxloops, width    ;   51 *cmpsi/2            [length = 4]
     cpc r17,r13  ;  maxloops, width
     cpc r18,r14  ;  maxloops, width
     cpc r19,r15  ;  maxloops, width
-    breq .L13  ; ,   ;  52  branch  [length = 1]
+    breq .L13    ; ,                   ;   52  branch             [length = 1]
 .L9:
 /*         if (++width == maxloops) */
 .LM7:
-    ld r24,Z   ;  D.1554, *port_7(D)   ;  60  movqi_insn/4  [length = 1]
-    and r24,r22  ;  D.1554, bit  ;  62  andqi3/1  [length = 1]
-    cp r24,r20   ;  D.1554, stateMask  ;  63  *cmpqi/2  [length = 1]
-    breq .L10  ; ,   ;  64  branch  [length = 1]
+    ld r24,Z     ;  D.1554, *port_7(D) ;   60  movqi_insn/4       [length = 1]
+    and r24,r22  ;  D.1554, bit        ;   62  andqi3/1           [length = 1]
+    cp r24,r20   ;  D.1554, stateMask  ;   63 *cmpqi/2            [length = 1]
+    breq .L10    ; ,                   ;   64  branch             [length = 1]
 /*             return 0;
 ***     }
 ***     return width;
 */
 .LM8:
-    mov r22,r12  ;  D.1553, width  ;  108 movqi_insn/1  [length = 1]
-    mov r23,r13  ;  D.1553, width  ;  109 movqi_insn/1  [length = 1]
-    mov r24,r14  ;  D.1553, width  ;  110 movqi_insn/1  [length = 1]
-    mov r25,r15  ;  D.1553, width  ;  111 movqi_insn/1  [length = 1]
-    rjmp .LM11 ;
+    mov r22,r12  ;  D.1553, width      ;  108  movqi_insn/1       [length = 1]
+    mov r23,r13  ;  D.1553, width      ;  109  movqi_insn/1       [length = 1]
+    mov r24,r14  ;  D.1553, width      ;  110  movqi_insn/1       [length = 1]
+    mov r25,r15  ;  D.1553, width      ;  111  movqi_insn/1       [length = 1]
+    rjmp .LM11   ;
 /* epilogue start */
 .L13:
 .LM10:
-    ldi r22,0  ;  D.1553   ;  120 movqi_insn/1  [length = 1]
-    ldi r23,0  ;  D.1553   ;  121 movqi_insn/1  [length = 1]
-    ldi r24,0  ;  D.1553   ;  122 movqi_insn/1  [length = 1]
-    ldi r25,0  ;  D.1553   ;  123 movqi_insn/1  [length = 1]
+    ldi r22,0    ;  D.1553             ;  120  movqi_insn/1       [length = 1]
+    ldi r23,0    ;  D.1553             ;  121  movqi_insn/1       [length = 1]
+    ldi r24,0    ;  D.1553             ;  122  movqi_insn/1       [length = 1]
+    ldi r25,0    ;  D.1553             ;  123  movqi_insn/1       [length = 1]
 /* epilogue start */
 .LM11:
-    pop r17  ;   ;  138 popqi [length = 1]
-    pop r16  ;   ;  139 popqi [length = 1]
-    pop r15  ;   ;  140 popqi [length = 1]
-    pop r14  ;   ;  141 popqi [length = 1]
-    pop r13  ;   ;  142 popqi [length = 1]
-    pop r12  ;   ;  143 popqi [length = 1]
-    ret  ;  144 return_from_epilogue  [length = 1]
+    pop r17      ;                     ;  138  popqi              [length = 1]
+    pop r16      ;                     ;  139  popqi              [length = 1]
+    pop r15      ;                     ;  140  popqi              [length = 1]
+    pop r14      ;                     ;  141  popqi              [length = 1]
+    pop r13      ;                     ;  142  popqi              [length = 1]
+    pop r12      ;                     ;  143  popqi              [length = 1]
+    ret          ;                        144  return_from_epilogue [length=1]

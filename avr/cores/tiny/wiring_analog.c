@@ -64,27 +64,44 @@ void analogReference(uint8_t mode)
 int analogRead(uint8_t pin)
 {
   pin &=127; //strip off the high bit of the A# constants
+  if(__builtin_constant_p(pin)) {
+    //
+  }
   #ifndef ADCSRA
-  return digitalRead(analogInputToDigitalPin(pin)) ? 1023 : 0; //No ADC, so read as a digital pin instead.
-  #endif
-
-  #if defined(ADMUX)
-  ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
-  #if defined(REFS2)
-  ADMUX |= (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
-  #endif
-  #endif
-
-  #if defined(HAVE_ADC) && HAVE_ADC
-  sbi(ADCSRA, ADSC); //Start conversion
-
-  while(ADCSRA & (1<<ADSC)); //Wait for conversion to complete.
-
-  uint8_t low = ADCL;
-  uint8_t high = ADCH;
-  return (high << 8) | low;
+    badCall("You cannot use analogRead() on a part without an ADC.");
+    /* if a device does not have an ADC, instead of giving a number we know is wrong AND that isn't unique to error conditions,
+     * let's give a number that will be very obviously an error, but could not be generated if the pin were capable of analogRead()
+     * if they do any sort of error checking, they would hopefully verify that analogWrite didn't give them back an obvious error code.
+     */
+    return -1;
   #else
-  return LOW;
+    /* I don't think we need to check for this? Can we say it's the responsibility of the user to avoid calling analogRead() if they have turned off the ADC or chose the "don't initialize the ADC"
+     * whern compiling? . We can't switch to this on the basis of the compiletime options, because it is very plausible that someone with a highly atypical ADC configuration might want to disable
+     * the builtin initialization and do it themselves.
+     * if (!(ADCSRA & (1 << ADEN))) return -2;
+     */
+    #if defined(ADMUXB)
+      #if defined(GSEL0)
+        // x41
+        ADMUXA = pin&&0x3f;
+        ADMUXB = ((analog_reference & 0x07) << REFS0);
+      #else
+        // 828
+        ADMUXA = pin & 0x1f;
+        ADMUXB = (analog_reference ? (1 << REFS):0);
+      #endif
+    #elif defined(ADMUX)
+      #if defined(REFS2)
+        ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0) | (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
+      #else
+        ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
+      #endif
+    #endif
+    ADCSRA |= (1<<ADSC);        //Start conversion
+    while(ADCSRA & (1<<ADSC));  //Wait for conversion to complete.
+    uint8_t low = ADCL;
+    uint8_t high = ADCH;
+    return (high << 8) | low;
   #endif
 }
 // Right now, PWM output only works on the pins with
@@ -100,112 +117,114 @@ void analogWrite(uint8_t pin, int val)
   // call for the analog output pins.
   pinMode(pin, OUTPUT);
 
-  if (val <= 0)
-  {
+  if (val <= 0) {
     digitalWrite(pin, LOW);
-  }
-  else if (val >= 255)
-  {
+  } else if (val >= 255) {
     digitalWrite(pin, HIGH);
-  }
-  else
-  {
+  } else {
     uint8_t timer = digitalPinToTimer(pin);
-  #if defined(TCCR0A) && defined(COM0A1)
-  if( timer == TIMER0A){
-    // connect pwm to pin on timer 0, channel A
-    sbi(TCCR0A, COM0A1);
-    //cbi(TCCR0A, COM0A0);
-    OCR0A = val; // set pwm duty
-  } else
-  #endif
+  #if defined(TOCPMCOE)
+    // 828 and x41 get their own implementation
 
-  #if defined(TCCR0A) && defined(COM0B1)
-  if( timer == TIMER0B){
-    // connect pwm to pin on timer 0, channel B
-    sbi(TCCR0A, COM0B1);
-    //cbi(TCCR0A, COM0B0);
-    OCR0B = val; // set pwm duty
-  } else
-  #endif
-  #if defined(__AVR_ATtinyX7__)
-  if (timer&0x10) {
-    //Timer 1
-    TCCR1A|=(1<<COM1B1)|(1<<COM1A1);
-    if (timer&0x04){
-      //TCCR1D&=(0x0F); //clear all PWM on same channel
-      OCR1B=val;
-    } else {
-      //TCCR1D&=(0xF0); //clear all PWM on same channel
-      OCR1A=val;
-    }
-    TCCR1D|=(1<<(timer&0x07));
-  } else
 
-  #elif defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E)
-    //TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85.
-    //So this handles "normal" timers
-  if( timer == TIMER1A){
-    // connect pwm to pin on timer 1, channel A
-    sbi(TCCR1A, COM1A1);
-    //cbi(TCCR1A, COM1A0);
-    OCR1A = val; // set pwm duty
-  } else
-  #endif
-  // ATtiny x61
-    // This can be recoded to use the OCOEn bits in TCCR1E
-    // This would be much better - then we'd leave COM bits at 0, and just switch on and off the OCOEn bits
-    // In this case, we would use WGM10 or WGM11 (PWM6 mode). Only one duty cycle could be output on each of the three pairs of
-    // PWM pins, but it gives you more choice on which pins you use. Would implement it like we do on x7, ie, if you analogWrite()
-    // both pins, and didn't turn off PWM between with digitalWrite(), you'd have identical waveform on the two pins.
-  #if defined(TCCR1E) //Tiny861
+    } else // has to end with this!
+  #else //Non-TOCPMCOE implementation
+    #if defined(TCCR0A) && defined(COM0A1)
+    if( timer == TIMER0A){
+      // connect pwm to pin on timer 0, channel A
+      TCCR0A |= (1<<COM0A1);
+      //cbi(TCCR0A, COM0A0);
+      OCR0A = val; // set pwm duty
+    } else
+    #endif
+
+    #if defined(TCCR0A) && defined(COM0B1)
+    if( timer == TIMER0B){
+      // connect pwm to pin on timer 0, channel B
+      TCCR0A |= (1<<COM0B1);
+      //cbi(TCCR0A, COM0B0);
+      OCR0B = val; // set pwm duty
+    } else
+    #endif
+    #if defined(__AVR_ATtinyX7__)
+    if (timer&0x08) {
+      //Timer 1
+      TCCR1A |= (1<<COM1B1)|(1<<COM1A1);
+      if (timer&0x04){
+        //TCCR1D &= (0x0F); //clear all PWM on same channel
+        OCR1B = val;
+      } else {
+        //TCCR1D &= (0xF0); //clear all PWM on same channel
+        OCR1A = val;
+      }
+      TCCR1D |= (1<<(timer&0x07));
+    } else
+
+    #elif defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E)
+      //TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85.
+      //So this handles "normal" timers
     if( timer == TIMER1A){
       // connect pwm to pin on timer 1, channel A
-      //cbi(TCCR1C,COM1A1S);
-      sbi(TCCR1C,COM1A0S);
-      //sbi(TCCR1A,PWM1A);
-      OCR1A = val; // set pwm duty
-    } else if (timer == TIMER1B){
-      // connect pwm to pin on timer 1, channel A
-      //cbi(TCCR1C,COM1B1S);
-      sbi(TCCR1C,COM1B0S);
-      //sbi(TCCR1A,PWM1B);
-      OCR1B = val; // set pwm duty
-    } else if (timer == TIMER1D){
-      // connect pwm to pin on timer 1, channel A
-      //cbi(TCCR1C,COM1D1);
-      sbi(TCCR1C,COM1D0);
-      //sbi(TCCR1A,PWM1D);
-      OCR1D = val; // set pwm duty
-    } else
-  #endif
-
-  #if defined(TCCR1) && defined(COM1A1) //Tiny85
-    if(timer == TIMER1A){
-      // connect pwm to pin on timer 1, channel A
-      sbi(TCCR1, COM1A1);
-      //cbi(TCCR1, COM1A0);
+      TCCR1A |= (1<<COM1A1);
+      //cbi(TCCR1A, COM1A0);
       OCR1A = val; // set pwm duty
     } else
-  #endif
+    #endif
+    // ATtiny x61
+      // This can be recoded to use the OCOEn bits in TCCR1E
+      // This would be much better - then we'd leave COM bits at 0, and just switch on and off the OCOEn bits
+      // In this case, we would use WGM10 or WGM11 (PWM6 mode). Only one duty cycle could be output on each of the three pairs of
+      // PWM pins, but it gives you more choice on which pins you use. Would implement it like we do on x7, ie, if you analogWrite()
+      // both pins, and didn't turn off PWM between with digitalWrite(), you'd have identical waveform on the two pins.
+    #if defined(TCCR1E) //Tiny861
+      if( timer == TIMER1A){
+        // connect pwm to pin on timer 1, channel A
+        //cbi(TCCR1C,COM1A1S);
+        TCCR1C |= (1<<COM1A0S);
+        //sbi(TCCR1A,PWM1A);
+        OCR1A = val; // set pwm duty
+      } else if (timer == TIMER1B){
+        // connect pwm to pin on timer 1, channel A
+        //cbi(TCCR1C,COM1B1S);
+        TCCR1C |= (1<<COM1B0S);
+        //sbi(TCCR1A,PWM1B);
+        OCR1B = val; // set pwm duty
+      } else if (timer == TIMER1D){
+        // connect pwm to pin on timer 1, channel A
+        //cbi(TCCR1C,COM1D1);
+        TCCR1C |= (1<<COM1D0);
+        //sbi(TCCR1A,PWM1D);
+        OCR1D = val; // set pwm duty
+      } else
+    #endif
 
-  #if defined(TCCR1A) && defined(COM1B1) && !defined(TCCR1E)
-    if( timer == TIMER1B){
-      // connect pwm to pin on timer 1, channel B
-      sbi(TCCR1A, COM1B1);
-      //cbi(TCCR1A, COM1B0);
-      OCR1B = val; // set pwm duty
-    } else
-  #endif
+    #if defined(TCCR1) && defined(COM1A1) //Tiny85
+      if(timer == TIMER1A){
+        // connect pwm to pin on timer 1, channel A
+        TCCR1 |= (1<<COM1A1);
+        //cbi(TCCR1, COM1A0);
+        OCR1A = val; // set pwm duty
+      } else
+    #endif
 
-  #if defined(TCCR1) && defined(COM1B1)
-    if( timer == TIMER1B){
-      // connect pwm to pin on timer 1, channel B
-      sbi(GTCCR, COM1B1);
-      //cbi(GTCCR, COM1B0);
-      OCR1B = val; // set pwm duty
-    } else
-  #endif
+    #if defined(TCCR1A) && defined(COM1B1) && !defined(TCCR1E)
+      if( timer == TIMER1B){
+        // connect pwm to pin on timer 1, channel B
+        TCCR1A |= (1<<COM1B1);
+        //cbi(TCCR1A, COM1B0);
+        OCR1B = val; // set pwm duty
+      } else
+    #endif
+
+    #if defined(TCCR1) && defined(COM1B1)
+      if( timer == TIMER1B){
+        // connect pwm to pin on timer 1, channel B
+        GTCCR |= (1<<COM1B1);
+        //cbi(GTCCR, COM1B0);
+        OCR1B = val; // set pwm duty
+      } else
+    #endif
+  #endif // end non-TOCPMCOE implementation
 
     {
       if (val < 128)

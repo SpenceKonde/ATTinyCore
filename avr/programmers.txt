@@ -3,7 +3,6 @@ avrisp.communication=serial
 avrisp.protocol=stk500v1
 avrisp.program.tool=avrdude
 avrisp.program.protocol=stk500v1
-avrisp.program.tool=avrdude
 avrisp.program.extra_params=-P{serial.port}
 
 diamexusbisp.name=Diamex USB ISP
@@ -11,7 +10,6 @@ diamexusbisp.communication=serial
 diamexusbisp.protocol=stk500v2
 diamexusbisp.program.tool=avrdude
 diamexusbisp.program.protocol=stk500v2
-diamexusbisp.program.tool=avrdude
 diamexusbisp.program.extra_params=-P{serial.port}
 
 avrispmkii.name=AVRISP mkII
@@ -24,13 +22,13 @@ avrispmkii.program.extra_params=-Pusb
 usbtinyisp.name=USBtinyISP (ATTinyCore) SLOW, for new or 1 MHz parts
 usbtinyisp.protocol=usbtiny
 usbtinyisp.program.tool=avrdude
-usbtinyisp.program.speed=8
+usbtinyisp.program.speed=0.3
 usbtinyisp.program.extra_params=-B{program.speed}
 
 usbtinyisp2.name=USBtinyISP (ATTinyCore) FAST, for parts running >=2 MHz
 usbtinyisp2.protocol=usbtiny
 usbtinyisp2.program.tool=avrdude
-usbtinyisp2.program.speed=0.3
+usbtinyisp2.program.speed=8
 usbtinyisp2.program.extra_params=-B{program.speed}
 
 usbasp.name=USBasp (ATTinyCore)
@@ -74,7 +72,6 @@ ponyser.communication=serial
 ponyser.protocol=ponyser
 ponyser.program.tool=avrdude
 ponyser.program.protocol=ponyser
-ponyser.program.tool=avrdude
 ponyser.program.extra_params=-P{serial.port}
 
 stk500.name=Atmel STK500

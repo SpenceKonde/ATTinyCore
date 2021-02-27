@@ -34,19 +34,20 @@
 
 #define NUM_DIGITAL_PINS            12
 #define NUM_ANALOG_INPUTS           8
-#define analogInputToDigitalPin(p)  ((p < 8) ? 10 -(p): -1)
 
-#define ADC_TEMPERATURE 34
+#define analogInputToDigitalPin(p)  (p)
 
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5)
+#define digitalPinHasPWM(p)         ((p) == 5 || (p) == 6 || (p) == 7 || (p) == 8)
 
 //This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
 
+#define ADC_TEMPERATURE 34
 
-#define SS   7
+#define SS   3
 #define MOSI 5
-#define MISO 4
-#define SCK  6
+#define MISO 6
+#define SCK  4
+
 
 #define USI_DDR_PORT DDRA
 #define USI_SCK_PORT DDRA
@@ -69,11 +70,11 @@
 #  define USI_START_COND_INT USISIF
 #endif
 
+static const uint8_t SDA = 6;
+static const uint8_t SCL = 4;
 
-static const uint8_t SDA = 4;
-static const uint8_t SCL = 6;
-
-//Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
+//Ax constants should not be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
+//#define ANALOG_PINS_ARE_ADC_NUMBERS 1
 static const uint8_t A0 = 0x80 | 0;
 static const uint8_t A1 = 0x80 | 1;
 static const uint8_t A2 = 0x80 | 2;
@@ -83,32 +84,36 @@ static const uint8_t A5 = 0x80 | 5;
 static const uint8_t A6 = 0x80 | 6;
 static const uint8_t A7 = 0x80 | 7;
 
-
-#define PIN_PA0  (10)
-#define PIN_PA1  ( 9)
-#define PIN_PA2  ( 8)
-#define PIN_PA3  ( 7)
-#define PIN_PA4  ( 6)
+#define PIN_PA0  (0)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PA4  ( 4)
 #define PIN_PA5  ( 5)
-#define PIN_PA6  ( 4)
-#define PIN_PA7  ( 3)
-#define PIN_PB0  ( 0)
-#define PIN_PB1  ( 1)
-#define PIN_PB2  ( 2)
+#define PIN_PA6  ( 6)
+#define PIN_PA7  ( 7)
+#define PIN_PB0  ( 10)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 8)
 #define PIN_PB3  (11)  /* RESET */
-#define LED_BUILTIN (2)
+#define LED_BUILTIN (8)
 
-//these are like PIN_An official core, the digital pin corresponding to a given analog channel.
-#define PIN_A0  (10)
-#define PIN_A1  ( 9)
-#define PIN_A2  ( 8)
-#define PIN_A3  ( 7)
-#define PIN_A4  ( 6)
+//Legacy
+#define PIN_A0  (0)
+#define PIN_A1  ( 1)
+#define PIN_A2  ( 2)
+#define PIN_A3  ( 3)
+#define PIN_A4  ( 4)
 #define PIN_A5  ( 5)
-#define PIN_A6  ( 4)
-#define PIN_A7  ( 3)
+#define PIN_A6  ( 6)
+#define PIN_A7  ( 7)
+#define PIN_B0  ( 10)
+#define PIN_B1  ( 9)
+#define PIN_B2  ( 8)
+#define PIN_B3  (11)  /* RESET */
+#define LED_BUILTIN (8)
 
-#define PINMAPPING_CCW
+#define PINMAPPING_CW
 
 //----------------------------------------------------------
 //----------------------------------------------------------
@@ -154,31 +159,28 @@ static const uint8_t A7 = 0x80 | 7;
 //----------------------------------------------------------
 
 
+// PCICR = Pin Change Interrupt Control Register
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) >= 3 && (p) <= 10) ? 4 : 5)
-#define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
 
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p) (((p) > 7) ? PCIE1 : PCIE0)
+#define digitalPinToPCMSK(p)    (((p)  < 8) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK1) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSKbit(p) (((p) <8 ) ? (p) : ((p==8?2:(p==11?3:(p==9?1:0)))))
+
+#define digitalPinToInterrupt(p)  ((p) == 8 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
-#warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
-
+#warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"
 // ATMEL ATTINY84 / ARDUINO
 //
 //                           +-\/-+
 //                     VCC  1|    |14  GND
-//             (D  0)  PB0  2|    |13  PA0  (D 10)        AREF
-//             (D  1)  PB1  3|    |12  PA1  (D  9)
-//             (D 11)  PB3  4|    |11  PA2  (D  8)
-//  PWM  INT0  (D  2)  PB2  5|    |10  PA3  (D  7)
-//  PWM        (D  3)  PA7  6|    |9   PA4  (D  6)
-//  PWM        (D  4)  PA6  7|    |8   PA5  (D  5)        PWM
+//            (D  10)  PB0  2|    |13  PA0  (D  0)        AREF
+//             (D  9)  PB1  3|    |12  PA1  (D  1)
+//             (D 11)  PB3  4|    |11  PA2  (D  2)
+//  PWM  INT0  (D  8)  PB2  5|    |10  PA3  (D  3)
+//  PWM        (D  7)  PA7  6|    |9   PA4  (D  4)
+//  PWM        (D  6)  PA6  7|    |8   PA5  (D  5)        PWM
 //                           +----+
-
-// these arrays map port names (e.g. port B) to the
-// appropriate addresses for various functions (e.g. reading
-// and writing)
 const uint16_t PROGMEM port_to_mode_PGM[] =
 {
   NOT_A_PORT,
@@ -202,31 +204,33 @@ const uint16_t PROGMEM port_to_input_PGM[] =
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
-  PB, /* 0 */
+  PA, /* 0 */
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PB, /* 8 */
   PB,
   PB,
-  PA,
-  PA,
-  PA,
-  PA,
-  PA,
-  PA, /* 8 */
-  PA,
-  PA,
   PB, /* 11 */
 };
 
+
+
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
-  _BV(0), /* 0, port B */
+  _BV(0), /* port A */
   _BV(1),
   _BV(2),
-  _BV(7), /* 3 port B */
-  _BV(6),
-  _BV(5),
-  _BV(4),
   _BV(3),
-  _BV(2),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(2), /* port B */
   _BV(1),
   _BV(0),
   _BV(3),
@@ -236,14 +240,13 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER0A, /* OC0A */
-  TIMER0B, /* OC0B */
-  TIMER1A, /* OC1A */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
   TIMER1B, /* OC1B */
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIMER1A, /* OC1A */
+  TIMER0B, /* OC0B */
+  TIMER0A, /* OC0A */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,

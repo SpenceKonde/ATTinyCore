@@ -98,7 +98,7 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_PB3  (11)  /* RESET */
 #define LED_BUILTIN (2)
 
-//these are like PIN_An official core, the digital pin corresponding to a given analog channel.
+//legacy
 #define PIN_A0  (10)
 #define PIN_A1  ( 9)
 #define PIN_A2  ( 8)
@@ -107,6 +107,11 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_A5  ( 5)
 #define PIN_A6  ( 4)
 #define PIN_A7  ( 3)
+#define PIN_B0  ( 0)
+#define PIN_B1  ( 1)
+#define PIN_B2  ( 2)
+#define PIN_B3  (11)  /* RESET */
+#define LED_BUILTIN (2)
 
 #define PINMAPPING_CCW
 
@@ -155,10 +160,10 @@ static const uint8_t A7 = 0x80 | 7;
 
 
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) >= 3 && (p) <= 10) ? 4 : 5)
-#define digitalPinToPCMSK(p)    (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
+#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
+#define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSKbit(p) (((p) <= 2) ? (p) : (10 - (p)))
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 #ifdef ARDUINO_MAIN
@@ -236,12 +241,12 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER0A, /* OC0A */
-  TIMER0B, /* OC0B */
-  TIMER1A, /* OC1A */
-  TIMER1B, /* OC1B */
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIMER2A, /* TOCC7 */
+  TIMER2B, /* TOCC6 */
+  TIMER1A, /* TOCC5 */
+  TIMER0B, /* TOCC4 - this is shared with serial 1*/
+  TIMER0A, /* TOCC3 - this is shared with serial 1 so let's give it the least desirable timer */
+  TIMER1B, /* TOCC2 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -254,14 +259,3 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 #endif
 
 
-
-
-//Old code, just here for temporary backup until I decide it is not needed.
-/*
-//WARNING, if using software, RX must be on a pin which has a Pin change interrupt <= 7 (e.g. PCINT6, or PCINT1, but not PCINT8)
-#define USE_SOFTWARE_SERIAL             1
-//These are set to match Optiboot pins.
-#define SOFTWARE_SERIAL_PORT            PORTA
-#define SOFTWARE_SERIAL_TX              9
-#define SOFTWARE_SERIAL_PIN             PINA
-#define SOFTWARE_SERIAL_RX              8*/
