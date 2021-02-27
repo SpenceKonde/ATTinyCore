@@ -356,8 +356,12 @@ static void initToneTimerInternal(void);
   uint32_t micros()
   {
 #ifdef CORRECT_EXACT_MICROS
+
+    #if (F_CPU == 24000000L || F_CPU == 12000000L || F_CPU == 6000000L F_CPU == 20000000L || F_CPU == 10000000L || F_CPU == 18000000L()
     uint16_t r; // needed for some frequencies, optimized away otherwise
-    uint8_t f; // temporary storage for millis fraction counter
+    // No, you may not lean on the optimizer to do what your #ifdefs should do, it produces an unused variable warning.
+    #endif
+    uint8_t f;     // temporary storage for millis fraction counter
     uint8_t q = 0; // record whether an overflow is flagged
 #endif
     uint32_t m;
@@ -1005,30 +1009,8 @@ void initToneTimer(void)
 #endif
 
 
-uint8_t read_factory_calibration(void)
-{
-  uint8_t value = boot_signature_byte_get(1);
-  return value;
-}
 
-#if ((F_CPU == 16000000 || defined(LOWERCAL)) && CLOCK_SOURCE == 0 )
-
-
-  uint8_t read_factory_calibration(void)
-  {
-    uint8_t SIGRD = 5; // Yes, this variable is needed. boot.h is looking for SIGRD but the io.h calls it RSIG... (unlike where this is needed in the other half of this core, at least the io.h file mentions it... ). Since it's actually a macro, not a function call, this works...
-    uint8_t value = boot_signature_byte_get(1);
-    return value;
-  }
-  void oscSlow(uint8_t newcal) {
-    OSCCAL0 = newcal;
-    _NOP(); // this is all micronucleus does, and it seems to work fine...
-  }
-
-#endif
-
-
-#if (defined(__AVR_ATtinyX41__) && F_CPU == 16000000 && CLOCK_SOURCE == 0 )
+/*#if (defined(__AVR_ATtinyX41__) && F_CPU == 16000000 && CLOCK_SOURCE == 0 )
   // functions related to the 16 MHz internal option on ATtiny841/441.
   // 174 CALBOOST seems to work very well - it gets almost all of them close enough for USART, which is what matters. It was empirically determined from a few parts I had lying around.
   #define TINYX41_CALBOOST 174
@@ -1038,7 +1020,6 @@ uint8_t read_factory_calibration(void)
     OSCCAL0 = (origOSC>MAXINITCAL?255:(origOSC + CALBOOST));
     _NOP();
   }
-
   void oscSafeNVM() {      // called immediately prior to writing to EEPROM.
     //TIMSK0& = ~(_BV(TOIE0)); // turn off millis interrupt - let PWM keep running (Though at half frequency, of course!)
     //saveTCNT = TCNT0;
@@ -1050,7 +1031,8 @@ uint8_t read_factory_calibration(void)
     #endif
     set_OSCCAL(read_factory_calibration());
   }
-  void oscDoneNVM(uint8_t bytes_written) {
+*/
+  //void oscDoneNVM(uint8_t bytes_written) {
     /* That's the number of bytes of eeprom written, at 3.3ms or so each.
      * EEPROM does it one at a time, but user code could call these two methods when doing block writes (up to 64 bytes). Just be sure to do the eeprom_busy_wait(); at the end, as in EEPROM.h.
      * Not so much because it's a prerequisite for this stupid correction to timing but because cranking the oscillator back up during the write kinda defeats the point of slowing it doewn...
@@ -1061,8 +1043,8 @@ uint8_t read_factory_calibration(void)
      * 1 millis interrupt fires every 1.024ms, so we want 3.3/1.024= 3.223 overflows; there are 256 timer ticksin an overflow, so 57 timer ticks...
      */
     // FRACT_MAX = 125, FRACT_INC =3
-    set_OSCCAL(tinyx41_cal16m); //stored when we initially tuned
-    #ifndef DISABLEMILLIS
+    //set_OSCCAL(tinyx41_cal16m); //stored when we initially tuned
+    //#ifndef DISABLEMILLIS
     /*
     uint8_t m = 3 * bytes_written; // the 3 whole overflows
     uint16_t tickcount = 57*bytes_written + saveTCNT;
@@ -1086,11 +1068,14 @@ uint8_t read_factory_calibration(void)
     // I don't think it was, gonna go with a quicker dirtier method - we instead leave it running at half speed, saving the low byte of millis. Longest time at half-speed
     // is 3.3 * 64 around 200 ms for a max length block write. So if we leave millis running, and know that it's running at half speed... just take difference of the LSB
     // and add that much to millis.
-    (uint8_t)millis_timer_overflow_count
-    uint8_t milliserror=((uint8_t) millis())-saveMillis
+    //(uint8_t)millis_timer_overflow_count
+    //uint8_t milliserror=((uint8_t) millis())-saveMillis
+    //#endif
+  //}
+//#endif
 
-  }
-#endif
+
+
 /* This attempts to grab a tuning constant from flash (if it's USING_BOOTLOADER) or EEPROM (if not). Note that it is not called unless ENABLE_TUNING is set.
  * inline for flash savings (call overhead) not speed; it is only ever called once, on startup, so I think it would get inlined anyway most of the time
  * addresses for key values:
@@ -1115,9 +1100,28 @@ uint8_t read_factory_calibration(void)
   #define read_tuning_byte(x) pgm_read_byte_near(x)
   #define LASTCAL FLASHEND
 #else // without a bootloader, we have to store calibration in the EEPROM
-  #define read_tuning_byte(x) eeprom_read_byte(x)
+  #define read_tuning_byte(x) eeprom_read_byte((uint8_t*) x)
   #define LASTCAL E2END
 #endif
+
+uint8_t read_factory_calibration(void)
+{
+  #ifndef SIGRD
+  uint8_t SIGRD = 5; // Yes, this variable is needed. boot.h is looking for SIGRD but the io.h calls it RSIG... (unlike where this is needed in the other half of this core, at least the io.h file mentions it... ). Since it's actually a macro, not a function call, this works...
+  #endif
+  uint8_t value = boot_signature_byte_get(1);
+  return value;
+}
+
+// only called in one place most likely, let's try to inline it.
+inline void __attribute__((always_inline)) set_OSCCAL(uint8_t cal) {
+  #ifdef OSCCAL0
+    OSCCAL0 = cal;
+  #else
+    OSCCAL = cal;
+  #endif
+  __asm__ __volatile__ ("nop" "\n\t");
+}
 
 static inline bool __attribute__((always_inline)) check_tuning() {
   // It is almost inconceivable that 0 would be desired tuning
@@ -1137,7 +1141,7 @@ static inline bool __attribute__((always_inline)) check_tuning() {
   /* start internal tuning */
     #if defined(__AVR_ATtinyX41__)
       // 441/841 can be pushed all the way to 16!!
-      #if   (F_CPU == 16000000) // 16 MHz - crazy internal oscillator, no?
+      #if  (F_CPU == 16000000) // 16 MHz - crazy internal oscillator, no?
         uint8_t tune8 = read_tuning_byte(LASTCAL - 3)
         if (tune8 != 0xFF)
           // Need this specific test because 0xFF is valid tuning here
@@ -1151,10 +1155,8 @@ static inline bool __attribute__((always_inline)) check_tuning() {
           // the chip in question can't hit 16, please use a different chip, and that they can halve the serial
           // baud to see what it's printing to serial. On the other hand, if F_CPU is 16 MHz, OSCCAL0 > 128, whether
           // or not ENABLE_TUNING is defined, if it's not running close enough to 16 for serial to work, it guessed at
-          // cal because no tuning or not enabled, and the guess didn't work; running tuning sketch should fix it.
-
-          tinyx41_cal16m = (tuneval != 0 ? tuneval : tune8);
-          set_OSCCAL(tinyx41_cal16m);
+          // cal because no tuning or not enabled, and the guess didn't work; running tuning sketch should fix it.;
+          set_OSCCAL(tuneval != 0 ? tuneval : tune8);
           return 1;
         }
         // let it fall through to return 0 at end.
@@ -1203,18 +1205,7 @@ static inline bool __attribute__((always_inline)) check_tuning() {
   #endif
   return 0;
 }
-// only called in one place most likely, let's try to inline it.
-inline void __attribute__((always_inline)) set_OSCCAL(uint8_t cal) {
-  #ifdef OSCCAL0
-    OSCCAL0 = cal;
-    _NOP();
-    _NOP();
-  #else
-    OSCCAL = cal;
-    _NOP();
-    _NOP();
-  #endif
-}
+
 
 void init_clock() {
   /*  If clocked from the PLL (CLOCK_SOURCE == 6) then there are three special cases all involving

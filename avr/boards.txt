@@ -529,7 +529,7 @@ attinyx5opti.menu.millis.enabled=Enabled
 attinyx5opti.menu.millis.disabled=Disabled (saves flash)
 attinyx5opti.menu.millis.enabled.build.millis=
 attinyx5opti.menu.millis.disabled.build.millis=-DDISABLEMILLIS
-attinyx5opti.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings}
+attinyx5opti.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} -DUSING_BOOTLOADER=(0x01)
 
 
 attinyx5micr.name=ATtiny85 (Micronucleus / DigiSpark)
@@ -605,7 +605,7 @@ attinyx5micr.menu.resetpin.reset=Reset
 attinyx5micr.menu.resetpin.reset.bootloader.rstbit=1
 attinyx5micr.menu.resetpin.gpio=GPIO (Danger - disables ISP)
 attinyx5micr.menu.resetpin.gpio.bootloader.rstbit=0
-attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} {build.usb} -DBOOTTUNED165
+attinyx5micr.build.extra_flags={build.millis} -DNEOPIXELPORT=PORTB {build.pllsettings} {build.usb} -DBOOTTUNED165 -DUSING_BOOTLOADER=(0x08)
 
 
 attinyx8.name=ATtiny48/88 (No bootloader)
