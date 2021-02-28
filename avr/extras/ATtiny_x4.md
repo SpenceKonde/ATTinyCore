@@ -70,43 +70,44 @@ ACSR |=~(1<<ACD);
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
 
-### The following internal sources can also be measured in single-ended mode.
+### Internal Sources
+The following voltages can also be measured using the ADC
 * ADC_INTERNAL1V1
-* ACD_GROUND
+* ADC_GROUND
 * ADC_TEMPERATURE
 
 ## Differential ADC
 The ATtiny84A has a surprisingly sophisticated ADC, with many differential channels, these can by measured via `analogRead(DIFF_Ap_An_gX);` for example, `analogRead(DIFF_A0_A3_20X);` or using the ADC_CH() macro and the channel number below (that is, `analogRead(ADC_CH(0x0C));` to read A1 on positive, A2 on negative sides, with 1X gain).
 
-|  Positive  |  Negative  | Gain 1x|Gain 20x|  Name (1x Gain) | Name (20x Gain)
-|------------|------------|--------|--------|-----------------|-----------------
-| ADC0 (PA0) | ADC0 (PA0) |        |  0x23  |                 |  DIFF_A0_A0_20X
-| ADC0 (PA0) | ADC1 (PA1) |  0x08  |  0x09  |  DIFF_A0_A1_1X  |  DIFF_A0_A1_20X
-| ADC0 (PA0) | ADC3 (PA3) |  0x0A  |  0x0B  |  DIFF_A0_A3_1X  |  DIFF_A0_A3_20X
-| ADC1 (PA1) | ADC0 (PA0) |  0x28  |  0x29  |  DIFF_A1_A0_1X  |  DIFF_A1_A0_20X
-| ADC1 (PA1) | ADC2 (PA2) |  0x0C  |  0x0D  |  DIFF_A1_A2_1X  |  DIFF_A1_A2_20X
-| ADC1 (PA1) | ADC3 (PA3) |  0x0E  |  0x0F  |  DIFF_A1_A3_1X  |  DIFF_A1_A3_20X
-| ADC2 (PA2) | ADC1 (PA1) |  0x2C  |  0x2D  |  DIFF_A2_A1_1X  |  DIFF_A2_A1_20X
-| ADC2 (PA2) | ADC3 (PA3) |  0x10  |  0x11  |  DIFF_A2_A3_1X  |  DIFF_A2_A3_20X
-| ADC3 (PA3) | ADC0 (PA0) |  0x2A  |  0x2B  |  DIFF_A3_A0_1X  |  DIFF_A3_A0_20X
-| ADC3 (PA3) | ADC1 (PA1) |  0x2E  |  0x2F  |  DIFF_A3_A1_1X  |  DIFF_A3_A1_20X
-| ADC3 (PA3) | ADC2 (PA2) |  0x30  |  0x31  |  DIFF_A3_A2_1X  |  DIFF_A3_A2_20X
-| ADC3 (PA3) | ADC3 (PA3) |  0x24  |  0x25  |  DIFF_A3_A3_1X  |  DIFF_A3_A3_20X
-| ADC3 (PA3) | ADC4 (PA4) |  0x12  |  0x13  |  DIFF_A3_A4_1X  |  DIFF_A3_A4_20X
-| ADC3 (PA3) | ADC5 (PA5) |  0x14  |  0x15  |  DIFF_A3_A5_1X  |  DIFF_A3_A5_20X
-| ADC3 (PA3) | ADC6 (PA6) |  0x16  |  0x17  |  DIFF_A3_A6_1X  |  DIFF_A3_A6_20X
-| ADC3 (PA3) | ADC7 (PA7) |  0x18  |  0x19  |  DIFF_A3_A7_1X  |  DIFF_A3_A7_20X
-| ADC4 (PA4) | ADC3 (PA3) |  0x32  |  0x33  |  DIFF_A4_A3_1X  |  DIFF_A4_A3_20X
-| ADC4 (PA4) | ADC5 (PA5) |  0x1A  |  0x1B  |  DIFF_A4_A5_1X  |  DIFF_A4_A5_20X
-| ADC5 (PA5) | ADC3 (PA3) |  0x34  |  0x35  |  DIFF_A5_A3_1X  |  DIFF_A5_A3_20X
-| ADC5 (PA5) | ADC4 (PA4) |  0x3A  |  0x3B  |  DIFF_A5_A4_1X  |  DIFF_A5_A4_20X
-| ADC5 (PA5) | ADC6 (PA6) |  0x1C  |  0x1D  |  DIFF_A5_A6_1X  |  DIFF_A5_A6_20X
-| ADC6 (PA6) | ADC3 (PA3) |  0x36  |  0x37  |  DIFF_A6_A3_1X  |  DIFF_A6_A3_20X
-| ADC6 (PA6) | ADC5 (PA5) |  0x3C  |  0x3D  |  DIFF_A6_A5_1X  |  DIFF_A6_A5_20X
-| ADC6 (PA6) | ADC7 (PA7) |  0x1E  |  0x1F  |  DIFF_A6_A7_1X  |  DIFF_A6_A7_20X
-| ADC7 (PA7) | ADC3 (PA3) |  0x38  |  0x39  |  DIFF_A7_A3_1X  |  DIFF_A7_A3_20X
-| ADC7 (PA7) | ADC6 (PA6) |  0x3E  |  0x3F  |  DIFF_A7_A6_1X  |  DIFF_A7_A6_20X
-| ADC7 (PA7) | ADC7 (PA7) |  0x26  |  0x27  |  DIFF_A7_A7_1X  |  DIFF_A7_A7_20X
+|  Positive  |  Negative  |Gain 1x|Gain 20x| Name (1x Gain) | Name (20x Gain) |
+|------------|------------|-------|--------|----------------|-----------------|
+| ADC0 (PA0) | ADC0 (PA0) |       |  0x23  |                |  DIFF_A0_A0_20X |
+| ADC0 (PA0) | ADC1 (PA1) | 0x08  |  0x09  |  DIFF_A0_A1_1X |  DIFF_A0_A1_20X |
+| ADC0 (PA0) | ADC3 (PA3) | 0x0A  |  0x0B  |  DIFF_A0_A3_1X |  DIFF_A0_A3_20X |
+| ADC1 (PA1) | ADC0 (PA0) | 0x28  |  0x29  |  DIFF_A1_A0_1X |  DIFF_A1_A0_20X |
+| ADC1 (PA1) | ADC2 (PA2) | 0x0C  |  0x0D  |  DIFF_A1_A2_1X |  DIFF_A1_A2_20X |
+| ADC1 (PA1) | ADC3 (PA3) | 0x0E  |  0x0F  |  DIFF_A1_A3_1X |  DIFF_A1_A3_20X |
+| ADC2 (PA2) | ADC1 (PA1) | 0x2C  |  0x2D  |  DIFF_A2_A1_1X |  DIFF_A2_A1_20X |
+| ADC2 (PA2) | ADC3 (PA3) | 0x10  |  0x11  |  DIFF_A2_A3_1X |  DIFF_A2_A3_20X |
+| ADC3 (PA3) | ADC0 (PA0) | 0x2A  |  0x2B  |  DIFF_A3_A0_1X |  DIFF_A3_A0_20X |
+| ADC3 (PA3) | ADC1 (PA1) | 0x2E  |  0x2F  |  DIFF_A3_A1_1X |  DIFF_A3_A1_20X |
+| ADC3 (PA3) | ADC2 (PA2) | 0x30  |  0x31  |  DIFF_A3_A2_1X |  DIFF_A3_A2_20X |
+| ADC3 (PA3) | ADC3 (PA3) | 0x24  |  0x25  |  DIFF_A3_A3_1X |  DIFF_A3_A3_20X |
+| ADC3 (PA3) | ADC4 (PA4) | 0x12  |  0x13  |  DIFF_A3_A4_1X |  DIFF_A3_A4_20X |
+| ADC3 (PA3) | ADC5 (PA5) | 0x14  |  0x15  |  DIFF_A3_A5_1X |  DIFF_A3_A5_20X |
+| ADC3 (PA3) | ADC6 (PA6) | 0x16  |  0x17  |  DIFF_A3_A6_1X |  DIFF_A3_A6_20X |
+| ADC3 (PA3) | ADC7 (PA7) | 0x18  |  0x19  |  DIFF_A3_A7_1X |  DIFF_A3_A7_20X |
+| ADC4 (PA4) | ADC3 (PA3) | 0x32  |  0x33  |  DIFF_A4_A3_1X |  DIFF_A4_A3_20X |
+| ADC4 (PA4) | ADC5 (PA5) | 0x1A  |  0x1B  |  DIFF_A4_A5_1X |  DIFF_A4_A5_20X |
+| ADC5 (PA5) | ADC3 (PA3) | 0x34  |  0x35  |  DIFF_A5_A3_1X |  DIFF_A5_A3_20X |
+| ADC5 (PA5) | ADC4 (PA4) | 0x3A  |  0x3B  |  DIFF_A5_A4_1X |  DIFF_A5_A4_20X |
+| ADC5 (PA5) | ADC6 (PA6) | 0x1C  |  0x1D  |  DIFF_A5_A6_1X |  DIFF_A5_A6_20X |
+| ADC6 (PA6) | ADC3 (PA3) | 0x36  |  0x37  |  DIFF_A6_A3_1X |  DIFF_A6_A3_20X |
+| ADC6 (PA6) | ADC5 (PA5) | 0x3C  |  0x3D  |  DIFF_A6_A5_1X |  DIFF_A6_A5_20X |
+| ADC6 (PA6) | ADC7 (PA7) | 0x1E  |  0x1F  |  DIFF_A6_A7_1X |  DIFF_A6_A7_20X |
+| ADC7 (PA7) | ADC3 (PA3) | 0x38  |  0x39  |  DIFF_A7_A3_1X |  DIFF_A7_A3_20X |
+| ADC7 (PA7) | ADC6 (PA6) | 0x3E  |  0x3F  |  DIFF_A7_A6_1X |  DIFF_A7_A6_20X |
+| ADC7 (PA7) | ADC7 (PA7) | 0x26  |  0x27  |  DIFF_A7_A7_1X |  DIFF_A7_A7_20X |
 
 
 ## Purchasing ATtiny84 Boards
@@ -119,7 +120,7 @@ I (Spence Konde) sell a specialized prototyping board that combines an ISP heade
 This table lists all of the interrupt vectors available on the ATtiny x4-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things. As shown in the below table, the core provides aliases of the names timer interrupts with names starting with TIMn and TIMERn. During the era that these parts were released, Atmel was not naming their vectors consistently. The names starting with TIMERn are to be preferred.
 
 | vect_num | Vector Address |    Vector Name    |      Interrupt Definition           |
-|=---------|----------------|-------------------|-------------------------------------|
+|----------|----------------|-------------------|-------------------------------------|
 |        0 |        0x0000  | RESET_vect        | Any reset (pin, WDT, power-on, BOD) |
 |        1 |        0x0001  | INT0_vect         | External Interrupt Request 0        |
 |        2 |        0x0002  | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |

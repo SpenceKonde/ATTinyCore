@@ -68,26 +68,18 @@ There is one full hardware Serial port with LIN support, named Serial. It works 
 
 
 #### Differential ADC channels and features
+Though it's a far cry from what some of the classic tinyAVR parts have, the A x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.
 
-
- Positive   |   Negative   |  Gain  | Channel
-------------|--------------|--------|---------
-ADC0 (PA0)  |  ADC1 (PA1)  |    8X  |  0x10
-ADC0 (PA0)  |  ADC1 (PA1)  |   20X  |  0x11
-ADC1 (PA1)  |  ADC2 (PA2)  |    8X  |  0x12
-ADC1 (PA1)  |  ADC2 (PA2)  |   20X  |  0x13
-ADC2 (PA2)  |  ADC3 (PA3)  |    8X  |  0x14
-ADC2 (PA2)  |  ADC3 (PA3)  |   20X  |  0x15
-ADC4 (PA4)  |  ADC5 (PA5)  |    8X  |  0x16
-ADC4 (PA4)  |  ADC5 (PA5)  |   20X  |  0x17
-ADC5 (PA5)  |  ADC6 (PA6)  |    8X  |  0x18
-ADC5 (PA5)  |  ADC6 (PA6)  |   20X  |  0x19
-ADC6 (PA6)  |  ADC7 (PA7)  |    8X  |  0x1A
-ADC6 (PA6)  |  ADC7 (PA7)  |   20X  |  0x1B
-ADC8 (PB5)  |  ADC9 (PB6)  |    8X  |  0x1C
-ADC8 (PB5)  |  ADC9 (PB6)  |   20X  |  0x1D
-ADC9 (PB6)  | ADC10 (PB7)  |    8X  |  0x1E
-ADC9 (PB6)  | ADC10 (PB7)  |   20X  |  0x1F
+|  Positive  |   Negative  | 8X Gain |20X Gain| Name (1x Gain) | Name (20x Gain) |
+|------------|-------------|---------|--------|----------------|-----------------|
+| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  DIFF_A0_A1_1X |  DIFF_A0_A1_20X |
+| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  DIFF_A1_A2_1X |  DIFF_A1_A2_20X |
+| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  DIFF_A2_A3_1X |  DIFF_A2_A3_20X |
+| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  DIFF_A4_A5_1X |  DIFF_A4_A5_20X |
+| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  DIFF_A5_A6_1X |  DIFF_A5_A6_20X |
+| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  DIFF_A6_A7_1X |  DIFF_A6_A7_20X |
+| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  DIFF_A8_A9_1X |  DIFF_A8_A9_20X |
+| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | DIFF_A9_A10_1X | DIFF_A9_A10_20X |
 
 
 
