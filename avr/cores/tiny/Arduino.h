@@ -94,6 +94,8 @@ extern "C"{
 #define clockCyclesPerMicrosecond() (F_CPU / 1000000UL)
 #endif
 
+#define ADC_CH(x) (0x80 | (x))
+
 //#define clockCyclesToMicroseconds(a) (((a) * 1000L) / (F_CPU / 1000L))
 //#define microsecondsToClockCycles(a) (((a) * (F_CPU / 1000L)) / 1000L)
 
@@ -127,6 +129,11 @@ int8_t digitalReadFast(uint8_t pinNumber);
 int analogRead(uint8_t pinNumber);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t pinNumber, int16_t val);
+
+
+#if defined(__AVR_ATtinyX61__)
+  void setADCDiffMode(bool bipolar);
+#endif
 
 unsigned long millis(void);
 unsigned long micros(void);
@@ -185,9 +192,9 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define digitalPinToBitMask(P) (const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P)))
 #define digitalPinToTimer(P) (const_array_or_pgm_(pgm_read_byte, digital_pin_to_timer_PGM, (P)))
 #define analogInPinToBit(P) (P)
-#define portOutputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_word, port_to_output_PGM, (P))))
-#define portInputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_word, port_to_input_PGM, (P))))
-#define portModeRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_word, port_to_mode_PGM, (P))))
+#define portOutputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_output_PGM, (P))))
+#define portInputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_input_PGM, (P))))
+#define portModeRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
 
 #endif
 

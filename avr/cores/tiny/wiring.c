@@ -28,6 +28,7 @@
 
 #include "wiring_private.h"
 #include <avr/boot.h>
+//#define ENABLE_TUNING 3
 #ifdef USING_BOOTLOADER
   #include <avr/pgmspace.h>
 #else
@@ -357,7 +358,7 @@ static void initToneTimerInternal(void);
   {
 #ifdef CORRECT_EXACT_MICROS
 
-    #if (F_CPU == 24000000L || F_CPU == 12000000L || F_CPU == 6000000L F_CPU == 20000000L || F_CPU == 10000000L || F_CPU == 18000000L()
+    #if (F_CPU == 24000000L || F_CPU == 12000000L || F_CPU == 6000000L || F_CPU == 20000000L || F_CPU == 10000000L || F_CPU == 18000000L)
     uint16_t r; // needed for some frequencies, optimized away otherwise
     // No, you may not lean on the optimizer to do what your #ifdefs should do, it produces an unused variable warning.
     #endif

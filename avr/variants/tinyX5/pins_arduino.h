@@ -33,10 +33,10 @@
 #define PIN_A2        (PIN_PB4)
 #define PIN_A3        (PIN_PB3)
 
-static const uint8_t A0 = 0x80 | 0;
-static const uint8_t A1 = 0x80 | 1;
-static const uint8_t A2 = 0x80 | 2;
-static const uint8_t A3 = 0x80 | 3;
+static const uint8_t A0 = ADC_CH(0);
+static const uint8_t A1 = ADC_CH(1);
+static const uint8_t A2 = ADC_CH(2);
+static const uint8_t A3 = ADC_CH(3);
 
 #define digitalPinToInterrupt(p)    ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 
@@ -46,23 +46,22 @@ static const uint8_t A3 = 0x80 | 3;
 #define digitalPinToPCMSKbit(p)     (p)
 
 #define analogInputToDigitalPin(p)  (((p) == 0) ? 5 : (((p) == 1) ? 2 : (((p) == 2) ? 4 :(((p) == 3) ? 3 : -1))))
-#define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1 || (p)==4)
+#define digitalPinToAnalogInput(p)  (((p) == 5) ? 0 : (((p) == 2) ? 1 | (((p) == 4) ? 2 :(((p) == 3) ? 3 : -1))))
+
+#define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1 || (p) == 4)
 
 
 //----------------------------------------------------------
 // Core Configuration where these are not the defaults
 //----------------------------------------------------------
 
-//Why not? It's one of the special features of these parts, why not use it?
-#define TIMER1_PWM
-
-
-
 // Choosing not to initialise saves power and flash. 1 = initialise.
 // #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
 // #define INITIALIZE_SECONDARY_TIMERS               1
 // #define TIMER_TO_USE_FOR_MILLIS                   0
 
+// It's one of the special features of these parts, why not use it?
+#define TIMER1_PWM
 /*
  * Where to put the software serial? (Arduino Digital pin numbers)
  * TX is on AIN0, RX is on AIN1. Comparator is favoured
@@ -103,8 +102,6 @@ static const uint8_t A3 = 0x80 | 3;
  * Chip Features - SPI, I2C, USART, etc
  *----------------------------------------------------------*/
 
-#define USE_SOFTWARE_SPI 1
-
 /*  This part has a USI, not an SPI or TWI module. Accordingly, there is no MISO/MOSI in hardware.
     There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI;
     the defines here specify the pins for master mode, as SPI master is much more commonly used
@@ -118,21 +115,23 @@ static const uint8_t A3 = 0x80 | 3;
     we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines are in Arduino.h and
     refer back to these macros (PIN_USI_* )*/
 
+#define USE_SOFTWARE_SPI 1
+
 #define PIN_USI_SCK     PIN_PB2
 #define PIN_USI_DO      PIN_PB1
 #define PIN_USI_DI      PIN_PB0
 
-#define SS    PIN_PB3
+#define SS              PIN_PB3
 
-#define USI_DATA_DDR    DDRB
-#define USI_DATA_PORT   PORTB
-#define USI_DATA_PIN    PINB
+#define USI_DATA_DDR       DDRB
+#define USI_DATA_PORT     PORTB
+#define USI_DATA_PIN       PINB
 
-#define USI_CLOCK_BIT   PINB2
-#define USI_DO_BIT      PINB1
-#define USI_DI_BIT      PINB0
+#define USI_CLOCK_BIT     PINB2
+#define USI_DO_BIT        PINB1
+#define USI_DI_BIT        PINB0
 
-#define USI_START_VECTOR USI_START_vect
+#define USI_START_VECTOR  USI_START_vect
 #define USI_OVERFLOW_VECTOR USI_OVF_vect
 #ifndef USI_START_COND_INT
   #define USI_START_COND_INT USISIF

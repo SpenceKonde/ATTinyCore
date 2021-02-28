@@ -55,12 +55,41 @@ There is a hardware SPI port and the normal SPI library can be used.
 ### UART (Serial) with LIN support
 There is one full hardware Serial port with LIN support, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. The ATtiny x7-family has LIN support, unique among the ATtiny linup; LIN (Local Interconnect Network) is frequently used in automotive and industrial applications. One consequence of this additional feature is that the baud rate generator is able to match baud rates much more closely than a "standard" UART module.
 
-### ADC Reference Options
+### ADC Features
+
+#### Reference Options
 * DEFAULT: Vcc
 * EXTERNAL: Voltage applied to AREF pin
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
 * INTERNAL2V56: Internal 2.56v
+
+#### Special Channels
+
+
+#### Differential ADC channels and features
+
+
+ Positive   |   Negative   |  Gain  | Channel
+------------|--------------|--------|---------
+ADC0 (PA0)  |  ADC1 (PA1)  |    8X  |  0x10
+ADC0 (PA0)  |  ADC1 (PA1)  |   20X  |  0x11
+ADC1 (PA1)  |  ADC2 (PA2)  |    8X  |  0x12
+ADC1 (PA1)  |  ADC2 (PA2)  |   20X  |  0x13
+ADC2 (PA2)  |  ADC3 (PA3)  |    8X  |  0x14
+ADC2 (PA2)  |  ADC3 (PA3)  |   20X  |  0x15
+ADC4 (PA4)  |  ADC5 (PA5)  |    8X  |  0x16
+ADC4 (PA4)  |  ADC5 (PA5)  |   20X  |  0x17
+ADC5 (PA5)  |  ADC6 (PA6)  |    8X  |  0x18
+ADC5 (PA5)  |  ADC6 (PA6)  |   20X  |  0x19
+ADC6 (PA6)  |  ADC7 (PA7)  |    8X  |  0x1A
+ADC6 (PA6)  |  ADC7 (PA7)  |   20X  |  0x1B
+ADC8 (PB5)  |  ADC9 (PB6)  |    8X  |  0x1C
+ADC8 (PB5)  |  ADC9 (PB6)  |   20X  |  0x1D
+ADC9 (PB6)  | ADC10 (PB7)  |    8X  |  0x1E
+ADC9 (PB6)  | ADC10 (PB7)  |   20X  |  0x1F
+
+
 
 ### Purchasing ATtiny167 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core.

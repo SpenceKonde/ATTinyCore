@@ -61,40 +61,59 @@ void analogReference(uint8_t mode)
 #define ADMUX_MUX_MASK (0x07)
 #endif
 
+#if defined(__AVR_ATtinyX61__)
+void setADCBipolarMode(bool bipolar) {
+  oldSREG=SREG;
+  cli();
+  ADCSRB = (ADCSRB & (0x7F) ) | (bipolar ? 0x80 : 0)
+}
+#endif
+
 int analogRead(uint8_t pin)
 {
-  pin &=127; //strip off the high bit of the A# constants
+  if (!(pin & 0x80)) {
+    digitalPinToAnalogInput(pin);
+  }
   if(__builtin_constant_p(pin)) {
-    //
+    if (pin & 0x7F > ADMUX_MUX_MASK)
+      badArg("Compiletime known ADC channel does not exist on this part");
   }
   #ifndef ADCSRA
     badCall("You cannot use analogRead() on a part without an ADC.");
     /* if a device does not have an ADC, instead of giving a number we know is wrong AND that isn't unique to error conditions,
      * let's give a number that will be very obviously an error, but could not be generated if the pin were capable of analogRead()
-     * if they do any sort of error checking, they would hopefully verify that analogWrite didn't give them back an obvious error code.
+     * if they do any sort of error checking, they would hopefully verify that analogRead() didn't give them back an obviously erroneous value .
      */
-    return -1;
+    return -32768;
   #else
     /* I don't think we need to check for this? Can we say it's the responsibility of the user to avoid calling analogRead() if they have turned off the ADC or chose the "don't initialize the ADC"
      * whern compiling? . We can't switch to this on the basis of the compiletime options, because it is very plausible that someone with a highly atypical ADC configuration might want to disable
      * the builtin initialization and do it themselves.
      * if (!(ADCSRA & (1 << ADEN))) return -2;
      */
-    #if defined(ADMUXB)
-      #if defined(GSEL0)
-        // x41
-        ADMUXA = pin&&0x3f;
-        ADMUXB = ((analog_reference & 0x07) << REFS0);
-      #else
-        // 828
-        ADMUXA = pin & 0x1f;
-        ADMUXB = (analog_reference ? (1 << REFS):0);
-      #endif
-    #elif defined(ADMUX)
-      #if defined(REFS2)
-        ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0) | (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
-      #else
-        ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
+    #if defined(__AVR_ATtinyX61__)
+      //this one is WACKY
+      ADMUX = (((analog_reference & 0x03) << 6) | (pin & 0x1F))
+      // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
+      ADCSRB = (ADCSRB & (0xA7)) | ((analog_reference & 0x04) << 2 ) | (pin & 0x40) | ((pin & 0x20) >> 2);
+      // They could have made that harder to deal with if they really tried, maybe...
+    #else
+      #if defined(ADMUXB)
+        #if defined(GSEL0)
+          // x41
+          ADMUXA = pin&&0x3f;
+          ADMUXB = ((analog_reference & 0x07) << REFS0);
+        #else
+          // 828
+          ADMUXA = pin & 0x1f;
+          ADMUXB = (analog_reference ? (1 << REFS):0);
+        #endif
+      #elif defined(ADMUX)
+        #if defined(REFS2)
+          ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0) | (((analog_reference & 0x04) >> 2) << REFS2); //some have an extra reference bit in a weird position.
+        #else
+          ADMUX = ((analog_reference & ADMUX_REFS_MASK) << REFS0) | ((pin & ADMUX_MUX_MASK) << MUX0); //select the channel and reference
+        #endif
       #endif
     #endif
     ADCSRA |= (1<<ADSC);        //Start conversion
@@ -171,11 +190,7 @@ void analogWrite(uint8_t pin, int val)
     } else
     #endif
     // ATtiny x61
-      // This can be recoded to use the OCOEn bits in TCCR1E
-      // This would be much better - then we'd leave COM bits at 0, and just switch on and off the OCOEn bits
-      // In this case, we would use WGM10 or WGM11 (PWM6 mode). Only one duty cycle could be output on each of the three pairs of
-      // PWM pins, but it gives you more choice on which pins you use. Would implement it like we do on x7, ie, if you analogWrite()
-      // both pins, and didn't turn off PWM between with digitalWrite(), you'd have identical waveform on the two pins.
+
     #if defined(TCCR1E) //Tiny861
       if( timer == TIMER1A){
         // connect pwm to pin on timer 1, channel A

@@ -61,6 +61,70 @@ As of version 1.2.2, the builtin Servo library supports the ATtiny x61-family. A
 * INTERNAL2V56_NO_CAP: Internal 2.56v reference, without external bypass
 * INTERNAL2V56NOBP: Synonym for INTERNAL2V56_NO_CAP
 
+## Differential ADC
+The ATtiny861 has a surprisingly sophisticated ADC, one more advanced than many ATmega parts, with many differential channels and selectable gain. These can by measured via `analogRead(DIFF_Ap_An_gX);` for example, `analogRead(DIFF_A0_A2_32X);` or using the ADC_CH() macro and the channel number below (that is, `analogRead(ADC_CH(0x0C));` to read A0 on positive, A1 on negative sides, with 1X gain). The higher gain option, where supported, is passed as bit 6 of the channel. This ADC is very well thought of by users (shame it's on such an awful chip in every other way), and has been compared favorably to the differential ADC in the newest AVR Dx parts! While the ADC normally runs in unipolar mode, it can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and get meaningful measurements (it will return a signed value). This can be enabled by calling the helper function setADCBipolarMode(true or false).
+
+
+| Positive   | Negative   |   Gain  | Channel| Name 1x/20x mode | Name 8x/32x mode |
+|------------|------------|---------|--------|------------------|------------------|
+| ADC0 (PA0) | ADC1 (PA1) |     20x |   0x0B |  DIFF_A0_A1_20X  |                  |
+| ADC0 (PA0) | ADC1 (PA1) |      1x |   0x0C |   DIFF_A0_A1_1X  |                  |
+| ADC1 (PA1) | ADC1 (PA1) |     20x |   0x0D |  DIFF_A1_A1_20X  |                  |
+| ADC2 (PA2) | ADC1 (PA1) |     20x |   0x0E |  DIFF_A2_A1_20X  |                  |
+| ADC2 (PA2) | ADC1 (PA1) |      1x |   0x0F |   DIFF_A2_A1_1X  |                  |
+| ADC2 (PA2) | ADC3 (PA4) |      1x |   0x10 |   DIFF_A2_A3_1X  |                  |
+| ADC3 (PA4) | ADC3 (PA4) |     20x |   0x11 |  DIFF_A3_A3_20X  |                  |
+| ADC4 (PA5) | ADC3 (PA4) |     20x |   0x12 |  DIFF_A4_A3_20X  |                  |
+| ADC4 (PA5) | ADC3 (PA4) |      1x |   0x13 |   DIFF_A4_A3_1X  |                  |
+| ADC4 (PA5) | ADC5 (PA6) |     20x |   0x14 |  DIFF_A4_A5_20X  |                  |
+| ADC4 (PA5) | ADC5 (PA6) |      1x |   0x15 |   DIFF_A4_A5_1X  |                  |
+| ADC5 (PA6) | ADC5 (PA6) |     20x |   0x16 |  DIFF_A5_A5_20X  |                  |
+| ADC6 (PA7) | ADC5 (PA6) |     20x |   0x17 |  DIFF_A6_A5_20X  |                  |
+| ADC6 (PA7) | ADC5 (PA6) |      1x |   0x18 |   DIFF_A6_A5_1X  |                  |
+| ADC8 (PB5) | ADC9 (PB6) |     20x |   0x19 |  DIFF_A8_A9_20X  |                  |
+| ADC8 (PB5) | ADC9 (PB6) |      1x |   0x1A |   DIFF_A8_A9_1X  |                  |
+| ADC9 (PB6) | ADC9 (PB6) |     20x |   0x1B |  DIFF_A9_A9_20X  |                  |
+| ADC10(PB7) | ADC9 (PB6) |     20x |   0x1C | DIFF_A10_A9_20X  |                  |
+| ADC10(PB7) | ADC9 (PB6) |      1x |   0x1D |  DIFF_A10_A9_1X  |                  |
+| ADC0 (PA0) | ADC1 (PA1) | 20x/32x |   0x20 |  DIFF_A0_A1_20X  |   DIFF_A0_A1_32X |
+| ADC0 (PA0) | ADC1 (PA1) |   1x/8x |   0x21 |   DIFF_A0_A1_1X  |    DIFF_A0_A1_8X |
+| ADC1 (PA1) | ADC0 (PA0) | 20x/32x |   0x22 |  DIFF_A1_A0_20X  |   DIFF_A1_A0_32X |
+| ADC1 (PA1) | ADC0 (PA0) |   1x/8x |   0x23 |   DIFF_A1_A0_1X  |    DIFF_A1_A0_8X |
+| ADC1 (PA1) | ADC2 (PA2) | 20x/32x |   0x24 |  DIFF_A1_A2_20X  |   DIFF_A1_A2_32X |
+| ADC1 (PA1) | ADC2 (PA2) |   1x/8x |   0x25 |   DIFF_A1_A2_1X  |    DIFF_A1_A2_8X |
+| ADC2 (PA2) | ADC1 (PA1) | 20x/32x |   0x26 |  DIFF_A2_A1_20X  |   DIFF_A2_A1_32X |
+| ADC2 (PA2) | ADC1 (PA1) |   1x/8x |   0x27 |   DIFF_A2_A1_1X  |    DIFF_A2_A1_8X |
+| ADC2 (PA2) | ADC0 (PA0) | 20x/32x |   0x28 |  DIFF_A2_A0_20X  |   DIFF_A2_A0_32X |
+| ADC2 (PA2) | ADC0 (PA0) |   1x/8x |   0x29 |   DIFF_A2_A0_1X  |    DIFF_A2_A0_8X |
+| ADC0 (PA0) | ADC2 (PA2) | 20x/32x |   0x2A |  DIFF_A0_A2_20X  |   DIFF_A0_A2_32X |
+| ADC0 (PA0) | ADC2 (PA2) |   1x/8x |   0x2B |   DIFF_A0_A2_1X  |    DIFF_A0_A2_8X |
+| ADC4 (PA5) | ADC5 (PA6) | 20x/32x |   0x2C |  DIFF_A4_A5_20X  |   DIFF_A4_A5_32X |
+| ADC4 (PA5) | ADC5 (PA6) |   1x/8x |   0x2D |   DIFF_A4_A5_1X  |    DIFF_A4_A5_8X |
+| ADC5 (PA6) | ADC4 (PA5) | 20x/32x |   0x2E |  DIFF_A5_A4_20X  |   DIFF_A5_A4_32X |
+| ADC5 (PA6) | ADC4 (PA5) |   1x/8x |   0x2F |   DIFF_A5_A4_1X  |    DIFF_A5_A4_8X |
+| ADC5 (PA6) | ADC6 (PA7) | 20x/32x |   0x30 |  DIFF_A5_A6_20X  |   DIFF_A5_A6_32X |
+| ADC5 (PA6) | ADC6 (PA7) |   1x/8x |   0x31 |   DIFF_A5_A6_1X  |    DIFF_A5_A6_8X |
+| ADC6 (PA7) | ADC5 (PA6) | 20x/32x |   0x32 |  DIFF_A6_A5_20X  |   DIFF_A6_A5_32X |
+| ADC6 (PA7) | ADC5 (PA6) |   1x/8x |   0x33 |   DIFF_A6_A5_1X  |    DIFF_A6_A5_8X |
+| ADC6 (PA7) | ADC4 (PA5) | 20x/32x |   0x34 |  DIFF_A6_A4_20X  |   DIFF_A6_A4_32X |
+| ADC6 (PA7) | ADC4 (PA5) |   1x/8x |   0x35 |   DIFF_A6_A4_1X  |    DIFF_A6_A4_8X |
+| ADC4 (PA5) | ADC6 (PA7) | 20x/32x |   0x36 |  DIFF_A4_A6_20X  |   DIFF_A4_A6_32X |
+| ADC4 (PA5) | ADC6 (PA7) |   1x/8x |   0x37 |   DIFF_A4_A6_1X  |    DIFF_A4_A6_8X |
+| ADC0 (PA0) | ADC0 (PA0) | 20x/32x |   0x38 |  DIFF_A0_A0_20X  |   DIFF_A0_A0_32X |
+| ADC0 (PA0) | ADC0 (PA0) |   1x/8x |   0x39 |   DIFF_A0_A0_1X  |    DIFF_A0_A0_8X |
+| ADC1 (PA1) | ADC1 (PA1) | 20x/32x |   0x3A |  DIFF_A1_A1_20X  |   DIFF_A1_A1_32X |
+| ADC2 (PA2) | ADC2 (PA2) | 20x/32x |   0x3B |  DIFF_A2_A2_20X  |   DIFF_A2_A2_32X |
+| ADC4 (PA5) | ADC4 (PA5) | 20x/32x |   0x3C |  DIFF_A4_A4_20X  |   DIFF_A4_A4_32X |
+| ADC5 (PA6) | ADC5 (PA6) | 20x/32x |   0x3D |  DIFF_A5_A5_20X  |   DIFF_A5_A5_32X |
+| ADC6 (PA7) | ADC6 (PA7) | 20x/32x |   0x3E |  DIFF_A6_A6_20X  |   DIFF_A6_A6_32X |
+
+
+
+The internal voltage reference, internal ground (offset correction?) and temperature sensor can be measured using these names:
+* ADC_INTERNAL1V1
+* ACD_GROUND
+* ADC_TEMPERATURE
+
 ### Purchasing ATtiny861 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny861 boards through my Tindie store - your purchases support the continued development of this core.
 ![Picture of ATtiny861 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2016-04-15T05:26:46.803Z-AZB61_Asy.png.855x570_q85_pad_rcrop.jpg)
