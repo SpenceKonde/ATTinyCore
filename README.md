@@ -6,6 +6,8 @@ Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus)
 Let's use that, not gitter.
 
 ### Current **strongly** recommended IDE version: 1.8.13
+Users of 1.6.x versions should use caution with any board manager packages as the handling of dependancy versions, at least under 1.6.9, appears to be severely broken, such that installing one packages can break others. For example, DxCore won't work if ATYTinyCore is installed on 1.6.9! - both cores correctly specify their requirements, but the IDE does not use the correct versions of the toochain. It is likely that similar bugs involving other tools also manifest here. Use 1.8.13 or similar recent version if at all possible; if you are unwilling or unable to update your main Arduino IDE version, a "portable" installation is recommended - the separate copy of IDE *with portable installation* should ensure that what you do in that version does not effect the other version - if you can't use 1.8.13, a portable 1.6.9 version will achieve the same thing, only without the other fixes and improvements that went into the IDE since then.
+
 
 ### [Installation](Installation.md)
 ### [Wiring and required external components](Wiring.md)
@@ -42,6 +44,17 @@ If you want to use Micronucleus (VUSB) boards on Windows, you must manually inst
 
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
+
+**avrdude: error: could not find USB device with vid=0x16c0 pid=0x5dc vendor='www.fischl.de' product='USBasp'**
+Vaguely recent versions of AVRdude appear to have dropped a few versions of the firmware. If this is the first time you'd installed something that triggered an update here, you may have problems with AVRdude. The solution, thankfully, is straightforward..
+.
+1. Download Zadig from http://zadig.akeo.ie
+2. Plug in USBasp
+3. Start zadig
+4. Options > List all devices
+5. Select USBasp from the drop down menu
+6. Select libusbK(v3.0.7.0) driver
+7. Click Install
 
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
