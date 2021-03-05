@@ -66,13 +66,7 @@ ACSR |=~(1<<ACD);
 * INTERNAL: synonym for INTERNAL1V1
 
 ### Purchasing ATtiny88 Boards
-I (Spence Konde / Dr. Azzy) sell ATtiny88 boards through my Tindie store - your purchases support the continued development of this core.
-
-![Picture of ATtiny88 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2016-05-18T04:57:39.963Z-AZB-8_V2_Asy.png.855x570_q85_pad_rcrop.png)
-* [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
-* [Bare Boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/)
-
-MH-Tiny boards with USB are available from Aliexpress for around $2/ea, and much higher prices on ebay/Amazon.
+I (Spence Konde / Dr. Azzy) have mostly given up trying to sell breaksouts for unpopular parts like the tiny88. I expect most users will be working with the DIP parts, or using the MH-Tiny USB boards (which can have the USB functionality removed with an ISP programmer, and my design was a very earl
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x8-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
