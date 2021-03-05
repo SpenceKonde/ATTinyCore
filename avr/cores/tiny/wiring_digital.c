@@ -196,13 +196,13 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 
 int8_t digitalRead(uint8_t pin)
 {
-  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
+  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
   //uint8_t timer = digitalPinToTimer(pin);
-  uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-
   if (port == NOT_A_PORT) return NOT_A_PIN;
+
+  uint8_t mask = digitalPinToBitMask(pin);
 
   // There is no need to turn off PWM on a pin before doing digitalRead().
   // "read" should *NEVER* change the behavior of the thing you're using it on.

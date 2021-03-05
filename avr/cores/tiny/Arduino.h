@@ -46,6 +46,10 @@ extern "C"{
 #define FALLING 2
 #define RISING 3
 
+#define ADC_ERROR_BUSY            -30000
+#define ADC_ERROR_DISABLED        -32000
+#define ADC_ERROR_NO_ADC          -32768
+
 #define NOT_AN_INTERRUPT -1
 
 #define min(a,b)      ({ \
@@ -131,9 +135,7 @@ void analogReference(uint8_t mode);
 void analogWrite(uint8_t pinNumber, int16_t val);
 
 
-#if defined(__AVR_ATtinyX61__)
-  void setADCDiffMode(bool bipolar);
-#endif
+void setADCDiffMode(bool bipolar, bool intsafe=false);
 
 unsigned long millis(void);
 unsigned long micros(void);
@@ -169,9 +171,6 @@ inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
 }
 
 
-
-#ifndef MACROS_NOT_PGM
-
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
 
@@ -179,6 +178,7 @@ extern const uint8_t PROGMEM port_to_mode_PGM[];
 extern const uint8_t PROGMEM port_to_input_PGM[];
 extern const uint8_t PROGMEM port_to_output_PGM[];
 
+#ifndef
 extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
@@ -195,8 +195,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define portOutputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_output_PGM, (P))))
 #define portInputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_input_PGM, (P))))
 #define portModeRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
-
-#endif
 
 
 #define NOT_A_PIN 255
@@ -216,20 +214,29 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define TIMER2B 6
 #define TIMER1D 7
 
-/*  TOCCn's for 441/841/828 - We could bitwise OR
-  with timer from above lists when we make table
+/* This is TRICKY
+  We need the bitmask, not bit position...
 
-  0b 1nnn 0ccc
-    n = TOCC bit number
-    c = Channel number from Timer #defines. */
-#define TOCC0  (0x80)
-#define TOCC1  (0x90)
-#define TOCC2  (0xA0)
-#define TOCC3  (0xB0)
-#define TOCC4  (0xC0)
-#define TOCC5  (0xD0)
-#define TOCC6  (0xE0)
-#define TOCC7  (0xF0)
+  So TOCC bitmask */
+#if defined(FLEX_PWM)
+  #define TOCC0  (0x01)
+  #define TOCC1  (0x02)
+  #define TOCC2  (0x04)
+  #define TOCC3  (0x08)
+  #define TOCC4  (0x10)
+  #define TOCC5  (0x20)
+  #define TOCC6  (0x40)
+  #define TOCC7  (0x80)
+#else
+  #define TOCC0  (0x10)
+  #define TOCC1  (0x20)
+  #define TOCC2  (0x40)
+  #define TOCC3  (0x80)
+  #define TOCC4  (0x18)
+  #define TOCC5  (0x28)
+  #define TOCC6  (0x48)
+  #define TOCC7  (0x88)
+#endif
 
 /*  Timer1 on the ATtiny167/ATtiny87 can output an
   identical waveform on one or more of 4 pins per

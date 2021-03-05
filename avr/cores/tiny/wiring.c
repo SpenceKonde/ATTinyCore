@@ -1522,3 +1522,17 @@ void init()
   sei();
   // end if init()
 }
+
+
+/* Okay, timer registers:
+ * It is arguable whether it's actually better to check for these - the way we're doing it in these files,
+ * we are often not checking for features, but specific families of parts handled case-by-case, and there
+ * will never be new classic AVRs released.... so why not just test for part families when that's what we're doing?
+ *
+ * TCCR1E is only on x61.
+ * TCCR1D is only on x7 and x61.
+ * TCCR1 is only on x5
+ * All non-85 have TCCR1A.
+ *
+ *
+ */
