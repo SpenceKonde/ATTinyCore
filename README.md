@@ -7,6 +7,9 @@ Let's use that, not gitter.
 
 ### Current **strongly** recommended IDE version: 1.8.13
 
+# WARNING: THIS BRANCH IS A WORK IN PROGRESS AND WILL BECOME 2.0.0! It is NOT EXPECTED TO WORK AT THIS POINT!
+
+
 ### [Installation](Installation.md)
 ### [Wiring and required external components](Wiring.md)
 ### [Using with Micronucleus boards](avr/extras/UsingMicronucleus.md)

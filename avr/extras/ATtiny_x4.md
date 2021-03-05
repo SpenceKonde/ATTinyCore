@@ -4,7 +4,7 @@
  Specifications |  .
 ------------ | -------------
 Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with Optiboot, 6522b with Micronucleus)
-RAM  | 128/256/512 bytes
+RAM           | 128/256/512 bytes
 EEPROM | 128/256/512 bytes
 Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
 GPIO Pins | 11
@@ -64,7 +64,10 @@ ACSR &=~(1<<ACIE);
 ACSR |=~(1<<ACD);
 ```
 
-### ADC Reference options
+## ADC Features
+The ATtiny84 has a surprisingly sophisticated ADC with multiple differential channels and a gain of 1x or 20x As of ATTinyCore 2.0.0, these are available through analogRead!  When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available.
+
+### Reference options
 * DEFAULT: Vcc
 * EXTERNAL: Voltage applied to AREF pin
 * INTERNAL1V1: Internal 1.1v reference
@@ -76,9 +79,10 @@ The following voltages can also be measured using the ADC
 * ADC_GROUND
 * ADC_TEMPERATURE
 
-## Differential ADC
-The ATtiny84A has a surprisingly sophisticated ADC, with many differential channels, these can by measured via `analogRead(DIFF_Ap_An_gX);` for example, `analogRead(DIFF_A0_A3_20X);` or using the ADC_CH() macro and the channel number below (that is, `analogRead(ADC_CH(0x0C));` to read A1 on positive, A2 on negative sides, with 1X gain).
+### Differential ADC
+There are 12 differential pairs available, all with selectable gain. On A0, A3, and A7, the positive and negative inputs can be set to the same pin; these can be used to determine the offset error in the gain stage, which can then be subtracted from future measurements. All pairs can have the two inputs swapped, too. ATTinyCore (v2.0.0+) allows you to read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro (ex: `analogRead(ADC_CH(0x08))` to read ADC0 and ADC1 at 20x gain, equivalent to `analogRead(DIFF_A0_A1_20X)`), otherwise they will be interpreted as a (likely non-existent) digital pin (any time an analog channel is used, the high bit is set, and on numbers used for digital pins, it is not. So `ADC_CH()` is just `#define ADC_CH(x) (0x80 | (x))`  - but it's a heckova lot easier to understand when reading code). In the case of duplicates in the list of gain options, the one that does not use the `GSEL` bit to select the gain is named followed by an A (ex, `DIFF_A6_A5_20XA`).
 
+### Differential ADC channels
 |  Positive  |  Negative  |Gain 1x|Gain 20x| Name (1x Gain) | Name (20x Gain) |
 |------------|------------|-------|--------|----------------|-----------------|
 | ADC0 (PA0) | ADC0 (PA0) |       |  0x23  |                |  DIFF_A0_A0_20X |
@@ -108,6 +112,25 @@ The ATtiny84A has a surprisingly sophisticated ADC, with many differential chann
 | ADC7 (PA7) | ADC3 (PA3) | 0x38  |  0x39  |  DIFF_A7_A3_1X |  DIFF_A7_A3_20X |
 | ADC7 (PA7) | ADC6 (PA6) | 0x3E  |  0x3F  |  DIFF_A7_A6_1X |  DIFF_A7_A6_20X |
 | ADC7 (PA7) | ADC7 (PA7) | 0x26  |  0x27  |  DIFF_A7_A7_1X |  DIFF_A7_A7_20X |
+
+#### ADC Differential Pair Matrix
+
+ | N\P |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |
+ |-----|----|----|----|----|----|----|----|----|
+ |   0 |  X |  X |    |  X |    |    |    |    |
+ |   1 |  X |    |  X |  X |    |    |    |    |
+ |   2 |    |  X |    |  X |    |    |    |    |
+ |   3 |  X |  X |  X |  X |  X |  X |  X |  X |
+ |   4 |    |    |    |  X |    |  X |    |    |
+ |   5 |    |    |    |  X |  X |    |  X |    |
+ |   6 |    |    |    |  X |    |  X |    |  X |
+ |   7 |    |    |    |  X |    |    |  X |  X |
+
+
+By default, differential measurements are taken with the gain stage in "unipolar" mode; in order to get meaningful data, the positive side must be higher than the negative side. This is great if you you know ahead of time that one of them will definitely be higher (and often you do). But you can also use it in bipolar mode - in this mode there are 9 bits of resolution, plus a sign bit; by letting it go negative,
+
+### Temperature Measurement
+To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP). We suggest storing this temperature calibration value at (`E2END`-3:`E2END`-2) in the EEPROM (the final two bytes of the EEPROM should be reserved for oscilator tuning values in non-bootloader configurations). When a bootloader is in use, this value can instead be stored near the end of the flash, at `FLASHEND - 5` (and hence also `FLASHEND - 4`) (the final 2 bytes hold the bootloader version, and the two before them hold tuned `OSCCAL` values at 8 MHz and 8.25 MHz (8.25 x 2 gives 16.5 MHz when running off internal for the 16.5 MHz VUSB option).
 
 
 ## Purchasing ATtiny84 Boards
@@ -145,3 +168,6 @@ This table lists all of the interrupt vectors available on the ATtiny x4-family,
 |       14 |        0x000E  | EE_RDY_vect       | EEPROM Ready                        |
 |       16 |        0x000F  | USI_STR_vect      | USI START                           |
 |       17 |        0x0010  | USI_OVF_vect      | USI Overflow                        |
+
+## 84 vs 84a - you said "almost" fully interchangible?
+Okay, there is one difference I'm aware of that makes them distinct: The older 861 design has the old, bifurcated calibration curve for the internal oscillator, that is, the speed jumps backwards as you increase the `OSCCAL` register from 127 to 128. The "bifurcated" oscillators are also generally less accurate and less stable than ones like the one in the ATtiny84A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (since USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts.

@@ -71,6 +71,7 @@ static const uint8_t A10 = ADC_CH(10);
 #define digitalPinToPCICR(p)    (&PCICR)
 #define digitalPinToPCICRbit(p) ( ((p) >= 5 && (p) <= 12) ? PCIE0 : PCIE1 )
 #define digitalPinToPCMSK(p)    ( ((p) >= 5 && (p) <= 12) ? (&PCMSK0) : (&PCMSK1) )
+
 #define digitalPinToPCMSKbit(p) ( (((p) >= 0) && ((p) <= 2))  ? (p) :       \
                                 ( (((p) >= 6) && ((p) <= 13)) ? ((p) - 6) : \
                                 ( ((p) == 3) ? 6 :                          \
@@ -133,9 +134,9 @@ static const uint8_t A10 = ADC_CH(10);
 
 /* Special Analog Channels */
 #define ADC_TEMPERATURE    ADC_CH(0x0B)
-#define ADC_INTERNAL1V1    ADC_CH(0x0B)
-#define ADC_AVCCDIV4       ADC_CH(0x0B)
-#define ADC_GROUND         ADC_CH(0x0B)
+#define ADC_INTERNAL1V1    ADC_CH(0x0C)
+#define ADC_AVCCDIV4       ADC_CH(0x0D)
+#define ADC_GROUND         ADC_CH(0x0E)
 
 /* Differential Analog Channels */
 #define DIFF_A0_A1_8X      ADC_CH(0x10)
@@ -159,18 +160,10 @@ static const uint8_t A10 = ADC_CH(10);
  * Chip Features - SPI, I2C, USART, etc
  *----------------------------------------------------------*/
 
-/*  This part has a USI, not an SPI or TWI module. Accordingly, there is no MISO/MOSI in hardware.
-    There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI;
-    the defines here specify the pins for master mode, as SPI master is much more commonly used
-    in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware
-    of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI
-    markings on the pinout diagram in the datasheet are for ISP programming, where the chip is
-    a slave. The pinout diagram included with this core attempt to clarify this.
-    The SS pin is chosen arbitrarily - we have no SPI slave library included with the core, but
-    libraries acting as master often expect there to be an SS pin defined, and will throw errors
-    if there isn't one. Since we provide an SPI.h that mimics the interface of the standard one
-    we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines are in Arduino.h and
-    refer back to these macros (PIN_USI_* )*/
+
+/*  This part has a USI, not a TWI module - but it DOES have an SPI module!
+    We provide USI defines so that Arduino.h will sort out SCL, SDA pin assignment.
+    The included version of Wire.h will use the USI for TWI if requested. */
 
 
 //#define USE_SOFTWARE_SPI 0

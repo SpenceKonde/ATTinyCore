@@ -38,7 +38,11 @@ This core includes a Micronucleus bootloader that supports the ATtiny841, allowi
 Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Vcc < 4.5v) and 8 MHz (Vcc > 4.5 MHz ) board definitions, as well as the 16 MHz Internal option (albeit running at 8MHz) - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate chargeing powerhungry devices), and millis()/micros() will keep better time than in previous versions.
 
 ### Internal 16 MHz oscillator?!
-The oscillator on the ATtiny841 and ATtiny441 is very unusual in terms of how high the frequency can be turned up. While the datasheet only claims 7.3 - 8.1 MHz - it is in fact possible to crank it up all the way to a full 16 MHz! Furthermore, the behavior is consistent enough that the vast majaority work without individual tuning, so this is now available from the tools submenu with the other options. Unfortunately, because the same oscillator is used to time Flash and EEPROM writes, these should never be written to or erased while the device is running at 16 MHz (or for that matter, faster than 8.8, according to the datasheet). For the bootloader, this is handled by simply using the same bootloader as used for the 8 MHz Internal options - the oscillator is reconfigured by the sketch, not the bootloader); when the part is reset to run the bootloader, k. **The EEPROM is a more complicated issue** - this was addressed in the EEPROM.h library included with the core by calling newly provided functions to slow the oscillator back down while each byte is written, and speed it back up and correct the millis()/micros() timekeeping for the disruption. **During the write, all PWM frequencies will be halved, and on pins driven by Timer0, after this 3.3-3.4ms disruption a brief glitch can be seen on the PWM pins as the timer is put back in a state consistent with where it would have been had the disruption not occurred.** Due to this clock disruption, **Serial data sent or received during this time will be mangled**. When writing to the EEPROM, ensure that all data has been sent with Serial.flush(), and that it is not expected to receive any serial data during the write.
+The oscillator on the ATtiny841 and ATtiny441 is very unusual in terms of how high the frequency can be turned up. While the datasheet only claims 7.3 - 8.1 MHz - it is in fact possible to crank it up all the way to a full 16 MHz! Furthermore, the behavior is consistent enough that the vast majaority work without individual tuning, so this is now available from the tools submenu with the other options.
+
+~Unfortunately, because the same oscillator is used to time Flash and EEPROM writes, these should never be written to or erased while the device is running at 16 MHz (or for that matter, faster than 8.8, according to the datasheet). For the bootloader, this is handled by simply using the same bootloader as used for the 8 MHz Internal options - the oscillator is reconfigured by the sketch, not the bootloader); when the part is reset to run the bootloader, k. **The EEPROM is a more complicated issue** - this was addressed in the EEPROM.h library included with the core by calling newly provided functions to slow the oscillator back down while each byte is written, and speed it back up and correct the millis()/micros() timekeeping for the disruption. **During the write, all PWM frequencies will be halved, and on pins driven by Timer0, after this 3.3-3.4ms disruption a brief glitch can be seen on the PWM pins as the timer is put back in a state consistent with where it would have been had the disruption not occurred.** Due to this clock disruption, **Serial data sent or received during this time will be mangled**. When writing to the EEPROM, ensure that all data has been sent with Serial.flush(), and that it is not expected to receive any serial data during the write.~
+On the basis of new information received from the esteemed Ralph Doncaster (@nerdralph), who has tested this on other AVRs with the interal oscillator cranked all the way to 255, including baking parts to reflow-soldering temperatures, flash written at higher speeds seems to function just fine! The functionality to slow down the clock during EEPROM writes has been removed as of ATTinyCore 2.0.0 - please be on guard for problems flashing and report them promptly.
+Note that Optiboot is never run at the full 16 MHz; if the chip has been tuned with our tuning sketch, Optiboot will use the tuned 8 MHz value, not the 16 MHz one. (TODO: If this really does work as well as claimed, maybe we should run it at 12 MHz - 115200 baud is much better at 12 MHz than at 8 or 16)
 
 ### Pin mapping options
 Throughout the history of ATtiny Arduino support, two pin mappings have been used. Here, they are referred to descriptively: the clockwise, and counterclockwise pinout. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for PINMAPPING_CCW or PINMAPPING_CW macro (eg, `#ifdef PINMAPPING_CCW` - I would recommend checking for the incompatible one, and immediately #error'ing if you find it). Alternately, also as of 1.4.0, with either pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
@@ -56,23 +60,20 @@ The standard Tone() function is supported on these parts. For best results, use 
 ### I2C support
 There is no I2C master functionality implemented in hardware. As of version 1.1.3, the included Wire.h library will use a software implementation to provide I2C master functionality, and the hardware I2C slave for slave functionality, and can be used as a drop-in replacement for Wire.h with the caveat that clock speed cannot be set. **You must have external pullup resistors installed** in order for I2C functionality to work reliably.
 
-### Advanced Differential ADC
-The ATtinyx41 family boasts one of the most advanced ADCs in the entire classic tinyAVR/megaAVR product line, with no fewer than 62 channels (counting single ended and differential pairs - admittedly, some of the differential pairs are of dubious usefulness, consisting of the same channel compared to itself; presumably this is meant as a way to adjust for differences between the positive and negative sides of the ADC), 8 reference options, and - for the differential pairs, selectable gain of 1x, 20x, or 100x - if you happen to need insane ADC capability in a small AVR, there is still, as of mid-2020, no other 8-bit AVR - to my knowledge - that can compete. See the table at the bottom of this page for a list of the channels; they can all be used with analogRead(). Of course, it can also just be used as an normal AVR where analogRead() happens to work on every pin, too.
-
 ### SPI Support
 There is hardware SPI support. Use the normal SPI module.
 
 ### UART (Serial) Support
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
 
-To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead)
+To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead) - Note that this works on any hardware serial port from any AVR released prior to the new architecture, with *very* few exceptions. (off the top of my head, some very early ATmegas don't have the 0 in the register names for their only USART, and the ATtiny87/167, because it doesn't have a USART, it has a fancypants LIN thing that makes a killer UART (no S - it doesn't support the rarely used synchronous mode, nor can you turn it into an SPI module like you can a normal USART) if you turn off all the LIN stuff)
 ```
 UCSR0B &=~(1<<TXEN0); // disable TX
 UCSR0B &=~(1<<RXEN0); // disable RX
 ```
 
 ### Overclocking
-Experience has shown that the ATtiny x41-family, operating at 5v and room temperature, will typically function at 20 MHz at 5v and room temperature without issue, although this is outside of the manufacturer's specification.
+Experience has shown that the ATtiny x41-family, operating at 5v and room temperature, will typically function at 20 MHz without issue, although this is outside of the manufacturer's specification. The internal oscillator can also be cranked up to 16 MHz as noted above!
 
 ### Weird I/O-pin related features
 There are a few strange features relating to the GPIO pins on the ATtiny x41 family which are found only in a small number of other parts released around the same time.
@@ -97,6 +98,97 @@ The ATtiny x41 family also has a "Break-Before-Make" mode that can be enabled on
 ```
 PORTCR=(1<<BBMA)|(1<<BBMB); //BBMA controls PORTA, BBMB controls PORTB.
 ```
+
+
+
+
+## ADC Features
+The ATtinyx41 family boasts one of the most advanced ADCs in the entire classic tinyAVR/megaAVR product line. All pins are connected to the ADC, analogRead() works on all pins. All pins can be used as one member of at least 3 differential pairs, and in differential mode, gain can be selected at 1x, 20x, or 100x. All pin combinations supported by the ATtiny84 are supported her
+
+### Reference options
+Three internal reference voltages are provided, and they may be connected or not connected to the AREF pin for external bypassing as you prefer.
+* DEFAULT: Vcc
+* EXTERNAL: Voltage applied to AREF pin
+* INTERNAL1V1: Internal 1.1v reference, not connected to AREF
+* INTERNAL: synonym for INTERNAL1V1
+* INTERNAL1V1_AREF: Internal 1.1v reference, connected to AREF
+* INTERNAL2V2: Internal 2.2v reference, not connected to AREF
+* INTERNAL2V2_AREF: Internal 2.2v, connected to AREF
+* INTERNAL4V096: 4.096V, not connected to AREF
+* INTERNAL4V096_AREF: 4.096V, connected to AREF
+
+### Internal Sources
+* ADC_TEMPERATURE
+* ADC_INTERNAL1V1
+* ADC_GROUND
+
+### Differential ADC channels
+
+| Pos. Chan | Pin | Neg. Chan | Pin |  Chan. Name | Channel |
+|-----------|-----|-----------|-----|-------------|---------|
+|      ADC0 | PA0 |      ADC1 | PA1 |  DIFF_A0_A1 |    0x10 |
+|      ADC0 | PA0 |      ADC3 | PA3 |  DIFF_A0_A3 |    0x11 |
+|      ADC1 | PA1 |      ADC2 | PA2 |  DIFF_A1_A2 |    0x12 |
+|      ADC1 | PA1 |      ADC3 | PA0 |  DIFF_A1_A3 |    0x13 |
+|      ADC2 | PA2 |      ADC3 | PA3 |  DIFF_A2_A3 |    0x14 |
+|      ADC3 | PA3 |      ADC4 | PA4 |  DIFF_A3_A4 |    0x15 |
+|      ADC3 | PA3 |      ADC5 | PA5 |  DIFF_A3_A5 |    0x16 |
+|      ADC3 | PA3 |      ADC6 | PA6 |  DIFF_A3_A6 |    0x17 |
+|      ADC3 | PA3 |      ADC7 | PA7 |  DIFF_A3_A7 |    0x18 |
+|      ADC4 | PA4 |      ADC5 | PA5 |  DIFF_A4_A5 |    0x19 |
+|      ADC4 | PA4 |      ADC6 | PA6 |  DIFF_A4_A6 |    0x1A |
+|      ADC4 | PA4 |      ADC7 | PA7 |  DIFF_A4_A7 |    0x1B |
+|      ADC5 | PA5 |      ADC6 | PA6 |  DIFF_A5_A6 |    0x1C |
+|      ADC5 | PA5 |      ADC7 | PA7 |  DIFF_A5_A7 |    0x1D |
+|      ADC6 | PA6 |      ADC7 | PA7 |  DIFF_A6_A7 |    0x1E |
+|      ADC8 | PB2 |      ADC9 | PB3 |  DIFF_A8_A9 |    0x1F |
+|      ADC0 | PA0 |      ADC0 | PA0 |  DIFF_A0_A0 |    0x20 |
+|      ADC1 | PA1 |      ADC1 | PA1 |  DIFF_A1_A1 |    0x21 |
+|      ADC2 | PA2 |      ADC2 | PA2 |  DIFF_A2_A2 |    0x22 |
+|      ADC3 | PA3 |      ADC3 | PA3 |  DIFF_A3_A3 |    0x23 |
+|      ADC4 | PA4 |      ADC4 | PA4 |  DIFF_A4_A4 |    0x24 |
+|      ADC5 | PA5 |      ADC5 | PA5 |  DIFF_A5_A5 |    0x25 |
+|      ADC6 | PA6 |      ADC6 | PA6 |  DIFF_A6_A6 |    0x26 |
+|      ADC7 | PA7 |      ADC7 | PA7 |  DIFF_A7_A7 |    0x27 |
+|      ADC8 | PB2 |      ADC8 | PB2 |  DIFF_A8_A8 |    0x28 |
+|      ADC9 | PB3 |      ADC9 | PB3 |  DIFF_A9_A9 |    0x29 |
+|     ADC10 | PB1 |      ADC8 | PB2 | DIFF_A10_A8 |    0x2A |
+|     ADC10 | PB1 |      ADC9 | PB2 | DIFF_A10_A9 |    0x2B |
+|     ADC11 | PB0 |      ADC8 | PB2 | DIFF_A11_A8 |    0x2C |
+|     ADC11 | PB0 |      ADC9 | PB2 | DIFF_A11_A9 |    0x2D |
+|      ADC1 | PA1 |      ADC0 | PA0 |  DIFF_A1_A0 |    0x30 |
+|      ADC3 | PA3 |      ADC0 | PA0 |  DIFF_A3_A0 |    0x31 |
+|      ADC2 | PA2 |      ADC1 | PA1 |  DIFF_A2_A1 |    0x32 |
+|      ADC3 | PA3 |      ADC1 | PA1 |  DIFF_A3_A1 |    0x33 |
+|      ADC3 | PA3 |      ADC2 | PA2 |  DIFF_A3_A2 |    0x34 |
+|      ADC4 | PA4 |      ADC3 | PA3 |  DIFF_A4_A3 |    0x35 |
+|      ADC5 | PA5 |      ADC3 | PA3 |  DIFF_A5_A3 |    0x36 |
+|      ADC6 | PA6 |      ADC3 | PA3 |  DIFF_A6_A3 |    0x37 |
+|      ADC7 | PA7 |      ADC3 | PA3 |  DIFF_A7_A3 |    0x38 |
+|      ADC5 | PA5 |      ADC4 | PA4 |  DIFF_A5_A4 |    0x39 |
+|      ADC6 | PA6 |      ADC4 | PA4 |  DIFF_A6_A4 |    0x3A |
+|      ADC7 | PA7 |      ADC4 | PA4 |  DIFF_A7_A4 |    0x3B |
+|      ADC6 | PA6 |      ADC5 | PA5 |  DIFF_A6_A5 |    0x3C |
+|      ADC7 | PA7 |      ADC5 | PA5 |  DIFF_A7_A5 |    0x3D |
+|      ADC7 | PA7 |      ADC6 | PA6 |  DIFF_A7_A6 |    0x3E |
+|      ADC9 | PB3 |      ADC8 | PB2 |  DIFF_A9_A8 |    0x3F |
+
+
+#### ADC Differential Pair Matrix
+An * indicates that an option was not available on the ATtiny x4-series
+ | N\P |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 |
+ |-----|----|----|----|----|----|----|----|----|----|----|----|----|
+ |   0 |  X |  X |    |  X |    |    |    |    |    |    |    |    |
+ |   1 |  X | *X |  X |  X |    |    |    |    |    |    |    |    |
+ |   2 |    |  X | *X |  X |    |    |    |    |    |    |    |    |
+ |   3 |  X |  X |  X |  X |  X |  X |  X |  X |    |    |    |    |
+ |   4 |    |    |    |  X | *X |  X | *X | *X |    |    |    |    |
+ |   5 |    |    |    |  X |  X | *X |  X | *X |    |    |    |    |
+ |   6 |    |    |    |  X | *X |  X | *X |  X |    |    |    |    |
+ |   7 |    |    |    |  X | *X | *X |  X |  X |    |    |    |    |
+ |   8 |    |    |    |    |    |    |    |    | *X | *X | *X | *X |
+ |   9 |    |    |    |    |    |    |    |    | *X | *X | *X | *X |
+
 
 ## Purchasing ATtiny841 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core!
@@ -158,16 +250,7 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 ## ADC Channels
 Below, MUXPOS refers to the internal "channel" used (value of ADMUXA). You can pass this value directly to analogRead().
 
-### Reference options
-* DEFAULT: Vcc
-* EXTERNAL: Voltage applied to AREF pin
-* INTERNAL1V1: Internal 1.1v reference, not connected to AREF
-* INTERNAL: synonym for INTERNAL1V1
-* INTERNAL1V1_AREF: Internal 1.1v reference, connected to AREF
-* INTERNAL2V2: Internal 2.2v reference, not connected to AREF
-* INTERNAL2V2_AREF: Internal 2.2v, connected to AREF
-* INTERNAL4V096: 4.096V, not connected to AREF
-* INTERNAL4V096_AREF: 4.096V, connected to AREF
+
 
 ### Single Ended
 MUXPOS | ADC Channel | Pin
@@ -190,54 +273,3 @@ MUXPOS | ADC Channel | Pin
 0x0F | Supply voltage |
 0x2E | Unused |
 0x2F | Unused |
-
-### Differential
-
-MUXPOS | Pos. Chan | Pos. Pin | Neg. Chan | Neg. Pin
------- | ------- | ------ | -------| ----
-0x10 | ADC0 | PIN_PA0 | ADC1 | PIN_PA1
-0x11 | ADC0 | PIN_PA0 | ADC3 | PIN_PA3
-0x12 | ADC1 | PIN_PA1 | ADC2 | PIN_PA2
-0x13 | ADC1 | PIN_PA1 | ADC3 | PIN_PA3
-0x14 | ADC2 | PIN_PA2 | ADC3 | PIN_PA3
-0x15 | ADC3 | PIN_PA3 | ADC4 | PIN_PA4
-0x16 | ADC3 | PIN_PA3 | ADC5 | PIN_PA5
-0x17 | ADC3 | PIN_PA3 | ADC6 | PIN_PA6
-0x18 | ADC3 | PIN_PA3 | ADC7 | PIN_PA7
-0x19 | ADC4 | PIN_PA4 | ADC5 | PIN_PA5
-0x1A | ADC4 | PIN_PA4 | ADC6 | PIN_PA6
-0x1B | ADC4 | PIN_PA4 | ADC7 | PIN_PA7
-0x1C | ADC5 | PIN_PA5 | ADC6 | PIN_PA6
-0x1D | ADC5 | PIN_PA5 | ADC7 | PIN_PA7
-0x1E | ADC6 | PIN_PA6 | ADC7 | PIN_PA7
-0x1F | ADC8 | PIN_PB2 | ADC9 | PIN_PB3
-0x20 | ADC0 | PIN_PA0 | ADC0 | PIN_PA0
-0x21 | ADC1 | PIN_PA1 | ADC1 | PIN_PA1
-0x22 | ADC2 | PIN_PA2 | ADC2 | PIN_PA2
-0x23 | ADC3 | PIN_PA3 | ADC3 | PIN_PA3
-0x24 | ADC4 | PIN_PA4 | ADC4 | PIN_PA4
-0x25 | ADC5 | PIN_PA5 | ADC5 | PIN_PA5
-0x26 | ADC6 | PIN_PA6 | ADC6 | PIN_PA6
-0x27 | ADC7 | PIN_PA7 | ADC7 | PIN_PA7
-0x28 | ADC8 | PIN_PB2 | ADC8 | PIN_PB2
-0x29 | ADC9 | PIN_PB3 | ADC9 | PIN_PB3
-0x2A | ADC10 | PIN_PB1 | ADC8 | PIN_PB2
-0x2B | ADC10 | PIN_PB1 | ADC9 | PIN_PB2
-0x2C | ADC11 | PIN_PB0 | ADC8 | PIN_PB2
-0x2D | ADC11 | PIN_PB0 | ADC9 | PIN_PB2
-0x30 | ADC1 | PIN_PA1 | ADC0 | PIN_PA0
-0x31 | ADC3 | PIN_PA3 | ADC0 | PIN_PA0
-0x32 | ADC2 | PIN_PA2 | ADC1 | PIN_PA1
-0x33 | ADC3 | PIN_PA3 | ADC1 | PIN_PA1
-0x34 | ADC3 | PIN_PA3 | ADC2 | PIN_PA2
-0x35 | ADC4 | PIN_PA4 | ADC3 | PIN_PA3
-0x36 | ADC5 | PIN_PA5 | ADC3 | PIN_PA3
-0x37 | ADC6 | PIN_PA6 | ADC3 | PIN_PA3
-0x38 | ADC7 | PIN_PA7 | ADC3 | PIN_PA3
-0x39 | ADC5 | PIN_PA5 | ADC4 | PIN_PA4
-0x3A | ADC6 | PIN_PA6 | ADC4 | PIN_PA4
-0x3B | ADC7 | PIN_PA7 | ADC4 | PIN_PA4
-0x3C | ADC6 | PIN_PA6 | ADC5 | PIN_PA5
-0x3D | ADC7 | PIN_PA7 | ADC5 | PIN_PA5
-0x3E | ADC7 | PIN_PA7 | ADC6 | PIN_PA6
-0x3F | ADC9 | PIN_PB3 | ADC8 | PIN_PB2

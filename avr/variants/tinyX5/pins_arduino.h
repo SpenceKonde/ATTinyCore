@@ -17,7 +17,7 @@
 #define __AVR_ATtinyX5__ //this is recommended way
 
 #define NUM_DIGITAL_PINS            6
-#define NUM_ANALOG_INPUTS           6
+#define NUM_ANALOG_INPUTS           4
 
 #define PIN_PB0       (0)
 #define PIN_PB1       (1)
@@ -96,7 +96,22 @@ static const uint8_t A3 = ADC_CH(3);
 #define INTERNAL2V56_NO_CAP (6)
 #define INTERNAL2V56NOBP    INTERNAL2V56_NO_CAP
 
-#define ADC_TEMPERATURE 15
+#define DIFF_A2_A2_1X       ADC_CH(0x04)
+#define DIFF_A2_A2_20X      ADC_CH(0x05)
+#define DIFF_A2_A3_1X       ADC_CH(0x06)
+#define DIFF_A2_A3_20X      ADC_CH(0x07)
+#define DIFF_A0_A0_1X       ADC_CH(0x08)
+#define DIFF_A0_A0_20X      ADC_CH(0x09)
+#define DIFF_A0_A1_1X       ADC_CH(0x0A)
+#define DIFF_A0_A1_20X      ADC_CH(0x0B)
+#define ADC_INTERNAL        ADC_CH(0x0C)
+#define ADC_GROUND          ADC_CH(0x0D)
+#define ADC_TEMPERATURE     ADC_CH(0x0F)
+#define DIFF_A3_A2_1X       ADC_CH(0x26)
+#define DIFF_A3_A2_20X      ADC_CH(0x27)
+#define DIFF_A1_A0_1X       ADC_CH(0x2A)
+#define DIFF_A1_A0_20X      ADC_CH(0x2B)
+
 
 /*----------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc

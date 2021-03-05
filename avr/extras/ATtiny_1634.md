@@ -11,9 +11,7 @@ GPIO Pins | 17
 ADC Channels | 12
 PWM Channels | 4
 Interfaces | 2x UART, USI, slave I2C
-Clock options | Internal 1/8MHz, external crystal or clock* up to 12MHz, overclocking to 16MHz.
-
-* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
+Clock options | Internal 1/8MHz, external crystal or clock up to 12MHz, overclocking to 16MHz.
 
 The ATtiny1634R has a more tightly factory calibrated internal oscillator. It is otherwise identical, has the same signature, and is interchangible.
 

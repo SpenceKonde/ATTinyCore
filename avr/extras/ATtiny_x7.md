@@ -50,27 +50,33 @@ Tone() uses Timer1. For best results, use a pin on port B - those will use the h
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
 
 ### SPI Support
-There is a hardware SPI port and the normal SPI library can be used.
+There is a full hardware SPI port and the normal SPI library can be used.
 
 ### UART (Serial) with LIN support
 There is one full hardware Serial port with LIN support, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. The ATtiny x7-family has LIN support, unique among the ATtiny linup; LIN (Local Interconnect Network) is frequently used in automotive and industrial applications. One consequence of this additional feature is that the baud rate generator is able to match baud rates much more closely than a "standard" UART module.
 
-### ADC Features
+## ADC Features
+The ATtiny x7 series features a mid-range ADC - it has the second reference voltage, a built-in voltage divider on AVcc (which is nominally tied to Vcc, optionally with measures taken to reduce noise; nobody takes such measures in Arduino-land, and it generally appears somewhat rare in the wild - note that per datasheet AVcc must be within 0.3V of AVcc), and a selection of differential pairs. It also has the rare feature of being able to *OUTPUT* it's internal analog reference voltages.
 
-#### Reference Options
+### Reference Options
 * DEFAULT: Vcc
 * EXTERNAL: Voltage applied to AREF pin
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
 * INTERNAL2V56: Internal 2.56v
+* INTERNAL1V1_XREF Internal 1.1v - also output on PA7 (AREF) pin
+* INTERNAL2V56_XREF Internal 2.56v - also output on PA7 (AREF) pin
 
-#### Special Channels
+### Internal Sources
+* ADC_TEMPERATURE    ADC_CH(0x0B)
+* ADC_INTERNAL1V1    ADC_CH(0x0B)
+* ADC_AVCCDIV4       ADC_CH(0x0B)
+* ADC_GROUND         ADC_CH(0x0B)
 
+### Differential ADC channels
+Though it's a far cry from what some of the classic tinyAVR parts have, the x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.  ATTinyCore (v2.0.0+) allows you to read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro (ex: `analogRead(ADC_CH(0x11))` to read ADC0 and ADC1 at 20x gain, equivalent to `analogRead(DIFF_A0_A1_20X)`), otherwise they will be interpreted as a (likely non-existent) digital pin (See [Analog and Digital Pins](AnalogAndDigitalPins.md) for more information).
 
-#### Differential ADC channels and features
-Though it's a far cry from what some of the classic tinyAVR parts have, the A x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.
-
-|  Positive  |   Negative  | 8X Gain |20X Gain| Name (1x Gain) | Name (20x Gain) |
+|  Positive  |   Negative  | 8X Gain |20X Gain| Name (8x Gain) | Name (20x Gain) |
 |------------|-------------|---------|--------|----------------|-----------------|
 | ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  DIFF_A0_A1_1X |  DIFF_A0_A1_20X |
 | ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  DIFF_A1_A2_1X |  DIFF_A1_A2_20X |
@@ -95,17 +101,17 @@ I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your
 This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 Addresses are for 87 and 167 - the 167, having 16k of flash, has 4-byte vectors instead of 2-byte vectors.
 vect_num | Vector Address | Vector Name | Interrupt Definition
------------- | ------------- | ------------ | -------------
-0 | 0x0000/0x0000 | RESET_vect | External Pin, Power-on Res
-1 | 0x0001/0x0002 | INT0_vect | External Interrupt Request 0
-2 | 0x0002/0x0004 | INT1_vect | External Interrupt Request 1
-3 | 0x0003/0x0006 | PCINT0_vect | Pin Change Interrupt (PORT A)
-4 | 0x0004/0x0008 | PCINT1_vect | Pin Change Interrupt (PORT B)
-5 | 0x0005/0x000A | WDT_vect | Watchdog Time-out (Interrupt Mode)
-6 | 0x0006/0x000C | TIMER1_CAPT_vect | Timer/Counter1 Capture
-7 | 0x0007/0x000E | TIMER1_COMPA_vect | Timer/Counter1 Compare Match
-8 | 0x0008/0x0010 | TIMER1_COMPB_vect | Timer/Coutner1 Compare Match
-9 | 0x0009/0x0012 | TIMER1_OVF_vect | Timer/Counter1 Overflow
+------------- | ------------- | ------------ | -------------
+ 0 | 0x0000/0x0000 | RESET_vect | External Pin, Power-on Res
+ 1 | 0x0001/0x0002 | INT0_vect | External Interrupt Request 0
+ 2 | 0x0002/0x0004 | INT1_vect | External Interrupt Request 1
+ 3 | 0x0003/0x0006 | PCINT0_vect | Pin Change Interrupt (PORT A)
+ 4 | 0x0004/0x0008 | PCINT1_vect | Pin Change Interrupt (PORT B)
+ 5 | 0x0005/0x000A | WDT_vect | Watchdog Time-out (Interrupt Mode)
+ 6 | 0x0006/0x000C | TIMER1_CAPT_vect | Timer/Counter1 Capture
+ 7 | 0x0007/0x000E | TIMER1_COMPA_vect | Timer/Counter1 Compare Match
+ 8 | 0x0008/0x0010 | TIMER1_COMPB_vect | Timer/Coutner1 Compare Match
+ 9 | 0x0009/0x0012 | TIMER1_OVF_vect | Timer/Counter1 Overflow
 10 | 0x000A/0x0014 | TIMER0_COMPA_vect | Timer/Counter0 Compare Match
 11 | 0x000B/0x0016 | TIMER0_OVF_vect | Timer/Counter0 Overflow
 12 | 0x000C/0x0018 | LIN_TC_vect | LIN/UART Transfer Complete

@@ -35,7 +35,7 @@
 #define NUM_ANALOG_INPUTS           11
 
 
-
+// Recommended way to reference pins
 #define PIN_PA0  ( 0)
 #define PIN_PA1  ( 1)
 #define PIN_PA2  ( 2)
@@ -53,10 +53,9 @@
 #define PIN_PB6  (14)
 #define PIN_PB7  (15)
 
-#define LED_BUILTIN (3)
+#define LED_BUILTIN (PIN_PA3)
 
-//Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-
+// PIN_An is the digital pin with analog channel An on it.
 #define PIN_A0      (PIN_PA0)
 #define PIN_A1      (PIN_PA1)
 #define PIN_A2      (PIN_PA2)
@@ -69,6 +68,7 @@
 #define PIN_A9      (PIN_PB6)
 #define PIN_A10     (PIN_PB7)
 
+// An "analog pins" these map directly to analog channels
 static const uint8_t  A0 =  ADC_CH(0);
 static const uint8_t  A1 =  ADC_CH(1);
 static const uint8_t  A2 =  ADC_CH(2);
@@ -94,6 +94,7 @@ static const uint8_t A10 = ADC_CH(10);
 #define digitalPinHasPWM(p)     ((p) == 2 || (p) > 7 )
 
 #define PINMAPPING_NEW
+
 //----------------------------------------------------------
 // Core Configuration where these are not the defaults
 //----------------------------------------------------------
@@ -103,12 +104,6 @@ static const uint8_t A10 = ADC_CH(10);
 //#define INITIALIZE_SECONDARY_TIMERS               1
 
 //#define TIMER_TO_USE_FOR_MILLIS                   0
-
-// This is commented out. The only place where HAVE_BOOTLOADER is checked is in wiring.c, where it wastes precious bytes of flash resetting timer-related registers out of fear that the bootloader has scribbled on them.
-// However, Optiboot does a WDR before jumping straight to app to start after running.
-// This means that optiboot leaves all the registers clean. Meanwhile, Micronucleus doesn't even USE any of the timers, and that's all the wiring.c code checks on (to make sure millis will work)
-// commenting out instead of setting to 0, as that would allow a hypothetical badly behaved bootloader to be supported in the future by having it add -DHAVE_BOOTLOADER from boards.txt
-// #define HAVE_BOOTLOADER                           1
 
 #define USE_SOFTWARE_SERIAL           0
 
@@ -126,20 +121,30 @@ static const uint8_t A10 = ADC_CH(10);
 //#define ANALOG_COMP_AIN1_BIT          7
 
 /* Analog reference bit masks. */
-// VCC used as analog reference, disconnected from PA0 (AREF)
-#define DEFAULT (0)
-// External voltage reference at PA0 (AREF) pin, internal reference turned off
-#define EXTERNAL (1)
+/* This is weird on the 87/167 - the internal references are selected by the REFS bits,
+but two additional bits on the AMISCR (Analog MIScellaneous Control Register) are used.
+AREF controls whether an external reference is used (it's unclear what happens if
+AREF is selected with an internal reference) and XREF which outputs the internal reference
+on the AREF pin. They suggest a 5nF-10nF capacitor on that pin, and note that load
+on it should be between 1uA and 100uA (presumably it can overshoot with no load).
+
+TODO: Determine what happens if REFS != 0 on the AREF pin
+*/
+
+// VCC used as analog reference, disconnected from AREF
+#define DEFAULT                  (0x00)
+// External voltage reference at AREF pin, internal reference turned off
+#define EXTERNAL                 (0x08)
 // Internal 1.1V voltage reference
-#define INTERNAL (2)
-#define INTERNAL1V1 INTERNAL
-#define INTERNAL2V56 (7)
+#define INTERNAL1V1              (0x02)
+#define INTERNAL                 INTERNAL1V1
+#define INTERNAL2V56             (0x03)
 
 /* Special Analog Channels */
 #define ADC_TEMPERATURE    ADC_CH(0x0B)
-#define ADC_INTERNAL1V1    ADC_CH(0x0B)
-#define ADC_AVCCDIV4       ADC_CH(0x0B)
-#define ADC_GROUND         ADC_CH(0x0B)
+#define ADC_INTERNAL1V1    ADC_CH(0x0C)
+#define ADC_AVCCDIV4       ADC_CH(0x0D)
+#define ADC_GROUND         ADC_CH(0x0E)
 
 /* Differential Analog Channels */
 #define DIFF_A0_A1_8X      ADC_CH(0x10)
@@ -163,18 +168,9 @@ static const uint8_t A10 = ADC_CH(10);
  * Chip Features - SPI, I2C, USART, etc
  *----------------------------------------------------------*/
 
-/*  This part has a USI, not an SPI or TWI module. Accordingly, there is no MISO/MOSI in hardware.
-    There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI;
-    the defines here specify the pins for master mode, as SPI master is much more commonly used
-    in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware
-    of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI
-    markings on the pinout diagram in the datasheet are for ISP programming, where the chip is
-    a slave. The pinout diagram included with this core attempt to clarify this.
-    The SS pin is chosen arbitrarily - we have no SPI slave library included with the core, but
-    libraries acting as master often expect there to be an SS pin defined, and will throw errors
-    if there isn't one. Since we provide an SPI.h that mimics the interface of the standard one
-    we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines are in Arduino.h and
-    refer back to these macros (PIN_USI_* )*/
+/*  This part has a USI, not a TWI module - but it DOES have an SPI module!
+    We provide USI defines so that Arduino.h will sort out SCL, SDA pin assignment.
+    The included version of Wire.h will use the USI for TWI if requested. */
 
 
 //#define USE_SOFTWARE_SPI 0
@@ -196,7 +192,6 @@ static const uint8_t A10 = ADC_CH(10);
 #ifndef USI_START_COND_INT
   #define USI_START_COND_INT USISIF
 #endif
-
 
 #define MISO PIN_PA2
 #define MOSI PIN_PA4
@@ -313,14 +308,3 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 #endif
 
 #endif
-
-
-//Old code, just here for temporary backup until I decide it is not needed.
-//WARNING, if using software, RX must be on a pin which has a Pin change interrupt <= 7 (e.g. PCINT6, or PCINT1, but not PCINT8)
-/*#define USE_SOFTWARE_SERIAL             1
-//These are set to match Optiboot pins.
-
-#define SOFTWARE_SERIAL_PORT            PORTB
-#define SOFTWARE_SERIAL_TX              0
-#define SOFTWARE_SERIAL_PIN             PINB
-#define SOFTWARE_SERIAL_RX              1*/

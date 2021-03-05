@@ -170,7 +170,7 @@ static const uint8_t A7 = 0x80 | 7;
 // appropriate addresses for various functions (e.g. reading
 // and writing)
 
-const uint16_t PROGMEM port_to_mode_PGM[] = {
+const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
   (uint16_t) &DDRA,
   (uint16_t) &DDRB,
@@ -178,7 +178,7 @@ const uint16_t PROGMEM port_to_mode_PGM[] = {
   (uint16_t) &DDRD,
 };
 
-const uint16_t PROGMEM port_to_output_PGM[] = {
+const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
   (uint16_t) &PORTA,
   (uint16_t) &PORTB,
@@ -186,7 +186,7 @@ const uint16_t PROGMEM port_to_output_PGM[] = {
   (uint16_t) &PORTD,
 };
 
-const uint16_t PROGMEM port_to_input_PGM[] = {
+const uint8_t PROGMEM port_to_input_PGM[] = {
   NOT_A_PORT,
   (uint16_t) &PINA,
   (uint16_t) &PINB,
