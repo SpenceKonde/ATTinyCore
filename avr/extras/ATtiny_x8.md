@@ -5,7 +5,7 @@
 
 Specification         |    ATtiny88    |       ATtiny88 |    ATtiny88    |      ATtiny48  |       ATtiny48 |
 ----------------------|----------------|----------------|----------------|----------------|----------------|
-                      |  No Bootloader |       Optiboot |  Micronucleus  |  No Bootloader |       Optiboot |
+.                     |  No Bootloader |       Optiboot |  Micronucleus  |  No Bootloader |       Optiboot |
 Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |
 Flash available user  |     8192 bytes |     8192 bytes |     6550 bytes |     4096 bytes |     3456 bytes |
 RAM                   |      512 bytes |      512 bytes |      512 bytes |       ATtiny48 |       ATtiny48 |
