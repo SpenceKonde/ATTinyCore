@@ -1,7 +1,7 @@
 ### ATtiny 441/841
-![x41 Pin Mapping](Pinout_x41.jpg "Arduino Pin Mapping for ATtiny x41")
+![x41 Pin Mapping]( "Arduino Pin MaATtiny_x5.pngpping for ATtiny x41")
 
- Specifications |  .
+ Specifications |  .1
 ------------ | -------------
 Flash (program memory)   | 4096b / 8192b ( 3456b/7552b with Optiboot, 6586b with Micronucleus)
 RAM  | 256/512 bytes
