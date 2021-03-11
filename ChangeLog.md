@@ -1,6 +1,13 @@
 # This document lists significant changes and bugfixes, including those not in yet in a release.
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
 
+### 1.5.2 
+* New pinout images (#535) Thanks, @MCUdude!
+* Correct windows micronucleus upload problem the right way - It seems hard to get windows IDE to correctly install Micronucleusbut and handle the folder organization when 
+
+### ~1.5.1~
+* Attempt to fix Micronucleus upload issue on windows was botched, resulting in only windows working. Release was pulled shortly after it was posted. 
+
 ### 1.5.0
 * Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
 * Improvements to millis and micros timing, as well as delayMicroseconds particularly for oddball frequencies. (big thanks to @cburstedde!)
