@@ -1,5 +1,5 @@
 ### ATtiny 261/461/861(a)
-![x61 pin mapping](ATtiny_x61.jpg "Arduino Pin Mapping for ATtiny x61-family")
+![x61 pin mapping](ATtiny_x61.png "Arduino Pin Mapping for ATtiny x61-family")
 
 Specifications |  .
 ------------ | -------------
