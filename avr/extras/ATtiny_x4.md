@@ -1,5 +1,5 @@
 ### ATtiny 24/44/84(a)
-![x4 pin mapping](http://drazzy.com/e/img/PinoutT84a.jpg "Arduino Pin Mapping for ATtiny x4-family")
+![x4 pin mapping](ATtiny_x4.png "Arduino Pin Mapping for ATtiny x4-family")
 
  Specifications |  .
 ------------ | -------------
