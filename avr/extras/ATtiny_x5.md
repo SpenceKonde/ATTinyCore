@@ -1,5 +1,5 @@
 ### ATtiny 25/45/85
-![x5 pin mapping](Pinout_x5.jpg "Arduino Pin Mapping for ATtiny x5-family")
+![x5 pin mapping](ATtiny_x5.png "Arduino Pin Mapping for ATtiny x5-family")
 
 
  Specifications |  .
