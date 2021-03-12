@@ -6,7 +6,7 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Correct windows micronucleus upload problem the right way - It seems hard to get windows IDE to correctly install Micronucleusbut and handle the folder organization when the files are distributed as tarballs instead of zip's (funny, the compiler toolchain worked fine... whatever the problem is is solved)
 
 ### ~1.5.1~
-* Attempt to fix Micronucleus upload issue on windows was botched, resulting in only windows working. Release was pulled shortly after it was posted. 
+* Attempt to fix Micronucleus upload issue on windows was botched, resulting in only windows working. Release was pulled shortly after it was posted.
 
 ### 1.5.0
 * Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
