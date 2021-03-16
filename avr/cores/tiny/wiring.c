@@ -1,6 +1,6 @@
 /*
-  wiring.c - Partial implementation of the Wiring API for the ATmega8.
-  Part of Arduino - http:// www.arduino.cc/
+  wiring.c - Part of ATTinyCore
+  github.com/SpenceKonde/ATTinyCore
 
   Copyright (c) 2005-2006 David A. Mellis
 
@@ -24,11 +24,13 @@
   Modified 28-08-2009 for attiny84 R.Wiersma
   Modified 14-10-2009 for attiny45 Saposoft
   Modified 20-11-2010 - B.Cook - Rewritten to use the various Veneers.
+  Modified by some other folks in between for various iterations
+  of ATTinyCore
+  Extensively modified 2016-2021 as part of ATTinyCore by Spence Konde
 */
 
 #include "wiring_private.h"
 #include <avr/boot.h>
-//#define ENABLE_TUNING 3
 #ifdef USING_BOOTLOADER
   #include <avr/pgmspace.h>
 #else
@@ -51,7 +53,7 @@
     #define timer0_Prescale_Value  (64)
   #endif
   #if (defined(TCCR1) || defined(TCCR1E)) // x5 and x61
-    #if F_CPU < 8000000L // 4 and 6 MHz get PWM within the target range of 500-1kHz now on 2 pins of t85, and all PWM pins of the x61, since it's weirdo timer0 has "output" compare that just fires an ISR...
+    #if F_CPU < 8000000L // 4 and 6 MHz get PWM within the target range of 500-1kHz now on 2 pins of t85, and all PWM pins of the x61/
       #define timer1Prescaler (0b0110)
       #define timer1_Prescale_Value  (32)
     #else
@@ -977,7 +979,7 @@ void initToneTimer(void)
       TCCR1A   = (1 << WGM10) | (1 << COM1A1)| (1 << COM1B1); // enable OC1A, OC1B
       TCCR1B   = (ToneTimer_Prescale_Index << CS10); // set the clock
       TOCPMSA0 = (0b11100100);  // PC3: OC1B, PC2: OC1A, PC1: OC0B, PC0 OC0A.
-      TOCPMSA1 = (0b00111001);  // PC7: OC0A, PC6: OC1B, PC5: OC1A, PC4,OC0B
+      TOCPMSA1 = (0b11001001);  // PC7: OC1B, PC6: OC0A, PC5: OC1A, PC4,OC0B
       // TOCPMCOE = 0; // keep these disabled!
     #elif (TIMER_TO_USE_FOR_TONE == 0)
       #warning "ATTinyCore only supports using Timer1 for tone - this is untested code!"
@@ -1206,6 +1208,8 @@ static inline bool __attribute__((always_inline)) check_tuning() {
   #endif
   return 0;
 }
+
+
 
 
 void init_clock() {
@@ -1508,7 +1512,7 @@ void init()
     initToneTimerInternal();
   #endif
   // Initialize the ADC
-  #if defined( INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER ) && INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+  #if defined( INITIALIZE_ADC ) && INITIALIZE_ADC
     #if defined(ADCSRA)
       // set a2d prescale factor
       // ADCSRA = (ADCSRA & ~((1 << ADPS2)|(1 << ADPS1)|(1 << ADPS0))) | (ADC_ARDUINO_PRESCALER << ADPS0) | (1 << ADEN);
@@ -1534,5 +1538,6 @@ void init()
  * TCCR1 is only on x5
  * All non-85 have TCCR1A.
  *
- *
+ * Check for COM0xn bits to know if TIMER0 has PWM (it doesn't on x61 (it's a weird timer there - can be 16-bit) or
+ * the x8 (because they cheaped out)
  */

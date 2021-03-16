@@ -40,7 +40,7 @@ inline __attribute__((always_inline)) void check_valid_digital_pin(uint8_t pin) 
 }
 
 void pinMode(uint8_t pin, uint8_t mode) {
-  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
@@ -143,7 +143,7 @@ static void turnOffPWM(uint8_t timer) {
 }
 
 void digitalWrite(uint8_t pin, uint8_t val) {
-  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
   uint8_t timer = digitalPinToTimer(pin);
   uint8_t mask = digitalPinToBitMask(pin);
@@ -173,7 +173,7 @@ void digitalWrite(uint8_t pin, uint8_t val) {
 
 inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
   check_constant_pin(pin);
-  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
   if (pin==NOT_A_PIN) return; // sigh... I wish I didn't have to catch this... but it's all compile time known so w/e
   // Mega-0, Tiny-1 style IOPORTs
@@ -197,7 +197,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 int8_t digitalRead(uint8_t pin)
 {
   check_valid_digital_pin(pin);
-  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   //uint8_t timer = digitalPinToTimer(pin);
   uint8_t port = digitalPinToPort(pin);
   if (port == NOT_A_PORT) return NOT_A_PIN;
@@ -216,7 +216,7 @@ int8_t digitalRead(uint8_t pin)
 
 inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
   check_constant_pin(pin);
-  if (pin & 128) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
 
   uint8_t mask = digitalPinToBitMask(pin);
