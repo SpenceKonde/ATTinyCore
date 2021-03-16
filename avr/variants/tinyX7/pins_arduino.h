@@ -1,23 +1,23 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
-   Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
-   Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
-   Free Software - GPL 2.1, please see LICENCE.md for details */
+ * Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
+ *   Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
+ *   Free Software - GPL 2.1, please see LICENCE.md for details
+ *---------------------------------------------------------------------------*/
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
 
 #include <avr/pgmspace.h>
 
-/*===================================================================
- * Microchip ATtiny87, ATtiny167
- *===================================================================
- * Basic Pin Definitions | Interrupt Macros | Combatibility mapping
- *-----------------------------------------------------------------
- * This is an horrifying legacy pin mapping, it is so bad that there
- * are significant effects on code size and performance.
- * Do not use this unless you have a gun to your head, and even then
- * you might come to regret using it!
- *-----------------------------------------------------------------*/
+/*===========================================================================
+ * Microchip ATtiny167, ATtiny87 "Digispark Pro"
+ *===========================================================================
+ * Basic Pin Definitions | Interrupt Macros | Legacy/compatibility
+ *---------------------------------------------------------------------------
+ * This is an horrifying legacy pin mapping, it is so bad that there are
+ * significant effects on code size and performance. Do not use this unless
+ * you have a gun to your head. Rven then you might come to regret it.
+ *---------------------------------------------------------------------------*/
 
 #define ATTINYX7 1       //backwards compat
 #define __AVR_ATtinyX7__ //recommended
@@ -25,7 +25,8 @@
 #define NUM_DIGITAL_PINS            16
 #define NUM_ANALOG_INPUTS           11
 
-
+/* Basic Pin Numbering - PIN_Pxn notation is always recommended
+ * as it is totally unambiguous, but numbers may be used too */
 #define PIN_PA0  ( 0)
 #define PIN_PA1  ( 1)
 #define PIN_PB6  ( 2)
@@ -45,6 +46,7 @@
 
 #define LED_BUILTIN (PIN_PB0)
 
+/* PIN_An is the digital pin with analog channel An on it. */
 #define PIN_A0      (PIN_PA0)
 #define PIN_A1      (PIN_PA1)
 #define PIN_A2      (PIN_PA2)
@@ -57,6 +59,7 @@
 #define PIN_A9      (PIN_PB6)
 #define PIN_A10     (PIN_PB7)
 
+/* An "analog pins" these map directly to analog channels */
 static const uint8_t A0  = ADC_CH(0);
 static const uint8_t A1  = ADC_CH(1);
 static const uint8_t A2  = ADC_CH(2);
@@ -69,6 +72,16 @@ static const uint8_t A8  = ADC_CH(8);
 static const uint8_t A9  = ADC_CH(9);
 static const uint8_t A10 = ADC_CH(10);
 
+
+/* Interrupt macros to go from pin to PCMSK register and bit within it, and
+ * the register to enable/disable banks of PCINTs, and bit within it PCICR
+ * is almost always the same for all PCINTs; but must return null pointer
+ * if the pin is invalid. The PCICRbit and PCMSK are almost always directly
+ * mapped to port; particularly on ugly mappings like this, taking advantage
+ * of this is more efficient and easier to write.
+ * digitalPinToInterrupt gets the number of the "full service" pin interrupt
+ *---------------------------------------------------------------------------*/
+
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (digitalPinToPort(p) == PA ? 4 : 5)
 #define digitalPinToPCMSK(p)   ((((p) >= 0 && (p) <= 15) ? (digitalPinToPort(p) == PA ? &PCMSK0 : &PCMSK1) : (uint8_t *)NULL))
@@ -76,49 +89,60 @@ static const uint8_t A10 = ADC_CH(10);
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==11?1: NOT_AN_INTERRUPT))
 
+/* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  (((p) >= NUM_DIGITAL_PINS)  ? NOT_A_PIN : (const_array_or_pgm_(pgm_read_byte, analog_input_to_digital_pin_PGM, (p))))
 #define digitalPinToAnalogInput(p)  (((p) >= NUM_ANALOG_INPUTS) ? NOT_A_PIN : (const_array_or_pgm_(pgm_read_byte, digital_pin_to_analog_input_PGM, (p))))
 
+/* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) == 2 || ((p) > 3 && (p) < 10) || (p) == 15 )
 
+/* We have multiple pin mappings on this part; all have a #define, where
+ * multiple are present, these are for compatibility with versions that
+ * used less-clear names. The first #define is recommended, all others are
+ * deprecated. */
+
+#define PINMAPPING_LEGACY
 #define PINMAPPING_OLD
 
-
-/*----------------------------------------------------------
+/*---------------------------------------------------------------------------
  * Core Configuration where these are not the defaults
- *----------------------------------------------------------*/
+ *---------------------------------------------------------------------------*/
+// Choosing not to initialise saves flash.      1 = initialise.
+// #define DEFAULT_INITIALIZE_ADC               1
+// #define DEFAULT_INITIALIZE_SECONDARY_TIMERS  1
 
-// Choosing not to initialise saves flash. 1 = initialise.
-//#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-//#define INITIALIZE_SECONDARY_TIMERS               1
-
-//#define TIMER_TO_USE_FOR_MILLIS                   0
-
-
-#define USE_SOFTWARE_SERIAL           0
+// We have hardware serial, so don't use soft serial.
+// #define USE_SOFTWARE_SERIAL                  0
 
 
-/*----------------------------------------------------------
+/*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
- *----------------------------------------------------------*/
+ *---------------------------------------------------------------------------
+ * Analog reference constants are pre-shifted to their final position in the
+ * registers to avoid leftshifting at runtime, which is surprisingly slow and
+ * wasteful of flash. ADC_REF definition here is longer because we need to
+ * take the two high bits (AREF, XREF), and put them in position for where
+ * they go in the AMISCR... better here than at runtime!
+ *---------------------------------------------------------------------------*/
+/* This is weird on the 87/167 - the internal references are selected by the
+ * REFS bits, but two additional bits on the AMISCR (Analog MIScellaneous
+ * Control Register) are used. AREF controls whether an external reference is
+ * used (ignored if internal ref selected) and XREF which outputs the internal
+ * reference on the AREF pin. They suggest a 5nF-10nF capacitor on that pin,
+ * and note that load on it should be between 1uA and 100uA. No idea why they
+ * used two bits, one of which is ignored when internal ref is in use and the
+ * other which is ignored when internal ref not in use...
+ *---------------------------------------------------------------------------*/
+#define ADC_REF(x)       ((((x) & 0x03) << 6) | (((x) & 0x0C) >> 1)
 
-// Analog Comparator will be listed ONLY where it is used for software serial
-// Core does not have built-in comparator library, nor will it ever.
-//#define ANALOG_COMP_DDR               DDRA
-//#define ANALOG_COMP_PORT              PORTA
-//#define ANALOG_COMP_PIN               PINA
-//#define ANALOG_COMP_AIN0_BIT          6
-//#define ANALOG_COMP_AIN1_BIT          7
-
-/* Analog reference bit masks. */
-// VCC used as analog reference, disconnected from PA0 (AREF)
-#define DEFAULT (0)
-// External voltage reference at (AREF) pin, internal reference turned off
-#define EXTERNAL (1)
-// Internal 1.1V voltage reference
-#define INTERNAL (2)
-#define INTERNAL1V1 INTERNAL
-#define INTERNAL2V56 (7)
+/* Analog Reference bit masks */
+#define DEFAULT           ADC_REF(0x00)
+#define EXTERNAL          ADC_REF(0x08)
+#define INTERNAL1V1       ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
+#define INTERNAL            INTERNAL1V1
+#define INTERNAL2V56      ADC_REF(0x03) /* Not connected to AREF; AREF may be used for other purposes */
+#define INTERNAL1V1_XREF  ADC_REF(0x06)
+#define INTERNAL2V56_XREF ADC_REF(0x07)
 
 /* Special Analog Channels */
 #define ADC_TEMPERATURE    ADC_CH(0x0B)
@@ -144,15 +168,22 @@ static const uint8_t A10 = ADC_CH(10);
 #define DIFF_A9_A10_8X     ADC_CH(0x1E)
 #define DIFF_A9_A10_20X    ADC_CH(0x1F)
 
-/*----------------------------------------------------------
- * Chip Features - SPI, I2C, USART, etc
- *----------------------------------------------------------*/
+/* Analog Comparator - not used by core */
+#define ANALOG_COMP_DDR          (DDRA)
+#define ANALOG_COMP_PORT        (PORTA)
+#define ANALOG_COMP_PIN          (PINA)
+#define ANALOG_COMP_AIN0_BIT        (6)
+#define ANALOG_COMP_AIN1_BIT        (7)
 
+/*---------------------------------------------------------------------------
+ * Chip Features - SPI, I2C, USART, etc
+ *---------------------------------------------------------------------------*/
 /*  This part has a USI, not a TWI module - but it DOES have an SPI module!
  *  We provide USI defines so that Arduino.h will sort out SCL, SDA pin assignment.
- *  The included version of Wire.h will use the USI for TWI if requested. */
+ *  The included version of Wire.h will use the USI for TWI if requested.
+ *---------------------------------------------------------------------------*/
 
-/* Real SPI */
+/* Hardware SPI */
 #define MISO            PIN_PA2
 #define MOSI            PIN_PA4
 #define SCK             PIN_PA5
@@ -177,33 +208,33 @@ static const uint8_t A10 = ADC_CH(10);
   #define USI_START_COND_INT USISIF
 #endif
 
+/* One hardware LIN port, which is a UART with a ton of wacky features */
+#define PIN_HWSERIAL0_TX         PIN_PA1
+#define PIN_HWSERIAL0_RX         PIN_PA0
+#define HWSERIAL0_IS_LIN
+
 
 #ifdef ARDUINO_MAIN
+/*---------------------------------------------------------------------------
+ * ATMEL ATTINY167/ATTINY87
+ * Legacy Arduino-compatible pin mapping - an inspired work of evil
+ *
+ *                   +-\/-+
+ *     RX ( 0) PA0  1|a   |20  PB0 ( 4)*
+ *     TX ( 1) PA1  2|a   |19  PB1 ( 5)*
+ *       *(12) PA2  3|a   |18  PB2 ( 6)*
+ *        ( 3) PA3  4|a   |17  PB3 ( 7)*
+ *            AVCC  5|    |16  GND
+ *            AGND  6|    |15  VCC
+ *   INT1 (11) PA4  7|a   |14  PB4 ( 8)*
+ *        (13) PA5  8|a  a|13  PB5 ( 9)*
+ *        (10) PA6  9|a  a|12  PB6 ( 2)* INT0
+ *        (14) PA7 10|a  a|11  PB7 (15)* Reset
+ *                   +----+
+ *
+ * * indicates PWM pin, a indicates ADC (analog input) pins
+ *---------------------------------------------------------------------------*/
 
-// On the Arduino board, digital pins are also used
-// for the analog output (software PWM).  Analog input
-// pins are a separate set.
-
-// ATMEL ATTINY167
-//
-//                   +-\/-+
-//     RX ( 0) PA0  1|    |20  PB0 ( 4)*
-//     TX ( 1) PA1  2|    |19  PB1 ( 5)*
-//       *(12) PA2  3|    |18  PB2 ( 6)*
-//        ( 3) PA3  4|    |17  PB3 ( 7)*
-//            AVCC  5|    |16  GND
-//            AGND  6|    |15  VCC
-//   INT1 (11) PA4  7|    |14  PB4 ( 8)*
-//        (13) PA5  8|    |13  PB5 ( 9)*
-//        (10) PA6  9|    |12  PB6 ( 2)* INT0
-//        (14) PA7 10|    |11  PB7 (15)* Reset
-//                   +----+
-//
-// * indicates PWM pin.
-
-// these arrays map port names (e.g. port B) to the
-// appropriate addresses for various functions (e.g. reading
-// and writing)
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
   NOT_A_PORT,

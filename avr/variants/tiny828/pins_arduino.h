@@ -1,93 +1,23 @@
-/*
-  pins_arduino.h - Pin definition functions for Arduino
-  Part of Arduino - http://www.arduino.cc/
-
-  Copyright (c) 2007 David A. Mellis
-  Copyright (c) 2015~2020 Spence Konde
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General
-  Public License along with this library; if not, write to the
-  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-  Boston, MA  02111-1307  USA
-
-  $Id: wiring.h 249 2007-02-03 16:52:51Z mellis $
-*/
+/* pins_arduino.h - Pin definition functions for ATTinyCore
+   Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
+   Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
+   Free Software - GPL 2.1, please see LICENCE.md for details */
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
-
-#define ATTINY828 1
-#define __AVR_ATtinyX4__
-//#define USE_SOFTWARE_SPI
-#define USE_SOFTWARE_SERIAL   0
-
 #include <avr/pgmspace.h>
+
+/*===========================================================================
+ * Microchip ATtiny828
+ *===========================================================================
+ * ATTinyCore Standard Pin Mapping
+ *---------------------------------------------------------------------------*/
 
 #define NUM_DIGITAL_PINS            28
 #define NUM_ANALOG_INPUTS           28
-#define analogInputToDigitalPin(p)  ((p < 28) ? (p): -1)
 
-#define ADC_TEMPERATURE 34
-
-#define digitalPinHasPWM(p)         ((p) == PIN_PC0 || (p) == PIN_PC4 || (p) == PIN_PC5 || (p) == PIN_PC6)
-
-//This part has a USI, not an SPI module. Accordingly, there is no MISO/MOSI in hardware. There's a DI and a DO. When the chip is used as master, DI is used as MISO, DO is MOSI; the defines here specify the pins for master mode, as SPI master is much more commonly used in Arduino-land than SPI slave, and these defines are required for compatibility. Be aware of this when using the USI SPI fucntionality (and also, be aware that the MISO and MOSI markings on the pinout diagram in the datasheet are for ISP programming, where the chip is a slave. The pinout diagram included with this core attempts to clarify this)
-
-
-#define SS   PIN_PC0
-#define MOSI PIN_PD3
-#define MISO PIN_PD1
-#define SCK  PIN_PD3
-
-
-
-static const uint8_t SDA = 4;
-static const uint8_t SCL = 6;
-
-//Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
-
-static const uint8_t  A0 = (0x80 |  0);
-static const uint8_t  A1 = (0x80 |  1);
-static const uint8_t  A2 = (0x80 |  2);
-static const uint8_t  A3 = (0x80 |  3);
-static const uint8_t  A4 = (0x80 |  4);
-static const uint8_t  A5 = (0x80 |  5);
-static const uint8_t  A6 = (0x80 |  6);
-static const uint8_t  A7 = (0x80 |  7);
-static const uint8_t  A8 = (0x80 |  8);
-static const uint8_t  A9 = (0x80 |  9);
-static const uint8_t A10 = (0x80 | 10);
-static const uint8_t A11 = (0x80 | 11);
-static const uint8_t A12 = (0x80 | 12);
-static const uint8_t A13 = (0x80 | 13);
-static const uint8_t A14 = (0x80 | 14);
-static const uint8_t A15 = (0x80 | 15);
-static const uint8_t A16 = (0x80 | 16);
-static const uint8_t A17 = (0x80 | 17);
-static const uint8_t A18 = (0x80 | 18);
-static const uint8_t A19 = (0x80 | 19);
-static const uint8_t A20 = (0x80 | 20);
-static const uint8_t A21 = (0x80 | 21);
-static const uint8_t A22 = (0x80 | 22);
-static const uint8_t A23 = (0x80 | 23);
-static const uint8_t A24 = (0x80 | 24);
-static const uint8_t A25 = (0x80 | 25);
-static const uint8_t A26 = (0x80 | 26);
-static const uint8_t A27 = (0x80 | 27);
-static const uint8_t A28 = (0x80 | 28);
-
-
-
+/* Basic Pin Numbering - PIN_Pxn notation is always recommended
+ * as it is totally unambiguous, but numbers may be used too */
 #define PIN_PA0  ( 0)
 #define PIN_PA1  ( 1)
 #define PIN_PA2  ( 2)
@@ -117,77 +47,200 @@ static const uint8_t A28 = (0x80 | 28);
 #define PIN_PD2  (26)  /* RESET */
 #define PIN_PD3  (27)
 
+/* PIN_An is the digital pin with analog channel An on it. */
+#define PIN_A0     (PIN_PA0)
+#define PIN_A1     (PIN_PA1)
+#define PIN_A2     (PIN_PA2)
+#define PIN_A3     (PIN_PA3)
+#define PIN_A4     (PIN_PA4)
+#define PIN_A5     (PIN_PA5)
+#define PIN_A6     (PIN_PA6)
+#define PIN_A7     (PIN_PA7)
+#define PIN_A8     (PIN_PB0)
+#define PIN_A9     (PIN_PB1)
+#define PIN_A10     (PIN_PB2)
+#define PIN_A11     (PIN_PB3)
+#define PIN_A12     (PIN_PB4)
+#define PIN_A13     (PIN_PB5)
+#define PIN_A14     (PIN_PB6)
+#define PIN_A15     (PIN_PB7)
+#define PIN_A16     (PIN_PC0)
+#define PIN_A17     (PIN_PC1)
+#define PIN_A18     (PIN_PC2)
+#define PIN_A19     (PIN_PC3)
+#define PIN_A20     (PIN_PC4)
+#define PIN_A21     (PIN_PC5)
+#define PIN_A22     (PIN_PC6)
+#define PIN_A23     (PIN_PC7)
+#define PIN_A24     (PIN_PD0)
+#define PIN_A25     (PIN_PD1)
+#define PIN_A26     (PIN_PD2)
+#define PIN_A27     (PIN_PD3)
+
+static const uint8_t  A0 = ADC_CH( 0);
+static const uint8_t  A1 = ADC_CH( 1);
+static const uint8_t  A2 = ADC_CH( 2);
+static const uint8_t  A3 = ADC_CH( 3);
+static const uint8_t  A4 = ADC_CH( 4);
+static const uint8_t  A5 = ADC_CH( 5);
+static const uint8_t  A6 = ADC_CH( 6);
+static const uint8_t  A7 = ADC_CH( 7);
+static const uint8_t  A8 = ADC_CH( 8);
+static const uint8_t  A9 = ADC_CH( 9);
+static const uint8_t A10 = ADC_CH(10);
+static const uint8_t A11 = ADC_CH(11);
+static const uint8_t A12 = ADC_CH(12);
+static const uint8_t A13 = ADC_CH(13);
+static const uint8_t A14 = ADC_CH(14);
+static const uint8_t A15 = ADC_CH(15);
+static const uint8_t A16 = ADC_CH(16);
+static const uint8_t A17 = ADC_CH(17);
+static const uint8_t A18 = ADC_CH(18);
+static const uint8_t A19 = ADC_CH(19);
+static const uint8_t A20 = ADC_CH(20);
+static const uint8_t A21 = ADC_CH(21);
+static const uint8_t A22 = ADC_CH(22);
+static const uint8_t A23 = ADC_CH(23);
+static const uint8_t A24 = ADC_CH(24);
+static const uint8_t A25 = ADC_CH(25);
+static const uint8_t A26 = ADC_CH(26);
+static const uint8_t A27 = ADC_CH(27);
 
 
-//----------------------------------------------------------
-//----------------------------------------------------------
-//Core Configuration (used to be in core_build_options.h)
+/* Interrupt macros to go from pin to PCMSK register and bit within it, and
+ * the register to enable/disable banks of PCINTs, and bit within it PCICR
+ * is almost always the same for all PCINTs; but must return null pointer
+ * if the pin is invalid. The PCICRbit and PCMSK are almost always directly
+ * mapped to port; particularly on ugly mappings like this, taking advantage
+ * of this is more efficient and easier to write.
+ * digitalPinToInterrupt gets the number of the "full service" pin interrupt
+ *---------------------------------------------------------------------------*/
+
+#define digitalPinToPCICR(p)        (&PCICR)
+#define digitalPinToPCICRbit(p)     ((p) >> 3)
+#define digitalPinToPCMSK(p)        ((p) > 23 ? (&PCMSK3) : (&PCMSK0 + (p >> 3)))
+#define digitalPinToPCMSKbit(p)     ((p) & 0x07)
+
+#define digitalPinToInterrupt(p)    ((p) == PIN_PC1 ? 0 : ((p) == PIN_PC2 ? 1 : NOT_AN_INTERRUPT))
+
+/* Analog Channel <-> Digital Pin macros */
+#define analogInputToDigitalPin(p)  ((p < 28) ? (p): -1)
+#define digitalPinToAnalogInput(p)  ((p < 28) ? (p): -1)
+
+/* Which pins have PWM? */
+#define digitalPinHasPWM(p)         ((p) == PIN_PC0 || (p) == PIN_PC4 || (p) == PIN_PC5 || (p) == PIN_PC6)
 
 
+/*---------------------------------------------------------------------------
+ * Core Configuration where these are not the defaults
+ *---------------------------------------------------------------------------*/
 
-//Choosing not to initialise saves power and flash. 1 = initialise.
-#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-#define INITIALIZE_SECONDARY_TIMERS               1
-/*
-  The old standby ... millis on Timer 0.
-*/
-#define TIMER_TO_USE_FOR_MILLIS                   0
+// Choosing not to initialise saves flash.   1 = initialise.
+// #define DEFAULT_INITIALIZE_ADC                    1
+// #define DEFAULT_INITIALIZE_SECONDARY_TIMERS       1
 
-/*
-  Where to put the software serial? (Arduino Digital pin numbers)
-*/
-//WARNING, if using software, TX is on AIN0, RX is on AIN1. Comparator is favoured to use its interrupt for the RX pin.
-#define USE_SOFTWARE_SERIAL           0
-//Please define the port on which the analog comparator is found.
-//#define ANALOG_COMP_DDR               DDRA
-//#define ANALOG_COMP_PORT              PORTA
-//#define ANALOG_COMP_PIN               PINA
-//#define ANALOG_COMP_AIN0_BIT          1
-//#define ANALOG_COMP_AIN1_BIT          2
+// We have hardware serial, so don't use soft serial.
+// #define USE_SOFTWARE_SERIAL                  0
 
 
-/*
-  Analog reference bit masks.
-*/
-// VCC used as analog reference, disconnected from PA0 (AREF)
-#define DEFAULT (0)
-// Internal 1.1V voltage reference
-#define INTERNAL (1)
-#define INTERNAL1V1 INTERNAL
+/*---------------------------------------------------------------------------
+ * Chip Features (or lack thereof) - Analog stuff
+ *---------------------------------------------------------------------------
+ * Analog reference constants are pre-shifted to their final position in the
+ * registers to avoid leftshifting at runtime, which is surprisingly slow and
+ * wasteful of flash.
+ * Note: REFS in slightly different place on these - the only surviving bit
+ * of the ADMUXB register, standing all alone sobbing. He was the one "lucky"
+ * enough to make it out of the foundry... but what kind of a life is this?
+ * All alone in the crumby ADC of a forgotten, unloved device lacking the
+ * feature that was to be it's claim to fame?
+ *---------------------------------------------------------------------------*/
+#define ADC_REF(x)            (x << 5)
 
-//----------------------------------------------------------
-//----------------------------------------------------------
-//----------------------------------------------------------
-//----------------------------------------------------------
+/* Analog Reference bit masks */
+#define DEFAULT          ADC_REF(0x00)
+#define INTERNAL1V1      ADC_REF(0x01)
+#define INTERNAL           INTERNAL1V1
 
+/* Special Analog Channels */
+#define ADC_GROUND        ADC_CH(0x1C)
+#define ADC_INTERNAL1V1   ADC_CH(0x1D)
+#define ADC_TEMPERATURE   ADC_CH(0x1E)
+#define ADC_VCC           ADC_CH(0x1F)
 
+/* Not a differential ADC */
 
-#define digitalPinToPCICR(p)    (&PCICR)
-#define digitalPinToPCICRbit(p) ((p) >> 3)
-#define digitalPinToPCMSK(p)    ((p) > 23 ? (&PCMSK3) : (&PCMSK0 + (p >> 3)))
-#define digitalPinToPCMSKbit(p) ((p) & 0x07)
+/* Analog Comparator - not used by core */
+#define ANALOG_COMP_DDR           DDRA
+#define ANALOG_COMP_PORT         PORTA
+#define ANALOG_COMP_PIN           PINA
+#define ANALOG_COMP_AIN0_BIT       (1)
+#define ANALOG_COMP_AIN1_BIT       (2)
 
-#define digitalPinToInterrupt(p)  ((p) == PIN_PC1 ? 0 : ((p) == PIN_PC2 ? 1 : NOT_AN_INTERRUPT))
+/*---------------------------------------------------------------------------
+ * Chip Features - SPI, I2C, USART, etc
+ *---------------------------------------------------------------------------*/
+/* This part has a real SPI module and a slave-only TWI module
+ * The included Wire.h will use the TWI hardware for TWI slave, or
+ * a markedly inferior software TWI master implementation if that is requested.
+ * worse still, the TWI is on the same pins as the SPI!
+ * Note that we change the pins that I2C master uses only as long as user
+ * selects master only mode from the submenus.
+ * PD0, PD3 used by SPI too, better to use something else
+ * and since it's software I2C, we can pick any pin. PA4, PA5 seem
+ * non-specifically-useful for other purposes, so let's use them...
+ *---------------------------------------------------------------------------*/
+
+#if defined(WIRE_MASTER_ONLY)
+/* Software I2C Master */
+  #define SDA PIN_PA4
+  #define SCL PIN_PA5
+  #define SDA_PIN 4
+  #define SDA_PORT PORTA
+  #define SCL_PIN 5
+  #define SCL_PORT PORTA
+#else
+/* Hardware I2C Slave with or without Software I2C Master */
+  #define SCL  PIN_PD3
+  #define SDA  PIN_PD0
+#endif
+
+/* Hardware SPI */
+#define MISO PIN_PD1
+#define MOSI PIN_PD0
+#define SCK  PIN_PD3
+#define SS   PIN_PC0
+
+/* One hardware serial port */
+#define PIN_HWSERIAL0_TX         PIN_PC3
+#define PIN_HWSERIAL0_RX         PIN_PC2
+
 #ifdef ARDUINO_MAIN
-// ATMEL/Microchip ATtiny828
-//
-//             16*   26   24   14
-//          17    27   25   15
-//             PC0  PD2  PD0  PB6
-//          PC1  PD3  PD1   PB7
-//             _________________
-// 18 RX  PC2 | *               | PB5   13
-// 19 TX  PC3 |                 | PB4   12
-// 20 *   PC4 |                 | PB3   11
-//        VCC |                 | GND
-//        GND |                 | PB2   10
-// 21 *   PC5 |                 | PB1    9
-// 22 *   PC6 |                 | AVCC
-// 23     PC7 |_________________| PB0    8
-//           PA0  PA2  PA4  PA6
-//              PA1  PA3  PA5  PA7
-//            0     2    4    6
-//               1     3    5    7
+/*---------------------------------------------------------------------------
+ * ATMEL/Microchip ATtiny828 ATTinyCore Standard Pin Mapping
+ *
+ *         INT0    RESET
+ *             16*   26   24   14
+ *          17    27   25   15
+ *             PC0  PD2  PD0  PB6
+ *          PC1  PD3  PD1   PB7
+ *    INT1     _________________
+ * 18 RX  PC2 | *               | PB5   13
+ * 19 TX  PC3 |                 | PB4   12
+ * 20 *   PC4 |                 | PB3   11
+ *        VCC |                 | GND
+ *        GND |                 | PB2   10
+ * 21 *   PC5 |                 | PB1    9
+ * 22 *   PC6 |                 | AVCC
+ * 23     PC7 |_________________| PB0    8
+ *           PA0  PA2  PA4  PA6
+ *              PA1  PA3  PA5  PA7
+ *            0     2    4    6
+ *               1     3    5    7
+ *
+ * * indicates PWM pin
+ * ADC input on all pins.
+ *---------------------------------------------------------------------------*/
 
 
 const uint8_t PROGMEM port_to_mode_PGM[] =
@@ -226,37 +279,39 @@ const uint8_t PROGMEM port_to_input_PGM[] =
   (uint8_t)(uint16_t)&PIND
 };
 
+
 const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_A_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_B_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_C_ID,
-  PORT_D_ID,
-  PORT_D_ID,
-  PORT_D_ID,
-  PORT_D_ID
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PC,
+  PD,
+  PD,
+  PD, /*RESET*/
+  PD
 };
+
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
@@ -286,12 +341,13 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(7),
   _BV(0),
   _BV(1),
-  _BV(2),
+  _BV(2), /*RESET*/
   _BV(3),
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
+  NOT_ON_TIMER, /*  PA0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -299,6 +355,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
+  NOT_ON_TIMER, /*  PB0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
@@ -306,24 +363,19 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIMER0A,
+  TIMER0A,      /*  PC0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER0B,
   TIMER1A,
+  NOT_ON_TIMER, /* CLKI */
   TIMER1B,
+  NOT_ON_TIMER, /*  PD0 */
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  NOT_ON_TIMER, /* RESET*/
   NOT_ON_TIMER
 };
-
-
-
-#endif
 
 #endif
 

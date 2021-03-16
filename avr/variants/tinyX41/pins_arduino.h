@@ -7,26 +7,21 @@
 #define Pins_Arduino_h
 #include <avr/pgmspace.h>
 
-/*===================================================================
+/*===========================================================================
  * Microchip ATtiny841, ATtiny441
- *===================================================================
- * Basic Pin Definitions | Interrupt Macros | Counterclockwise mapping
- * CCW/Legacy pin mapping is inferior - it turns several macros into
- * a no-op instead of requiring math. Use the other one if you don't
+ *===========================================================================
+ * ATTinyCore Legacy Pin Mapping (CounterClockwise)
+ * CCW/Legacy pin mapping is inferior  Use the other one if you don't
  * have code or hardware marked with the CCW numbers.
- *-----------------------------------------------------------------*/
+ *---------------------------------------------------------------------------*/
 
-#define ATTINYX4 1
-#define __AVR_ATtinyX4__
-#define USE_SOFTWARE_SPI 1
-
-#include <avr/pgmspace.h>
+#define __AVR_ATtinyX41__
 
 #define NUM_DIGITAL_PINS            12
 #define NUM_ANALOG_INPUTS           12
 
-// Recommended way to reference pins
-// PIN_Pxn is bit n of PORTx.
+/* Basic Pin Numbering - PIN_Pxn notation is always recommended
+ * as it is totally unambiguous, but numbers may be used too */
 #define PIN_PA0  (10)
 #define PIN_PA1  ( 9)
 #define PIN_PA2  ( 8)
@@ -42,7 +37,7 @@
 
 #define LED_BUILTIN (PIN_PB2)
 
-// PIN_An is the digital pin with analog channel An on it.
+/* PIN_An is the digital pin with analog channel An on it. */
 #define PIN_A0      (PIN_PA0)
 #define PIN_A1      (PIN_PA1)
 #define PIN_A2      (PIN_PA2)
@@ -56,7 +51,7 @@
 #define PIN_A10     (PIN_PB0)
 #define PIN_A11     (PIN_PB1)
 
-// An "analog pins" these map directly to analog channels
+/* An "analog pins" these map directly to analog channels */
 static const uint8_t A0  = ADC_CH(0);
 static const uint8_t A1  = ADC_CH(1);
 static const uint8_t A2  = ADC_CH(2);
@@ -71,6 +66,15 @@ static const uint8_t A10 = ADC_CH(10);
 static const uint8_t A11 = ADC_CH(11);
 
 
+/* Interrupt macros to go from pin to PCMSK register and bit within it, and
+ * the register to enable/disable banks of PCINTs, and bit within it PCICR
+ * is almost always the same for all PCINTs; but must return null pointer
+ * if the pin is invalid. The PCICRbit and PCMSK are almost always directly
+ * mapped to port; particularly on ugly mappings like this, taking advantage
+ * of this is more efficient and easier to write.
+ * digitalPinToInterrupt gets the number of the "full service" pin interrupt
+ *---------------------------------------------------------------------------*/
+
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
 #define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
@@ -78,41 +82,48 @@ static const uint8_t A11 = ADC_CH(11);
 
 #define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
 
+/* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  (TODO)
 #define digitalPinToAnalogInput(p)  (TODO)
 
+/* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) > TODO && (p) < TODO)
 
+/* We have multiple pin mappings on this part; all have a #define, where
+ * multiple are present, these are for compatibility with versions that
+ * used less-clear names. The first #define is recommended, all others are
+ * deprecated. */
 #define PINMAPPING_CCW
 
-//----------------------------------------------------------
-// Core Configuration where these are not the defaults
-//----------------------------------------------------------
+/*---------------------------------------------------------------------------
+ * Core Configuration where these are not the defaults
+ *---------------------------------------------------------------------------*/
+// Choosing not to initialise saves flash.           1 = initialise.
+// #define DEFAULT_INITIALIZE_ADC                    1
+// #define DEFAULT_INITIALIZE_SECONDARY_TIMERS       1
 
-// Choosing not to initialise saves power and flash. 1 = initialise.
-//#define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
-//#define INITIALIZE_SECONDARY_TIMERS               1
-
-//#define TIMER_TO_USE_FOR_MILLIS                   0
-
-#define USE_SOFTWARE_SERIAL           0
+// We have hardware serial, so don't use soft serial.
+// #define USE_SOFTWARE_SERIAL                       0
 
 
-/*----------------------------------------------------------
+/*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
- *----------------------------------------------------------*/
-
-/* Analog Comparator not listed because not used for software serial */
+ *---------------------------------------------------------------------------
+ * Analog reference constants are pre-shifted to their final position in the
+ * registers to avoid leftshifting at runtime, which is surprisingly slow and
+ * wasteful of flash.
+ *---------------------------------------------------------------------------*/
+#define ADC_REF(x)              (x << 5)
 
 /* Analog reference bit masks. */
-#define DEFAULT               (0x00)
-#define INTERNAL1V1_NO_CAP    (0x01)
-#define INTERNAL2V2_NO_CAP    (0x02)
-#define INTERNAL4V096_NO_CAP  (0x03)
-#define EXTERNAL              (0x04)
-#define INTERNAL1V1_CAP       (0x05)
-#define INTERNAL2V2_CAP       (0x06)
-#define INTERNAL4V096_CAP     (0x07)
+#define DEFAULT               ADC_REF(0x00)
+#define INTERNAL1V1_NO_CAP    ADC_REF(0x01)
+#define INTERNAL2V2_NO_CAP    ADC_REF(0x02)
+#define INTERNAL4V096_NO_CAP  ADC_REF(0x03)
+#define EXTERNAL              ADC_REF(0x04)
+#define INTERNAL1V1_CAP       ADC_REF(0x05)
+#define INTERNAL2V2_CAP       ADC_REF(0x06)
+#define INTERNAL4V096_CAP     ADC_REF(0x07)
 #define INTERNAL              INTERNAL1V1_NO_CAP
 #define INTERNAL1V1           INTERNAL1V1_NO_CAP
 #define INTERNAL2V2           INTERNAL2V2_NO_CAP
@@ -121,12 +132,16 @@ static const uint8_t A11 = ADC_CH(11);
 #define INTERNAL4V            INTERNAL4V096_NO_CAP   /* deprecated */
 
 /* Gain Options */
-#define GAIN_1X               (0x00)
-#define GAIN_20X              (0x01)
-#define GAIN_100X             (0x02)
-// 0x03 is not a valid option for the GSEL bits.
+#define GAIN_1X               (0xFF)
+#define GAIN_20X              (0xFE)
+#define GAIN_100X             (0xFD)
+/* these are 255-GSEL, so that users can also just pass in 1, 20, or 100.
+ * Wouldn't have had to do this except that 1 is the gain you get when you
+ * pass 0 to the GSEL bits.
+ * 0x03 is not a valid option for the GSEL bits. */
 
-/* Special Single-Ended Channels */
+
+/* Special Analog Channels */
 #define ADC_GROUND      ADC_CH(0x20)
 #define ADC_INTERNAL1V1 ADC_CH(0x21)
 #define ADC_TEMPERATURE ADC_CH(0x22)
@@ -179,44 +194,73 @@ static const uint8_t A11 = ADC_CH(11);
 #define DIFF_A7_A6      ADC_CH(0x3E)
 #define DIFF_A9_A8      ADC_CH(0x3F)
 
-/*----------------------------------------------------------
+/* Analog Comparators - not used by core */
+#define ANALOG_COMP0_DDR               DDRA
+#define ANALOG_COMP0_PORT              PORTA
+#define ANALOG_COMP0_PIN               PINA
+#define ANALOG_COMP0_AIN0_BIT          (1)
+#define ANALOG_COMP0_AIN1_BIT          (2)
+
+#define ANALOG_COMP1_DDR               DDRA
+#define ANALOG_COMP1_PORT              PORTA
+#define ANALOG_COMP1_PIN               PINA
+#define ANALOG_COMP1_AIN0_BIT          (3)
+#define ANALOG_COMP1_AIN1_BIT          (4)
+
+/*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
- *----------------------------------------------------------*/
+ *---------------------------------------------------------------------------*/
+/* This part has a real SPI module and a slave-only TWI module
+ * The included Wire.h will use the TWI hardware for TWI slave, or
+ * a markedly inferior software TWI master implementation if that is requested.
+ *---------------------------------------------------------------------------*/
 
+/* Hardware I2C slave */
+#define SCL                      PIN_PA6
+#define SDA                      PIN_PA4
 
-/*  This part has a real SPI module and a slave-only TWI module
-    The included Wire.h will use the TWI hardware for TWI slave, or
-    a markedly inferior software TWI master implementation if that is requested.
-    TWI master is one of the few roles that the ATtiny841 does not excel in */
+/* Hardware SPI */
+#define SCK                      PIN_PA4
+#define MISO                     PIN_PA5
+#define MOSI                     PIN_PA6
+#define SS                       PIN_PA7
 
+/* Remapped SPI port */
+#define MISO_PINSWAP             PIN_PA0
+#define MOSI_PINSWAP             PIN_PA1
+#define SS_PINSWAP               PIN_PA2
+#define SCK_PINSWAP              PIN_PA3
 
-//#define USE_SOFTWARE_SPI 0
+/* Two hardware serial ports */
+#define PIN_HWSERIAL0_TX         PIN_PA1
+#define PIN_HWSERIAL0_RX         PIN_PA2
 
-#define SCL  PIN_PA6
-#define SDA  PIN_PA4
+#define PIN_HWSERIAL1_TX         PIN_PA5
+#define PIN_HWSERIAL1_RX         PIN_PA4
 
-#define MISO PIN_PA5
-#define MOSI PIN_PA6
-#define SCK  PIN_PA4
-#define SS   PIN_PA7
-
+/* USART0 has alternate pin mapping option */
+#define PIN_HWSERIAL0_TX_PINSWAP PIN_PA7
+#define PIN_HWSERIAL0_RX_PINSWAP PIN_PB2
 
 #ifdef ARDUINO_MAIN
-#warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
-// ATMEL ATTINY841 /ATTinyCore Legacy/CCW
-//
-//                                +-\/-+
-//                          VCC  1|    |14  GND
-//                 (A11 0)  PB0  2|    |13  PA0  (A0 10)     *MISO   AREF
-//                 (A10 1)  PB1  3|    |12  PA1  (A1  9) TX0 *MOSI   *PWM
-//           RESET (A9 11)  PB3  4|    |11  PA2  (A2  8) RX0 *SS     *PWM
-//  PWM INT0  *RX0    ( 2)  PB2  5|    |10  PA3  (A3  7)     *SCK     PWM
-//  PWM SS    *TX0 (A7  3)  PA7  6|    |9   PA4  (A4  6) RX1 SCK  SCL PWM
-//  PWM SDA   MOSI (A6  4)  PA6  7|    |8   PA5  (A5  5) TX1 MISO     PWM
-//                                +----+
-//
-//  Pins can be remapped, optional remap options denoted by *; these are not enabled by default.
+/*---------------------------------------------------------------------------
+ * ATMEL ATTINY841/441  ATTinyCore Legacy (Counterclockwise) Pin Mapping
+ *
+ *                                +-\/-+
+ *                          VCC  1|    |14  GND
+ *                 (A11 0)  PB0  2|x   |13  PA0  (A0 10)     *MISO   AREF
+ *                 (A10 1)  PB1  3|x   |12  PA1  (A1  9) TX0 *MOSI   *PWM
+ *           RESET (A9 11)  PB3  4|    |11  PA2  (A2  8) RX0 *SS     *PWM
+ *  PWM INT0  *RX0 (A8  2)  PB2  5|    |10  PA3  (A3  7)     *SCK     PWM
+ *  PWM SS    *TX0 (A7  3)  PA7  6|    |9   PA4  (A4  6) RX1 SCK  SCL PWM
+ *  PWM SDA   MOSI (A6  4)  PA6  7|    |8   PA5  (A5  5) TX1 MISO     PWM
+ *                                +----+
+ *
+ * Pins can be remapped, optional remap options denoted by *
+ * These are not enabled by default.
+ *---------------------------------------------------------------------------*/
 
+#warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
   NOT_A_PORT,

@@ -13,7 +13,7 @@
 #include "binary.h"
 
 #ifdef __cplusplus
-extern "C"{
+  extern "C"{
 #endif
 
 #define ATTINY_CORE 1
@@ -46,9 +46,11 @@ extern "C"{
 #define FALLING 2
 #define RISING 3
 
-#define ADC_ERROR_BUSY            -30000
-#define ADC_ERROR_DISABLED        -32000
 #define ADC_ERROR_NO_ADC          -32768
+#define ADC_ERROR_DISABLED        -32767 /* ADC_ERROR_NO_ADC + 1 */
+#define ADC_ERROR_BUSY            -32766 /* ADC_ERROR_NO_ADC + 2 */
+#define ADC_ERROR_NOT_A_CHANNEL   -32765 /* ADC_ERROR_NO_ADC + 3 */
+#define ADC_ERROR_SINGLE_END_IPR  -32764 /* ADC_ERROR_NO_ADC + 4 */
 
 #define NOT_AN_INTERRUPT -1
 
@@ -63,39 +65,35 @@ extern "C"{
     _a > _b ? _a : _b; })
 
 #ifndef constrain
-#define constrain(x,low,high)   ({ \
-  typeof (x) _x = (x);             \
-  typeof (low) _l = (l);           \
-  typeof (high) _h = (h);          \
+  #define constrain(x,low,high)   ({ \
+    typeof (x) _x = (x);             \
+    typeof (low) _l = (l);           \
+    typeof (high) _h = (h);          \
   _x < _l ? _l : _x > _h ? _h :_x;})
 #endif
 
 #ifndef radians
-#define radians(deg) ((deg)*DEG_TO_RAD)
+  #define radians(deg) ((deg)*DEG_TO_RAD)
 #endif
 
 #ifndef degrees
-#define degrees(rad) ((rad)*RAD_TO_DEG)
+  #define degrees(rad) ((rad)*RAD_TO_DEG)
 #endif
 
 #ifndef sq
-#define sq(x)        ({ typeof (x) _x = (x); _x * _x; })
+  #define sq(x)        ({ typeof (x) _x = (x); _x * _x; })
 #endif
 
 #ifndef round
-#define round(x)     ({ typeof (x) _x = (x);  _x >= 0 ? (long)x + 0.5 : (long)x - 0.5 ;})
+  #define round(x)     ({ typeof (x) _x = (x);  _x >= 0 ? (long)x + 0.5 : (long)x - 0.5 ;})
 #endif
 
-#define interrupts() sei()
-#define noInterrupts() cli()
-
 #if F_CPU < 1000000L
-//Prevent a divide by 0 is
-#warning "Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1."
-
-#define clockCyclesPerMicrosecond() 1UL
+  //Prevent a divide by 0 is
+  #warning "Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1."
+  #define clockCyclesPerMicrosecond() 1UL
 #else
-#define clockCyclesPerMicrosecond() (F_CPU / 1000000UL)
+  #define clockCyclesPerMicrosecond() (F_CPU / 1000000UL)
 #endif
 
 #define ADC_CH(x) (0x80 | (x))
@@ -114,6 +112,8 @@ extern "C"{
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
+#define interrupts() sei()
+#define noInterrupts() cli()
 
 typedef unsigned int word;
 
@@ -125,17 +125,20 @@ typedef uint8_t byte;
 void initToneTimer(void);
 void init(void);
 
+int main() __attribute__((weak));
+
 void pinMode(uint8_t pinNumber, uint8_t mode);
 void digitalWrite(uint8_t pinNumber, uint8_t val);
 void digitalWriteFast(uint8_t pinNumber, uint8_t val);
 int8_t digitalRead(uint8_t pinNumber);
 int8_t digitalReadFast(uint8_t pinNumber);
 int analogRead(uint8_t pinNumber);
+int _analogRead(uint8_t pinNumber, bool use_noise_reduction);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t pinNumber, int16_t val);
 
 
-void setADCDiffMode(bool bipolar, bool intsafe=false);
+void setADCDiffMode(bool bipolar);
 
 unsigned long millis(void);
 unsigned long micros(void);
@@ -178,7 +181,7 @@ extern const uint8_t PROGMEM port_to_mode_PGM[];
 extern const uint8_t PROGMEM port_to_input_PGM[];
 extern const uint8_t PROGMEM port_to_output_PGM[];
 
-#ifndef
+
 extern const uint8_t PROGMEM digital_pin_to_port_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[];
 extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
@@ -188,16 +191,19 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 // These perform slightly better as macros compared to inline functions
 
 #define const_array_or_pgm_(FUNC,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : FUNC((ARR)+idx_); })
-#define digitalPinToPort(P) (const_array_or_pgm_(pgm_read_byte, digital_pin_to_port_PGM, (P)))
-#define digitalPinToBitMask(P) (const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P)))
+#define digitalPinToPort(P) (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_port_PGM, (P)) : NOT_A_PORT)
+#define digitalPinToBitMask(P) (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P)) : NOT_A_PIN)
 #define digitalPinToTimer(P) (const_array_or_pgm_(pgm_read_byte, digital_pin_to_timer_PGM, (P)))
 #define analogInPinToBit(P) (P)
 #define portOutputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_output_PGM, (P))))
 #define portInputRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_input_PGM, (P))))
 #define portModeRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
-
+#if defined(PUEA)
+  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
+#endif
 
 #define NOT_A_PIN 255
+#define NOT_A_TIMER 255
 #define NOT_A_PORT 0
 
 #define PA 1
@@ -215,10 +221,27 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define TIMER1D 7
 
 /* This is TRICKY
-  We need the bitmask, not bit position...
+  We need the bitmask, not bit position when we use this
+  Now for the (unimplemented) SUPER_PWM option, since we
+  have no specified timer for a given channel, it's easy.
+
+  But the rest of the time, including all supported
+  configurations as of the planned 2.0.0 release, the
+  analogWrite() function is going to need to know the
+  timer + channel AND the TOCC bitmask, with the minimum
+  possible effort. In this case, the byte breaks down as:
+
+  0b tttt s ccc
+
+  Where:
+  c is the timer channel (see above defines)
+  t is (1 << (TOCCnumber & 0x03)) - that is 0b0001, 0b0010, 0b0100, or 0b1000
+  s is 0 if TOCCnumber < 4, otherwise 1
+  The left/rightshift 4 positions is only 2 clocks - 1 for a swp instruction
+  1 for andi 0xF0/0x0F (depending on direction of shift), whild 4 actual left/ri
 
   So TOCC bitmask */
-#if defined(FLEX_PWM)
+#if defined(SUPER_PWM)
   #define TOCC0  (0x01)
   #define TOCC1  (0x02)
   #define TOCC2  (0x04)
@@ -278,57 +301,81 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 
 /*=============================================================================
-From what we got in pins_arduino.h, determine which features to enable.
+ * From what we got in pins_arduino.h as well as defines passed to the compiler from board submenu
+ * options, determine which features to enable.
 =============================================================================*/
 
 
 #ifndef USE_SOFTWARE_SERIAL
-  //Default to hardware serial.
-  #define USE_SOFTWARE_SERIAL 0
+  // Don't use builtin software serial unless the variant asked for it because there wasn't a hardware one.
+  #define USE_SOFTWARE_SERIAL                       0
 #endif
 
+/* As of ATTinyCore 2.0.0, we have abandoned the pretense of the variant being
+ * able to choose whichever timer it wants for millis. I'm not sure how far back
+ * one would need to go to find a version of ATTinyCore where that worked
+ * but I am damned sure it doesn't work correctly now. So we will no longer
+ * include a TIMER_TO_USE_FOR_MILLIS option that might as well be named
+ * SET_THIS_TO_0_OR_NOTHING_WORKS.
+ *---------------------------------------------------------------------------*/
 
 #ifndef TIMER_TO_USE_FOR_MILLIS
-  #define TIMER_TO_USE_FOR_MILLIS                     0
+  #define TIMER_TO_USE_FOR_MILLIS                   0
 #endif
-/*
-  Tone goes on whichever timer was not used for millis.
-*/
-#if TIMER_TO_USE_FOR_MILLIS == 1
-  #define TIMER_TO_USE_FOR_TONE                     0
-#else
-  #define TIMER_TO_USE_FOR_TONE                     1
+
+
+#if TIMER_TO_USE_FOR_MILLIS != 0
+  #if !defined(DISABLE_MILLIS)
+    #warning "Millis not disabled, and set to use a non-standard timer. This code has not been exercised since at least 2016!"
+  #else
+    #warning "Non-standard timer arrangement selected. This code has not been exercised since at least 2016!"
+  #endif
 #endif
 
 #if NUM_ANALOG_INPUTS > 0
-  #define HAVE_ADC                  1
-  #ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
-    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
+  #ifndef ADCSRA
+    #error "STOP - NUM_ANALOG_INPUTS is not 0, but no ADC present on chip. This indicates a critical defect in ATTinyCore which should be reported promptly."
+  #endif
+  #define HAVE_ADC                                  1
+  #ifndef INITIALIZE_ADC
+    #ifndef DEFAULT_INITIALIZE_ADC
+      #define INITIALIZE_ADC                        1
+    #else
+      #define INITIALIZE_ADC                        DEFAULT_INITIALIZE_ADC
+    #endif
   #endif
 #else
-  #define HAVE_ADC                0
-  #if defined(INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER)
-    #undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
+  #define HAVE_ADC                                  0
+  #if defined(INITIALIZE_ADC)
+    #if INITIALIZE_ADC != 0
+      #error "STOP - Variant requested that the ADC be initialized, but this part does not have one (0 >= NUM_ANALOG_INPUTS). This indicates a critical defect in ATTinyCore which should be reported promptly."
+    #endif
+    #undef INITIALIZE_ADC
   #endif
-  #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
-#endif
-
-#if !HAVE_ADC
-  #undef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
-  #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER  0
-#else
-  #ifndef INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER
-    #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER   1
-  #endif
+  #define INITIALIZE_ADC                            0
 #endif
 
 #ifndef INITIALIZE_SECONDARY_TIMERS
-  #define INITIALIZE_SECONDARY_TIMERS               1
+  #ifdef DEFAULT_INITIALIZE_SECONDARY_TIMERS
+    #define INITIALIZE_SECONDARY_TIMERS             DEFAULT_INITIALIZE_SECONDARY_TIMERS
+  #else
+    #define INITIALIZE_SECONDARY_TIMERS             1
+  #endif
 #endif
 
-
+#ifndef TIMER_TO_USE_FOR_TONE
+  #if TIMER_TO_USE_FOR_MILLIS == 0
+    #define TIMER_TO_USE_FOR_TONE                   1
+  #else
+    #define TIMER_TO_USE_FOR_TONE                   0
+  #endif
+#else
+  #if TIMER_TO_USE_FOR_TONE == TIMER_TO_USE_FOR_MILLIS
+    #error "Tone and millis are set to use the same timer. This should *never happen* - all of these parts have multiple timers, so it indicates a critical defect in ATTinyCore which should be reported promptly"
+  #endif
+#endif
 #ifdef __cplusplus
-} // extern "C"
+  } // extern "C"
 #endif
 
 #ifdef __cplusplus
@@ -356,15 +403,16 @@ From what we got in pins_arduino.h, determine which features to enable.
 
 #endif
 
-/*=============================================================================
-  Aliases for the interrupt service routine vector numbers so the code
-  doesn't have to be riddled with quite as many #ifdefs.
-=============================================================================*/
-
+/* SIGRD is missing from some of the IO headers, where it should be defined as 5.
+ * this is one of the ways we work around this  */
 #ifndef SIGRD
-#define SIGRD 5
+  #define SIGRD 5
 #endif
 
+/*---------------------------------------------------------------------------
+ * Aliases for the interrupt service routine vector numbers so the code
+ * doesn't have to be riddled with quite as many ifdefs.
+ *---------------------------------------------------------------------------*/
 
 #if defined(TIM0_CAPT_vect)   && !defined(TIMER0_CAPT_vect)
 #define TIMER0_CAPT_vect TIM0_CAPT_vect
