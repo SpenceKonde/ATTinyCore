@@ -62,10 +62,10 @@ The ATtiny x7 series features a mid-range ADC - it has the second reference volt
 * DEFAULT: Vcc
 * EXTERNAL: Voltage applied to AREF pin
 * INTERNAL1V1: Internal 1.1v reference
-* INTERNAL: synonym for INTERNAL1V1
 * INTERNAL2V56: Internal 2.56v
-* INTERNAL1V1_XREF Internal 1.1v - also output on PA7 (AREF) pin
-* INTERNAL2V56_XREF Internal 2.56v - also output on PA7 (AREF) pin
+* INTERNAL1V1_XREF: Internal 1.1v - also output on PA7 (AREF) pin
+* INTERNAL2V56_XREF: Internal 2.56v - also output on PA7 (AREF) pin
+* INTERNAL: synonym for INTERNAL1V1 (deprecated)
 
 ### Internal Sources
 * ADC_TEMPERATURE    ADC_CH(0x0B)
@@ -87,7 +87,10 @@ Though it's a far cry from what some of the classic tinyAVR parts have, the x7-s
 | ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  DIFF_A8_A9_1X |  DIFF_A8_A9_20X |
 | ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | DIFF_A9_A10_1X | DIFF_A9_A10_20X |
 
+### Temperature Measurement
+To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP). We suggest storing this temperature calibration value at (`E2END`-3:`E2END`-2) in the EEPROM (the final two bytes of the EEPROM should be reserved for oscilator tuning values in non-bootloader configurations). When a bootloader is in use, this value can instead be stored near the end of the flash, at `FLASHEND - 5` (and hence also `FLASHEND - 4`) (the final 2 bytes hold the bootloader version, and the two before them hold tuned `OSCCAL` values at 8 MHz and 8.25 MHz (8.25 x 2 gives 16.5 MHz when running off internal for the 16.5 MHz VUSB option).
 
+Note that while the text of this sections is essentially copied verbatim between most of the classic tinyAVR parts, the ATtiny87/167 datasheet has a different set of "typical values"... and these are inconsistent with what the text is saying by a huge margin. However, it did not escape my notice that the same table also contains a typo in the notation (0c01B8 instead of 0x01B8), and that the inconsistencies are suspiciously close to what might happen if someone attempted to convert from decimal to hex recognizing that the third digit is 256's but not that second digit is 16's (230middle value is 300 on other sheets, 0x144 here. 300 - 256 = 44, so a 1 in the 256's and 44 in the tens and ones, high value 370 on other sheets, 0x1B8 here. Very close to 370 - 256 = 114 11 is B in hex so 0x1B4, though I can't account for the extra 4. The low value is harder to explain via math errors but if my bad-math theory above is correct, I have no confidence in his ability to add and subtract correctly either).
 
 ### Purchasing ATtiny167 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core.

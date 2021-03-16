@@ -5,11 +5,12 @@
 
 Specification         |    ATtiny88    |       ATtiny88 |    ATtiny88    |      ATtiny48  |       ATtiny48 |
 ----------------------|----------------|----------------|----------------|----------------|----------------|
-.                     |  No Bootloader |       Optiboot |  Micronucleus  |  No Bootloader |       Optiboot |
+Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |
 Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |
 Flash available user  |     8192 bytes |     8192 bytes |     6550 bytes |     4096 bytes |     3456 bytes |
-RAM                   |      512 bytes |      512 bytes |      512 bytes |       ATtiny48 |       ATtiny48 |
-EEPROM                |       64 bytes |       64 bytes |       64 bytes |       ATtiny48 |       ATtiny48 |
+RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
+EEPROM                |       64 bytes |       64 bytes |       64 bytes |       64 bytes |       64 bytes |
+GPIO Pins             |     26 + RESET |     26 + RESET |     25 + RESET |     26 + RESET |     26 + RESET |
 ADC Channels          |   8 (6 in DIP) |   8 (6 in DIP) |              8 |   8 (6 in DIP) |   8 (6 in DIP) |
 PWM Channels          |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |
 Interfaces            |       SPI, I2C |       SPI, I2C | vUSB, SPI, I2C |       SPI, I2C |       SPI, I2C |
@@ -18,12 +19,14 @@ Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8
 Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |    8, 12, 12.8 |    8, 12, 12.8 |
 External Crystal      |  Not supported |  Not supported |  Not supported |  Not supported |  Not supported |
 Internal Clock        |   All Standard | 16,12,10,8,4,1 | **16**,8,4,2,1 |   All Standard | 16,12,10,8,4,1 |
-USB only available at **BOLD** clock.
+Default Pin Mapping   |       Standard |       Standard |        MH-Tiny |       Standard |       Standard |
+USB only available at **BOLD** clock. [Notes on this table](SpecificationConventions.md).
+
 
 The ATtiny x8-family is intended as a low cost option compatible with the popular ATmega x8 series. As such, they have a nearly identical pinout (with a couple of extra GPIO pins in the TQFP version). Although these have the full hardware I2C and SPI peripherals, they lack both a hardware serial port and the option to use a crystal as a clock source. A Micronucleus board is available with a 16 MHz external CLOCK under the name "MH Tiny". They use a pin numbering scheme that differs significantly from the standard one; a pin mapping is provided which matches the markings on the board.
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer. This core includes a version of ArduinoAsISP with support for two additional features
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny88/48, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 88/48, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
@@ -32,22 +35,29 @@ This core includes an Optiboot bootloader for the ATtiny88/48, operating using s
 The Micronucleus bootloader for these parts uses a 16 MHz external clock source. Boards are commercially available (and cheap) under the name MH-Tiny (also MH-ET and several other names). USB is on pins 1 and 2 (`PIN_PD1` and `PIN_PD2`, and the LED is on pin 0; there are slight differences in the numbering of pins. Additionally, the  As of 1.4.1, the new entry mode options detailed in [Using Micronucleus](UsingMicronucleus.md) are available for the Tiny88 (MH-ET). Be aware that there are many bootloaders circulating, including the ones shipped with 1.4.0, which do not actually work on the MH-ET boards; if you have uploaded one of those, you can restore functionality by bootloading using an ISP programmer (provided you hadn't previously disabled reset, of course).
 
 ### Alternate pinout options
-The MH Tiny boards have pins labeled with a different pin mapping. Pins up to 13 (all of PORTD and first 6 pins of PORTB) are the same, PB6 is not available because it is the clock input, and from there on out, order is different as well. A Tools -> Pin Mapping option is available for both pin mappings, regardless of which bootloader, if any is in use. This is selected from the Tools -> Pin Mapping submenu (defaulting to the "standard" pinmapping except for the USB board. Be sure you have read our [Pin Mapping Guide](PinMapping.md)
+The MH Tiny boards have pins labeled with a different pin mapping. Pins up to 13 (all of PORTD and first 6 pins of PORTB) are the same, PB6 is not available because it is the clock input, and from there on out, order is different as well. The pinout can be selected from the Tools -> Pin Mapping submenu, regardless of which bootloader, if any, is in use. This way if you are (for example) using the MH-Tiny hardware, but programming it via ISP (for example) you can choose to use the pin mapping that matches the numbers printed on the board. The standard pin mapping is the default if not using Micronucleus bootloader; if using that, we of course default to the MH-Tiny pin mapping. Be sure you have read our [Pin Mapping Guide](PinMapping.md)
+
+
+Pin Mapping  |  Standard x8   |     MH-Tiny   |
+-------------|--------------- |---------------|
+LED_BUILTIN  |  PB5 (pin 13)  | PD0 (pin 0)   |
+Pins Missing |                | PB6 (ext clk) |
+An = ADC chan|           Yes  |           Yes |
 
 ## Clock options
-The ATtiny x8-family of microcontrollers, in the interest of lowering costs, does not provide support for using an external crystal as a clock source, only the internal oscillator (at ~8 or ~1 MHz) or an external *clock* source. The internal oscillator is only guaranteed to be within 10% of the targeted speed across the operating temperature and voltage range. At normal operating conditions (3.3-5.0V, room temperature) they are generally quite a bit closer, usually close enough for Serial (which is software serial here), as noted below.
+The ATtiny x8-family of microcontrollers, in the interest of lowering costs, does not provide support for using an external crystal as a clock source, only the internal oscillator (at ~8 or ~1 MHz) or an external *clock* source. The internal oscillator is only guaranteed to be within 10% of the targeted speed across the operating temperature and voltage range. At normal operating conditions (3.3-5.0V, room temperature) they are generally quite a bit closer, usually close enough for Serial (which is software serial here, as noted below) to work. .
 
 ### Using external CLOCK on 48/88
-These parts do not support using an external crystal. External clock, however, is supported - this requires an external clock generator (not just a crystal) connected to PB6 (CLKI). These usually come in the shiny rectangular metal package (shielding, same as on crystals), only instead of 2 terminals, or 4 terminals of which 2 are unconnected, these are almost universally use all 4 pins - Vcc, Gnd, CLKOUT, and Enable; Enable is generally active-high, and internally weakly pulled up. Be aware that if you "burn bootloader" with an external clock connected, but you have actually connected a crystal, (they are virtually impossible to tell apart visually), the chip cannot be programmed until you give it a clock signal. This means removing what you hoped was an external clock, generating some high-speed PWM on another Arduino device, and using that as a clock source  while reprogramming it, Generally you do this by using a modified ArduinoISP sketch.
+These parts do not support using an external crystal (cost savings - with 28 I/O pins, hardware I2C and SPI, and a headline price like this, some things had to give). External clock, however, is supported - this requires an external clock generator (not just a crystal) connected to PB6 (CLKI). These usually come in the shiny rectangular metal package (shielding, same as on crystals), only instead of 2 terminals, or 4 terminals of which 2 are unconnected, these are almost universally use all 4 pins - Vcc, Gnd, CLKOUT, and Enable; Enable is generally active-high, and internally weakly pulled up. Be aware that if you "burn bootloader" with an external clock selected, but you have actually connected a crystal, (they are virtually impossible to tell apart visually, except by positively identifying the part and hunting down the specs), the chip cannot be programmed until you give it a clock signal (you will get a signature mismatch, and if you enable verbose uploads, which you should do anyway, it will report the signature as 0x000000). This means removing what you hoped was an external clock, and connecting a clock signal to PB6 (a 2-8 MHz square wave would be appropriate; The included enhanced ArduinoAsISP++ sketch outputs such a signal on PB2 (digital pin 10) while burning the bootloader.
 
 ### Micronucleus clock options
-Micronucleus is supported with an external 16 MHz external clock only. It may optionally be prescaled to 8, 4, or 1 MHz for low power applications; this will this is generated by prescaling the 16 MHz clock after the application starts, at these lower clock speeds, VUSB functionality is not supported. It is also less power efficient, since the oscillator needs to keep running. For the same reason, the power savings possible through sleep are limited.
+Micronucleus is supported with an external 16 MHz external clock only. It may optionally be prescaled to 8, 4, or 1 MHz for low power applications; this is generated by prescaling the 16 MHz clock after the application starts, at these lower clock speeds, VUSB functionality is not supported. It is also less power efficient since the oscillator needs to keep running. For the same reason, the power savings possible through sleep are very limited (much of the savings from power down sleep are possible because the oscillator is turned off. Well, that's not happening here!.
 
 ### I2C Support
 There is full Hardware I2C! It is provided by Wire.h
 
 ### SPI Support
-There is full Hardware SPI support using SPI.h
+There is full Hardware SPI! It is provided by SPI.h
 
 ### UART (Serial) Support
 There is no hardware UART. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART).
@@ -60,13 +70,21 @@ ACSR &=~(1<<ACIE);
 ACSR |=~(1<<ACD);
 ```
 
+## ADC Features
+The ATtiny88 ADC is about as boring as they come. It's a standard 8-channel (6 on DIP or 28-pin QFN packages), one reference, temp sensor. Single-ended only. Basically what any x8 atmega has too, which is also incredibly uninspiring.
+
 ### ADC Reference options
 * DEFAULT: Vcc
-* INTERNAL1V1: Internal 1.1v reference
-* INTERNAL: synonym for INTERNAL1V1
+* INTERNAL1V1: Internal 1.1v reference (connected to AREF pin????)
+* INTERNAL (compatibility, deprecated - parts have 1-5 internal references - this could be many voltages; people should really specify what the voltage they want is) for INTERNAL1V1
+
+### Internal Sources
+* ADC_INTERNAL1V1
+* ACD_GROUND
+* ADC_TEMPERATURE
 
 ### Purchasing ATtiny88 Boards
-I (Spence Konde / Dr. Azzy) have mostly given up trying to sell breaksouts for unpopular parts like the tiny88. I expect most users will be working with the DIP parts, or using the MH-Tiny USB boards (which can have the USB functionality removed with an ISP programmer, and my design was a very earl
+I (Spence Konde / Dr. Azzy) have mostly given up trying to sell breaksouts for unpopular parts like the tiny88. I expect most users will be working with the DIP parts, or using the MH-Tiny USB boards (which can have the USB functionality removed with an ISP programmer) or most likely of all, using parts that are more interesting than these. The only design I had to sell was one of my very early ones, and not a particularly compelling product on it's merits.
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x8-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.

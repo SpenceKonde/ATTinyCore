@@ -15,35 +15,36 @@ Interfaces | USI, high speed timer
 Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal or clock* up to 20 MHz
 Packages | DIP-20, SOIC-20, MLF-32
 
-The 261/461/861 and 261a/461a/861a are functionally identical; the latter replaced the former in 2009, and uses slightly less power, and actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
+The 261/461/861 and 261a/461a/861a are functionally very similar; the latter replaced the former in 2009, and uses slightly less power. Actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
 
-* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
-
-The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control. To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32
+The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control.  To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. For reasons that were never clear to me, in addition to the high speed timer, it also got a very fancy ADC, second only to the one in the ATtiny841 in the number of channels and programmable gain capabilities. Everything other than Timer1 and the ADC is sub-par, and frankly, most of us would be happier with a normal timer 0 and timer 1 too,  It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of an ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny861/461, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 861/461, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+
+### Micronucleus Bootloader
+As of 2.0.0, a Micronucleus bootloader is included as well! With a PLL begging to be nudged up half a Mhz for the the 16.5 MHz option, it has finally fulfilled it's destiny. Build it from the DIP version,
 
 ### PLL Clock
 The ATtiny x61-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16 MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
 
 ### Timer1 Clock Source option
-The ATtiny x61-family parts are equipped with a special high speed 8/10-bit timer, Timer1 (this is very different from the traditional 16-bit Timer1 used on the atmega328p and almost every other chip in the 8-bit AVR product line). This timer can be clocked off the system clock, OR from the PLL at 64 MHz or 32 MHz. This will impact the frequency of PWM output on Pins 4 and 6.
+The ATtiny x61-family parts are equipped with a special high speed 8/10-bit timer, Timer1 (this is very different from the traditional 16-bit Timer1 used on the atmega328p and almost every other chip in the 8-bit AVR product line). This timer can be clocked off the system clock, OR from the PLL at 64 MHz or 32 MHz. This will impact the frequency of all PWM output.
 
 ### Tone Support
 Tone() uses Timer1. For best results, use pin 6 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range. If Timer1 is set to use the PLL clock (provided this is done using the menu option, not manually), Tone will figure this out and output the requested frequency. With Timer1 running off the PLL @ 64 MHz, tone() should be able to output a 32 MHz signal on pin 6! If using SoftwareSerial or the builtin software serial "Serial", tone() will only work on pin 6 while the software serial is actively transmitting or receiving. As only Timer1 is capable of hardware PWM on the x61 series, tone() will break all PWM functionality.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. This was definitely broken prior to 1.5.0. It's current status has not been verified.
 
 ### SPI Support
 There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common).
 
 ### UART (Serial) Support
-There is no hardware UART. If running off the internal oscillator, you may need to calibrate it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART). While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md)
+There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART). While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md)
 
 To disable the RX channel (to use only TX), the following commands should be used after calling Serial.begin(). No special action is needed to disable the TX line if only RX is needed.
 ```
@@ -76,20 +77,10 @@ There are 24 different differential pairs available. Seven of those are measurin
 
 | Positive   | Negative   |   Gain  | Channel| Name 1x/20x mode | Name 8x/32x mode |
 |------------|------------|---------|--------|------------------|------------------|
-| ADC0 (PA0) | ADC1 (PA1) |     20x |   0x0B | DIFF_A0_A1_20XA  |                  |
-| ADC0 (PA0) | ADC1 (PA1) |      1x |   0x0C | DIFF_A0_A1_1XA   |                  |
-| ADC1 (PA1) | ADC1 (PA1) |     20x |   0x0D | DIFF_A1_A1_20XA  |                  |
-| ADC2 (PA2) | ADC1 (PA1) |     20x |   0x0E | DIFF_A2_A1_20XA  |                  |
-| ADC2 (PA2) | ADC1 (PA1) |      1x |   0x0F | DIFF_A2_A1_1XA   |                  |
 | ADC2 (PA2) | ADC3 (PA4) |      1x |   0x10 | DIFF_A2_A3_1X    |                  |
 | ADC3 (PA4) | ADC3 (PA4) |     20x |   0x11 | DIFF_A3_A3_20X   |                  |
 | ADC4 (PA5) | ADC3 (PA4) |     20x |   0x12 | DIFF_A4_A3_20X   |                  |
 | ADC4 (PA5) | ADC3 (PA4) |      1x |   0x13 | DIFF_A4_A3_1X    |                  |
-| ADC4 (PA5) | ADC5 (PA6) |     20x |   0x14 | DIFF_A4_A5_20XA  |                  |
-| ADC4 (PA5) | ADC5 (PA6) |      1x |   0x15 | DIFF_A4_A5_1XA   |                  |
-| ADC5 (PA6) | ADC5 (PA6) |     20x |   0x16 | DIFF_A5_A5_20XA  |                  |
-| ADC6 (PA7) | ADC5 (PA6) |     20x |   0x17 | DIFF_A6_A5_20XA  |                  |
-| ADC6 (PA7) | ADC5 (PA6) |      1x |   0x18 | DIFF_A6_A5_1XA   |                  |
 | ADC8 (PB5) | ADC9 (PB6) |     20x |   0x19 | DIFF_A8_A9_20X   |                  |
 | ADC8 (PB5) | ADC9 (PB6) |      1x |   0x1A | DIFF_A8_A9_1X    |                  |
 | ADC9 (PB6) | ADC9 (PB6) |     20x |   0x1B | DIFF_A9_A9_20X   |                  |
@@ -126,8 +117,18 @@ There are 24 different differential pairs available. Seven of those are measurin
 | ADC4 (PA5) | ADC4 (PA5) | 20x/32x |   0x3C | DIFF_A4_A4_20X   | DIFF_A4_A4_32X   |
 | ADC5 (PA6) | ADC5 (PA6) | 20x/32x |   0x3D | DIFF_A5_A5_20X   | DIFF_A5_A5_32X   |
 | ADC6 (PA7) | ADC6 (PA7) | 20x/32x |   0x3E | DIFF_A6_A6_20X   | DIFF_A6_A6_32X   |
+| ADC0 (PA0) | ADC1 (PA1) |     20x |   0x0B | DIFF_A0_A1_20XA  |                  |
+| ADC0 (PA0) | ADC1 (PA1) |      1x |   0x0C | DIFF_A0_A1_1XA   |                  |
+| ADC1 (PA1) | ADC1 (PA1) |     20x |   0x0D | DIFF_A1_A1_20XA  |                  |
+| ADC2 (PA2) | ADC1 (PA1) |     20x |   0x0E | DIFF_A2_A1_20XA  |                  |
+| ADC2 (PA2) | ADC1 (PA1) |      1x |   0x0F | DIFF_A2_A1_1XA   |                  |
+| ADC4 (PA5) | ADC5 (PA6) |     20x |   0x14 | DIFF_A4_A5_20XA  |                  |
+| ADC4 (PA5) | ADC5 (PA6) |      1x |   0x15 | DIFF_A4_A5_1XA   |                  |
+| ADC5 (PA6) | ADC5 (PA6) |     20x |   0x16 | DIFF_A5_A5_20XA  |                  |
+| ADC6 (PA7) | ADC5 (PA6) |     20x |   0x17 | DIFF_A6_A5_20XA  |                  |
+| ADC6 (PA7) | ADC5 (PA6) |      1x |   0x18 | DIFF_A6_A5_1XA   |                  |
 
-You may notice a pattern there - there are 4 sets of 20x/1x channels where the negative is ADCn, positive is ADC(n-1) at 1x and 20x, ADCn at 20x, and ADC(n+1) at 1x and 20x (ADC2, ADC3 at 20x is missing - I suspect because they were out of code points within the mux registers); these do not support the GSEL for 8x or 32x gain. Then two of those "trios" of pins are available in both directions with GSEL: ADC0/ADC1/ADC2 and ADC4/ADC5/ADC6, and finally, ADC0-ADC0 is available with all gain options, and each of the other channels involved in the "second half" of the differential ADC are supported with 20x/32x gain. Thus pairings and gain available on the first half involving ADC1 and ADC5 are also available in the "second half", only there they are reversible, have all the gain options. It is enough to make one wonder what the intent of the design was. Do they use the same pathways in the chip, or do you get different offsets when you, say measure ADC1 against itself using channel 0x0D (DIFF_A1_A1_20XA), vs channel 0x3A w/GSEL=0 (DIFF_A1_A1_20X)?
+Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny26 - the older version of these parts, with the same ADMUX values!. these do not support the GSEL for 8x or 32x gain. Then two of those "trios" of pins are available in both directions with GSEL: ADC0/ADC1/ADC2 and ADC4/ADC5/ADC6, and finally, ADC0-ADC0 is available with all gain options, and each of the other channels involved in the "second half" of the differential ADC are supported with 20x/32x gain. Thus pairings and gain available on the first half involving ADC1 and ADC5 are also available in the "second half", only there they are reversible, have all the gain options. It is enough to make one wonder what the intent of the design was. Do they use the same pathways in the chip, or do you get different offsets when you, say measure ADC1 against itself using channel 0x0D (DIFF_A1_A1_20XA), vs channel 0x3A w/GSEL=0 (DIFF_A1_A1_20X)?
 
 ### Temperature Measurement
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closeer to the single point calibration temperature the measured temperature is, the more accurate the calibration. ) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP). We suggest storing this temperature calibration value at (`E2END`-3:`E2END`-2) in the EEPROM (the final two bytes of the EEPROM should be reserved for oscilator tuning values in non-bootloader configurations). When a bootloader is in use, this value can instead be stored near the end of the flash, at `FLASHEND - 5` (and hence also `FLASHEND - 4`) (the final 2 bytes hold the bootloader version, and the two before them hold tuned `OSCCAL` values at 8 MHz and 8.25 MHz (8.25 x 2 gives 16.5 MHz when running off internal PLL for the 16.5 MHz VUSB option).

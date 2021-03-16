@@ -99,7 +99,7 @@ PHDE=(1<<PHDEC);
 This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts. The PWM outputs of the timers can be remapped to this port as well, making it of obvious utility for driving LEDs and similar. This also means that, if you are attempting to generate an analog voltage with a PWM pin and an RC filter, your result may be lower than expected, as the pin drivers are not symmetric.
 
 #### Separate pullup-enable register
-Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Like the ATtiny1634, and unlike the ATtiny841, all of these pullup registers are located in the low IO space and sensibly relative to eachother and to the other PORT-related registers.
+Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Like the ATtiny1634, and unlike the ATtiny841, all of these pullup registers are located in the low IO space and sensibly relative to each other and to the other PORT-related registers.
 
 ### Purchasing ATtiny828 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your purchases support the continued development of this core.
