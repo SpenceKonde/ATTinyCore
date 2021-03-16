@@ -33,10 +33,12 @@ This core supports the following processors - essentially every "classic" tinyAV
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
 ### Non-supported parts
-* [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great parts and work well with Arduino.
+* [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great low-pin-count parts and work well with Arduino.
 * [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude
 * ATtiny26 are not supported by any Arduino core. They are the obsolete predecessor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such old and uninspiring parts.
 * ATtiny 4/5/10/11 and any other "AVRrc" (reduced core) parts. [Try this core](https://github.com/technoblogy/attiny10core)
+* Anything with "mega" in the name - you want [one of MCUDude's cores](https://github.com/MCUdude/)
+* AVR Dx-series (AVR128DA64, etc) - [the crown jewel of the AVR product line](https://github.com/SpenceKonde/), supported by my DxCore.
 
 ## Quick Gotcha list - having trouble, read these!
 
@@ -45,6 +47,8 @@ If you want to use Micronucleus (VUSB) boards on Windows, you must manually inst
 
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
+**Weird upload errors when switching between two cores that use updi**
+Are you getting weird errors, like {bootloader.CODESIZE} isn't a valid value for a fuse? Tools -> Programmer and select your programmer. If you change from another UPDI part,
 
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
@@ -87,7 +91,7 @@ The Optiboot bootloader is included for the ATtiny441, 841, 44, 84, 45, 85, 461,
 The ATtiny441/841, ATtiny1634, ATtiny44/84, ATtiny45/85, ATtiny461/861, ATtiny48/88 and the ATtiny x7-family do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, another vector is used to point to point to the start of the applications - this interrupt cannot be used by the application - under the hood, the bootloader rewrites the reset and "save" interrupt vectors, pointing the save vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse). Up until version 1.2.0 of this core, the WDT vector was used for this purpose. In 1.2.0 and later, the EE_RDY vector (which is not used by anything in Arduino-land - the EEPROM library uses a busy-wait) is used instead. **If the bootloader was burned with 1.1.5 or earlier of this core, the WDT cannot be used to generate an interrupt** (WDT as reset source is fine) - re-burning bootloader with 1.2.0 or later will resolve this.
 
 #### A warning about Virtual Boot
-Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. See #398
+Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. A solution is possible, but needs a considerable amount of development effort.
 
 See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
 
@@ -116,16 +120,17 @@ Internal:
 * 8 MHz
 * 1 MHz
 * 16 MHz (PLL clock, x5, x61 only)
-* 16 MHz ‡ (aggressively configured 441/841 only)
+* 16 MHz (aggressively configured 441/841 only, including for vUSB support)
 * 4 MHz*** (except on x313, starts up at 1MHz and immediately switches to 4MHz before setup() is run)
-* 16.5MHz † ! (PLL clock, tweaked, x5, x61 Micronucleus only, for USB support)
-* 12.8MHz † ‡ (Internal, tweaked hardcore, Micronucleus only, for USB support)
+* 16.5MHz † ! (PLL clock, tuned, x5, x61 only, for vUSB support)
+* 12 MHz † ‡ (Internal, tuned aggressively, for vUSB support)
+* 12.8MHz † ‡ (Internal, tuned aggressively, for vUSB support)
 * 0.5 MHz** ‼ (x313 only)
-* 512 kHz** ‼ (ULP - x41 only)
-* 256 kHz** ‼ (ULP - x41 only)
-* 128 kHz** ‼ (watchdog or ULP, all except 1643, 828)
-* 64 kHz** ‼ (ULP - x41 only)
-* 32 kHz** ‼ (ULP - 1634, 828, x41 only)
+* 512 kHz** ‼ ‡ (ULP - x41 only)
+* 256 kHz** ‼ ‡ (ULP - x41 only)
+* 128 kHz** ‼ ‡ (watchdog or ULP, all except 1643, 828)
+* 64 kHz** ‼ ‡ (ULP - x41 only)
+* 32 kHz** ‼ ‡ (ULP - 1634, 828, x41 only)
 
 External crystal (all except 828, 43 and x8-family):
 * 20 MHz !
@@ -149,9 +154,9 @@ All available clock options for the selected processor will be shown in the Tool
 
 `***` The 4MHz internal option is useful if you are running near the minimum voltage - the lowest voltage for most of these parts is 1.8v, and at that voltage, they are only rated for 4MHz maximum. This starts up at 1 MHz and then switches to 4 MHz. Hence, bootloader performance is very slow, as it doesn't (yet) do this itself.
 
-`†` These speeds support USB when used with the internal clock. Available on Micronucleus boards only.
+`†` These speeds support vUSB - 12 MHz and 16 MHz modes may not work reliably with aggressively tuned internal oscillators. 16.5 and 12.8 are much better - but 12.8 requires a very large amount of flash. Note that 64/12.8 is an integer, so this has inherrently better timekeeping capability than other odd speeds, though even the weird speeds do now work correctly. .
 
-`‡` Aggressively tuned internal oscillators have to be slowed down when writing to EEPROM, and then sped back up. We attempt to correct millis timekeeping for this, but you may still see timing glitches. Please report any hangs or other bad behavior you observe with these, as this is a very new feature, and more aggressive measures to prevent CPU glitches may be required.
+`‡` The ULP is the "Ultra Low Power" oscillator that replaced the 128 kHz WDT oscillator on the 441/841/828/1634. Like the WDT oscillator, it is only calibrated very roughly - the spec is +/- 30% (over the whole operating range - so in practice it's usually not quite that bad). On the 1634 and 828, it always runs at 32 KHz, but on the 841, it can apparently clock the system up to 16 times that rate. Though there is a tuning register, and a nice responsive looking tuning curve in the typical properties section of the datasheet, look more closely - there are only 4 points marked on the horizontal axis: Sure enough in the register, there are only 2 bits of tuning for it.
 
 `!` Micros takes longer to return on these clocks (64/clock cycles per microsecond is not an integer).
 
@@ -163,20 +168,8 @@ This differs from the behavior of official Arduino core - the "stock" micros() e
 
 Thanks to @cburstedde for his work this his work towards making this suck less in the 1.5.0 release!
 
-#### Using external CLOCK on 48, 88, and 828 (new in 1.3.3)
-These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE only for parts which don't support an external crystal. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6~5.5v (ie, the entire operating range of these parts!). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%, though some work from wider ranges). Through-hole units are available, but expensive, and all have the restrictive supply voltage requirements. If selecting your own oscillator, you want an "XO" type.
-
 #### Using external CLOCK (instead of crystal) on other parts
-The use of an external clock - that is, a single wire with an appropriate clock signal is supplied to the XTAL1 pin from an external source, is possible using this core. This is an advanced feature, and is not supported directly through the IDE (except as noted above) to reduce the risk of people confusing it with external crystal and bricking their chips (if external clock is set as clock source when actually using external crystal, you must supply a clock signal on XTAL1 to program the chip again, including to set it to use a crystal again). To use an external clock:
-1. Connect the chip, and ensure that the external clock source is present.
-2. Select the desired clock speed with the external crystal option.
-3. From File -> Preferences, ensure that "Show verbose output" is enabled for "uploading".
-4. Connect your ISP programmer.
-6. Choose "Burn Bootloader". This will set all the selected fuses, only it will be set to use a crystal (this is fine, the external clock will substitute this). However, at this point the XTAL2 pin will not be usable as GPIO.
-7. Scroll up in the bottom pane of the IDE to the top of the upload output. The first line will be the avrdude command used to burn the bootloader. Copy this into a text editor. If the command includes -e, remove -e and everything after it. If it just points to the bootloader hex file, remove "-Uflash:w:(path to bootloader .hex file):i" from the end of the command.
-8. Add -Ulfuse:w:0xF0:m to the end of the command.
-9. Copy/paste this command into a command window, and hit return. Your chip should now be running on the external clock, and the XTAL2 pin (but not the XTAL1 pin) will be available for use normally.
-10. When compiling for and uploading to your now-externally-clocked part, use the external crystal option corresponding to the clock speed you are using.
+All of these parts support using and external clock as clock source. It is the most basic of clock sources - whereas a crystal requires an inverting amplifier, typically one of the more demanding parts of the microcontroller, the external clock requires almost nothhing from the chip being clocked that way. a
 
 #### Determining clock speed and source from within the sketch
 The clock speed is made available via the F_CPU #define - you can test this using #if macro
@@ -280,8 +273,14 @@ The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calib
 A tuning sketch is planned for a future version of this core. Progress on this has been made - slowly and fitfully. The current plan is for Optiboot bootloader to be optionally burnable with a "tuning" sketch - this will write the calibration value to the space between the end of the bootloader and the end of flash, and the bootloader will load this value if it is set.  ( #139 ) Micronucleus using internal oscillator already does this using the USB clock as a timebase, and loads it before the sketch
 
 ### ADC Support
+ATTinyCore 2.0.0 introduces a major enhancement to the handling of analog and digital pin numbers: Now, in all the #defined constants that refer to an analog channel, the high bit is set. (ie, ADC channel 4, A4, is defined by a line `#define A4 (0x80 | 4));` (actually, we also define ADC_CH() macro as shorthand for the bitwise or with 0x80. Ths advantage of this that it makes it more obvious why we're doing this to the number; if you see (0x80 | 4) you'd be like "wtf is this for? what does 0x80 have to do with anything?", whereas if you hadn't read this, and you saw ADC_CH(4) - you might not know exactly what's going on, but just from the name you'd know it was something to do with an analog reading, maybe of channel 4). Because all the analog channel number defines are all distinct from things that aren't analog channel numbers, the core's analogRead and digitalRead functions can tell the two apart; digitalRead(A3) will now look up what digital pin analog channel 3 is on, and use digitalRead on that, while analogRead(7) will now go look up what analog channel is on digital pin 7, and use analogRead on that.
 
-All of the supported parts except for the x313-family have an Analog to Digital converter on chip. **Single-ended ADC inputs can be read using the ADC channel number or the Ax constant (they can NOT be read using the digital pin number)**. In addition to the single-ended input channels marked on the pinout diagrams, many also support differential ADC input channels. To use these, simply call analogRead() with the appropriate ADC channel number. To get the ADC channel number, refer to the datasheet - it is listed in the Register Description section of the chapter on the ADC, under the ADMUX register.''
+#### Digispark Pro warning
+On the ATtiny167 Digispark Pro pin mapping, "An" does not mean "Analog Chennel N", it means "The analog channel on the pin marked An on the Digispark Pro pinout chart" - which is the same as digital pin n. Use ADC_CH(n) to choose analog inputs by channel number. This inconsistency sucks - but analogRead(A3) reading the pin marked A9 on the pinout chart that everyone uses for the Digispark Pro isn't great behavior either...
+
+#### Differential ADC support
+ATTinyCore 2.0.0 includes proper support for using the differential ADC - which on many parts is as good as or better than the differential ADC found on ATmega parts of the same era (and in fact, in some use cases, is better than the one on the new AVR Dx-series parts!). Differential ADCs of varying sophistication are available on the following families of parts: x5, x7, x4, x61, x41,
+
 
 ### Timers and PWM
 All of the supported parts have hardware PWM (timer with output compare functionality) on at least one pin. See the part-specific documentation pages for a chart showing which pins have PWM. In addition to PWM, the on-chip timers are also used for millis() (and other timekeeping functions) and tone() - as well as by many libraries to achieve other functionality. Typically, a timer can only be used for one purpose at a time.

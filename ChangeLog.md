@@ -1,5 +1,37 @@
 # This document lists significant changes and bugfixes, including those not in yet in a release.
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
+### planned 2.0.0
+* Refurbish and standardize all variant files.
+  * Add defines for all differential channels and gain options
+  * Remove legacy PIN_xn defines from parts that had them
+  * Ensure all parts have standard PIN_An and PIN_Pxn defines
+  * Ensure consistent defines for peripheral pins.
+  * Convert all PROGMEM arrays that contain PORT/PIN/etc registers to contain uint8_t's (all applicable registers are at address < 256) (this was always done on "modern" core).
+  * Add defines for the pins used for Serial in a consistent manner.
+  * Format variant files consistently.
+  * `An` (analog channel) defines and differential channels have high bit set, so the core can differentiate them from digital pin numbers.
+  * All reference defines get the bits shifted into position with the ADC_REF() macro, so the reference can be applied with less code at runtime. This saves time and flash (around 30 clocks, 24 bytes)
+  * Create variant files for 841, 828, 1634, including new pin mapping option for 1634 which is better than that awful old one
+* All functions that take a pin number or analog channel will test the high bit. They will interconvert as needed.
+* Add support for tuning based on values stored in flash (if bootloader in use - at end just before version number), or at end of EEPROM (if no bootloader - must set EESAVE for this to work)
+* The second core is no longer used; it is removed.
+* Add support for ADC noise reduction mode on parts that have that functionality.
+* Add support for analogRead() with differential channels and available gain options.
+* analogReference() immediately sets the reference bits (necessary if using XREF option for x7 parts, probably helps whenever cap is used with first few readings, otherwise harmless) *
+* Compile-time error checking for passing constants to analogRead() that aren't analog channels or digital pins with ACD input, calling analogRead() on x313 (with no ADC).
+* Runtime error checking invalid ADC calls *
+* PWM with 841/441/828 will leave COM bits untouched, and just turn the TOCCMOE bits on and off, so it won't stomp on user code that changes the timer mapping or configuration. (#471)
+* Code commenting has been edited for accuracy and improved. In the past, we were always trying to "guess" at what future parts might have for registers, and testing for registers rather than part identities. But this is now a core for a static set of parts (Well, except maybe the ATtiny26, which someone is paying me to add). Though we always should have done this, there's now no excuse for not putting comments indicating what parts these are trying to select for (at least where the #ifdef'ed code is dealing with some idiosyncracy of specific parts. Which was like, most of the time this was done). This used to make wiring.c in particular very hard to read "Okay, if TCCR1E exists, they're doing some really crazy shit. Which parts does this apply to? I'm here to change something on the ATtiny x5 parts - which pieces of this code should I be looking at?"
+* Todo: Further platform.txt enhancements.
+* Todo: Adapt digitalI/O functions to use PUE registers if appropriate.
+* Todo: PWM on third channel on x61
+* Todo: Micronucleus!
+* Todo: Boards.txt refactor.
+* Todo: Fix the optiboot bricking bug
+* Todo: Attend to platform.txt and boards.txt UI constistancy issues from email
+* Todo: Adjust optiboot upload speeds, they were not chosen well previously (sorry, this does mean burn bootloader may be required - that's why it's 2.0.0 not 1.x.x; they will work better, and in some cases, upload more quickly too - particularly where there is no hardware USART. I swear sometimes it looks like I did things just to punish people not using parts with a hardware serial port...
+Note: Added features marked with * are planned to be optionally disablable to save flash, though they are not particularly flash-hungry. When you only have 2k, everything matters....
+
 
 ### 1.5.0
 * Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
