@@ -1,5 +1,5 @@
 ### ATtiny 441/841
-![x41 Pin Mapping]( "Arduino Pin MaATtiny_x5.pngpping for ATtiny x41")
+![x41 Pin Mapping](ATtiny_x41.png "Arduino Pin Mapping for ATtiny x41")
 
  Specifications |  .1
 ------------ | -------------
