@@ -16,7 +16,10 @@
   extern "C"{
 #endif
 
-#define ATTINY_CORE 1
+#ifndef ATTINYCORE
+  #define ATTINYCORE "2.x.x+ not Arduino IDE"
+#endif
+
 #ifndef _NOPNOP
   #define _NOPNOP() do { __asm__ volatile ("rjmp .+0"); } while (0)
 #endif
@@ -30,29 +33,11 @@
 #define INPUT_PULLUP 0x2
 
 
-#define PI 3.1415926535897932384626433832795
-#define HALF_PI 1.5707963267948966192313216916398
-#define TWO_PI 6.283185307179586476925286766559
-#define DEG_TO_RAD 0.017453292519943295769236907684886
+#define PI          3.1415926535897932384626433832795
+#define HALF_PI     1.5707963267948966192313216916398
+#define TWO_PI      6.283185307179586476925286766559
+#define DEG_TO_RAD  0.017453292519943295769236907684886
 #define RAD_TO_DEG 57.295779513082320876798154814105
-
-#define SERIAL  0x0
-#define DISPLAY 0x1
-
-#define LSBFIRST 0
-#define MSBFIRST 1
-
-#define CHANGE 1
-#define FALLING 2
-#define RISING 3
-
-#define ADC_ERROR_NO_ADC          -32768
-#define ADC_ERROR_DISABLED        -32767 /* ADC_ERROR_NO_ADC + 1 */
-#define ADC_ERROR_BUSY            -32766 /* ADC_ERROR_NO_ADC + 2 */
-#define ADC_ERROR_NOT_A_CHANNEL   -32765 /* ADC_ERROR_NO_ADC + 3 */
-#define ADC_ERROR_SINGLE_END_IPR  -32764 /* ADC_ERROR_NO_ADC + 4 */
-
-#define NOT_AN_INTERRUPT -1
 
 #define min(a,b)      ({ \
     typeof (a) _a = (a); \
@@ -87,6 +72,29 @@
 #ifndef round
   #define round(x)     ({ typeof (x) _x = (x);  _x >= 0 ? (long)x + 0.5 : (long)x - 0.5 ;})
 #endif
+
+#define SERIAL  0x0
+#define DISPLAY 0x1
+
+#define LSBFIRST  0
+#define MSBFIRST  1
+
+#define CHANGE    1
+#define FALLING   2
+#define RISING    3
+
+#define ADC_ERROR_NO_ADC          -32768
+#define ADC_ERROR_DISABLED        -32767 /* ADC_ERROR_NO_ADC + 1 */
+#define ADC_ERROR_BUSY            -32766 /* ADC_ERROR_NO_ADC + 2 */
+#define ADC_ERROR_NOT_A_CHANNEL   -32765 /* ADC_ERROR_NO_ADC + 3 */
+#define ADC_ERROR_SINGLE_END_IPR  -32764 /* ADC_ERROR_NO_ADC + 4 */
+
+#define NOT_AN_INTERRUPT -1
+
+#ifndef USING_BOOTLOADER
+  #define USING_BOOTLOADER 0
+#endif
+
 
 #if F_CPU < 1000000L
   //Prevent a divide by 0 is
@@ -137,8 +145,8 @@ int _analogRead(uint8_t pinNumber, bool use_noise_reduction);
 void analogReference(uint8_t mode);
 void analogWrite(uint8_t pinNumber, int16_t val);
 
-
 void setADCDiffMode(bool bipolar);
+void analogGain(uint8_t gain);
 
 unsigned long millis(void);
 unsigned long micros(void);
@@ -205,6 +213,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define NOT_A_PIN 255
 #define NOT_A_TIMER 255
 #define NOT_A_PORT 0
+#define NOT_A_CHANNEL 127
 
 #define PA 1
 #define PB 2

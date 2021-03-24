@@ -1,37 +1,17 @@
-/*
-  wiring.c - Part of ATTinyCore
-  github.com/SpenceKonde/ATTinyCore
-
-  Copyright (c) 2005-2006 David A. Mellis
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General
-  Public License along with this library; if not, write to the
-  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-  Boston, MA  02111-1307  USA
-
-  $Id: wiring.c 970 2010-05-25 20:16:15Z dmellis $
-
-  Modified 28-08-2009 for attiny84 R.Wiersma
-  Modified 14-10-2009 for attiny45 Saposoft
-  Modified 20-11-2010 - B.Cook - Rewritten to use the various Veneers.
-  Modified by some other folks in between for various iterations
-  of ATTinyCore
-  Extensively modified 2016-2021 as part of ATTinyCore by Spence Konde
-*/
+/* wiring.c - Timing and initialization
+ * Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
+ *   (c) 2005-2006 David A. Mellis as part of Arduino
+ *   Modified  28-08-2009 for attiny84 R.Wiersma
+ *   Modified  14-10-2009 for attiny45 Saposoft
+ *   Modified 17-05-2010 - B.Cook Rewritten to use the various Veneers.
+ *   Modified extensively 2016-2021 Spence Konde for ATTinyCore
+ *   Free Software - LGPL 2.1, please see LICENCE.md for details
+ *---------------------------------------------------------------------------*/
 
 #include "wiring_private.h"
 #include <avr/boot.h>
-#ifdef USING_BOOTLOADER
+
+#if USING_BOOTLOADER==1
   #include <avr/pgmspace.h>
 #else
   #include <avr/eeprom.h>

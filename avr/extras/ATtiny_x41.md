@@ -66,7 +66,7 @@ There is hardware SPI support. Use the normal SPI module.
 ### UART (Serial) Support
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
 
-To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead) - Note that this works on any hardware serial port from any AVR released prior to the new architecture, with *very* few exceptions. (off the top of my head, some very early ATmegas don't have the 0 in the register names for their only USART, and the ATtiny87/167, because it doesn't have a USART, it has a fancypants LIN thing that makes a killer UART (no S - it doesn't support the rarely used synchronous mode, nor can you turn it into an SPI module like you can a normal USART) if you turn off all the LIN stuff)
+To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead) - Note that this works on any hardware serial port from any classic AVR, with *very* few exceptions. (off the top of my head, some very early ATmegas don't have the 0 in the register names for their only USART, and the ATtiny87/167, because it doesn't have a USART, it has a fancypants LIN thing that makes a killer UART (no S - it doesn't support the rarely used synchronous mode, nor can you turn it into an SPI module like you can a normal USART) if you turn off all the LIN stuff)
 ```
 UCSR0B &=~(1<<TXEN0); // disable TX
 UCSR0B &=~(1<<RXEN0); // disable RX
@@ -75,52 +75,49 @@ UCSR0B &=~(1<<RXEN0); // disable RX
 ### Overclocking
 Experience has shown that the ATtiny x41-family, operating at 5v and room temperature, will typically function at 20 MHz without issue, although this is outside of the manufacturer's specification. The internal oscillator can also be cranked up to 16 MHz as noted above!
 
-### Weird I/O-pin related features
-There are a few strange features relating to the GPIO pins on the ATtiny x41 family which are found only in a small number of other parts released around the same time.
-
-#### Special "high sink" pins
-PA5 and PA7 have strongler sink capability than other pins - that is, the output voltage rises less when sinking a given amount of current.
-
-```
-PHDE=(1<<PHDEA0)|(1<<PHDEA1); //PHDEA0 controls PA5, PHDEA1 controls PA7.
-```
-
-This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts; as far as I can tell it is only found on on the x41 family and the closely related ATtiny828. Which is also the only classic AVR I know of that allows you to map the timer PWM outputs to different pins the way these parts do.
-
-**These high-sink pins have asymmetric drivers - thus PA5 and PA7 should not be used with PWM + RC filter to generate analog voltages** as the resulting voltage will be lower than expected.
-
-#### Separate pullup-enable register
-Like the ATtiny828 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Unlike those other parts, though, these are not IO-space (they're normal registers, unlike the PORTx/PINx/DDRx registers, which can be used with the CBI/SBI/OUT/IN instructions).
-
-#### Break-before-make
-The ATtiny x41 family also has a "Break-Before-Make" mode that can be enabled on a per-port basis with the `PORTCR` register, which will keep the pin tristated for 1 system clock cycle when a DDR bit is set from input to output. This is not used by the core, and I'm not sure what the intended use case was...
-
-```
-PORTCR=(1<<BBMA)|(1<<BBMB); //BBMA controls PORTA, BBMB controls PORTB.
-```
-
-
-
-
 ## ADC Features
 The ATtinyx41 family boasts one of the most advanced ADCs in the entire classic tinyAVR/megaAVR product line. All pins are connected to the ADC, analogRead() works on all pins. All pins can be used as one member of at least 3 differential pairs, and in differential mode, gain can be selected at 1x, 20x, or 100x. All pin combinations supported by the ATtiny84 are supported her
 
 ### Reference options
-Three internal reference voltages are provided, and they may be connected or not connected to the AREF pin for external bypassing as you prefer.
-* DEFAULT: Vcc
-* EXTERNAL: Voltage applied to AREF pin
-* INTERNAL1V1: Internal 1.1v reference, not connected to AREF
-* INTERNAL: synonym for INTERNAL1V1
-* INTERNAL1V1_AREF: Internal 1.1v reference, connected to AREF
-* INTERNAL2V2: Internal 2.2v reference, not connected to AREF
-* INTERNAL2V2_AREF: Internal 2.2v, connected to AREF
-* INTERNAL4V096: 4.096V, not connected to AREF
-* INTERNAL4V096_AREF: 4.096V, connected to AREF
+Three internal reference voltages are provided, and they may be connected to the AREF pin for external bypassing to improve reference voltage stability. The AREF pin, if used as AREF, should have a capacitor connected between AREF and Gnd, and should not be used for other purposes. This is likely unnecessary under typical operating conditions - it would become more important in differential ADC measurements with gain selected. You should ALWAYS use the names to refer to reference settings, never the numbers which you think they correspond to (in ATTinyCore 2.0.0, these aren't the numbers they were before: We now pre-calculate the result of the bitshift operations when the reference setting is used - hence it can be done at compile time instead of runtime, saving significant time and a small amount of flash. At 8 MHz, most parts were wasting about 4 uS per analogRead()
+
+| Reference Option   | Reference Voltage           | Uses AREF Pin        |
+|--------------------|-----------------------------|----------------------|
+| `DEFAULT`          | Vcc                         | No, pin available    |
+| `EXTERNAL`         | Voltage applied to AREF pin | Yes, ext. voltage    |
+| `INTERNAL1V1`      | Internal 1.1V reference     | No, pin available    |
+| `INTERNAL2V2`      | Internal 2.2V reference     | No, pin available    |
+| `INTERNAL4V096`    | Internal 4.096V reference   | No, pin available    |
+| `INTERNAL1V1_CAP`  | Internal 1.1V reference     | Yes, w/cap. on AREF  |
+| `INTERNAL2V2_CAP`  | Internal 2.2V reference     | Yes, w/cap. on AREF  |
+| `INTERNAL4V096_CAP`| Internal 4.096V reference   | Yes, w/cap. on AREF  |
+
+Accuracy of voltage reference spec'ed as +/- 3% over rated temperature and voltage range for 1.1V and 2.2V references, and +/- 4%for the 4.096V
+
+#### Synonyms for reference options
+Due to the long and storied history of this core, there are a large number of synonyms or aliases of these to ensure that old code can still be compiled.
+| Reference Name         | Alias of                | Remarks                        |
+|------------------------|-------------------------|--------------------------------|
+| `INTERNAL1V1_NO_CAP`   | `INTERNAL1V1`           | Clear, but verbose             |
+| `INTERNAL2V2_NO_CAP`   | `INTERNAL2V2`           | Clear, but verbose             |
+| `INTERNAL4V096_NO_CAP` | `INTERNAL4V096`         | Clear, but verbose             |
+| `INTERNAL4V1`          | `INTERNAL4V096`         | It's only accurate to +/- 4%   |
+| `INTERNAL`             | `INTERNAL1V1`           | deprecated                     |
+| `INTERNAL4V`           | `INTERNAL4V096`         | deprecated                     |
+| `INTERNAL1V1_AREF`     | `INTERNAL1V1_CAP`       | deprecated                     |
+| `INTERNAL2V2_AREF`     | `INTERNAL2V2_CAP`       | deprecated                     |
+| `INTERNAL4V096_AREF`   | `INTERNAL4V096_CAP`     | deprecated                     |
+| `INTERNAL1V1NOBP`      | `INTERNAL1V1`           | deprecated                     |
+| `INTERNAL2V2NOBP`      | `INTERNAL2V2`           | deprecated                     |
+| `INTERNAL4V096NOBP`    | `INTERNAL4V096`         | deprecated                     |
+
 
 ### Internal Sources
-* ADC_TEMPERATURE
-* ADC_INTERNAL1V1
-* ADC_GROUND
+| Voltage Source  | Description                            |
+|-----------------|----------------------------------------|
+| ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
+| ADC_GROUND      | Reads ground - for offset correction?  |
+| ADC_TEMPERATURE | Reads internal temperature sensor      |
 
 ### Differential ADC channels
 
@@ -175,19 +172,65 @@ Three internal reference voltages are provided, and they may be connected or not
 
 
 #### ADC Differential Pair Matrix
-An * indicates that an option was not available on the ATtiny x4-series
- | N\P |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 | 11 |
- |-----|----|----|----|----|----|----|----|----|----|----|----|----|
- |   0 |  X |  X |    |  X |    |    |    |    |    |    |    |    |
- |   1 |  X | *X |  X |  X |    |    |    |    |    |    |    |    |
- |   2 |    |  X | *X |  X |    |    |    |    |    |    |    |    |
- |   3 |  X |  X |  X |  X |  X |  X |  X |  X |    |    |    |    |
- |   4 |    |    |    |  X | *X |  X | *X | *X |    |    |    |    |
- |   5 |    |    |    |  X |  X | *X |  X | *X |    |    |    |    |
- |   6 |    |    |    |  X | *X |  X | *X |  X |    |    |    |    |
- |   7 |    |    |    |  X | *X | *X |  X |  X |    |    |    |    |
- |   8 |    |    |    |    |    |    |    |    | *X | *X | *X | *X |
- |   9 |    |    |    |    |    |    |    |    | *X | *X | *X | *X |
+**bold** indicates that an option was not available on the ATtiny x4-series
+|  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |   11  |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|   0   |   X   |   X   |       |   X   |       |       |       |       |       |       |       |       |
+|   1   |   X   | **X** |   X   |   X   |       |       |       |       |       |       |       |       |
+|   2   |       |   X   | **X** |   X   |       |       |       |       |       |       |       |       |
+|   3   |   X   |   X   |   X   |   X   |   X   |   X   |   X   |   X   |       |       |       |       |
+|   4   |       |       |       |   X   | **X** |   X   | **X** | **X** |       |       |       |       |
+|   5   |       |       |       |   X   |   X   | **X** |   X   | **X** |       |       |       |       |
+|   6   |       |       |       |   X   | **X** |   X   | **X** |   X   |       |       |       |       |
+|   7   |       |       |       |   X   | **X** | **X** |   X   |   X   |       |       |       |       |
+|   8   |       |       |       |       |       |       |       |       | **X** | **X** | **X** | **X** |
+|   9   |       |       |       |       |       |       |       |       | **X** | **X** | **X** | **X** |
+
+
+### Temperature Measurement
+To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
+
+## Special I/O-pin related features
+There are a few strange features relating to the GPIO pins on the ATtiny x41 family which are found only in a small number of other parts released around the same time.
+
+### Separate pullup-enable register
+Like the ATtiny828 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Unlike those other parts, though, these are not IO-space (they're normal registers, unlike the PORTx/PINx/DDRx registers, which can be used with the CBI/SBI/OUT/IN instructions). The Arduino digital IO functions account for this, but if you are using direct port manipulation, you need to know that setting a pin's bit in PORTx will not enable pullups. Use `PUEA` or `PUEB` - setting the corresponding bit to 1 will turn on the pullup. The pullup will be left on no matter what you do with the port, including setting it as output and driving it low - that will make it continually consume power and is "NOT RECOMMENDED" according to the datasheet. I would note that for a bidirectional data line that is high when idle, it could make sense to leave the pullup on, and pulse the line low to send by toggling the DDR line - especially because of one glaring bad design decision (which was not made on either of the other chips that have the PUE registers, the t1634 and t828): The PUEA and PUEB registers are NOT in the low I/O space. While `DDRA |= 1 << x;` (where x is known at compile-time) compiles to a single atomic `sbi` (set bit index) instruction, `PUEA |= 1 << x;` is a non-atomic read-modify-write cycle (if an interrupt occurs between the read and the write, and writes to the same register, the write after that interrupt would reverse any changes. In fact, not only that, *the PUEx registers are not in the high I/O space either!* so that doesn't compile to in, ori, out (3 clock cycles, 6 bytes), that (likely) compiles to lds, ori, sts (5 clock cycles, 10 bytes). Mystifying, especially considering that: a) they have 4 "reserved" registers in low I/O they could have used instead, and b)
+
+### Special "high sink" pins
+PA5 and PA7 have stronger sink capability than other pins - that is, the output voltage rises less when sinking a given amount of current.
+
+```
+PHDE=(1<<PHDEA0)|(1<<PHDEA1); //PHDEA0 controls PA5, PHDEA1 controls PA7.
+```
+
+This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts; as far as I can tell it is only found on on the x41 family and the closely related ATtiny828. Which is also the only classic AVR I know of that allows you to map the timer PWM outputs to different pins the way these parts do.
+
+**These high-sink pins have asymmetric drivers - thus PA5 and PA7 should not be used with PWM + RC filter to generate analog voltages** as the resulting voltage will be lower than expected (by an amount depending on the value of the resistor used - the higher the resistance, the smaller this impact will be)
+
+### Break-before-make
+The ATtiny x41 family also has a "Break-Before-Make" mode that can be enabled on a per-port basis with the `PORTCR` register, which will keep the pin tristated for 1 system clock cycle when a DDR bit is set from input to output. This is not used by the core, and I'm not sure what the intended use case was... (other than that it must have involved output values being set ahead of time on PORTx registers, and more than one of those pins being enabled and/or disabled simultaneously with a write to DDRx)
+
+```
+PORTCR=(1<<BBMA)|(1<<BBMB); //BBMA controls PORTA, BBMB controls PORTB.
+```
+
+
+## Tuning Constant Locations
+The 841/441, owing to the incredible power of it's oscillator, can be run at many speeds from the internal oscillator with proper calibration. We support storage of 4 calibration values. The included tuner uses these 4 locations for OSCCAL tuning values. If tuning is enabled, the OSCCAL tuning locations are checked at startup. Our demonstration code for temperature measurement shows setting calibration byte for temperature calibrated at a single point, as well (offset). Slope would require performing a 2-point calibration.
+**ISP programming (no bootloader)**: EESAVE fuse set, stored in EEPROM
+**Bootloader used**: Saved between end of bootloader and end of flash. See File -> Examples -> Temperature and Voltage
+
+| Tuning Constant         | Location EEPROM | Location Flash |
+|-------------------------|-----------------|----------------|
+| Temperature Offset      | E2END - 5       | FLASHEND - 7   |
+| Temperature Slope       | E2END - 4       | FLASHEND - 6   |
+| Tuned OSCCAL0 8 MHz/5V  | E2END - 3       | FLASHEND - 5   |
+| Tuned OSCCAL0 12 MHz/5V | E2END - 2       | FLASHEND - 4   |
+| Tuned OSCCAL0 16 MHz/5V | E2END - 1       | FLASHEND - 3   |
+| Tuned OSCCAL0 16.5 MHz  | E2END - 0       | FLASHEND - 2   |
+| Bootloader Signature 1  | Not Used        | FLASHEND - 1   |
+| Bootloader Signature 2  | Not Used        | FLASHEND       |
+
 
 
 ## Purchasing ATtiny841 Boards
@@ -196,6 +239,7 @@ I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your
 ![Picture of ATtiny841 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2015-06-16T05:30:56.533Z-T841RA_Assembled.png.855x570_q85_pad_rcrop.png)
 ### [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot-assembled/)
 ### [Bare Boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout-wserial-header-bare-board/)
+### ATTiny841 DIP-14 TODO: List product and add links.
 The Wattuino board does not support maintenance of this core, but it does support the work they did to get that working:
 ### [Wattuino Nanite (VUSB)](https://shop.watterott.com/Wattuino-Nanite-841-ATtiny841-with-USB-Bootloader)
 
@@ -246,30 +290,3 @@ vect_num | Vector Address | Vector Name | Interrupt Definition
 28 | 0x001C | USART1_TXC_vect | USART1 Tx Complete
 29 | 0x001D | TWI_vect | TWI Slave Interrupt
 30 | 0x001E | QTRIP_vect | QTouch
-
-## ADC Channels
-Below, MUXPOS refers to the internal "channel" used (value of ADMUXA). You can pass this value directly to analogRead().
-
-
-
-### Single Ended
-MUXPOS | ADC Channel | Pin
------- | ------- | ------
-0x00 | ADC0 | PIN_PA0
-0x01 | ADC1 | PIN_PA1
-0x02 | ADC2 | PIN_PA2
-0x03 | ADC3 | PIN_PA3
-0x04 | ADC4 | PIN_PA4
-0x05 | ADC5 | PIN_PA5
-0x06 | ADC6 | PIN_PA6
-0x07 | ADC7 | PIN_PA7
-0x08 | ADC8 | PIN_PB2
-0x09 | ADC9 | PIN_PB3
-0x0A | ADC10 | PIN_PB1
-0x0B | ADC11 | PIN_PB0
-0x0C | Temperature sensor |
-0x0D | Internal 1.1V reference |
-0x0E | 0V (AGND) |
-0x0F | Supply voltage |
-0x2E | Unused |
-0x2F | Unused |

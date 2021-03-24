@@ -1,4 +1,8 @@
-/*****************************************************************************
+/*
+* Modifications to use constants defined by ATTinyCore by Spence Konde
+* 2017-2021, and for assorted minor changes, including eliminating IAR stuff
+* Code is still closely based on Atmel code as described below:
+****************************************************************************
 *
 * Atmel Corporation
 *

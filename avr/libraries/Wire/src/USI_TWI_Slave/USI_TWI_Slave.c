@@ -1,34 +1,31 @@
-// This file has been prepared for Doxygen automatic documentation generation.
-/*! \file ********************************************************************
-*
-* Atmel Corporation
-*
-* File              : USI_TWI_Slave.c
-* Compiler          : IAR EWAAVR 4.11A
-* Revision          : $Revision: 614 $
-* Date              : $Date: 2006-07-07 16:27:05 +0800 (Fri, 07 Jul 2006) $
-* Updated by        : $Author: jllassen $
-*
-* Support mail      : avr@atmel.com
-*
-* Supported devices : All device with USI module can be used.
-*                     The example is written for the ATmega169, ATtiny26, ATmega325 & ATtiny2313
-*
-* AppNote           : AVR312 - Using the USI module as a I2C slave
-*
-* Description       : Functions for USI_TWI_receiver and USI_TWI_transmitter.
-*
-*
-****************************************************************************/
 
+/* Modifications to use constants defined by ATTinyCore by Spence Konde
+ * 2017-2021, and for assorted minor changes, including eliminating IAR stuff
+ * Code is still closely based on Atmel code as described below:
+ ***************************************************************************
+ *
+ * Atmel Corporation
+ *
+ * File              : USI_TWI_Slave.c
+ * Compiler          : IAR EWAAVR 4.11A
+ * Revision          : $Revision: 614 $
+ * Date              : $Date: 2006-07-07 16:27:05 +0800 (Fri, 07 Jul 2006) $
+ * Updated by        : $Author: jllassen $
+ *
+ * Support mail      : avr@atmel.com
+ *
+ * Supported devices : All device with USI module can be used.
+ *                     The example is written for the ATmega169, ATtiny26, ATmega325 & ATtiny2313
+ *
+ * AppNote           : AVR312 - Using the USI module as a I2C slave
+ *
+ * Description       : Functions for USI_TWI_receiver and USI_TWI_transmitter.
+ *
+ *
+ ***************************************************************************/
 
-#ifdef __GNUC__
 #include "avr/io.h"
 #include "avr/interrupt.h"
-#elif __ICCAVR__
-#include "ioavr.h"
-#include "inavr.h"
-#endif
 #ifdef USIDR
 #include "USI_TWI_Slave.h"
 
@@ -71,37 +68,35 @@ void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress)
   USI_TWI_On_Slave_Transmit = 0;
   USI_TWI_On_Slave_Receive = 0;
 
-  PORT_USI_CL |= (1 << PORT_USI_SCL);     // Set SCL high
-  PORT_USI |= (1 << PORT_USI_SDA);        // Set SDA high
-  DDR_USI_CL |= (1 << PORT_USI_SCL);      // Set SCL as output
-  DDR_USI &= ~(1 << PORT_USI_SDA);        // Set SDA as input
+  PORT_USI_CL |= (1 << USI_CLOCK_BIT);    // Set SCL high
+  PORT_USI |= (1 << USI_DI_BIT);          // Set SDA high
+  USI_CLOCK_DDR |= (1 << USI_CLOCK_BIT);  // Set SCL as output
+  USI_DATA_DDR &= ~(1 << USI_DI_BIT);     // Set SDA as input
   USICR = (1 << USISIE) | (0 << USIOIE) | // Enable Start Condition Interrupt. Disable Overflow Interrupt.
           (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode. No USI Counter overflow prior
                                           // to first Start Condition (potential failure)
-          (1 << USICS1) | (0 << USICS0) | (0 << USICLK) | // Shift Register Clock Source = External, positive edge
-          (0 << USITC);
-  USISR = 0xF0; // Clear all flags and reset overflow counter
+          (1 << USICS1) | (0 << USICS0) | // Shift Register Clock Source = External, positive edge
+          (0 << USICLK) | (0 << USITC);
+  USISR = 0xF0;                           // Clear all flags and reset overflow counter
 }
 
 // Disable USI for TWI Slave mode.
 void USI_TWI_Slave_Disable()
 {
-  DDR_USI_CL &= ~(1 << PORT_USI_SCL);  // Set SCL as input
-  DDR_USI &= ~(1 << PORT_USI_SDA);  // Set SDA as input
-  USICR = 0x00; // Disable USI
-  USISR = 0xF0; // Clear all flags and reset overflow counter
+  USI_CLOCK_DDR &= ~(1 << USI_CLOCK_BIT);  // Set SCL as input
+  USI_DATA_DDR &= ~(1 << USI_DI_BIT);      // Set SDA as input
+  USICR = 0x00;                            // Disable USI
+  USISR = 0xF0;                            // Clear all flags and reset overflow counter
 }
 
 // Puts data in the transmission buffer, Waits if buffer is full.
 void USI_TWI_Transmit_Byte(unsigned char data)
 {
   unsigned char tmphead;
-
   tmphead = (TWI_TxHead + 1) & TWI_TX_BUFFER_MASK; // Calculate buffer index.
-  while (tmphead == TWI_TxTail)
-    ;                         // Wait for free space in buffer.
-  TWI_TxBuf[tmphead] = data;    // Store data in buffer.
-  TWI_TxHead         = tmphead; // Store new index.
+  while (tmphead == TWI_TxTail);                   // Wait for free space in buffer.
+  TWI_TxBuf[tmphead] = data;      // Store data in buffer.
+  TWI_TxHead         = tmphead;   // Store new index.
 }
 
 // Returns a byte from the receive buffer. Waits if buffer is empty.
@@ -132,8 +127,8 @@ unsigned char USI_TWI_Peek_Receive_Byte(void)
 // Check if there is data in the receive buffer.
 unsigned char USI_TWI_Data_In_Receive_Buffer(void)
 {
-  unsigned char tmpRxTail;          // Temporary variable to store volatile
-  tmpRxTail = TWI_RxTail;           // Not necessary, but prevents warnings
+  unsigned char tmpRxTail;                              // Temporary variable to store volatile
+  tmpRxTail = TWI_RxTail;                               // Not necessary, but prevents warnings
   return (TWI_RxHead - tmpRxTail) & TWI_RX_BUFFER_MASK; // Return 0 (FALSE) if the receive buffer is empty.
 }
 
@@ -141,7 +136,7 @@ unsigned char USI_TWI_Data_In_Receive_Buffer(void)
 unsigned char USI_TWI_Space_In_Transmission_Buffer(void)
 {
   unsigned char tmpTxHead;
-  tmpTxHead = (TWI_TxHead + 1) & TWI_TX_BUFFER_MASK; // Calculate next buffer index.
+  tmpTxHead = (TWI_TxHead + 1) & TWI_TX_BUFFER_MASK;    // Calculate next buffer index.
   return (TWI_TxTail - tmpTxHead) & TWI_TX_BUFFER_MASK; // Return 0 (FALSE) if the transmission buffer is full.
 }
 
@@ -156,44 +151,37 @@ unsigned char USI_TWI_Slave_Is_Active()
  Detects the USI_TWI Start Condition and initializes the USI
  for reception of the "TWI Address" packet.
 ----------------------------------------------------------*/
-#ifdef __GNUC__
+
 ISR(USI_START_VECTOR)
-#elif __ICCAVR__
-#pragma vector = USI_START_VECTOR
-__interrupt void USI_Start_Condition_ISR(void)
-#endif
 {
-  unsigned char tmpPin; // Temporary variable for pin state
-  unsigned char tmpRxHead; // Temporary variable to store volatile
+  unsigned char tmpPin;             // Temporary variable for pin state
+  unsigned char tmpRxHead;          // Temporary variable to store volatile
   // call slave receive callback on repeated start
   if (USI_TWI_On_Slave_Receive) {
     tmpRxHead = TWI_RxHead;
-    if (TWI_RxTail != tmpRxHead) { // data in receive buffer
+    if (TWI_RxTail != tmpRxHead) {  // data in receive buffer
       USI_TWI_On_Slave_Receive(USI_TWI_Data_In_Receive_Buffer());
-      // reset rx buffer
-      TWI_RxTail = tmpRxHead;
+      TWI_RxTail = tmpRxHead;       // reset rx buffer
     }
   }
 
   USI_TWI_Overflow_State = USI_SLAVE_CHECK_ADDRESS;
-  DDR_USI &= ~(1 << PORT_USI_SDA); // Set SDA as input
-  while ((tmpPin = (PIN_USI_CL & (1 << PORT_USI_SCL))) && ((PIN_USI & (1 << PIN_USI_SDA)) == 0))
-    ; // Wait for SCL to go low to ensure the "Start Condition" has completed.
-        // If a Stop condition arises then leave the interrupt to prevent waiting forever.
-  if (tmpPin) {
-    // Stop Condition (waiting for next Start Condition)
+  USI_DATA_DDR &= ~(1 << USI_DI_BIT); // Set SDA as input
+  while ((tmpPin = (USI_CLOCK_PIN & (1 << USI_CLOCK_BIT))) && ((USI_DATA_PIN & (1 << USI_DI_BIT)) == 0));
+                // Wait for SCL to go low to ensure the "Start Condition" has completed.
+                // If a Stop condition arises then leave the interrupt to prevent waiting forever.
+  if (tmpPin) {                             // Stop Condition (waiting for next Start Condition)
     USICR = (1 << USISIE) | (0 << USIOIE) | // Enable Start Condition Interrupt. Disable Overflow Interrupt.
             (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode. No USI Counter overflow prior
                                             // to first Start Condition (potential failure)
-            (1 << USICS1) | (0 << USICS0) | (0 << USICLK) | // Shift Register Clock Source = External, positive edge
-            (0 << USITC);
-  } else {
-    // really Start Condition (Enable Overflow Interrupt)
-    USICR = (1 << USISIE) | (1 << USIOIE)
-            | // Enable Overflow and Start Condition Interrupt. (Keep StartCondInt to detect RESTART)
-            (1 << USIWM1) | (1 << USIWM0) |                 // Set USI in Two-wire mode.
-            (1 << USICS1) | (0 << USICS0) | (0 << USICLK) | // Shift Register Clock Source = External, positive edge
-            (0 << USITC);
+            (1 << USICS1) | (0 << USICS0) | // Shift Register Clock Source = External, positive edge
+            (0 << USICLK) | (0 << USITC);
+  } else {                                  // really Start Condition (Enable Overflow Interrupt)
+    USICR = (1 << USISIE) | (1 << USIOIE) |
+            // Enable Overflow and Start Condition Interrupt. (Keep StartCondInt to detect RESTART)
+            (1 << USIWM1) | (1 << USIWM0) | // Set USI in Two-wire mode.
+            (1 << USICS1) | (0 << USICS0) | // Shift Register Clock Source = External, positive edge
+            (0 << USICLK) | (0 << USITC);
   }
   USISR = (1 << USI_START_COND_INT) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC) | // Clear flags
           (0x0 << USICNT0); // Set USI to sample 8 bits i.e. count 16 external pin toggles.
@@ -240,7 +228,6 @@ ISR(USI_OVERFLOW_VECTOR)
       return;
     }
   // From here we just drop straight into USI_SLAVE_SEND_DATA if the master sent an ACK
-
   // Copy data from buffer to USIDR and set USI to shift byte. Next USI_SLAVE_REQUEST_REPLY_FROM_SEND_DATA
   /* Falls through. */
   case USI_SLAVE_SEND_DATA:

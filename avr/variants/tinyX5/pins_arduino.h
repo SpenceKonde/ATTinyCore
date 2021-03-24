@@ -1,7 +1,7 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
    Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
    Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
-   Free Software - GPL 2.1, please see LICENCE.md for details */
+   Free Software - LGPL 2.1, please see LICENCE.md for details */
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
@@ -59,8 +59,8 @@ static const uint8_t A3 = ADC_CH(3);
 #define digitalPinToPCMSKbit(p)     (p)
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p) == 0) ? 5 : (((p) == 1) ? 2 : (((p) == 2) ? 4 :(((p) == 3) ? 3 : -1))))
-#define digitalPinToAnalogInput(p)  (((p) == 5) ? 0 : (((p) == 2) ? 1 | (((p) == 4) ? 2 :(((p) == 3) ? 3 : -1))))
+#define analogInputToDigitalPin(p)  (((p) == 0) ? 5 : (((p) == 1) ? 2 : (((p) == 2) ? 4 : (((p) == 3) ? 3 : -1))))
+#define digitalPinToAnalogInput(p)  (((p) == 5) ? 0 : (((p) == 2) ? 1 : (((p) == 4) ? 2 : (((p) == 3) ? 3 : -1))))
 
 /* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1 || (p) == 4)
@@ -90,7 +90,7 @@ static const uint8_t A3 = ADC_CH(3);
  * reorder the bits so they line up. Aren't you glad that's not happening at
  * runtime?
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)          ((((x) & 0x03) << 6) | (((x) & 0x04) << 2)
+#define ADC_REF(x)          ((((x) & 0x03) << 6) | (((x) & 0x04) << 2))
 
 /* Analog Reference bit masks */
 #define DEFAULT             ADC_REF(0x00)

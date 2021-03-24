@@ -1,7 +1,7 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
    Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
    Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
-   Free Software - GPL 2.1, please see LICENCE.md for details */
+   Free Software - LGPL 2.1, please see LICENCE.md for details */
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
@@ -76,8 +76,8 @@ static const uint8_t A7 = ADC_CH(7);
 #define digitalPinToPCMSKbit(p)     (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p) < 8) ? 10 - (p) : -1)
-#define digitalPinToAnalogInput(p)  (((p) > 2 && ((p) < 11)) ? 10 - (p) : -1)
+#define analogInputToDigitalPin(p)  (((p) < 8) ? 10 - (p) : NOT_A_PIN)
+#define digitalPinToAnalogInput(p)  (((p) > 2 && ((p) < 11)) ? 10 - (p) : NOT_A_CHANNEL)
 
 /* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) >= 2 && (p) <= 5)

@@ -4,10 +4,23 @@ Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2
 Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus)
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
 Let's use that, not gitter.
-
-### Current **strongly** recommended IDE version: 1.8.13
-
 # WARNING: THIS BRANCH IS A WORK IN PROGRESS AND WILL BECOME 2.0.0! It is NOT EXPECTED TO WORK AT THIS POINT!
+
+# ATTinyCore 2.0.0 - lots of changes, some of them big, a few of them may cause breakage.
+I cobbled ATTinyCore together with far less experience than I have now (indeed, I'd barely covered the basics when I started trying to get a working ATtiny841 core). I like to think I have a much better idea of how a core should be designed now. But this meant some terrible decisions were made in the past. Decisions that we have been paying the price for ever since. I decided that the core should be advanced to a state where the bad decisions have been fixed, and everything that needs to be exposed on the parts is exposed in a consistent manner (too much was done incrementally, and not enough planning was done, ever). This core should not expect any significant new feature enhancements from here on out. The new feature development will be for megaTinyCore and DxCore, as those represent the future of the AVR architecture. Bug fixes will still be made.
+The most significant changes are:
+1. **analogRead() and channel/pin numbers** ATTinyCore followed what the core it was based on did, which was to use analog channel numbers, not digital pin numbers for analogRead(). Originally, the An-constants were #defined as the number itself. Later, to make them work with the digital IO functions, I changed to  `#define An (n | 0x80)` - digital functions could check for the high bit, and if present, strip it off and use the analogInputToDigitalPin macro to find the digital pin number. I never did the inverse with analogRead() because it would have broken code which used the raw analog channel numbers. This is just absurd in this day and age, where every other core allows you to analogRead() digital pin numbers and it just works. As of 2.0.0, analogRead() takes either a digital pin number, a constant of the form An (one per analog pin, shown on pinout chart! corresponds directly to analog channels), one of the ADC_CHANNEL constants listed in the part-specific documentations pages (these are things like `ADC_TEMPERATURE` and `ADC_INTERNAL1V1`), or - assuming it has a differential ADC - one of the differential channels. If you were generating an analog channel at runtime, you can pass a number through the ADC_CH() macro to get a number that will be recognized as an analog __channel__ number (this is preferred to directly setting the high bit, since it makes clear that you're doing it to get that analog channel).
+2. **Differential channels!** Yeah - about half of the parts we support have them, and they can be useful for accurately measuring small differences in voltage. These vary per part - some are rather basic, while the t861 and t841 are very fancy - and are listed in full in the part-specific documentation. These are now fully supported. There is also support for analogRead with Noise Reduction mode (chip goes into sleep mode while taking the reading. For parts that support both, there is also a way to select bipolar (-512 to 511) vs unipolar (0 to 1023) mode.
+3. All the analog reference sources are named consistently, old (deprecated) names for references are still supported, but not recommended. **potential breakage** If you used to refer to a reference with a raw number, instead of the name (ie, if you did analogReference(0) instead of analogReference(DEFAULT), this will be totally broken for values other than zero. The ADC_REF() macro can be used to convert from the REFS bits to a reference constant *if you must - but you shouldn't be using a raw number to select the reference if you want to be able to move it to different parts* - The 1.1v internal reference `INTERNAL1V1` is 2 on some parts, and 0 on others... almost everything has the 1.1v reference and everything can use Vcc, but that's really where the similarities end. If you are writing code that users might want to make work on any other part, you need to use the names, not numbers. With parts having at most 8 options for the analog reference, and most having fewer than that, I do not expect that this is a particularly burdensom requirement. .
+4. **Legacy PIN_xn constants gone** `PIN_An` constants have the standard meaning, ie, PIN_An is the digital pin that analog channel `An` is on. Previously some (but to my surprise and horror, not even all) parts had a set of `PIN_xn` constants defined that worked like the new `PIN_Pxn` ones do. I was reading pins_arduino.h from an official core a few weeks after implementing my `PIN_xn` constants for a bunch of parts and discovered that `PIN_An` was already in use meaning something different. Use `PIN_Pxn` where x is the letter of a port, and n is the number of a pin within that port.
+5. `PIN_Pxn` constants are in for all supported parts to refer to pins by port and bit. This is highly recommended way to refer to pins, as it frees you from the need to consider which pin mapping is in use. If you soldered the LED to pin PB2, PIN_PB2 is going to control the LED no matter which pin mapping you have selected.
+6. For various historical reasons, some parts have up to 3 pin mappings. These are now named consistently, and listed and described in the part specific documentation - All parts have a recommended pin mapping, some of them have a second one for a specific VUSB board (digispark pro, MH-ET) with the pins numbered differently, and some of them have a "legacy" pin mapping with the pins in an order that makes less sense, and which makes converting between analog and digital pins harder (as in, if there is stuff determined at runtime, it uses more flash and is slower), but which has been widely used in the past and is what existing code may have been written for. A number of inconsistencies between these pin mappings (where information was missing from one or the other) have been fixed, and they are now formatted and commented consistently.
+7. (still todo) More Micronucleus! The ATtiny1634 and ATtiny861 are now supported for Micronucleus. Test and demonstration boards are available from my Tindie store. New versions of bootloader for all existing Micronucleus boards. Users should use the bootloader upgrade functionality to ensure that they have the latest version of the bootloader, and that it has their desired entry conditions (on reset pin, power on reset, power-on with pin held down, reset/power on w/reset held high (in case of disabled reset, holding the reset pin high during power on will make it enter bootloader - takes advantage of the fact that reset PIN bit always reads 0 when reset is not disabled... Actually, one wonders if it would work if you did PORTx |= 1 << RESETBIT; then test if that bit is set - does disabling reset actually make registers not store the value? If so, that would be even better - no dependance on hardware, clear the bit if could set it and run app, otherwise run bootloader. )
+
+
+
+
+
 
 
 ### [Installation](Installation.md)
@@ -15,6 +28,8 @@ Let's use that, not gitter.
 ### [Using with Micronucleus boards](avr/extras/UsingMicronucleus.md)
 ### [Programming Guide](Programming.md)
 ### [Migration Guide - moving to ATTinyCore from a different ATtiny board package](Migration.md)
+### Current **strongly** recommended IDE version: 1.8.13
+
 
 ## ATtinyCore Universal
 This core supports the following processors - essentially every "classic" tinyAVR processor that makes sense to use with Arduino. The modern (post-2016 release) tinyAVR parts have their own core, as there is practically zero code at the core level that can be shared with classic parts (in exchange for the cores being totally different, sketches can often be moved between these with little to no effort - not always, but often) Click the processor name for part-specific information:
@@ -47,9 +62,6 @@ If you want to use Micronucleus (VUSB) boards on Windows, you must manually inst
 
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
-**Weird upload errors when switching between two cores that use updi**
-Are you getting weird errors, like {bootloader.CODESIZE} isn't a valid value for a fuse? Tools -> Programmer and select your programmer. If you change from another UPDI part,
-
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
 **problems dynamically linking libusb-0.1 on linux** can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
@@ -60,7 +72,7 @@ Are you getting weird errors, like {bootloader.CODESIZE} isn't a valid value for
 
 **On IDEs prior to 1.8.13, you need to select the correct version of the programmer. In 1.8.13 only these programmers are shown. As of 1.4.2, the (ATTinyCore) note is removed, as 1.8.13 has had excellent uptake (because it lacks new bugs and greatly improves UX)**
 
-**When using a chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
+**When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
 
 **Problems programming some parts for first time, especially ATtiny841/441** These parts are less forgiving of the SCK clock rate. I'm not sure why USBAsp doesn't seem to be working anymore (it used to, and I haven't changed anything), looking into options there. Arduino as ISP or USBTinyISP SLOW will program without issue.
 
@@ -197,9 +209,6 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 > 18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
 
 
-
-### Refer to pins by port/pin
-Instead of referring to pins by the digital pin numbers, it is now (as of 1.4.0) possible to refer to pins based on their port and pin number within the port. **We recommend this method of referring to pins in all cases**, as it can be more easily cross-referenced with the datasheet, and is independent of pin mapping (for devices with multiple pin mapping options). It also helps to build good mental habits with regards to thinking about pins in the context of ports, which is helpful when writing code where more advanced techniques are needed. For every pin, the core supplies a constant of the form `PIN_Pxn`, where `x` is the port letter, and `n` is the bit of the pin within that port; this is a #define set to the digital pin number corresponding to it. For example, `PIN_PA2` refers to bit 2 in PORTA. On the ATtiny167, where there are three different pin mappings, all radically different, `analogWrite(PIN_PA2,128)` will always generate a squarewave on the same pin, and the code can be moved between pinmappings without concern.
 
 ### Assembler Listing generation
 

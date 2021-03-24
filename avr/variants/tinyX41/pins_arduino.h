@@ -1,7 +1,7 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
    Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
    Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
-   Free Software - GPL 2.1, please see LICENCE.md for details */
+   Free Software - LGPL 2.1, please see LICENCE.md for details */
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
@@ -117,19 +117,26 @@ static const uint8_t A11 = ADC_CH(11);
 
 /* Analog reference bit masks. */
 #define DEFAULT               ADC_REF(0x00)
-#define INTERNAL1V1_NO_CAP    ADC_REF(0x01)
-#define INTERNAL2V2_NO_CAP    ADC_REF(0x02)
-#define INTERNAL4V096_NO_CAP  ADC_REF(0x03)
+#define INTERNAL1V1           ADC_REF(0x01)
+#define INTERNAL2V2           ADC_REF(0x02)
+#define INTERNAL4V096         ADC_REF(0x03)
 #define EXTERNAL              ADC_REF(0x04)
 #define INTERNAL1V1_CAP       ADC_REF(0x05)
 #define INTERNAL2V2_CAP       ADC_REF(0x06)
 #define INTERNAL4V096_CAP     ADC_REF(0x07)
-#define INTERNAL              INTERNAL1V1_NO_CAP
-#define INTERNAL1V1           INTERNAL1V1_NO_CAP
-#define INTERNAL2V2           INTERNAL2V2_NO_CAP
-#define INTERNAL4V096         INTERNAL4V096_NO_CAP
-#define INTERNAL4V1           INTERNAL4V096_NO_CAP
-#define INTERNAL4V            INTERNAL4V096_NO_CAP   /* deprecated */
+#define INTERNAL1V1_NO_CAP    INTERNAL1V1
+#define INTERNAL2V2_NO_CAP    INTERNAL2V2
+#define INTERNAL4V096_NO_CAP  INTERNAL4V096
+#define INTERNAL4V1           INTERNAL4V096
+#define INTERNAL              INTERNAL1V1            /* deprecated */
+#define INTERNAL4V            INTERNAL4V096          /* deprecated */
+#define INTERNAL1V1_AREF      INTERNAL1V1_CAP        /* deprecated */
+#define INTERNAL2V2_AREF      INTERNAL2V2_CAP        /* deprecated */
+#define INTERNAL4V096_AREF    INTERNAL4V096_CAP      /* deprecated */
+#define INTERNAL1V1NOBP       INTERNAL1V1            /* deprecated */
+#define INTERNAL2V2NOBP       INTERNAL2V2            /* deprecated */
+#define INTERNAL4V096NOBP     INTERNAL4V096          /* deprecated */
+
 
 /* Gain Options */
 #define GAIN_1X               (0xFF)

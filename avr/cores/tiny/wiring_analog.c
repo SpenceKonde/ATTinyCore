@@ -1,30 +1,12 @@
-/*
-  wiring_analog.c - analog input and output
-  Part of Arduino - http://www.arduino.cc/
-
-  Copyright (c) 2005-2006 David A. Mellis
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License as published by the Free Software Foundation; either
-  version 2.1 of the License, or (at your option) any later version.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General
-  Public License along with this library; if not, write to the
-  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-  Boston, MA  02111-1307  USA
-
-  $Id: wiring.c 248 2007-02-03 15:36:30Z mellis $
-
-  Modified  28-08-2009 for attiny84 R.Wiersma
-  Modified  14-10-2009 for attiny45 Saposoft
-  Corrected 17-05-2010 for ATtiny84 B.Cook
-*/
+/* wiring_analog.c - ADC and PWM-related functionality
+ * Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
+ *   (c) 2005-2006 David A. Mellis as part of Arduino
+ *   Modified  28-08-2009 for attiny84 R.Wiersma
+ *   Modified  14-10-2009 for attiny45 Saposoft
+ *   Corrected 17-05-2010 for ATtiny84 B.Cook
+ *   Modified extensively 2016-2021 Spence Konde for ATTinyCore
+ *   Free Software - LGPL 2.1, please see LICENCE.md for details
+ *---------------------------------------------------------------------------*/
 
 #include "wiring_private.h"
 #include "pins_arduino.h"
@@ -66,7 +48,7 @@
 // global settings
 uint8_t analog_reference = DEFAULT;
 
-#ifdef GSEL0
+#if defined(GSEL0)
   /* ATtiny841/441 have too many gain + channel combos to stuff it all into the channel
    * so we provide an analogGain() function that is analogous to analogReference.
    * I don't think there's any advantage to setting it earlier though. */
@@ -82,6 +64,14 @@ uint8_t analog_reference = DEFAULT;
       analog_gain = 0x00;
     }
   }
+#elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtinyX5__) || defined(__AVR_ATtinyX61__) || defined(__AVR_ATtinyX7__) || defined(__AVR_ATtiny26__)
+  void analogGain( __attribute__ ((unused)) uint8_t gain) {
+    badCall("analog gain is set through channel used on this part - see the part-specific documentation.");
+  }
+#else
+  void analogGain( __attribute__ ((unused)) uint8_t gain) {
+    badCall("This part does not have a differential ADC.")
+  }
 #endif
 
 
@@ -92,42 +82,74 @@ void analogReference(uint8_t mode) {
    * on an ATtiny167/87 if XREF is set, we want and need to. It's unclear
    * why we *wouldn't* set the analog reference at the time
    */
-  analog_reference = mode;
-  #if !defined(ADC_ONLY_SET_REFS_ON_READ)
-    #if defined(__AVR_ATtinyX61__)
-      // This one is wacky - with pre-shifting analog reference looks like:
-      // REFS1 | REFS0 | - | REFS2 | - | - | - | -
-
-      ADMUX = ((analog_reference & 0xC0));
-      // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
-      // ADCSRB     BIN(put)| GSEL | - | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
-      // BIN stands for Bipolar INput, not BINary
-      ADCSRB = (ADCSRB & 0xA7) | (analog_reference & 0x10);
-      // They could have made that harder to deal with if they really tried, maybe...
-    #elif defined(ADMUXB)
-      #if defined(GSEL0)
-        // x41
-        ADMUXB = (analog_reference & ADMUX_REFS_MASK);
-      #else
-        // 828
-        ADMUXB = analog_reference & ADMUX_REFS_MASK;
+  if (__builtin_constant_p(mode)) { /* check for invalid constants passed to analogReference() */
+    #if !defined(__AVR_ATtinyX7__)
+      if ((mode & ADMUX_REFS_MASK) != mode ) {
+        badArg("That is not a reference, use the named constants listed in part-specific documentation");
+      }
+      #if defined(REFS2) && !defined(GSEL0) // x5 or x61
+        if (mode == ADC_REF(3) || mode == ADC_REF(4) || mode == ADC_REF(5)) {
+          badArg("The requested reference is not a valid reference option, use named cosntants from part-specific documentation");
+        }
+      #elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtiny1634__)
+        if (mode == 0xC0) {
+          badArg("The requested reference is not a valid reference option, use named cosntants from part-specific documentation")
+        }
       #endif
-    #elif defined(ADMUX)
-      ADMUX = (analog_reference & ADMUX_REFS_MASK);
-    #else
-      badCall("analogReference() cannot be used on a part without an ADC");
+    #else // is an x7 - this gets more interesting...
+      if ((mode & 0xC6) != mode ) {
+        badArg("That is not a reference, use the named constants listed in part-specific documentation");
+      } else if (mode & 0xC0 == 0x40) {
+        badArg("Invalid reference voltage: REFS=01, only REFS=10 or 11 valid - use named constants from part-specific documentation")
+      } else
+      #if !defined(ADC_ALLOW_BOGUS_XREF_AREF)
+        // Make it easier if someone doesn't take my word for them not doing anything...
+        if (mode & 0x08 && mode & 0xC4) {
+          badArg("Invalid reference - AREFEN only valid when all other bits are zero - use named constants from part-specific documentation")
+        } else if (mode & 0x04 && !(mode & 0xC0)) {
+          badArg("Invalid reference - XREFEN only valid with internal reference - use named constants from part-specific documentation")
+        }
+      #endif
     #endif
-    #ifdef AMISCR
-      /* Unique to ATtiny167, ATtiny87 - Analog MIScellaneous Control Register*/
-      /* External reference is selected by AREF bit in AMISCR - but only if internal reference not selected...
-       * Reference is output on AREF - oh, pardon me, the "XREF pin" which happens to be the same pin, if
-       * XREF bit is set - but only if internal reference is selected..
-       * Why these couldn't have been one bit is a mystery to me - it doesn't look like AREF bit does anything
-       * with internal reference set nor XREF with external/Vcc ref; if it does anything, it's not immediately
-       * obvious. */
-      AMISCR = (AMISCR & 0x01) | ((analog_reference & 0x0C) >> 1);
+  }
+
+  analog_reference = mode;
+  #if defined(AMISCR)
+    /* Unique to ATtiny167, ATtiny87 - Analog MIScellaneous Control Register
+     * External reference is selected by AREF bit in AMISCR - but only if internal reference not selected...
+     * Reference is output on AREF - oh, pardon me, the "XREF pin" which happens to be the same pin, if
+     * XREF bit is set - but only if internal reference is selected..
+     * Why these couldn't have been one bit is a mystery to me - it doesn't look like AREF bit does anything
+     * with internal reference set nor XREF with external/Vcc ref; if it does anything, it's not immediately
+     * obvious. */
+    ADMUX = (mode & ADMUX_REFS_MASK); // first set the reference...
+    AMISCR = (AMISCR & 0x01) | (mode & 0x06); // then AREF/XREF configuration (if any); preserve only lowest bit.
+  #else
+    #if !defined(ADC_ONLY_SET_REFS_ON_READ)
+      #if defined(__AVR_ATtinyX61__)
+        // This one is wacky - with pre-shifting analog reference looks like:
+        // REFS1 | REFS0 | - | REFS2 | - | - | - | -
+        ADMUX = ((mode & 0xC0));
+        // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
+        // ADCSRB     BIN | GSEL | - | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
+        // BIN stands for Bipolar INput, not BINary
+        ADCSRB = (ADCSRB & 0xA7) | (mode & 0x10);
+        // They could have made that harder to deal with if they really tried, maybe...
+      #elif defined(ADMUXB) /* 828, 841, or 441 */
+        //#if defined(GSEL0)
+          // x41
+          ADMUXB = mode & ADMUX_REFS_MASK;
+        //#else
+          // 828
+        //  ADMUXB = mode & ADMUX_REFS_MASK;
+        //#endif
+      #elif defined(ADMUX)
+        ADMUX = (mode & ADMUX_REFS_MASK);
+      #else
+        badCall("analogReference() cannot be used on a part without an ADC");
+      #endif
     #endif
-  #endif
+  #endif // end of non-x7 reference setting.
 }
 
 
@@ -141,8 +163,14 @@ void analogReference(uint8_t mode) {
       badCall("This part only supports bipolar mode.");
     }
   }
+#elif defined(__AVR_ATtiny26__)
+  inline __attribute__((always_inline)) void setADCBipolarMode(bool bipolar) {
+    if (!__builtin_constant_p(bipolar) || bipolar) {
+      badCall("This part only supports unipolar mode.");
+    }
+  }
 #else
-  inline __attribute__((always_inline)) void setADCBipolarMode(((unused))bool bipolar) {
+  inline __attribute__((always_inline)) void setADCBipolarMode(__attribute__((unused))bool bipolar) {
     badCall("This part does not have a differential ADC, much less an option for bipolar vs unipolar mode");
   }
 #endif
@@ -155,17 +183,20 @@ inline int analogRead(uint8_t pin) {
   if (__builtin_constant_p(pin)) {
     //the rest if this is all done by the optimizser only where pin is a constant. Otherwise, you get no
     // compile time error check, just runtime check yielding large negative value for invalid pin/options
+    if (pin==NOT_A_PIN) {
+      badArg("ADC channel does not exist, or analog input on that pin not supported");
+    }
     #if defined(__AVR_ATtinyX61__)
-    if ((pin & 0x3F) < 32 && (pin & 0x40))
-      badArg("Compile-time known ADC channel with gain selection set does not support gain selection");
+      if ((pin & 0x3F) < 32 && (pin & 0x40))
+        badArg("ADC channel with gain selection set does not support gain selection");
     #elif defined(__AVR_ATtinyX5__)
-    if ((pin & 0x5F) > ADMUX_MUX_MASK)
-      badArg("Compile-time known ADC channel does not exist on this part");
-    if ((pin < 4 || pin > 11 ) && (pin & 0x20))
-      badArg("Compile-time known ADC channel not valid: IPR bit only valid for differential channels");
+      if ((pin & 0x5F) > ADMUX_MUX_MASK)
+        badArg("ADC channel does not exist on this part");
+      if ((pin < 4 || pin > 11 ) && (pin & 0x20))
+        badArg("Compile-time known ADC channel not valid: IPR bit only valid for differential channels");
     #else
-    if ((pin & 0x7F) > ADMUX_MUX_MASK)
-      badArg("Compile-time known ADC channel does not exist on this part");
+      if ((pin & 0x7F) > ADMUX_MUX_MASK)
+        badArg("Compile-time known ADC channel does not exist on this part");
     #endif
   }
   #ifdef SLEEP_MODE_ADC
@@ -182,9 +213,9 @@ int analogReadNR(uint8_t pin) {
 */
 
 #ifdef SLEEP_MODE_ADC
-int _analogRead(uint8_t pin, bool use_noise_reduction) {
+  int _analogRead(uint8_t pin, bool use_noise_reduction) {
 #else
-int _analogRead(uint8_t pin) {
+  int _analogRead(uint8_t pin) {
 #endif
   #ifndef ADCSRA
     badCall("analogRead() cannot be used on a part without an ADC");
@@ -226,7 +257,7 @@ int _analogRead(uint8_t pin) {
 
       ADMUX = ((analog_reference & 0xC0) | (pin & 0x1F));
       // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
-      // ADCSRB     BIN(put)| GSEL | - | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
+      // ADCSRB     BIN | GSEL | - | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
       // BIN stands for Bipolar INput, not BINary
       ADCSRB = (ADCSRB & (0xA7)) | (analog_reference & 0x10) | (pin & 0x40) | ((pin & 0x20) >> 2);
       // ADCSRB = (ADCSRB & (0xA7)) | (analog_reference & 0x10) | (pin & 0x40) | ((pin & 0x20)?0x08:0);
@@ -271,6 +302,18 @@ int _analogRead(uint8_t pin) {
     // uint8_t low = ADCL;
     // uint8_t high = ADCH;
     // return (high << 8) | low;
+    // On further study, I think this was due to the core authors reading the part about how you have o read ADCL before
+    // ADCH and not having faith that the compiler would generate code that does that when asked to read ADCW.
+    // I *do* have faith, however, for three reasons
+    // 1. That the header supplied by microchip defines ADCW and deosn't warn abot this implies that the ssue
+    // probably doesn't manifest when used reasonably.
+    // 2. There is no plausible reason the compiler might feel it needed to access the regsters backards (nor could I get
+    // it to generate unsafe code)
+    // 3. Even if it did, it would only be a problem in weirdo atypical use cases that violate the expectations of the
+    // the core (such that the user at that point is already, at best, in "it is the user's responsibility to ensure"
+    // zone - and possbly nasal-demon territory) and I stll have trouble contriving a situation where ti ould manifest
+    // bad behavior even then... especially with, worst case, the low byte being read in the next system clock (and
+    // like I said, I've never actually  seen code like that; concerns over that are I think entirely imaginary.)
     return ADCW;
   #endif
 }

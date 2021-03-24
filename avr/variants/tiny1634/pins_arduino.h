@@ -1,7 +1,7 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
    Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
    Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
-   Free Software - GPL 2.1, please see LICENCE.md for details */
+   Free Software - LGPL 2.1, please see LICENCE.md for details */
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
@@ -176,9 +176,13 @@ static const uint8_t A11 = ADC_CH(11);
 #define USI_DATA_DDR       DDRB
 #define USI_DATA_PORT     PORTB
 #define USI_DATA_PIN       PINB
+#define USI_DATA_PUE       PUEB
 
-#define USI_CLOCL_DDR      DDRC
+#define USI_CLOCK_DDR      DDRC
 #define USI_CLOCK_PORT    PORTC
+#define USI_CLOCK_PIN      PINC
+#define USI_CLOCK_PUE      PUEC
+
 #define USI_CLOCK_BIT     PINC1
 #define USI_DO_BIT        PINB2
 #define USI_DI_BIT        PINB1

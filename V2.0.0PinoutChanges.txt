@@ -2,5 +2,5 @@ Changes to pinout images for ATTinyCore 2.0.0
 * New ATTiny1634 pinout
 * ATTiny1634 - VUSB pins: PC4 D+, PC5 D-
 * ATTiny861 - VUSB pins: PB6 D+, PB4 D- (by not putting it on PD5, the third PWM pin is no longer encumbered by a the USB crap)
-* ATTiny841,84 - VUSB pins: PB0, PB1. I may have to make both combinations an option because every conceivable arrangement of these has been used!
-* ATTiny828 - PA4 SDA (master only mode), PA5 SDA (master-only mode). The 828 uses the same pins for SPI and hardware TWI slave. But if only using master mode (we have tools menu because I can't seem to get sane compile sizes any way other than switching which ones get built in based on menu option - otherwise it has to build every damned method and include them in the code, even when the slave ones never get called and aren't used.
+* ATTiny841,84 - VUSB pins: PB0, PB1. I may have to make both combinations an option because every conceivable arrangement of these has been used, including D+ on PB2 (though I think I know why this was done, it was a t84-not-a and the oscillator wasn't stable enough so they had to pipe in external CLOCK - I don't know why you'd do D+ on B0 D- on B1. Which is the most common one!)
+* ATTiny828 - PA4 SDA (master only mode), PA5 SDA (master-only mode). The 828 uses the same pins for SPI and hardware TWI slave, AND one of those pins has a nasty errata. But if only using master mode, its a softwre master that can use any pins, so we use that.

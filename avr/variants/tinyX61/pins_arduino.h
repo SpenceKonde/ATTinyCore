@@ -1,7 +1,7 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
    Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
    Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
-   Free Software - GPL 2.1, please see LICENCE.md for details */
+   Free Software - LGPL 2.1, please see LICENCE.md for details */
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
@@ -127,10 +127,11 @@ static const uint8_t A10 = ADC_CH(10);
 #define DEFAULT             ADC_REF(0x00)
 #define EXTERNAL            ADC_REF(0x01)
 #define INTERNAL1V1         ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL2V56_NO_CAP ADC_REF(0x06) /* Not connected to AREF; AREF may be used for other purposes */
+#define INTERNAL2V56        ADC_REF(0x06) /* Not connected to AREF; AREF may be used for other purposes */
 #define INTERNAL2V56_CAP    ADC_REF(0x07) /* Connect a capacitor between AREF and ground for improved reference stability */
-#define INTERNAL2V56        INTERNAL2V56_NO_CAP
-#define INTERNAL            INTERNAL
+#define INTERNAL2V56_NO_CAP INTERNAL2V56
+#define INTERNAL2V56NOBP    INTERNAL2V56  /* deprecated */
+#define INTERNAL            INTERNAL1V1   /* deprecated */
 
 /* Special Analog Channels */
 #define ADC_INTERNAL1V1      ADC_CH(0x1E)

@@ -74,17 +74,37 @@ ACSR |=~(1<<ACD);
 The ATtiny88 ADC is about as boring as they come. It's a standard 8-channel (6 on DIP or 28-pin QFN packages), one reference, temp sensor. Single-ended only. Basically what any x8 atmega has too, which is also incredibly uninspiring.
 
 ### ADC Reference options
-* DEFAULT: Vcc
-* INTERNAL1V1: Internal 1.1v reference (connected to AREF pin????)
-* INTERNAL (compatibility, deprecated - parts have 1-5 internal references - this could be many voltages; people should really specify what the voltage they want is) for INTERNAL1V1
+Just two options on the t88/48. We recommend "INTERNAL1V1" to refer to that reference, as parts have multiple references of different voltages.
+| Reference Option   | Reference Voltage           | Uses AREF Pin        |
+|--------------------|-----------------------------|----------------------|
+| `DEFAULT`          | Vcc                         | There is no AREF pin |
+| `INTERNAL1V1`      | Internal 1.1V reference     | n/a                  |
+| `INTERNAL`         | Alias of INTERNAL1V1        | n/a                  |
 
 ### Internal Sources
-* ADC_INTERNAL1V1
-* ACD_GROUND
-* ADC_TEMPERATURE
 
-### Purchasing ATtiny88 Boards
-I (Spence Konde / Dr. Azzy) have mostly given up trying to sell breaksouts for unpopular parts like the tiny88. I expect most users will be working with the DIP parts, or using the MH-Tiny USB boards (which can have the USB functionality removed with an ISP programmer) or most likely of all, using parts that are more interesting than these. The only design I had to sell was one of my very early ones, and not a particularly compelling product on it's merits.
+| Voltage Source  | Description                            |
+|-----------------|----------------------------------------|
+| ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
+| ADC_GROUND      | Reads ground - for offset measurement? |
+| ADC_TEMPERATURE | Reads internal temperature sensor      |
+
+### Temperature Measurement
+To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
+
+## Tuning Constant Locations
+ISP programming: EESAVE fuse set, stored in EEPROM
+Bootloader used: Saved between end of bootloader and end of flash. See our example sketch to see how one might generate this.
+
+| Tuning Constant        | Location EEPROM | Location Flash |
+|------------------------|-----------------|----------------|
+| Temperature Offset     | E2END - 3       | FLASHEND - 5   |
+| Temperature Slope      | E2END - 2       | FLASHEND - 4   |
+| Tuned OSCCAL ?? MHz    | E2END - 1       | FLASHEND - 3   |
+| Tuned OSCCAL 8 MHz     | E2END           | FLASHEND - 2   |
+| Bootloader Signature 1 | Not Used        | FLASHEND - 1   |
+| Bootloader Signature 2 | Not Used        | FLASHEND       |
+
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x8-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.

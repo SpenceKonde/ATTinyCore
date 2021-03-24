@@ -1,7 +1,7 @@
 /* pins_arduino.h - Pin definition functions for ATTinyCore
  * Part of ATTinyCore - github.com/SpenceKonde/ATTinyCore
  *   Copyright (c) 2015~2021 Spence Konde, (c) 2007 David A. Mellis
- *   Free Software - GPL 2.1, please see LICENCE.md for details
+ *   Free Software - LGPL 2.1, please see LICENCE.md for details
  *---------------------------------------------------------------------------*/
 
 #ifndef Pins_Arduino_h
@@ -137,12 +137,12 @@ static const uint8_t A10 = ADC_CH(10);
 
 /* Analog Reference bit masks */
 #define DEFAULT           ADC_REF(0x00)
-#define EXTERNAL          ADC_REF(0x08)
+#define EXTERNAL          ADC_REF(0x08) /* Apply external reference voltage to AREF pin */
 #define INTERNAL1V1       ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
 #define INTERNAL            INTERNAL1V1
 #define INTERNAL2V56      ADC_REF(0x03) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL1V1_XREF  ADC_REF(0x06)
-#define INTERNAL2V56_XREF ADC_REF(0x07)
+#define INTERNAL1V1_XREF  ADC_REF(0x06) /* Interna1 1.1V reference is output on AREF, and may be used by other devices */
+#define INTERNAL2V56_XREF ADC_REF(0x07) /* Interna1 2.56V reference is output on AREF, and may be used by other devices */
 
 /* Special Analog Channels */
 #define ADC_TEMPERATURE    ADC_CH(0x0B)

@@ -56,22 +56,25 @@ There is a full hardware SPI port and the normal SPI library can be used.
 There is one full hardware Serial port with LIN support, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. The ATtiny x7-family has LIN support, unique among the ATtiny linup; LIN (Local Interconnect Network) is frequently used in automotive and industrial applications. One consequence of this additional feature is that the baud rate generator is able to match baud rates much more closely than a "standard" UART module.
 
 ## ADC Features
-The ATtiny x7 series features a mid-range ADC - it has the second reference voltage, a built-in voltage divider on AVcc (which is nominally tied to Vcc, optionally with measures taken to reduce noise; nobody takes such measures in Arduino-land, and it generally appears somewhat rare in the wild - note that per datasheet AVcc must be within 0.3V of AVcc), and a selection of differential pairs. It also has the rare feature of being able to *OUTPUT* it's internal analog reference voltages.
+The ATtiny x7 series features a mid-range ADC - it has the second reference voltage, a built-in voltage divider on AVcc (which is nominally tied to Vcc, optionally with measures taken to reduce noise; nobody takes such measures in Arduino-land, and it generally appears somewhat rare in the wild - note that per datasheet AVcc must be within 0.3V of AVcc), and a modest selection of differential pairs. It also has the rare feature of being able to *OUTPUT* it's internal analog reference voltages.
 
-### Reference Options
-* DEFAULT: Vcc
-* EXTERNAL: Voltage applied to AREF pin
-* INTERNAL1V1: Internal 1.1v reference
-* INTERNAL2V56: Internal 2.56v
-* INTERNAL1V1_XREF: Internal 1.1v - also output on PA7 (AREF) pin
-* INTERNAL2V56_XREF: Internal 2.56v - also output on PA7 (AREF) pin
-* INTERNAL: synonym for INTERNAL1V1 (deprecated)
+| Reference Option    | Reference Voltage           | Uses AREF Pin                 |
+|---------------------|-----------------------------|-------------------------------|
+| `DEFAULT`           | Vcc                         | No, pin available             |
+| `EXTERNAL`          | Voltage applied to AREF pin | Yes, ext. voltage             |
+| `INTERNAL1V1`       | Internal 1.1V reference     | No, pin available             |
+| `INTERNAL2V56`      | Internal 2.56V reference    | No, pin available             |
+| `INTERNAL1V1_XREF`  | Internal 1.1V reference     | Yes, reference output on AREF |
+| `INTERNAL2V56_XREF` | Internal 2.56V reference    | Yes, reference output on AREF |
+| `INTERNAL`          | Same as `INTERNAL1V1`       | No, pin available             |
 
 ### Internal Sources
-* ADC_TEMPERATURE    ADC_CH(0x0B)
-* ADC_INTERNAL1V1    ADC_CH(0x0B)
-* ADC_AVCCDIV4       ADC_CH(0x0B)
-* ADC_GROUND         ADC_CH(0x0B)
+| Voltage Source  | Description                            |
+|-----------------|----------------------------------------|
+| ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
+| ADC_GROUND      | Reads ground - for offset correction?  |
+| ADC_AVCCDIV4    | Reads AVCC divided by 4                |
+| ADC_TEMPERATURE | Reads internal temperature sensor      |
 
 ### Differential ADC channels
 Though it's a far cry from what some of the classic tinyAVR parts have, the x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.  ATTinyCore (v2.0.0+) allows you to read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro (ex: `analogRead(ADC_CH(0x11))` to read ADC0 and ADC1 at 20x gain, equivalent to `analogRead(DIFF_A0_A1_20X)`), otherwise they will be interpreted as a (likely non-existent) digital pin (See [Analog and Digital Pins](AnalogAndDigitalPins.md) for more information).
@@ -87,16 +90,14 @@ Though it's a far cry from what some of the classic tinyAVR parts have, the x7-s
 | ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  DIFF_A8_A9_1X |  DIFF_A8_A9_20X |
 | ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | DIFF_A9_A10_1X | DIFF_A9_A10_20X |
 
-### Temperature Measurement
-To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP). We suggest storing this temperature calibration value at (`E2END`-3:`E2END`-2) in the EEPROM (the final two bytes of the EEPROM should be reserved for oscilator tuning values in non-bootloader configurations). When a bootloader is in use, this value can instead be stored near the end of the flash, at `FLASHEND - 5` (and hence also `FLASHEND - 4`) (the final 2 bytes hold the bootloader version, and the two before them hold tuned `OSCCAL` values at 8 MHz and 8.25 MHz (8.25 x 2 gives 16.5 MHz when running off internal for the 16.5 MHz VUSB option).
 
-Note that while the text of this sections is essentially copied verbatim between most of the classic tinyAVR parts, the ATtiny87/167 datasheet has a different set of "typical values"... and these are inconsistent with what the text is saying by a huge margin. However, it did not escape my notice that the same table also contains a typo in the notation (0c01B8 instead of 0x01B8), and that the inconsistencies are suspiciously close to what might happen if someone attempted to convert from decimal to hex recognizing that the third digit is 256's but not that second digit is 16's (230middle value is 300 on other sheets, 0x144 here. 300 - 256 = 44, so a 1 in the 256's and 44 in the tens and ones, high value 370 on other sheets, 0x1B8 here. Very close to 370 - 256 = 114 11 is B in hex so 0x1B4, though I can't account for the extra 4. The low value is harder to explain via math errors but if my bad-math theory above is correct, I have no confidence in his ability to add and subtract correctly either).
+### Temperature Measurement
+To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
+
+Note that while the text of this section of the datasheet is essentially copied verbatim between most of the classic tinyAVR parts, the ATtiny87/167 datasheet has a different set of "typical values"... and these are inconsistent with what the text is saying by a huge margin. However, it did not escape my notice that the same table also contains a typo in the notation (0c01B8 instead of 0x01B8), and that the inconsistencies are suspiciously close to what might happen if someone attempted to convert from decimal to hex recognizing that the third digit is 256s but not that second digit is 16's (230middle value is 300 on other sheets, 0x144 here. 300 - 256 = 44, so a 1 in the 256's and 44 in the tens and ones, high value 370 on other sheets, 0x1B8 here. Very close to 370 - 256 = 114 11 is B in hex so 0x1B4, though I can't account for the extra 4. The low value is harder to explain via math errors but if my bad-math theory above is correct, I have no confidence in his ability to add and subtract correctly either).
 
 ### Purchasing ATtiny167 Boards
-I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core.
-![Picture of ATtiny167 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2016-04-19T01:35:24.770Z-AZB7_Asy.png.855x570_q85_pad_rcrop.png)
-* [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny-861-or-167-development-board-assembled/)
-* [Bare Boards](https://www.tindie.com/products/DrAzzy/attiny-16787861461261-breakout-bare-board/)
+I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. Unfortunately this design is currently out of stock; a revised version in in the works.
 * Micronucleus boards are readily available all over the internet, fairly cheaply, in several models. Search for things like "Digispark Pro", "Digispark ATtiny167", "ATtiny167 USB" and so on.
 
 
