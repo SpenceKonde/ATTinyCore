@@ -54,7 +54,9 @@
 #define PIN_PC7  (25)
 #define PIN_PC6  (26)
 
-#define LED_BUILTIN PIN_PD0
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN (PIN_PD0)
+#endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
 #define PIN_A0   (PIN_PC0)

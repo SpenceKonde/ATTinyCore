@@ -14,11 +14,12 @@ GPIO Pins             |     26 + RESET |     26 + RESET |     25 + RESET |     2
 ADC Channels          |   8 (6 in DIP) |   8 (6 in DIP) |              8 |   8 (6 in DIP) |   8 (6 in DIP) |
 PWM Channels          |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |
 Interfaces            |       SPI, I2C |       SPI, I2C | vUSB, SPI, I2C |       SPI, I2C |       SPI, I2C |
-Clocking Options      |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
+Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
 Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |
+Int. WDT Oscillator   |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |
 Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |    8, 12, 12.8 |    8, 12, 12.8 |
 External Crystal      |  Not supported |  Not supported |  Not supported |  Not supported |  Not supported |
-Internal Clock        |   All Standard | 16,12,10,8,4,1 | **16**,8,4,2,1 |   All Standard | 16,12,10,8,4,1 |
+External Clock        |   All Standard | 16,12,10,8,4,1 | **16**,8,4,2,1 |   All Standard | 16,12,10,8,4,1 |
 Default Pin Mapping   |       Standard |       Standard |        MH-Tiny |       Standard |       Standard |
 USB only available at **BOLD** clock. [Notes on this table](SpecificationConventions.md).
 

@@ -43,7 +43,9 @@
 #define PIN_PB4   (14) /* XTAL1 */
 #define PIN_PB5   (15) /* XTAL2 */
 
-#define LED_BUILTIN (PIN_PB1)
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN (PIN_PB1)
+#endif
 
 #define PIN_A3      (3)
 #define PIN_A5      (5)

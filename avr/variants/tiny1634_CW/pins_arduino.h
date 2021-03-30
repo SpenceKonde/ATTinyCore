@@ -44,7 +44,9 @@
 #define PIN_PC3     (17)  /* RESET */
 #define PIN_PC4     (15)  /* XTAL2 */
 #define PIN_PC5     (16)  /* XTAL1 */
-#define LED_BUILTIN (PIN_PC0)
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN (PIN_PC0)
+#endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
 #define PIN_A0      (PIN_PA3)

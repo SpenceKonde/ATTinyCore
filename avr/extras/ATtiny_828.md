@@ -1,32 +1,39 @@
 ### ATtiny828(R)
 ![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny828")
 
- Specifications |  .
------------- | -------------
-Flash (program memory)   | 8192b ( 7680b with Optiboot)
-RAM  | 512 bytes
-EEPROM | 512 bytes
-Bootloader | Yes, Optiboot (serial)
-GPIO Pins | 27
-ADC Channels | 28 (including the one on reset), many differential channels
-PWM Channels | 4
-Interfaces | UART, SPI, slave I2C
-Clock options | Internal 1/4/8 MHz, external clock (no crystal) up to 20 MHz
+Specification         |    ATtiny828   |    ATtiny828   |
+----------------------|----------------|----------------|
+Bootloader (if any)   |                |       Optiboot |
+Uploading uses        |   ISP/SPI pins | Serial Adapter |
+Flash available user  |     8192 bytes |     7680 bytes |
+RAM                   |      512 bytes |      512 bytes |
+EEPROM                |  252/256 bytes |      256 bytes |
+GPIO Pins             |     27 + RESET |     27 + RESET |
+ADC Channels          |             28 |             28 |
+PWM Channels          |          4 (8) |          4 (8) |
+Interfaces            | SPI, I2C slave | SPI, I2C slave |
+                      |          USART |          USART |
+Clocking Options      |         in MHz |         in MHz |
+Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |
+Int. WDT Oscillator   |  Not supported |  Not supported |
+Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |
+External Crystal      |  Not supported |  Not supported |
+External Clock        |   All Standard | 16,12,10,8,4,1 |
 
-The ATtiny828R has a tighter factory calibration of it's internal oscillator. It is otherwise identical to the ATtiny828.
+Note: The internal oscillator is is factory calibrated very well at 3.3v, but it is consistently several percent fast at 5V, enough that UART starts to become unreliable. The ATtiny828R has a tighter factory calibration of it's internal oscillator (I think with temperature calibration info maybe? supplied information on what makes the R different seems to be pretty thin). It is otherwise identical to the ATtiny828, and has the same problem at 5V.
 
 ### Warning: Pin 27 (PD3) does not work as an input unless watchdog timer is running
 This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might note that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
-See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT.... Worse still, that's the clock pin for SPI and TWI. And TWI being an open drain bus is going to be pretty well hosed by that defect. It really is a crying shame how the 828 and 1634 were denied the fix they deserved - a fix for the pin errata, and it's crown jewel (the full on fancy-pants ATtiny841-style differential ADC with programmable gain selection)
+See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT.... Worse still, that's the clock pin for SPI and TWI. And TWI being an open drain bus is going to be pretty well hosed by that defect. This is a "Enable the WDT or disable TWI" level bug. It really is a crying shame how the 828 and 1634 were denied the fix they deserved - a fix for the pin errata, and it's crown jewel (the full on fancy-pants ATtiny841-style differential ADC with programmable gain selection which was clearly in the works for it). Note that, partly for this reason, when TWI is used in master-only mode (which is a software I2C master implementation) I2C is on PA4 and PA5, instead of PORTD, and is hence uneffected by this bug.
 
 ## Programming
-The ATtiny828 can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+The ATtiny828 can be programmed with any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at 115200 baud for 12 MHz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 15744b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the booloader).
 
 ### Clock options
-The ATtiny828, like the ATtiny88 does not provide support for using an external crystal as a clock source, only the internal oscillator (at 8, 4 1 MHz) or an external *clock* source.
+The ATtiny828, like the ATtiny88, does not provide support for using an external crystal as a clock source, only the internal oscillator (at 8, 4 1 MHz) or an external *clock* source.
 
 ### Using external CLOCK on 828
 These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. Unlike the parts which support a crystal, where this "potentially dangerous" clock option is not available in the menus because there are menu options for the supported speeds with a crystal as a clock source, so the procedure below can be used. On the 48/88/828, these menu options will enable the external CLOCK option. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!**
@@ -43,7 +50,7 @@ Tone() uses Timer1. For best results, use pin 21 or 22 (PIN_PC5, PIN_PC6), as th
 Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably.
 
 ### SPI Support
-There is full Hardware SPI support.
+There is full Hardware SPI support. However, PD3 is one of the pins used by the hardware SPI; you are advised to use the WDT workaround for the PD3 silicon bug if using SPI.
 
 ### UART (Serial) Support
 There is one hardware serial port, Serial. It works the same as Serial on any normal Arduino - it is not a software implementation.
@@ -60,12 +67,13 @@ Despite having 28 ADC input channels, the 828 only has the two basic reference o
 * DEFAULT: Vcc
 * INTERNAL1V1: Internal 1.1v reference
 * INTERNAL: synonym for INTERNAL1V1
+
 ### Weird I/O-pin related features
 There are a few strange features relating to the GPIO pins on the ATtinyx41 family which are found only in a small number of other parts released around the same time.
 
 
-#### PD4 silicon errata
-As mentioned above, the t828 has a ~silicon bug~ poorly documented feature relating to PD3:
+#### PD3 silicon errata
+As mentioned above, the t828 has a serious silicon bug PD3, made all the worse by the :
 
 If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below) - so the real impact of this issue is in fact very low, assuming you know about it and don't waste hours or days trying to figure out what is going on.
 
@@ -86,7 +94,7 @@ void startSleep() { //call instead of sleep_cpu()
   WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt
 }
 ```
-
+One of the most frustrating things to me is that you can't rewrite the vectors arbirarily from within the ice,
 
 
 #### Special "high sink" port
@@ -96,7 +104,7 @@ All pins on PORTC have unusually high sink capability - when sinking a given amo
 PHDE=(1<<PHDEC);
 ```
 
-This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts. The PWM outputs of the timers can be remapped to this port as well, making it of obvious utility for driving LEDs and similar. This also means that, if you are attempting to generate an analog voltage with a PWM pin and an RC filter, your result may be lower than expected, as the pin drivers are not symmetric.
+This is no great shakes - the Absolute Maximum current rating of 40mA still applies and all... but it does pull closer to ground with a a "large" 10-20mA load. A very strange feature of these parts. The PWM outputs of thego on this this port as well, making it of obvious utility for driving LEDs and similar. This also means that, if you are attempting to generate an analog voltage with a PWM pin and an RC filter, your result may be lower than expected, as the pin drivers are not symmetric; for that use case, you should use a proper witch to
 
 #### Separate pullup-enable register
 Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, PUEx, which controls the pullups (rather than PORTx when DDRx has pin set as input). Like the ATtiny1634, and unlike the ATtiny841, all of these pullup registers are located in the low IO space and sensibly relative to each other and to the other PORT-related registers.

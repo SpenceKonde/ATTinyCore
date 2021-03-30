@@ -15,15 +15,9 @@
 
 #define ATTINYX313 1       //backwards compatibility
 #define __AVR_ATtinyX313__ //recommended
-#define USE_SOFTWARE_SPI 1
-
-#define LED_BUILTIN (13)
-
-#include <avr/pgmspace.h>
 
 #define NUM_DIGITAL_PINS            18
 #define NUM_ANALOG_INPUTS           0
-
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
@@ -47,6 +41,9 @@
 #define PIN_PA2   (17)
 
 
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN (PIN_PB4)
+#endif
 
 /* Interrupt macros to go from pin to PCMSK register and bit within it, and
  * the register to enable/disable banks of PCINTs, and bit within it PCICR

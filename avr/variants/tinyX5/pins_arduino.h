@@ -28,7 +28,9 @@
 #define PIN_PB4                 (4)
 #define PIN_PB5                 (5)
 
-#define LED_BUILTIN       (PIN_PB1)
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN       (PIN_PB1)
+#endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
 #define PIN_A0            (PIN_PB5)

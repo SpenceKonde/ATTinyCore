@@ -41,7 +41,9 @@
 #define PIN_PB2     (15) // A7
 #define PIN_PB1     (16) // A6
 #define PIN_PC3     (17) // Reset
-#define LED_BUILTIN (PIN_PC0)
+#ifndef LED_BUILTIN
+  #define LED_BUILTIN (PIN_PC0)
+#endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
 #define PIN_A0      (PIN_PA3)
