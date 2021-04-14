@@ -3,7 +3,7 @@
   Part of Arduino - http://www.arduino.cc/
 
   Copyright (c) 2007 David A. Mellis
-  Copyright 2015~2018 Spence Konde
+  Copyright (c) 2015~2020 Spence Konde
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -83,6 +83,22 @@ static const uint8_t A5 = 0x80 | 5;
 static const uint8_t A6 = 0x80 | 6;
 static const uint8_t A7 = 0x80 | 7;
 
+
+#define PIN_PA0  (10)
+#define PIN_PA1  ( 9)
+#define PIN_PA2  ( 8)
+#define PIN_PA3  ( 7)
+#define PIN_PA4  ( 6)
+#define PIN_PA5  ( 5)
+#define PIN_PA6  ( 4)
+#define PIN_PA7  ( 3)
+#define PIN_PB0  ( 0)
+#define PIN_PB1  ( 1)
+#define PIN_PB2  ( 2)
+#define PIN_PB3  (11)  /* RESET */
+#define LED_BUILTIN (2)
+
+//legacy
 #define PIN_A0  (10)
 #define PIN_A1  ( 9)
 #define PIN_A2  ( 8)
@@ -97,15 +113,13 @@ static const uint8_t A7 = 0x80 | 7;
 #define PIN_B3  (11)  /* RESET */
 #define LED_BUILTIN (2)
 
+#define PINMAPPING_CCW
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
-#define TUNED_OSCCAL_VALUE                        OSCCAL
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1

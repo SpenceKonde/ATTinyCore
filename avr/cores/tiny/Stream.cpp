@@ -44,7 +44,7 @@ int Stream::timedRead()
   // do this another way, timeout is no longer in milliseconds
   // @TODO cycle-count the contents of this loop and figure out a proper
   //   number for this, this is currently completely bogus based on
-  //   a complete and utter guess assuming 9.6MHz clock (ATTiny13 commonly)
+  //   a complete and utter guess assuming 9.6MHz clock (ATtiny13 commonly)
   //   This code shamelessly copied from github.com/sleemanj/ATTinyCore
   uint32_t MaxLoops = _timeout << 10;
   do {
@@ -72,7 +72,7 @@ int Stream::timedPeek()
   // do this another way, timeout is no longer in milliseconds
   // @TODO cycle-count the contents of this loop and figure out a proper
   //   number for this, this is currently completely bogus based on
-  //   a complete and utter guess assuming 9.6MHz clock (ATTiny13 commonly)
+  //   a complete and utter guess assuming 9.6MHz clock (ATtiny13 commonly)
   //   This code shamelessly copied from github.com/sleemanj/ATTinyCore
   uint32_t MaxLoops = _timeout << 10;
   do {

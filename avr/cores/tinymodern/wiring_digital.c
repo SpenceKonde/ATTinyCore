@@ -250,9 +250,11 @@ int digitalRead(uint8_t pin)
 
   if (port == NOT_A_PIN) return LOW;
 
-  // If the pin that support PWM output, we need to turn it off
-  // before getting a digital reading.
-  turnOffPWM( pin );
+  // There is no need to turn off PWM on a pin before doing digitalRead().
+  // "read" should *NEVER* change the behavior of the thing you're using it on.
+  // That's why it's called "read" not "write". As an added bonus, sets the
+  // stage for auto-fast-digitalRead() for compile time known pins.
+  // turnOffPWM( pin );
 
   if (*portInputRegister(port) & bit) return HIGH;
   return LOW;

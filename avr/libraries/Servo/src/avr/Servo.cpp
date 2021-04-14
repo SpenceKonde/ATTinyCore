@@ -456,64 +456,103 @@ void ServoSequencer::servoTimerSetup()
 //=============================================================================
 void ServoSequencer::setupTimerPrescaler()
 {
-    #ifdef PLLTIMER1
-        #error "PLL Timer source not compatible with Servo, turn it off."
-    #endif
-    #ifdef LOWPLLTIMER1
-        #error "PLL Timer source not compatible with Servo, turn it off."
-    #endif
-    //reset the Timer Counter Control Register to its reset value
   #if defined(__AVR_ATtinyX5__)
-    TCCR1 = 0;
-
-    #if F_CPU == 8000000L
+    // No need to reset TCCR1 since we set it directly below.
+    #if defined(PLLTIMER1) //&& (F_CPU!=16500000L)
+        //set counter1 prescaler to 512
+        //our timer clock is 64 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1 |=  (1<< CS13); //set
+        //TCCR1 &= ~(1<< CS12); //clear
+        //TCCR1 |=  (1<< CS11); //set
+        //TCCR1 &= ~(1<< CS10); //clear
+        TCCR1=0x0A;
+    #elif defined (LOWPLLTIMER1)// && (F_CPU!=16500000L)
+        //set counter1 prescaler to 256
+        //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1 |=  (1<< CS13); //set
+        //TCCR1 &= ~(1<< CS12); //clear
+        //TCCR1 &= ~(1<< CS11); //clear
+        //TCCR1 |=  (1<< CS10); //set
+        TCCR1=0x09;
+    #elif F_CPU == 8000000L
         //set counter1 prescaler to 64
-        //our F_CPU is 8mhz so this makes each timer tick be 8 microseconds long
+        //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
         //TCCR1 &= ~(1<< CS13); //clear
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 |=  (1<< CS11); //set
         //TCCR1 |=  (1<< CS10); //set
-        TCCR1=7;
-    #elif F_CPU == 16000000L //16MHz
+        TCCR1=0x07;
+    #elif (F_CPU == 16000000L || F_CPU==16500000L)//16 MHz
+        //set counter1 prescaler to 128
+        //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
         //TCCR1|=(1<<CS13)
-        TCCR1=8;
-
+        //TCCR1 &= ~(1<< CS12); //clear
+        //TCCR1 &= ~(1<< CS11); //clear
+        //TCCR1 &= ~(1<< CS10); //clear
+        TCCR1=0x08;
+    #elif F_CPU == 4000000L
+        //set counter1 prescaler to 32
+        //our F_CPU is 4 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1 &= ~(1<< CS13); //clear
+        //TCCR1 |=  (1<< CS12); //set
+        //TCCR1 |=  (1<< CS11); //set
+        //TCCR1 &= ~(1<< CS10); //clear
+        TCCR1=0x07;
     #elif F_CPU == 1000000L
         //set counter1 prescaler to 8
-        //our F_CPU is 1mhz so this makes each timer tick be 8 microseconds long
+        //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
         //TCCR1 &= ~(1<< CS13); //clear
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 &= ~(1<< CS11); //clear
         //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1=4;
+        TCCR1=0x04;
     #else
-        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85. "
+        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
     #endif
   #elif defined(__AVR_ATtinyX61__)
-    TCCR1B = 0;
-
-    #if F_CPU == 8000000L
+    // No need to reset TCCR1 since we set it directly below.
+    #if defined(PLLTIMER1) //&& (F_CPU!=16500000L)
+        //set counter1 prescaler to 512
+        //our timer clock is 64 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1B |=  (1<< CS13); //set
+        //TCCR1B &= ~(1<< CS12); //clear
+        //TCCR1B |=  (1<< CS11); //set
+        //TCCR1B &= ~(1<< CS10); //clear
+        TCCR1B=0x0A;
+    #elif defined (LOWPLLTIMER1) //&& (F_CPU!=16500000L)
+        //set counter1 prescaler to 256
+        //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1B |=  (1<< CS13); //set
+        //TCCR1B &= ~(1<< CS12); //clear
+        //TCCR1B &= ~(1<< CS11); //clear
+        //TCCR1B |=  (1<< CS10); //set
+        TCCR1B=0x09;
+    #elif F_CPU == 8000000L
         //set counter1 prescaler to 64
-        //our F_CPU is 8mhz so this makes each timer tick be 8 microseconds long
-        //TCCR1 &= ~(1<< CS13); //clear
-        //TCCR1 |=  (1<< CS12); //set
-        //TCCR1 |=  (1<< CS11); //set
-        //TCCR1 |=  (1<< CS10); //set
-        TCCR1B=7;
-    #elif F_CPU == 16000000L //16MHz
-        //TCCR1|=(1<<CS13)
-        TCCR1B=8;
-
+        //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1B &= ~(1<< CS13); //clear
+        //TCCR1B |=  (1<< CS12); //set
+        //TCCR1B |=  (1<< CS11); //set
+        //TCCR1B |=  (1<< CS10); //set
+        TCCR1B=0x07;
+    #elif (F_CPU == 16000000L || F_CPU==16500000L) //16 MHz
+        //set counter1 prescaler to 128
+        //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
+        //TCCR1B |=(1<<CS13)
+        //TCCR1B &= ~(1<< CS12); //clear
+        //TCCR1B &= ~(1<< CS11); //clear
+        //TCCR1B &= ~(1<< CS10); //clear
+        TCCR1B=0x08;
     #elif F_CPU == 1000000L
         //set counter1 prescaler to 8
-        //our F_CPU is 1mhz so this makes each timer tick be 8 microseconds long
+        //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
         //TCCR1 &= ~(1<< CS13); //clear
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 &= ~(1<< CS11); //clear
         //TCCR1 &= ~(1<< CS10); //clear
         TCCR1B=4;
     #else
-        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861. "
+        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
     #endif
 
   #endif
@@ -699,7 +738,7 @@ void ServoSequencer::timerCompareMatchISR()
 
 
 //=============================================================================
-// FUNCTION:    Interrupt service routine for timer1 compare A match
+// FUNCTION:    Interrupt service routine for Timer1 compare A match
 //
 // DESCRIPTION: AVR Libc provided function that is vectored into when the
 //              timer0 compare A match interrupt fires.
@@ -1055,136 +1094,30 @@ static inline void handle_interrupts(timer16_Sequence_t timer, volatile uint16_t
   }
 }
 
-#ifndef WIRING // Wiring pre-defines signal handlers so don't define any if compiling for the Wiring platform
-// Interrupt handlers for Arduino
-#if defined(_useTimer1)
-SIGNAL (TIMER1_COMPA_vect)
+ISR(TIMER1_COMPA_vect)
 {
   handle_interrupts(_timer1, &TCNT1, &OCR1A);
 }
-#endif
-
-#if defined(_useTimer3)
-SIGNAL (TIMER3_COMPA_vect)
-{
-  handle_interrupts(_timer3, &TCNT3, &OCR3A);
-}
-#endif
-
-#if defined(_useTimer4)
-SIGNAL (TIMER4_COMPA_vect)
-{
-  handle_interrupts(_timer4, &TCNT4, &OCR4A);
-}
-#endif
-
-#if defined(_useTimer5)
-SIGNAL (TIMER5_COMPA_vect)
-{
-  handle_interrupts(_timer5, &TCNT5, &OCR5A);
-}
-#endif
-
-#elif defined WIRING
-// Interrupt handlers for Wiring
-#if defined(_useTimer1)
-void Timer1Service()
-{
-  handle_interrupts(_timer1, &TCNT1, &OCR1A);
-}
-#endif
-#if defined(_useTimer3)
-void Timer3Service()
-{
-  handle_interrupts(_timer3, &TCNT3, &OCR3A);
-}
-#endif
-#endif
 
 
 static void initISR(timer16_Sequence_t timer)
 {
-#if defined (_useTimer1)
-  if(timer == _timer1) {
-    TCCR1A = 0;             // normal counting mode
-    TCCR1B = _BV(CS11);     // set prescaler of 8
-    TCNT1 = 0;              // clear the timer count
-#if defined(__AVR_ATmega8__)|| defined(__AVR_ATmega128__) || defined(__AVR_ATtiny1634__)
+  TCCR1A = 0;             // normal counting mode
+  TCCR1B = _BV(CS11);     // set prescaler of 8
+  TCNT1 = 0;              // clear the timer count
+  #if defined(TIMSK)
     TIFR |= _BV(OCF1A);      // clear any pending interrupts;
     TIMSK |=  _BV(OCIE1A) ;  // enable the output compare interrupt
-#else
-    // here if not ATmega8 or ATmega128
-    TIFR1 |= _BV(OCF1A);     // clear any pending interrupts;
-    TIMSK1 |=  _BV(OCIE1A) ; // enable the output compare interrupt
-#endif
-#if defined(WIRING)
-    timerAttach(TIMER1OUTCOMPAREA_INT, Timer1Service);
-#endif
-  }
-#endif
-
-#if defined (_useTimer3)
-  if(timer == _timer3) {
-    TCCR3A = 0;             // normal counting mode
-    TCCR3B = _BV(CS31);     // set prescaler of 8
-    TCNT3 = 0;              // clear the timer count
-#if defined(__AVR_ATmega128__) || defined(__AVR_ATtiny1634__)
-    TIFR |= _BV(OCF3A);     // clear any pending interrupts;
-    ETIMSK |= _BV(OCIE3A);  // enable the output compare interrupt
-#else
-    TIFR3 = _BV(OCF3A);     // clear any pending interrupts;
-    TIMSK3 =  _BV(OCIE3A) ; // enable the output compare interrupt
-#endif
-#if defined(WIRING)
-    timerAttach(TIMER3OUTCOMPAREA_INT, Timer3Service);  // for Wiring platform only
-#endif
-  }
-#endif
-
-#if defined (_useTimer4)
-  if(timer == _timer4) {
-    TCCR4A = 0;             // normal counting mode
-    TCCR4B = _BV(CS41);     // set prescaler of 8
-    TCNT4 = 0;              // clear the timer count
-    TIFR4 = _BV(OCF4A);     // clear any pending interrupts;
-    TIMSK4 =  _BV(OCIE4A) ; // enable the output compare interrupt
-  }
-#endif
-
-#if defined (_useTimer5)
-  if(timer == _timer5) {
-    TCCR5A = 0;             // normal counting mode
-    TCCR5B = _BV(CS51);     // set prescaler of 8
-    TCNT5 = 0;              // clear the timer count
-    TIFR5 = _BV(OCF5A);     // clear any pending interrupts;
-    TIMSK5 =  _BV(OCIE5A) ; // enable the output compare interrupt
-  }
-#endif
+  #else
+    TIFR1 |= _BV(OCF1A);
+    TIMSK1 |=  _BV(OCIE1A) ;  // enable the output compare interrupt
+  #endif
 }
 
 static void finISR(timer16_Sequence_t timer)
 {
-    //disable use of the given timer
-#if defined WIRING   // Wiring
-  if(timer == _timer1) {
-    #if defined(__AVR_ATmega1281__)||defined(__AVR_ATmega2561__)
-    TIMSK1 &=  ~_BV(OCIE1A) ;  // disable timer 1 output compare interrupt
-    #else
-    TIMSK &=  ~_BV(OCIE1A) ;  // disable timer 1 output compare interrupt
-    #endif
-    timerDetach(TIMER1OUTCOMPAREA_INT);
-  }
-  else if(timer == _timer3) {
-    #if defined(__AVR_ATmega1281__)||defined(__AVR_ATmega2561__)
-    TIMSK3 &= ~_BV(OCIE3A);    // disable the timer3 output compare A interrupt
-    #else
-    ETIMSK &= ~_BV(OCIE3A);    // disable the timer3 output compare A interrupt
-    #endif
-    timerDetach(TIMER3OUTCOMPAREA_INT);
-  }
-#else
-    //For arduino - in future: call here to a currently undefined function to reset the timer
-#endif
+  //The stuff here was all duplicating stuff that's in initToneTimer() - so let's just use that, and it'll clean up the timer state for PWM too!
+  initToneTimer(); //reset timer1 - this will fail if timer1 isn't used for tone, but timer1 is always used for tone in ATTinyCore!
 }
 
 static boolean isTimerActive(timer16_Sequence_t timer)

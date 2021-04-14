@@ -58,17 +58,25 @@
  * _Nbr_16timers indicates how many 16 bit timers are available.
  */
 #if (defined(__AVR_ATtiny43__))
-#error "The Servo library does not support the ATTiny43"
+#error "The Servo library does not support the ATtiny43"
 
 #elif (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
 
 
 #define Servo_VERSION           2     // software version of this library
 #ifndef MIN_PULSE_WIDTH               // Let the user set min/max pulse lengths
+#if (F_CPU==16500000L)
+#define MIN_PULSE_WIDTH       561     // 1/32nd longer
+#else
 #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
 #endif
+#endif
 #ifndef MAX_PULSE_WIDTH               // Let the user set min/max pulse lengths
+#if (F_CPU==16500000L)
+#define MAX_PULSE_WIDTH      2475     // 1/32nd longer
+#else
 #define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
+#endif
 #endif
 #define MAX_SERVOS              5
 #define INVALID_SERVO         255

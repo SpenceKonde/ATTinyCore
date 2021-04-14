@@ -1,0 +1,84 @@
+# https://github.com/per1234/formatting-checks
+name: General Formatting Checks
+
+on:
+  pull_request:
+  push:
+  # workflow_dispatch event allows the workflow to be triggered manually
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+  # repository_dispatch event allows the workflow to be triggered via the GitHub API
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
+  repository_dispatch:
+
+jobs:
+  utf-8-bom:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for UTF-8 BOM file encoding
+        run: find . -path './.git' -prune -or -type f -exec grep --files-with-matches --binary-files=without-match $'\xEF\xBB\xBF' '{}' \; -exec echo 'UTF-8 BOM encoding detected.' \; -exec false '{}' +
+
+  blank-first-line:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for files starting with a blank line
+        run: find . -path './.git' -prune -or \( -not -name '*.py' -and -type f \) -print0 | xargs -0 -L1 bash -c 'head -1 "$0" | grep --binary-files=without-match --regexp="^$"; if [[ "$?" == "0" ]]; then echo "Blank line found at start of $0."; false; fi'
+
+  tabs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for unnecessary use of true tabs
+        run: find . -path './.git' -prune -or \( -not -name 'keywords.txt' -and -not -name 'Makefile' -and -not -name 'Makefile.*' -and -not -name '*.py' -and -not -name '.gitmodules' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp=$'\t' '{}' \; -exec echo 'Tab found.' \; -exec false '{}' +
+
+  trailing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for trailing whitespace
+        run: find . -path './.git' -prune -or \( -not -name '*.hex' -and -not -name '*.py' -and -not -name '*.gif' -and -not -name '*.png' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp='[[:blank:]]$' '{}' \; -exec echo 'Trailing whitespace found.' \; -exec false '{}' +
+
+  line-endings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for non-Unix line endings
+        run: find . -path './.git' -prune -or \( -not -name '*.hex' -and -type f \) -exec grep --files-with-matches --binary-files=without-match --regexp=$'\r$' '{}' \; -exec echo 'Non-Unix EOL detected.' \; -exec false '{}' +
+
+  blank-last-line:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for blank lines at end of files
+        run: find . -path './.git' -prune -or \( -not -name '*.py' -and -type f \) -print0 | xargs -0 -L1 bash -c 'tail -1 "$0" | grep --binary-files=without-match --regexp="^$"; if [[ "$?" == "0" ]]; then echo "Blank line found at end of $0."; false; fi'
+
+  no-last-newline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check for files that don't end in a newline
+        # https://stackoverflow.com/a/25686825
+        run: find . -path './.git' -prune -or -type f -print0 | xargs -0 -L1 bash -c 'if test "$(grep --files-with-matches --binary-files=without-match --max-count=1 --regexp='.*' "$0")" && test "$(tail --bytes=1 "$0")"; then echo "No new line at end of $0."; false; fi'

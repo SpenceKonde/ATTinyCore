@@ -31,7 +31,7 @@
 
 #include <avr/pgmspace.h>
 
-#define TUNED_OSCCAL_VALUE                        OSCCAL
+
 
 #define ADC_TEMPERATURE 8
 
@@ -91,6 +91,44 @@ static const uint8_t A4 = 0x80 | 4;
 static const uint8_t A5 = 0x80 | 5;
 static const uint8_t A6 = 0x80 | 6;
 static const uint8_t A7 = 0x80 | 7;
+
+#define PIN_PD0  ( 0)
+#define PIN_PD1  ( 1)
+#define PIN_PD2  ( 2)
+#define PIN_PD3  ( 3)
+#define PIN_PD4  ( 4)
+#define PIN_PD5  ( 5)
+#define PIN_PD6  ( 6)
+#define PIN_PD7  ( 7)
+#define PIN_PB0  ( 8)
+#define PIN_PB1  ( 9)
+#define PIN_PB2  ( 10)
+#define PIN_PB3  ( 11)
+#define PIN_PB4  ( 12)
+#define PIN_PB5  ( 13)
+#define PIN_PB6  ( 14)
+#define PIN_PB7  ( 15)
+#define PIN_PC7  ( 16)
+#define PIN_PC0  ( 17)
+#define PIN_PC1  ( 18)
+#define PIN_PC2  ( 19)
+#define PIN_PC3  ( 20)
+#define PIN_PC4  ( 21)
+#define PIN_PC5  ( 22)
+#define PIN_PA0  ( 23)
+#define PIN_PA1  ( 24)
+#define PIN_PA2  ( 25)
+#define PIN_PA3  ( 26)
+#define PIN_PC6  ( 27)
+
+#define PIN_A0   (17)
+#define PIN_A1   (18)
+#define PIN_A2   (19)
+#define PIN_A3   (20)
+#define PIN_A4   (21)
+#define PIN_A5   (22)
+#define PIN_A6   (23)
+#define PIN_A7   (24)
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 26) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 15) ? 0 : (((p) <= 22) ? 1 : 3)))

@@ -1,4 +1,4 @@
-avrisp.name=AVR ISP (ATTinyCore)
+avrisp.name=AVR ISP
 avrisp.communication=serial
 avrisp.protocol=stk500v1
 avrisp.program.tool=avrdude
@@ -6,7 +6,7 @@ avrisp.program.protocol=stk500v1
 avrisp.program.tool=avrdude
 avrisp.program.extra_params=-P{serial.port}
 
-diamexusbisp.name=Diamex USB ISP (ATTinyCore)
+diamexusbisp.name=Diamex USB ISP
 diamexusbisp.communication=serial
 diamexusbisp.protocol=stk500v2
 diamexusbisp.program.tool=avrdude
@@ -14,17 +14,24 @@ diamexusbisp.program.protocol=stk500v2
 diamexusbisp.program.tool=avrdude
 diamexusbisp.program.extra_params=-P{serial.port}
 
-avrispmkii.name=AVRISP mkII (ATTinyCore)
+avrispmkii.name=AVRISP mkII
 avrispmkii.communication=usb
 avrispmkii.protocol=stk500v2
 avrispmkii.program.protocol=stk500v2
 avrispmkii.program.tool=avrdude
 avrispmkii.program.extra_params=-Pusb
 
-usbtinyisp.name=USBtinyISP (ATTinyCore)
+usbtinyisp.name=USBtinyISP (ATTinyCore) SLOW, for new or 1 MHz parts
 usbtinyisp.protocol=usbtiny
 usbtinyisp.program.tool=avrdude
-usbtinyisp.program.extra_params=
+usbtinyisp.program.speed=8
+usbtinyisp.program.extra_params=-B{program.speed}
+
+usbtinyisp2.name=USBtinyISP (ATTinyCore) FAST, for parts running >=2 MHz
+usbtinyisp2.protocol=usbtiny
+usbtinyisp2.program.tool=avrdude
+usbtinyisp2.program.speed=0.3
+usbtinyisp2.program.extra_params=-B{program.speed}
 
 usbasp.name=USBasp (ATTinyCore)
 usbasp.communication=usb
@@ -32,12 +39,13 @@ usbasp.protocol=usbasp
 usbasp.program.tool=avrdude
 usbasp.program.extra_params=
 
-parallel.name=Parallel Programmer (ATTinyCore)
+parallel.name=Parallel Programmer
 parallel.protocol=dapa
 parallel.force=true
 parallel.delay=200
+parallel.program.tool=avrdude
 
-arduinoasisp.name=Arduino as ISP (ATTinyCore)
+arduinoasisp.name=Arduino as ISP
 arduinoasisp.communication=serial
 arduinoasisp.protocol=stk500v1
 arduinoasisp.speed=19200
@@ -46,20 +54,14 @@ arduinoasisp.program.speed=19200
 arduinoasisp.program.tool=avrdude
 arduinoasisp.program.extra_params=-P{serial.port} -b{program.speed}
 
-arduinoasispatmega32u4.name=Arduino as ISP (ATmega32U4, ATTinyCore)
-arduinoasispatmega32u4.communication=serial
-arduinoasispatmega32u4.protocol=arduino
-arduinoasispatmega32u4.speed=19200
-arduinoasispatmega32u4.program.protocol=arduino
-arduinoasispatmega32u4.program.speed=19200
-arduinoasispatmega32u4.program.tool=avrdude
-arduinoasispatmega32u4.program.extra_params=-P{serial.port} -b{program.speed}
-
-usbtinyisp2.name=USBtinyISP SLOW (ATTinyCore)
-usbtinyisp2.protocol=usbtiny
-usbtinyisp2.program.tool=avrdude
-usbtinyisp2.program.speed=8
-usbtinyisp2.program.extra_params=-B{program.speed}
+arduinoasisp32u4.name=Arduino Leo/Micro as ISP (ATmega32U4)
+arduinoasisp32u4.communication=serial
+arduinoasisp32u4.protocol=arduino
+arduinoasisp32u4.speed=19200
+arduinoasisp32u4.program.protocol=arduino
+arduinoasisp32u4.program.speed=19200
+arduinoasisp32u4.program.tool=avrdude
+arduinoasisp32u4.program.extra_params=-P{serial.port} -b{program.speed}
 
 dragon.name=AVR Dragon ISP mode (ATTinyCore)
 dragon.communication=usb
@@ -67,7 +69,7 @@ dragon.protocol=dragon_isp
 dragon.program.tool=avrdude
 dragon.program.extra_params=-Pusb
 
-ponyser.name=Ponyser Programmer (ATTinyCore)
+ponyser.name=Ponyser Programmer
 ponyser.communication=serial
 ponyser.protocol=ponyser
 ponyser.program.tool=avrdude
@@ -75,9 +77,22 @@ ponyser.program.protocol=ponyser
 ponyser.program.tool=avrdude
 ponyser.program.extra_params=-P{serial.port}
 
-stk500.name=Atmel STK500 development board (ATTinyCore)
+stk500.name=Atmel STK500
 stk500.communication=serial
 stk500.protocol=stk500
 stk500.program.protocol=stk500
 stk500.program.tool=avrdude
 stk500.program.extra_params=-P{serial.port}
+
+atmel_ice.name=Atmel-ICE
+atmel_ice.communication=usb
+atmel_ice.protocol=atmelice_isp
+atmel_ice.program.protocol=atmelice_isp
+atmel_ice.program.tool=avrdude
+atmel_ice.program.extra_params=-Pusb
+
+micronucleusprog.name=Micronucleus
+micronucleusprog.communication=usb
+micronucleusprog.protocol=micronucleus
+micronucleusprog.program.tool={runtime.tools.micronucleus.path}/micronucleus
+micronucleusprog.program.extra_params=-Pusb

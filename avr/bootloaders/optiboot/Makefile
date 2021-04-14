@@ -173,6 +173,18 @@ else
 BAUD_RATE_CMD = -DBAUD_RATE=115200
 endif
 
+HELPTEXT += "Option LOWERCAL=nnnn        - ATtiny841,441,1634,828 only - lower OSCCAL0 by this much\n"
+ifdef LOWERCAL
+LOWERCAL_CMD = -DLOWERCAL=$(LOWERCAL)
+dummy = FORCE
+endif
+
+HELPTEXT += "Option PRESCALE=n           - Set CLKPR to this value (not division factor!)\n"
+ifdef PRESCALE
+LOWERCAL_CMD = -DPRESCALE=$(PRESCALE)
+dummy = FORCE
+endif
+
 HELPTEXT += "Option LED=B3                - set LED pin to particular port/bit\n"
 ifdef LED
 LED_CMD = -DLED=$(LED)
@@ -272,7 +284,7 @@ endif
 COMMON_OPTIONS = $(BAUD_RATE_CMD) $(LED_START_FLASHES_CMD) $(BIGBOOT_CMD)
 COMMON_OPTIONS += $(SOFT_UART_CMD) $(LED_DATA_FLASH_CMD) $(LED_CMD) $(SS_CMD)
 COMMON_OPTIONS += $(SUPPORT_EEPROM_CMD) $(LED_START_ON_CMD) $(APPSPM_CMD)
-COMMON_OPTIONS += $(VERSION_CMD)
+COMMON_OPTIONS += $(VERSION_CMD) $(LOWERCAL_CMD)
 COMMON_OPTIONS += $(RS485_CMD) $(TIMEOUT_CMD) $(POR_CMD) $(EXTR_CMD)
 
 #UART is handled separately and only passed for devices with more than one.
@@ -648,9 +660,7 @@ atmega328_pro8_isp: isp
 #
 # Include additional platforms
 include Makefile.atmel
-include Makefile.1284
 include Makefile.custom
-include Makefile.2560
 include Makefile.tiny
 include Makefile.MCUdude
 

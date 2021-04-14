@@ -3,7 +3,8 @@
   Part of Arduino - http://www.arduino.cc/
 
   Copyright (c) 2007 David A. Mellis
-  Copyright 2015~2018 Spence Konde
+  Copyright (c) 2015~2020 Spence Konde
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
@@ -68,8 +69,8 @@
 #  define USI_START_COND_INT USISIF
 #endif
 
-static const uint8_t SDA = 7;
-static const uint8_t SCL = 9;
+static const uint8_t SDA = 9;
+static const uint8_t SCL = 7;
 
 //Ax constants cannot be used for digitalRead/digitalWrite/analogWrite functions, only analogRead().
 static const uint8_t A0 = 0x80 | 0;
@@ -84,6 +85,25 @@ static const uint8_t A8 = 0x80 | 8;
 static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
 
+
+#define PIN_PA0  (0)
+#define PIN_PA1  ( 1)
+#define PIN_PA2  ( 2)
+#define PIN_PA3  ( 14)
+#define PIN_PA4  ( 10)
+#define PIN_PA5  ( 11)
+#define PIN_PA6  ( 12)
+#define PIN_PA7  ( 13)
+#define PIN_PB0  ( 9)
+#define PIN_PB1  ( 8)
+#define PIN_PB2  ( 7)
+#define PIN_PB3  (6)
+#define PIN_PB4  ( 5)
+#define PIN_PB5  ( 4)
+#define PIN_PB6  ( 3)
+#define PIN_PB7  ( 15) /* RESET */
+
+//Legacy
 #define PIN_A0  (0)
 #define PIN_A1  ( 1)
 #define PIN_A2  ( 2)
@@ -106,11 +126,7 @@ static const uint8_t A10 = 0x80 | 10;
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
-#define TUNED_OSCCAL_VALUE                        OSCCAL
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1

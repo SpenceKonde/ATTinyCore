@@ -1,0 +1,32 @@
+name: Spell Check
+
+on:
+  pull_request:
+  push:
+  schedule:
+    # run every Tuesday at 3 AM UTC
+    - cron: "0 3 * * 2"
+  # workflow_dispatch event allows the workflow to be triggered manually
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+  # repository_dispatch event allows the workflow to be triggered via the GitHub API
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
+  repository_dispatch:
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # See: https://github.com/codespell-project/actions-codespell/blob/master/README.md
+      - name: Spell check
+        uses: codespell-project/actions-codespell@master
+        with:
+          check_filenames: true
+          check_hidden: true
+          skip: "./.git,./avr/travis-ci/etc/*,./avr/travis-ci/arduino-ci-script/*,*.py,*.gif,*.jpg,*.png"
+          # In the event of a false positive, add the word in all lower case to this file:
+          ignore_words_file: avr/extras/ci/codespell-ignore-words-list.txt

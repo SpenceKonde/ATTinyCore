@@ -1,8 +1,10 @@
 /*
   pins_arduino.h - Pin definition functions for Arduino
   Part of Arduino - http://www.arduino.cc/
+
   Copyright (c) 2007 David A. Mellis
-  Copyright 2019 Spence Konde
+  Copyright (c) 2015~2020 Spence Konde
+
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
@@ -28,8 +30,6 @@
 #define USE_SOFTWARE_SPI 1
 
 #include <avr/pgmspace.h>
-
-//FIXED TO HERE - all below is wrong.
 
 #define NUM_DIGITAL_PINS            12
 #define NUM_ANALOG_INPUTS           8
@@ -78,6 +78,26 @@ static const uint8_t A1 = 0x80 | 1;
 static const uint8_t A2 = 0x80 | 2;
 static const uint8_t A3 = 0x80 | 3;
 
+
+#define PIN_PA0  ( 8)
+#define PIN_PA1  ( 9)
+#define PIN_PA2  (10)
+#define PIN_PA3  (11)
+#define PIN_PA4  (12)
+#define PIN_PA5  (13)
+#define PIN_PA6  (14)
+#define PIN_PA7  (15) /* RESET */
+#define PIN_PB0  ( 0)
+#define PIN_PB1  ( 1)
+#define PIN_PB2  ( 2)
+#define PIN_PB3  ( 3)
+#define PIN_PB4  ( 4)
+#define PIN_PB5  ( 5)
+#define PIN_PB6  ( 6)
+#define PIN_PB7  ( 7)
+
+
+//Legacy
 #define PIN_A0  ( 8)
 #define PIN_A1  ( 9)
 #define PIN_A2  (10)
@@ -100,11 +120,7 @@ static const uint8_t A3 = 0x80 | 3;
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
-#define TUNED_OSCCAL_VALUE                        OSCCAL
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1

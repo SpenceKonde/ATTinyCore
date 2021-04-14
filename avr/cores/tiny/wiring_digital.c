@@ -64,73 +64,73 @@ void pinMode(uint8_t pin, uint8_t mode)
 static void turnOffPWM(uint8_t timer)
 {
   #if defined(TCCR0A) && defined(COM0A1)
-  if( timer == TIMER0A){
-    cbi(TCCR0A, COM0A1);
-    //cbi(TCCR0A, COM0A0);
-  } else
+    if( timer == TIMER0A){
+      cbi(TCCR0A, COM0A1);
+      //cbi(TCCR0A, COM0A0);
+    } else
   #endif
-
   #if defined(TCCR0A) && defined(COM0B1)
-  if( timer == TIMER0B){
-    cbi(TCCR0A, COM0B1);
-    //cbi(TCCR0A, COM0B0);
-  } else
+    if( timer == TIMER0B){
+      cbi(TCCR0A, COM0B1);
+      //cbi(TCCR0A, COM0B0);
+    } else
   #endif
-
-  #if defined(TCCR1A) && defined(COM1A1)
-  if( timer == TIMER1A){
-    cbi(TCCR1A, COM1A1);
-    //cbi(TCCR1A, COM1A0);
-  } else
-  #endif
-    #if defined(TCCR1E) //attiny861
-  if( timer == TIMER1A){
-    // disconnect pwm to pin on timer 1, channel A
-    cbi(TCCR1C,COM1A1S);
-    cbi(TCCR1C,COM1A0S);
-    //cbi(TCCR1A,PWM1A);
-  } else if (timer == TIMER1B){
-    // disconnect pwm to pin on timer 1, channel B
-    cbi(TCCR1C,COM1B1S);
-    cbi(TCCR1C,COM1B0S);
-    //cbi(TCCR1A,PWM1B);
-  } else if (timer == TIMER1D){
-    // disconnect pwm to pin on timer 1, channel D
-    cbi(TCCR1C,COM1D1);
-    cbi(TCCR1C,COM1D0);
-    //cbi(TCCR1A,PWM1D);
-  } else
-    #endif
-  #if defined(TCCR1) && defined(COM1A1)
-  if(timer == TIMER1A){
-    cbi(TCCR1, COM1A1);
-    //cbi(TCCR1, COM1A0);
-  #ifdef OC1AX
-    cbi(TCCR1D, OC1AX);
-  #endif
-  } else
-  #endif
-
-  #if defined(TCCR1A) && defined(COM1B1)
-  if( timer == TIMER1B){
-    cbi(TCCR1A, COM1B1);
-    //cbi(TCCR1A, COM1B0);
-  #ifdef OC1BV
-    cbi(TCCR1D, OC1BV);
-  #endif
-  } else
-  #endif
-
-  #if defined(TCCR1) && defined(COM1B1)
-  if( timer == TIMER1B){
-    cbi(GTCCR, COM1B1);
-    //cbi(GTCCR, COM1B1);
-  } else
-  #endif
-
-    {
+  #ifdef __AVR_ATtinyX7__
+    // Timer1 on x7
+    if (timer&0x10) {
+      TCCR1D&=(~(1<<(timer&0x07)));
     }
+  #elif defined(TCCR1E)
+    // ATtiny x61
+    // This can be recoded to use the OCOEn bits in TCCR1E
+    // This would be much better - then we'd leave COM bits at 0, and just switch on and off the OCOEn bits
+    // In this case, we would use WGM10 or WGM11 (PWM6 mode). Only one duty cycle could be output on each of the three pairs of
+    // PWM pins, but it gives you more choice on which pins you use. Would implement it like we do on x7, ie, if you analogWrite()
+    // both pins, and didn't turn off PWM between with digitalWrite(), you'd have identical waveform on the two pins.
+    if( timer == TIMER1A){
+      // disconnect pwm to pin on timer 1, channel A
+      TCCR1C &= ~(1<<COM1A1S);
+      //cbi(TCCR1C,COM1A0S);
+    } else if (timer == TIMER1B){
+      // disconnect pwm to pin on timer 1, channel B
+      TCCR1C &= ~(1<<COM1B1S);
+      //cbi(TCCR1C,COM1B0S);
+    } else if (timer == TIMER1D){
+      // disconnect pwm to pin on timer 1, channel D
+      TCCR1C &= ~(1<<COM1D1);
+      //cbi(TCCR1C,COM1D0);
+    } else
+  #else
+    // Timer1 for non-x61/x7
+    #if defined(TCCR1) && defined(COM1A1) // x5
+      if(timer == TIMER1A){
+        TCCR1 &= ~(1<<COM1A1);
+        //cbi(TCCR1, COM1A0);
+      } else
+    #endif
+    #if defined(TCCR1) && defined(COM1B1) // x5
+      if( timer == TIMER1B){
+        GTCCR &= ~(1<<COM1B1);
+        //cbi(GTCCR, COM1B1);
+      } else
+    #endif
+    #if defined(TCCR1A) && defined(COM1A1) // civilized parts
+      if( timer == TIMER1A){
+        TCCR1A &= ~(1<<COM1A1);
+        //cbi(TCCR1A, COM1A0);
+      } else
+    #endif
 
+    #if defined(TCCR1A) && defined(COM1B1) // civilized parts
+      if( timer == TIMER1B){
+        TCCR1A &= ~(1<<COM1B1);
+        //cbi(TCCR1A, COM1B0);
+      } else
+    #endif
+  #endif
+  {
+    // dummy block to fill in the else statement
+  }
 }
 
 void digitalWrite(uint8_t pin, uint8_t val)
@@ -165,15 +165,17 @@ void digitalWrite(uint8_t pin, uint8_t val)
 int digitalRead(uint8_t pin)
 {
   if (pin&128) {pin=analogInputToDigitalPin((pin&127));}
-  uint8_t timer = digitalPinToTimer(pin);
+  //uint8_t timer = digitalPinToTimer(pin);
   uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
 
   if (port == NOT_A_PIN) return LOW;
 
-  // If the pin that support PWM output, we need to turn it off
-  // before getting a digital reading.
-  if (timer != NOT_ON_TIMER) turnOffPWM(timer);
+  // There is no need to turn off PWM on a pin before doing digitalRead().
+  // "read" should *NEVER* change the behavior of the thing you're using it on.
+  // That's why it's called "read" not "write". As an added bonus, sets the
+  // stage for auto-fast-digitalRead() for compile time known pins.
+  // if (timer != NOT_ON_TIMER) turnOffPWM(timer);
 
   if (*portInputRegister(port) & bit) return HIGH;
   return LOW;

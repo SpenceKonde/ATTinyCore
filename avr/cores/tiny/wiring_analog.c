@@ -128,77 +128,83 @@ void analogWrite(uint8_t pin, int val)
     OCR0B = val; // set pwm duty
   } else
   #endif
+  #if defined(__AVR_ATtinyX7__)
+  if (timer&0x10) {
+    //Timer 1
+    TCCR1A|=(1<<COM1B1)|(1<<COM1A1);
+    if (timer&0x04){
+      //TCCR1D&=(0x0F); //clear all PWM on same channel
+      OCR1B=val;
+    } else {
+      //TCCR1D&=(0xF0); //clear all PWM on same channel
+      OCR1A=val;
+    }
+    TCCR1D|=(1<<(timer&0x07));
+  } else
 
-  #if defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E)
+  #elif defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1E)
     //TCCR1E is present only on tiny861, and there's no TCCR1A on Tiny85.
     //So this handles "normal" timers
   if( timer == TIMER1A){
     // connect pwm to pin on timer 1, channel A
     sbi(TCCR1A, COM1A1);
     //cbi(TCCR1A, COM1A0);
-  #ifdef OC1AX
-    cbi(TCCR1D, OC1AV);
-    cbi(TCCR1D, OC1AU);
-    cbi(TCCR1D, OC1AW);
-    sbi(TCCR1D, OC1AX);
-  #endif
     OCR1A = val; // set pwm duty
   } else
   #endif
-
+  // ATtiny x61
+    // This can be recoded to use the OCOEn bits in TCCR1E
+    // This would be much better - then we'd leave COM bits at 0, and just switch on and off the OCOEn bits
+    // In this case, we would use WGM10 or WGM11 (PWM6 mode). Only one duty cycle could be output on each of the three pairs of
+    // PWM pins, but it gives you more choice on which pins you use. Would implement it like we do on x7, ie, if you analogWrite()
+    // both pins, and didn't turn off PWM between with digitalWrite(), you'd have identical waveform on the two pins.
   #if defined(TCCR1E) //Tiny861
-  if( timer == TIMER1A){
-    // connect pwm to pin on timer 1, channel A
-    cbi(TCCR1C,COM1A1S);
-    sbi(TCCR1C,COM1A0S);
-    //sbi(TCCR1A,PWM1A);
-    OCR1A = val; // set pwm duty
-  } else if (timer == TIMER1B){
-    // connect pwm to pin on timer 1, channel A
-    cbi(TCCR1C,COM1B1S);
-    sbi(TCCR1C,COM1B0S);
-    //sbi(TCCR1A,PWM1B);
-    OCR1B = val; // set pwm duty
-  } else if (timer == TIMER1D){
-    // connect pwm to pin on timer 1, channel A
-    cbi(TCCR1C,COM1D1);
-    sbi(TCCR1C,COM1D0);
-    //sbi(TCCR1A,PWM1D);
-    OCR1D = val; // set pwm duty
-  } else
+    if( timer == TIMER1A){
+      // connect pwm to pin on timer 1, channel A
+      //cbi(TCCR1C,COM1A1S);
+      sbi(TCCR1C,COM1A0S);
+      //sbi(TCCR1A,PWM1A);
+      OCR1A = val; // set pwm duty
+    } else if (timer == TIMER1B){
+      // connect pwm to pin on timer 1, channel A
+      //cbi(TCCR1C,COM1B1S);
+      sbi(TCCR1C,COM1B0S);
+      //sbi(TCCR1A,PWM1B);
+      OCR1B = val; // set pwm duty
+    } else if (timer == TIMER1D){
+      // connect pwm to pin on timer 1, channel A
+      //cbi(TCCR1C,COM1D1);
+      sbi(TCCR1C,COM1D0);
+      //sbi(TCCR1A,PWM1D);
+      OCR1D = val; // set pwm duty
+    } else
   #endif
 
   #if defined(TCCR1) && defined(COM1A1) //Tiny85
-  if(timer == TIMER1A){
-    // connect pwm to pin on timer 1, channel A
-    sbi(TCCR1, COM1A1);
-    //cbi(TCCR1, COM1A0);
-    OCR1A = val; // set pwm duty
-  } else
+    if(timer == TIMER1A){
+      // connect pwm to pin on timer 1, channel A
+      sbi(TCCR1, COM1A1);
+      //cbi(TCCR1, COM1A0);
+      OCR1A = val; // set pwm duty
+    } else
   #endif
 
   #if defined(TCCR1A) && defined(COM1B1) && !defined(TCCR1E)
-  if( timer == TIMER1B){
-    // connect pwm to pin on timer 1, channel B
-    sbi(TCCR1A, COM1B1);
-    //cbi(TCCR1A, COM1B0);
-  #ifdef OC1BV
-    sbi(TCCR1D, OC1BV);
-    cbi(TCCR1D, OC1BU);
-    cbi(TCCR1D, OC1BW);
-    cbi(TCCR1D, OC1BX);
-  #endif
-    OCR1B = val; // set pwm duty
-  } else
+    if( timer == TIMER1B){
+      // connect pwm to pin on timer 1, channel B
+      sbi(TCCR1A, COM1B1);
+      //cbi(TCCR1A, COM1B0);
+      OCR1B = val; // set pwm duty
+    } else
   #endif
 
   #if defined(TCCR1) && defined(COM1B1)
-  if( timer == TIMER1B){
-    // connect pwm to pin on timer 1, channel B
-    sbi(GTCCR, COM1B1);
-    //cbi(GTCCR, COM1B0);
-    OCR1B = val; // set pwm duty
-  } else
+    if( timer == TIMER1B){
+      // connect pwm to pin on timer 1, channel B
+      sbi(GTCCR, COM1B1);
+      //cbi(GTCCR, COM1B0);
+      OCR1B = val; // set pwm duty
+    } else
   #endif
 
     {

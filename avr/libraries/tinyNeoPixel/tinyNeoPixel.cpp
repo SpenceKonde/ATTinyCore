@@ -650,18 +650,6 @@ void tinyNeoPixel::setPixelColor(uint16_t n, uint32_t c) {
   }
 }
 
-// Convert separate R,G,B into packed 32-bit RGB color.
-// Packed format is always RGB, regardless of LED strand color order.
-uint32_t tinyNeoPixel::Color(uint8_t r, uint8_t g, uint8_t b) {
-  return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
-}
-
-// Convert separate R,G,B,W into packed 32-bit WRGB color.
-// Packed format is always WRGB, regardless of LED strand color order.
-uint32_t tinyNeoPixel::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
-  return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
-}
-
 // Query color from previously-set pixel (returns packed 32-bit RGB value)
 uint32_t tinyNeoPixel::getPixelColor(uint16_t n) const {
   if(n >= numLEDs) return 0; // Out of bounds, return no color.

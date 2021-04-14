@@ -27,11 +27,16 @@
   Modified 2015 for Attiny841/1634/828 and for uart clock support S. Konde
 */
 
+#ifndef _NOP
+  #define _NOP() do { __asm__ volatile ("nop"); } while (0)
+#endif
+
 #include "core_build_options.h"
 #include "core_adc.h"
 #include "core_timers.h"
 #include "wiring_private.h"
 #include "ToneTimer.h"
+#include <avr/boot.h>
 
 #define millistimer_(t)                           TIMER_PASTE_A( timer, TIMER_TO_USE_FOR_MILLIS, t )
 #define MillisTimer_(f)                           TIMER_PASTE_A( Timer, TIMER_TO_USE_FOR_MILLIS, f )
@@ -121,7 +126,6 @@ unsigned long millis()
   cli();
   m = millis_timer_millis;
   SREG = oldSREG;
-
   return m;
 }
 unsigned long micros()
@@ -166,6 +170,9 @@ unsigned long micros()
 #if (MillisTimer_Prescale_Value % clockCyclesPerMicrosecond() == 0 ) // Can we just do it the naive way? If so great!
   return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
   // Otherwise we do clock-specific calculations
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 12800000L)  //64/12.8=5, but the compiler wouldn't realize it because of integer math - this is a supported speed for Micronucleus.
+  return ((m << 8) + t) * 5;
+  // Otherwise we do clock-specific calculations
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 24000000L) // 2.6875 vs real value 2.67
   m = (m << 8) + t;
   return (m<<1) + (m >> 1) + (m >> 3) + (m >> 4); // multiply by 2.6875
@@ -175,7 +182,7 @@ unsigned long micros()
 #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
   m=(m << 8) + t;
   return m+(m<<1)+(m>>1);
-#elif (MillisTimer_Prescale_Value == 64 && F_CPU==14745600L) //4.375  vs real value 4.34
+#elif (MillisTimer_Prescale_Value == 64 && F_CPU == 14745600L) //4.375  vs real value 4.34
   m=(m << 8) + t;
   return (m<<2)+(m>>1)-(m>>3);
 #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything
@@ -475,12 +482,86 @@ void initToneTimer(void)
     initToneTimerInternal();
   #endif
 }
+#if ((F_CPU==16000000 || defined(LOWERCAL)) && CLOCK_SOURCE==0 )
+  static uint8_t origOSC=0;
+
+  uint8_t read_factory_calibration(void)
+  {
+    uint8_t SIGRD = 5; //Yes, this variable is needed. boot.h is looking for SIGRD but the io.h calls it RSIG... (unlike where this is needed in the other half of this core, at least the io.h file mentions it... ). Since it's actually a macro, not a function call, this works...
+    uint8_t value = boot_signature_byte_get(1);
+    return value;
+  }
+  void oscSlow(uint8_t newcal) {
+    OSCCAL0=newcal;
+    _NOP(); //this is all micronucleus does, and it seems to work fine...
+  }
+
+#endif
+
+
+#if ((defined(__AVR_ATtinyX41__) && F_CPU==16000000) && CLOCK_SOURCE==0 )
+  //functions related to the 16 MHz internal option on ATtiny841/441.
+  // 174 CALBOOST was empirically determined from a few parts I had lying around.
+  #define CALBOOST 174
+  #define MAXINITCAL (255-CALBOOST)
+  static uint8_t saveTCNT=0;
+  void oscBoost() {
+    OSCCAL0=(origOSC>MAXINITCAL?255:(origOSC+CALBOOST));
+    _NOP();
+  }
+
+  void oscSafeNVM() { //called immediately prior to writing to EEPROM.
+    TIMSK0&=~(_BV(TOIE0)); //turn off millis interrupt - let PWM keep running (Though at half frequency, of course!)
+    saveTCNT=TCNT0;
+    if (TIFR0&_BV(TOV0)) { // might have just missed interrupt - recording as 255 is good enough (this may or may not have been what we recorded, but if it was still set, interrupt didn't fire)
+      saveTCNT=255;
+    }
+    oscSlow(origOSC);
+  }
+  void oscDoneNVM(uint8_t bytes_written) { // number of bytes of eeprom written.
+    // EEPROM does it one at a time, but user code could call these two methods when doing block writes (up to 64 bytes). Just be sure to do the eeprom_busy_wait(); at the end, as in EEPROM.h.
+    // 3.3ms is good approximation of the duration of writing a byte - it'll be about 3~4% faaster since we're running around 5V at default call - hence, we're picking 3.3ms - the oscillator
+    // adjustment loops and these calculations should be fast enough that the time they dont take long enough to worry about...
+    // Srelies on assumptions from implementation above of millis on this part at 16MHz!
+    //millis interrupt was disabled when oscSaveNVM() was called - so we don't need to do anything fancy to access the volatile variables related to it.
+    //1 millis interrupt fires every 1.024ms, so we want 3.3/1.024= 3.223 overflows; there are 256 timer ticksin an overflow, so 57 timer ticks...
+    oscBoost();
+    uint8_t m = 3*bytes_written; //the 3 whole overflows
+    uint16_t tickcount=57*bytes_written+saveTCNT;
+    m+=(tickcount>>8); //overflows from theose extra /0.223's
+    millis_timer_overflow_count+=m; //done with actual overflows, so record that.
+    uint16_t f = FRACT_INC*m+millis_timer_fract; //(m could be up to 207)
+    while(f>FRACT_MAX){ //at most 621+124=745
+      f-=FRACT_MAX;
+      m++; // now we're adding up the contributions to millis from the 0.024 part...
+    }
+    // save the results
+    millis_timer_fract=f;
+    millis_timer_millis+=m;
+    TCNT0=0;
+    TIFR0|=_BV(TOV0); //clear overflow flag
+    TIMSK0|=_BV(TOIE0); //enable overflow interrupt
+    TCNT0=tickcount; //restore new tick count
+    // wonder if it was worth all that just to write to the EEPROM while running at 16MHz off internal oscillator without screwing up millis and micros...
+  }
+#endif
+
+
 
 void init(void)
 {
+  // We should take some precaution against accidentally applying the same changes if the sketch restarts without a clean reset - so we base what we change to on the original value, not whatever it happens to be set to.
+  #if (defined(__AVR_ATtinyX41__) && CLOCK_SOURCE==0 && F_CPU==16000000L)
+    // jumping up about 174 from the factory cal gives us ~16 MHz at 4.5~5.25V - not always perfect, but should generally be close enough.
+    origOSC=read_factory_calibration();
+    oscBoost();
+  #elif (CLOCK_SOURCE==0 && defined(LOWERCAL))
+    origOSC=read_factory_calibration();
+    oscSlow(origOSC-LOWERCAL);
+  #endif
   // this needs to be called before setup() or some functions won't work there
   #if (F_CPU==4000000L && CLOCK_SOURCE==0)
-  cli();
+  //cli();
   #ifdef CCP
   CCP=0xD8; //enable change of protected register
   #else
@@ -489,11 +570,15 @@ void init(void)
   CLKPR=1; //prescale by 2 for 4MHz
   #endif
   sei();
+
+
+  /*
   // In case the bootloader left our millis timer in a bad way
+  // but none of the supported bootloaders do this - so this can be commented out entirely
   #if defined( HAVE_BOOTLOADER ) && HAVE_BOOTLOADER
     MillisTimer_SetToPowerup();
   #endif
-
+  */
   // Use the Millis Timer for fast PWM
   MillisTimer_SetWaveformGenerationMode( MillisTimer_(Fast_PWM_FF) );
 

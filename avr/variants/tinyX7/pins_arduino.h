@@ -3,7 +3,7 @@
   Part of Arduino - http://www.arduino.cc/
 
   Copyright (c) 2007 David A. Mellis
-  Copyright 2015~2018 Spence Konde
+  Copyright (c) 2015~2020 Spence Konde
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -81,15 +81,31 @@ static const uint8_t A9 = 0x80 | 9;
 static const uint8_t A10 = 0x80 | 10;
 #define LED_BUILTIN (4)
 
+
+#define PIN_PA0  ( 0)
+#define PIN_PA1  ( 1)
+#define PIN_PB6  ( 2)
+#define PIN_PA3  ( 3)
+#define PIN_PB0  ( 4)
+#define PIN_PB1  ( 5)
+#define PIN_PB2  ( 6)
+#define PIN_PB3  ( 7)
+#define PIN_PB4  ( 8)
+#define PIN_PB5  ( 9)
+#define PIN_PA6  ( 10)
+#define PIN_PA4  ( 11)
+#define PIN_PA2  ( 12)
+#define PIN_PA5  ( 13)
+#define PIN_PA7  ( 14)
+#define PIN_PB7  ( 15)
+
+#define PINMAPPING_OLD
+
 //----------------------------------------------------------
 //----------------------------------------------------------
 //Core Configuration (used to be in core_build_options.h)
 
-//If Software Serial communications doesn't work, run the TinyTuner sketch provided with the core to give you a calibrated OSCCAL value.
-//Change the value here with the tuned value. By default this option uses the default value which the compiler will optimise out.
-#define TUNED_OSCCAL_VALUE                        OSCCAL
-//e.g
-//#define TUNED_OSCCAL_VALUE                        0x57
+
 
 //Choosing not to initialise saves power and flash. 1 = initialise.
 #define INITIALIZE_ANALOG_TO_DIGITAL_CONVERTER    1
@@ -97,7 +113,11 @@ static const uint8_t A10 = 0x80 | 10;
 
 #define TIMER_TO_USE_FOR_MILLIS                   0
 
-#define HAVE_BOOTLOADER                           1
+// This is commented out. The only place where HAVE_BOOTLOADER is checked is in wiring.c, where it wastes precious bytes of flash resetting timer-related registers out of fear that the bootloader has scribbled on them.
+// However, Optiboot does a WDR before jumping straight to app to start after running.
+// This means that optiboot leaves all the registers clean. Meanwhile, Micronucleus doesn't even USE any of the timers, and that's all the wiring.c code checks on (to make sure millis will work)
+// commenting out instead of setting to 0, as that would allow a hypothetical badly behaved bootloader to be supported in the future by having it add -DHAVE_BOOTLOADER from boards.txt
+// #define HAVE_BOOTLOADER                           1
 
 /*
   Where to put the software serial? (Arduino Digital pin numbers)
@@ -230,21 +250,22 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER1A,
+  TIM1AX,
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIMER1B,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIM1AU,
+  TIM1BU,
+  TIM1AV,
+  TIM1BV,
+  TIM1AW,
+  TIM1BW,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER0A,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIM1BX,
 };
+
 
 #endif
 
