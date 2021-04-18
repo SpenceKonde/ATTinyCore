@@ -18,4 +18,4 @@ They say that "big news travels fast" - tinyNews needs all the help it can get. 
 I will be launching a Patreon in the near future. Additionally, you can support me buy buying things from my Tindie store. Everyone needs prototyping board - and even if **you** don't, they make a great gift for your loved ones! And for your unloved ones, for that matter...
 
 ## Rewards?
-While I can't promise anything beyond ecognition for pull requests or other contributions - if you submit a particularly large or impactful contribution. that's a good way to get some free stuff from my Tindie store ;-) Which, naturally, is focused on thing relating to the parts my cores supports, so it should be of particular use to you.
+While I can't promise anything beyond recognition for pull requests or other contributions - if you submit a particularly large or impactful contribution. that's a good way to get some free stuff from my Tindie store ;-) Which, naturally, is focused on thing relating to the parts my cores supports, so it should be of particular use to you.
