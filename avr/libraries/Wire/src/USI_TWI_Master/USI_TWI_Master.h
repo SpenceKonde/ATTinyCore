@@ -72,10 +72,10 @@
 #define TRUE 1
 #define FALSE 0
 
-#define DELAY_T2TWI_FM (_delay_loop_1(T2_TWI_FM))
-#define DELAY_T4TWI_FM (_delay_loop_1(T4_TWI_FM))
-#define DELAY_T2TWI (_delay_loop_1(T2_TWI))
-#define DELAY_T4TWI (_delay_loop_1(T4_TWI))
+#define DELAY_T2TWI_FM (_delay_loop_1(T2_TWI_FM / 3))
+#define DELAY_T4TWI_FM (_delay_loop_1(T4_TWI_FM / 3))
+#define DELAY_T2TWI (_delay_loop_1(T2_TWI / 3))
+#define DELAY_T4TWI (_delay_loop_1(T4_TWI / 3))
 //********** Prototypes **********//
 
 void USI_TWI_Master_Initialise(void);
