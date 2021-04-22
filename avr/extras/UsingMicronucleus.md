@@ -51,21 +51,21 @@ Because a board running the Micronucleus bootloader can be reprogrammed without 
 This is used to install Micronucleus on a device without a different version already installed, or if it is necessary to change the fuse settings (such as to alter the selected board's BOD settings, reset configuration, etc). Connect an ISP programmer normally (as if programming it without a bootloader). From the Tools -> Burn Bootloader Mode, choose "Fresh Install", from Tools -> Programmer, ensure that the correct programmer is selected (on versions prior to 1.8.13 of the Arduino IDE, programmers with names that do not end in `(ATTinyCore)` may not work correctly) and then Burn Bootloader. The console log will report the results of the attempt.
 
 ### Upgrading Micronucleus via USB
-Micronucleus provides an "upgrade" function - by uploading a program which contains a copy of the updated binary, erases the existing one, and writes a new one in it's place, the bootloader can be replaced even if reset has been disabled. Even if it hasn't been, it's a lot more convenient. This method seems to be reliable - the big danger would be uploading a bootloader version that only enters on reset, after disabling reset. It is planned that any bootloader version that disables reset
+Micronucleus provides an "upgrade" function - by uploading a program which contains a copy of the updated binary, erases the existing one, and writes a new one in it's place, the bootloader can be replaced even if reset has been disabled. Even if it hasn't been, it's a lot more convenient. This method seems to be reliable - the big danger would be uploading a bootloader version that only enters on reset, after disabling reset. It is planned that in a future version, when the entrty condition is *only* after external reset, such a bootloader will check verify that reset is not disabled, and ortherwise run bootloader under all conditions; sadly it looks like the overhead of this safety mechanism is going to be at least 20 bytes due to the clumsy process for reading the fuses from application on classic AVRs
 
 ### Micronucleus and MCUSR (reset cause)
-In order to make the entry modes work correctly - regardless of sketch behavior - Micronucleus must reset MCUSR prior to exiting. It stashes the value of MCUSR in the GPIOR0 register - in the unlikely event that your sketch needs to know the reset cause, check GPIOR0, not MCUSR. This is currently done on the supplied bootloader for the ATtiny84, 85, and 88 parts; in a future release, it will be done for all parts. To ensure your sketch gets the correct reset cause whether or not the bootloader does this
-
-
+In order to make the entry modes work correctly - regardless of sketch behavior - Micronucleus must reset MCUSR prior to exiting. It stashes the value of MCUSR in the GPIOR0 register - in the unlikely event that your sketch needs to know the reset cause, check GPIOR0, not MCUSR. This is currently done on the supplied bootloader for the ATtiny84, 85, and 88 parts; in a future release, it will be done for all parts. To ensure your sketch gets the correct reset cause whether or not the bootloader does this, know that one of these will be zero when the bootloader exits after any sort of reset, and the other will be non-zero. The non-zero one is the correct one. .
 ```
-uint8_t resetcause;
-if(!GPIOR0) { //if this isn't 0 at start of setup, bootloader must have set it.
+uint8_t resetcause = GPIOR0;
+if(resetcause == 0) {
   resetcause = MCUSR;
-  MCUSR=0;
-} else {
-  resetcause=GPIOR0;
-  GPIOR0=0; //not needed if you dont use GPIOR0.
+  MCUSR = 0;
+} 
+// if you use GPIOR0 in your code
+else {
+  GPIOR0 = 0;
 }
+
 ```
 
 In the even more unlikely event that your sketch uses GPIOR0, be sure to set it to 0. [What is GPIOR0?](https://github.com/SpenceKonde/AVR-Best-Practices/blob/master/LowLevelNotes.md)
