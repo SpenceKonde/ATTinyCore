@@ -1,13 +1,14 @@
 ## **EEPROM Library V2.0** for Arduino
 
 **Written by:** _Christopher Andrews_.
+Unaltered for ATTinyCore except for documentation adjustments.
 
 ### **What is the EEPROM library.**
 
-Th EEPROM library provides an easy to use interface to interact with the internal non-volatile storage found in AVR based Arduino boards. This library will work on many AVR devices like ATtiny and ATmega chips.
+Th EEPROM library provides an easy to use interface to interact with the internal non-volatile storage found in AVR based Arduino boards. This library will work on many AVR devices like ATtiny and ATmega chips. Available EEPROM depends on the part - when an otherwise identical part is available with several different memory sizes (ex: ATtiny85, ATtiny45, ATtiny25), the size of the EEPROM usually scales alongside other types of memory. For parts supported by ATTinyCore, this is listed on the [part-specific documentation pages](https://github.com/SpenceKonde/ATTinyCore#attinycore-universal-1)
 
 ### **How to use it**
-The EEPROM library is included in your IDE download. To add its functionality to your sketch you'll need to reference the library header file. You do this by adding an include directive to the top of your sketch.
+The EEPROM library is included with the hardware package. To add its functionality to your sketch you'll need to reference the library header file. You do this by adding an include directive to the top of your sketch.
 
 ```Arduino
 #include <EEPROM.h>
