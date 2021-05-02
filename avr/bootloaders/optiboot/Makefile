@@ -659,10 +659,7 @@ atmega328_pro8_isp: isp
 
 #
 # Include additional platforms
-include Makefile.atmel
-include Makefile.custom
 include Makefile.tiny
-include Makefile.MCUdude
 
 ifndef PRODUCTION
 BAUDCHECK= baudcheck
