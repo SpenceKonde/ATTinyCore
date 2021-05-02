@@ -107,6 +107,65 @@ static const uint8_t A11 = ADC_CH(11);
 #define USE_SOFTWARE_SERIAL                  0
 
 /*---------------------------------------------------------------------------
+ * Chip Features - Timers amnd PWM
+ *---------------------------------------------------------------------------
+ * Basic PWM is covered elsewhere, but this lets you look up what pin is on
+ * a given compare channel easily. Used to generate some pinmapping independent
+ * defines for TimerOne library back in Arduino.h
+ *
+ * Functions of timers associated with pins have pins specified by macros of
+ * the form PIN_TIMER_ followed by the function.
+ *
+ * PWM_CHANNEL_REMAPPING is defined and true where the PWM channels from timers
+ * has additional non-standard behavior allowing the remapping of output from
+ * otherwise normal pins (and interfering with naive code that enables them,
+ * though if the code acts only on the timer registers, it will often work if
+ * user code calls analogWrite() on the pin before letting the library use it.
+ * Where this is not the case, it is not defined.
+ *
+ * TIMER0_TYPICAL is 1 if that timer is present, and is an 8-bit timer with or
+ * without two output compare channels. PIN_TIMER_OC0A/OC0B will be defined if
+ * it has them.
+ *
+ * TIMER1_TYPICAL is 1 if that timer is present, and is a 16-bit timer with PWM
+ * as opposed to some bizarro one like the 85 and 861 have.
+ *
+ * TIMER2_TYPICAL is 1 if that timer is present, and is an 8-bit asynch timer,
+ * like on classic ATmega parts. There is only one ATTinyCore part with a
+ * Timer2, and this is false there, because that timer is instead like Timer1.
+ *
+ * We do not provide further macros to characterize the type of a timer in more
+ * detail but the sheer variety of atypical timers on classic AVRs made it hard
+ * to derive a quick test of whether the normal stuff will work.
+ *---------------------------------------------------------------------------*/
+
+#define PWM_CHANNEL_REMAPPING       (1) /*analogWrite() pin to enable PWM
+After doing that, the normal ways of manipulating registers for PWM will
+work for it unless or until digitalWrite() us called on it.
+Methods that use the standard ways to turn off PWM will prevent it from working
+afterwards if you then try to go back to core-provided PWM functions. The
+"standard" way uses the COMnx0 and COMnx1 bits in the TCCRny registers. We set
+those at power on only (so it has no space cost because we have to set them
+anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
+
+#define TIMER0_TYPICAL              (1)
+#define PIN_TIMER_OC0A              (PIN_PA4) /* core default - TOCC3 */
+#define PIN_TIMER_OC0B              (PIN_PA5) /* core default - TOCC4 */
+#define PIN_TIMER_T0                (PIN_PA3)
+
+#define TIMER1_TYPICAL              (1)
+#define PIN_TIMER_OC1A              (PIN_PA6) /* core default - TOCC2*/
+#define PIN_TIMER_OC1B              (PIN_PA3) /* core default - */
+#define PIN_TIMER_T1                (PIN_PA4)
+#define PIN_TIMER_ICP1              (PIN_PA7)
+
+#define TIMER2_TYPICAL              (0) /* No, it's like Timer1 */
+#define PIN_TIMER_OC2A              (PIN_PA7) /* core default */
+#define PIN_TIMER_OC2B              (PIN_PB2) /* core default */
+#define PIN_TIMER_T2                (PIN_PA5)
+#define PIN_TIMER_ICP2              (PIN_PB2)
+
+/*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
  *---------------------------------------------------------------------------
  * Analog reference constants are pre-shifted to their final position in the

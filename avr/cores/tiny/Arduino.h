@@ -290,6 +290,28 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 // defined a separate clock DDR, we leave it, otherwise point these defines at same port as
 // the data lines. We also use the pin definitions to generate SPI and TWI pin mappings.
 
+
+#if defined(PIN_TIMER_OC1A) && !defined(TIMER1_A_PIN)
+#define TIMER1_A_PIN   PIN_TIMER_OC1A
+#endif
+#if defined(PIN_TIMER_OC1B) && !defined(TIMER1_B_PIN)
+#define TIMER1_B_PIN   PIN_TIMER_OC1B
+#endif
+#if defined(PIN_TIMER_T1) && !defined(TIMER1_CLK_PIN)
+#define TIMER1_CLK_PIN   PIN_TIMER_T1
+#endif
+#if defined(PIN_TIMER_ICP1) && !defined(TIMER1_ICP_PIN)
+#define TIMER1_ICP_PIN  PIN_TIMER_ICP1
+#endif
+
+
+
+#elif defined (__AVR_ATtiny88__) && !defined(TIMER1_A_PIN)
+  #define TIMER1_A_PIN   14
+  #define TIMER1_B_PIN   11
+  //#define TIMER1_ICP_PIN 8
+  //#define TIMER1_CLK_PIN 5
+
 #ifndef USI_CLOCK_DDR
   #define USI_CLOCK_DDR   USI_DATA_DDR
   #define USI_CLOCK_PORT  USI_DATA_PORT

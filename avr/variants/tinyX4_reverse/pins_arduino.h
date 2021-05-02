@@ -101,6 +101,49 @@ static const uint8_t A7 = ADC_CH(7);
  * available for other uses. Comparator pins in Analog section below.        */
 #define USE_SOFTWARE_SERIAL                     1
 
+/*---------------------------------------------------------------------------
+ * Chip Features - Timers amnd PWM
+ *---------------------------------------------------------------------------
+ * Basic PWM is covered elsewhere, but this lets you look up what pin is on
+ * a given compare channel easily. Used to generate some pinmapping independent
+ * defines for TimerOne library back in Arduino.h
+ *
+ * Functions of timers associated with pins have pins specified by macros of
+ * the form PIN_TIMER_ followed by the function.
+ *
+ * PWM_CHANNEL_REMAPPING is defined and true where the PWM channels from timers
+ * has additional non-standard behavior allowing the remapping of output from
+ * otherwise normal pins (and interfering with naive code that enables them,
+ * though if the code acts only on the timer registers, it will often work if
+ * user code calls analogWrite() on the pin before letting the library use it.
+ * Where this is not the case, it is not defined.
+ *
+ * TIMER0_TYPICAL is 1 if that timer is present, and is an 8-bit timer with or
+ * without two output compare channels. PIN_TIMER_OC0A/OC0B will be defined if
+ * it has them.
+ *
+ * TIMER1_TYPICAL is 1 if that timer is present, and is a 16-bit timer with PWM
+ * as opposed to some bizarro one like the 85 and 861 have.
+ *
+ * TIMER2_TYPICAL is 1 if that timer is present, and is an 8-bit asynch timer,
+ * like on classic ATmega parts. There is only one ATTinyCore part with a
+ * Timer2, and this is false there, because that timer is instead like Timer1.
+ *
+ * We do not provide further macros to characterize the type of a timer in more
+ * detail but the sheer variety of atypical timers on classic AVRs made it hard
+ * to derive a quick test of whether the normal stuff will work.
+ *---------------------------------------------------------------------------*/
+
+#define TIMER0_TYPICAL              (1)
+#define PIN_TIMER_OC0A              (PIN_PB2)
+#define PIN_TIMER_OC0B              (PIN_PA7)
+#define PIN_TIMER_T0                (PIN_PA3)
+
+#define TIMER1_TYPICAL              (1)
+#define PIN_TIMER_OC1A              (PIN_PA6)
+#define PIN_TIMER_OC1B              (PIN_PA5)
+#define PIN_TIMER_T1                (PIN_PA4)
+#define PIN_TIMER_ICP1              (PIN_PA7)
 
 /*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
