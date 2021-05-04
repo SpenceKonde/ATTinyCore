@@ -70,7 +70,7 @@ uint8_t analog_reference = DEFAULT;
   }
 #else
   void analogGain( __attribute__ ((unused)) uint8_t gain) {
-    badCall("This part does not have a differential ADC.")
+    badCall("This part does not have a differential ADC.");
   }
 #endif
 
@@ -93,7 +93,7 @@ void analogReference(uint8_t mode) {
         }
       #elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtiny1634__)
         if (mode == 0xC0) {
-          badArg("The requested reference is not a valid reference option, use named cosntants from part-specific documentation")
+          badArg("The requested reference is not a valid reference option, use named cosntants from part-specific documentation");
         }
       #endif
     #else // is an x7 - this gets more interesting...
