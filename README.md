@@ -1,5 +1,9 @@
 # ATTinyCore **Universal**
 Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43 and 828.
+## State of ATTinyCore
+Development of ATTinyCore is proceeding in the v2.0.0-dev branch. It's not usable presently due to incomplete work, but that is what all future releases will be made from. Notably, I belive the variant pins_arduino.h files are complete, showcasing both the range of new information available to the core and user code for all parts, and the new, consisitent formatting. 
+
+ATtiny26 support looks like it may be coming after all....
 
 Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus)
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
