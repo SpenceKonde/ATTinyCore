@@ -249,7 +249,11 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   The left/rightshift 4 positions is only 2 clocks - 1 for a swp instruction
   1 for andi 0xF0/0x0F (depending on direction of shift), whild 4 actual left/ri
 
-  So TOCC bitmask */
+  So timer number = TOCCn & 0x07, and
+  TOCC mask = TOCCn & 0xF0 >> (TOCCn & 0x08)?4:0
+
+
+  */
 #if defined(SUPER_PWM)
   #define TOCC0  (0x01)
   #define TOCC1  (0x02)
@@ -292,25 +296,18 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 
 #if defined(PIN_TIMER_OC1A) && !defined(TIMER1_A_PIN)
-#define TIMER1_A_PIN   PIN_TIMER_OC1A
+  #define TIMER1_A_PIN   PIN_TIMER_OC1A
 #endif
 #if defined(PIN_TIMER_OC1B) && !defined(TIMER1_B_PIN)
-#define TIMER1_B_PIN   PIN_TIMER_OC1B
+  #define TIMER1_B_PIN   PIN_TIMER_OC1B
 #endif
 #if defined(PIN_TIMER_T1) && !defined(TIMER1_CLK_PIN)
-#define TIMER1_CLK_PIN   PIN_TIMER_T1
+  #define TIMER1_CLK_PIN   PIN_TIMER_T1
 #endif
 #if defined(PIN_TIMER_ICP1) && !defined(TIMER1_ICP_PIN)
-#define TIMER1_ICP_PIN  PIN_TIMER_ICP1
+  #define TIMER1_ICP_PIN  PIN_TIMER_ICP1
 #endif
 
-
-
-#elif defined (__AVR_ATtiny88__) && !defined(TIMER1_A_PIN)
-  #define TIMER1_A_PIN   14
-  #define TIMER1_B_PIN   11
-  //#define TIMER1_ICP_PIN 8
-  //#define TIMER1_CLK_PIN 5
 
 #ifndef USI_CLOCK_DDR
   #define USI_CLOCK_DDR   USI_DATA_DDR
