@@ -6,7 +6,7 @@ This is currently supported only on parts for which readily available boards wit
 
 In the future, the remaining boards will get the Micronucleus treatment, and I will make boards with that functionality available for purchase as well.
 
-On Windows, Micronucleus requires drivers to be installed; this can be done by running the included batch file - but the Arduino IDE will not do that for you. When you install it, the path to the batch file will be printed in the console window. Alternately, the drivers can also be downloaded separately from https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip - unzip, run installer.
+On Windows, Micronucleus requires drivers to be installed; this can be done by running the included batch file - but the Arduino IDE will not do that for you. When you install it, the path to the batch file will be printed in the console window. Alternately, the drivers can also be downloaded separately from <https://github.com/digistump/DigistumpArduino/releases/download/1.6.7/Digistump.Drivers.zip> - unzip, run installer.
 
 ### Uploading to a Micronucleus board
 
