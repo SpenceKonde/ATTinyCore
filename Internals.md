@@ -1,31 +1,23 @@
-### Internals and advanced functionality:
-
-
-
+# Internals and advanced functionality:
 
 You can identify the core using the following:
 
-```
-
+```C
 #define ATTINY_CORE       - Attiny Core
-
 ```
-
 
 These are used to identify features:
 
-```
-
+```C
 #define USE_SOFTWARE_SERIAL    (0 = hardware serial, 1 = software serial
 #define USE_SOFTWARE_SPI       (not defined if hardware spi present)
 #define HAVE_ADC               (1 = has ADC functions)
 #define DISABLE_UART           (1 = disables HW serial buffers and interrupts)
-
 ```
 
 The following identify board variants (various cores have used both styles of defines, so both are provided here to maximize compatibility):
 
-```
+```C
 #define ATTINYX4 1
 #define __AVR_ATtinyX4__
 
@@ -45,5 +37,4 @@ The following identify board variants (various cores have used both styles of de
 #define __AVR_ATtinyX41__
 #define __AVR_ATtiny1634__
 #define __AVR_ATtiny828__
-
 ```

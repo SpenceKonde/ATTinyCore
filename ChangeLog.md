@@ -1,14 +1,18 @@
 # This document lists significant changes and bugfixes, including those not in yet in a release.
+
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
 
-### 1.5.2
+## 1.5.2
+
 * New pinout images (#535) Thanks, @MCUdude!
 * Correct windows micronucleus upload problem the right way - It seems hard to get windows IDE to correctly install Micronucleusbut and handle the folder organization when the files are distributed as tarballs instead of zip's (funny, the compiler toolchain worked fine... whatever the problem is is solved)
 
-### ~1.5.1~
+## ~1.5.1~
+
 * Attempt to fix Micronucleus upload issue on windows was botched, resulting in only windows working. Release was pulled shortly after it was posted.
 
-### 1.5.0
+## 1.5.0
+
 * Dramatic improvement in execution time and flash use with constant pins for digitalWrite/etc (thanks @yumkam!)
 * Improvements to millis and micros timing, as well as delayMicroseconds particularly for oddball frequencies. (big thanks to @cburstedde!)
 * Update to Micronucleus 2.5 upload tool, now available for all Arduino platforms (#465, #477)
@@ -31,7 +35,8 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Select /32 prescaler where available when operating with a system clock between 3 and 8 MHz, moving PWM on those pins back to the targeted 500 Hz to 1 kHz range
 * Correct WGM for Timer 1 PWM on x7 to phase correct (0b0001) rather than fast (0b0101) pwm modes
 
-### 1.4.1
+## 1.4.1
+
 * Correct severe regression in timekeeping on 841, 441, 1634, and 828 in version 1.4.0 (#445, 447)
 * Correct issue with included bootloaders for MH ET tiny88 micronucleus boards actually not working... re-bootload with ISP programmer to fix with the new bootloaders. (#439)
 * Add full suite of entry mode bootloaders for tiny88 micronucleus.
@@ -41,7 +46,8 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Change "USB tinyISP" to "USB tinyISP FAST", and increase bit clock significantly. Previously we had the normal version at 200kHz and the SLOW at 125kHz, which was redundant, and made the USBtinyISP agonizingly slow, even with the tiny memory of these parts.
 * Add in ASCII art pinout to pins_arduino.c for TinyX8_MH pin mapping (#434 - thanks @AingeruJM!)
 
-### 1.4.0
+## 1.4.0
+
 * Add support for MH-Tiny T88 pin mapping.
 * Add support for MH-Tiny T88 boards, because I just got a bunch and it didn't look too hard.
 * Add support for the DigiSpark Pro pin mapping for the ATtiny87/167 with other bootloader options.
@@ -71,7 +77,8 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Add pulseInLong()
 * (untested) Don't generate .lst unless told to 'export compiled binary' (#379 - though note that that issue also appears to involve a problem with their compiler, or maybe just an extremely perverse username that's breaking things)
 
-### 1.3.3
+## 1.3.3
+
 * Add support for external CLOCK on 48/88/828. Document how to use external clock on other parts via manual AVRdude step (#355).
 * Fix bug with using 32K ULP as clock source on 828.
 * A bit of boards.txt cleanup.

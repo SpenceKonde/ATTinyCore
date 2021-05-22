@@ -1,4 +1,4 @@
-### Minimal Wiring Requirements:
+# Minimal Wiring Requirements:
 
 These are the bare minimum requirements to bring the chip to life and program it using the Arduino IDE. The 0.1uf capacitors are *not* optional - you must use these or the parts will behave erratically, and may not work at all; these should be placed as close to the chip as possible.
 
@@ -13,12 +13,14 @@ These are the bare minimum requirements to bring the chip to life and program it
 
 If the power supply is unstable, or the wires from the supply are long, it is highly recommended to put a larger capacitor between power and ground on the board - the appropriate size and type will depend on the loading, voltage, stability of the power supply, and available space; typical values might range from 10 uf to 1000uf. Aluminum electrolytic caps are commonly used for this purpose.
 
-### Additional requirements for programming over Serial using Optiboot:
+## Additional requirements for programming over Serial using Optiboot:
+
 * 10k resistor between Reset pin and Vcc
 * 0.1uf capacitor between Reset pin and pin header that you can connect to the DTR pin of your serial adapter
 * Diode (any) between Reset and Vcc, band towards Vcc. Necessity of this part is debated.
 
 It is recommended that you install a 1x6 pin FTDI header for ease of connection to the serial adapter. The pinout of this is:
+
 1. Gnd
 2. Not used
 3. Vcc
@@ -26,5 +28,6 @@ It is recommended that you install a 1x6 pin FTDI header for ease of connection 
 5. Tx (this will go to Rx of serial adapter)
 6. DTR
 
-### Once these parts are installed, you are ready to program your ATtiny
+## Once these parts are installed, you are ready to program your ATtiny
+
 See the [Programming Guide](Programming.md) for more information.

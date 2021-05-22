@@ -1,4 +1,4 @@
-#Using ATTinyCore with Makefiles#
+# Using ATTinyCore with Makefiles
 
 The highly popular [Sudar
 makefile](https://github.com/sudar/Arduino-Makefile) works with
@@ -10,7 +10,7 @@ project's folder.  You don't need to change anything in the Arduino
 sketches. What compiles with the Arduion IDE will also compile with
 the Sudar makefile suite.
 
-##Prerequisite:##
+## Prerequisites
 
 If you have not already do so, **install the Arduino IDE** according
 to the instructions at the [Arduino.cc
@@ -57,11 +57,13 @@ At the time this was written, these are the ATtiny chips supported by ATTinyCore
 
 You can obtain a new copy of the list above by entering this command in a serial console:
 
-**awk -F. '/att/ {print $1}' ~/Arduino/hardware/ATTinyCore/avr/boards.txt|uniq**
-
+```bash
+awk -F. '/att/ {print $1}' ~/Arduino/hardware/ATTinyCore/avr/boards.txt|uniq
+```
 
 An example of a working Makefile is shown below.
 <br>
+
 ```
 ### DISCLAIMER
 ### This Makefile is designed for use with the sudar Arduino.mk
@@ -144,6 +146,7 @@ OBJDIR            = $(PROJECT_DIR)/$(CURRENT_DIR)/$(BOARD_TAG)/bin
 ### Do not touch - the path to Arduino.mk, inside the ARDMK_DIR
 include $(ARDMK_DIR)/Arduino.mk
 ```
+
 <br>
 **Below, is the console output from this Makefile:**
 <br>
