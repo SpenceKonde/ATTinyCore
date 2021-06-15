@@ -299,11 +299,16 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 };
 #endif
 
-//The 2313 and 2313a use different names for a few things in the headers. This makes sure all of them are there for all x313 parts...
+//The 2313 2313a and 4313 use different names for a few things in the headers. This makes sure all of them are there for this family if lousy, obsolete garbage parts.
 #ifndef DDA0
 #define DDA0 DDRA0
 #define DDA1 DDRA1
 #define DDA2 DDRA2
+#endif
+#ifdef PCMSK1
+  #ifndef PCMSK0
+    #define PCMSK0 PCMSK
+  #endif
 #endif
 #ifndef DDAR0
 #define DDAR0 DDA0

@@ -431,10 +431,18 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 #endif
 
-/* SIGRD is missing from some of the IO headers, where it should be defined as 5.
+/* SIGRD is missing from some of the IO headers, where it should be defined as 5 for most parts. Is sometimes omitted entirley and sometimes named SIGRD
  * this is one of the ways we work around this  */
 #ifndef SIGRD
-  #define SIGRD 5
+  #ifndef RSIG
+    #define SIGRD 5
+    #define RSIG 5
+  #else
+    #define SIGRD RSIG
+  #endif
+#else
+  #ifndef RSIG
+  #define RSIG SIGRD
 #endif
 
 /*---------------------------------------------------------------------------
@@ -489,5 +497,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #if defined(TIM2_OVF_vect)    && !defined(TIMER2_OVF_vect)
 #define TIMER2_OVF_vect TIM2_OVF_vect
 #endif
+
 
 #endif

@@ -27,9 +27,9 @@ Any changes listed at the top, without a version number above thenm, have not be
 * Todo: PWM on third channel on x61
 * Todo: Micronucleus!
 * Todo: Boards.txt refactor.
-* Todo: Fix the optiboot bricking bug
 * Todo: Attend to platform.txt and boards.txt UI constistancy issues from email
-* Todo: Adjust optiboot upload speeds, they were not chosen well previously (sorry, this does mean burn bootloader may be required - that's why it's 2.0.0 not 1.x.x; they will work better, and in some cases, upload more quickly too - particularly where there is no hardware USART. I swear sometimes it looks like I did things just to punish people not using parts with a hardware serial port...
+* Deal with missing data from header files for some parts. SIGRD/RSIG, and PCMSK on 4313 which should have been PCMSK0 (#564)
+* Adjust optiboot upload speeds, they were not chosen well previously (sorry, this does mean burn bootloader may be required - that's why it's 2.0.0 not 1.x.x; they will work better, and in some cases, upload more quickly too - particularly where there is no hardware USART. I swear sometimes it looks like I did things just to punish people not using parts with a hardware serial port. Now the upload speed used is 4800 below 4 MHz 19200 from 4 up to 8, 38400 from 8 to 12, and 56700 above that that when there's no hardware USART. When there is, 9600 baud at 1 MHz, 57600 from 8 through 10, and 115200 above that. Fix issue with ATtiny48 binaries not writing (something is clearly wrong with the size checking, they should *not* have built like that. )
 Note: Added features marked with * are planned to be optionally disablable to save flash, though they are not particularly flash-hungry. When you only have 2k, everything matters....
 
 
