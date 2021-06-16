@@ -1,5 +1,4 @@
-/*
-SoftwareSerial.cpp (formerly NewSoftSerial.cpp) -
+/* SoftwareSerial.cpp (formerly NewSoftSerial.cpp) -
 Multi-instance software serial library for Arduino/Wiring
 -- Interrupt-driven receive and other improvements by ladyada
    (http://ladyada.net)
@@ -10,31 +9,25 @@ Multi-instance software serial library for Arduino/Wiring
 -- Pin change interrupt macros by Paul Stoffregen (http://www.pjrc.com)
 -- 20MHz processor support by Garrett Mace (http://www.macetech.com)
 -- ATmega1280/2560 support by Brett Hagman (http://www.roguerobotics.com/)
+-- Adapted to handle corner cases (older classic AVRs with PCINT_vect
+   and to #error when we don't find one, and rmeoved workaround for
+   versions of AVR-gcc that existed when dinosaurs walked the earth.
+   Spemce Konde 2021 for ATTimyCore.
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+This version is designed for distribution with ATTinyCore 2.0.0 and later.
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-The latest version of this library can always be found at
-http://arduiniana.org.
+This library is free software (LGPL 2.1) see the LICENCE.md file in this package
+for the full legal boilerplate.
 */
 
 // When set, _DEBUG co-opts pins 11 and 13 for debugging with an
 // oscilloscope or logic analyzer.  Beware: it also slightly modifies
 // the bit times, so don't rely on it too much at high baud rates
 #define _DEBUG 0
-#define _DEBUG_PIN1 11
-#define _DEBUG_PIN2 13
+#if _DEBUG
+  #define _DEBUG_PIN1 11
+  #define _DEBUG_PIN2 13
+#endif
 //
 // Includes
 //
@@ -57,9 +50,14 @@ volatile uint8_t SoftwareSerial::_receive_buffer_head = 0;
 //
 // This function generates a brief pulse
 // for debugging or measuring on an oscilloscope.
-inline void DebugPulse(uint8_t pin, uint8_t count)
-{
+// Spence observes that this is a lousy implementant.
+// weould split into 2 functions and get *ppin=portInputRegister(digitalPinToPort(pin)) using the LTO tricks
+// then we could do *ppin |= (1 << bitposition) (toggle), and make sure we do it an even number of times,
+// and it would come out right with less impoact ion timing
 #if _DEBUG
+inline void DebugPulse(uint8_t pin,  uint8_t count)
+{
+
   volatile uint8_t *pport = portOutputRegister(digitalPinToPort(pin));
 
   uint8_t val = *pport;
@@ -68,8 +66,9 @@ inline void DebugPulse(uint8_t pin, uint8_t count)
     *pport = val | digitalPinToBitMask(pin);
     *pport = val;
   }
-#endif
 }
+#endif
+
 
 //
 // Private methods
@@ -120,23 +119,8 @@ bool SoftwareSerial::stopListening()
 //
 void SoftwareSerial::recv()
 {
-
-#if GCC_VERSION < 40302
-// Work-around for avr-gcc 4.3.0 OSX version bug
-// Preserve the registers that the compiler misses
-// (courtesy of Arduino forum user *etracer*)
-  asm volatile(
-    "push r18 \n\t"
-    "push r19 \n\t"
-    "push r20 \n\t"
-    "push r21 \n\t"
-    "push r22 \n\t"
-    "push r23 \n\t"
-    "push r26 \n\t"
-    "push r27 \n\t"
-    ::);
-#endif
-
+  // Spence Konde: removed dead code to work around bugs in aincent compiler version. Thid core requires Link
+  // timer optimization as of 2.0.0, which was not implemented unti 5.x
   uint8_t d = 0;
 
   // If RX line is high, then we don't see any start bit
@@ -150,14 +134,17 @@ void SoftwareSerial::recv()
 
     // Wait approximately 1/2 of a bit width to "center" the sample
     tunedDelay(_rx_delay_centering);
-    DebugPulse(_DEBUG_PIN2, 1);
-
+    #if _DEBUG
+      DebugPulse(_DEBUG_PIN2, 1);
+    #endif
     // Read each of the 8 bits
     for (uint8_t i=8; i > 0; --i)
     {
       tunedDelay(_rx_delay_intrabit);
       d >>= 1;
-      DebugPulse(_DEBUG_PIN2, 1);
+      #if _DEBUG
+        DebugPulse(_DEBUG_PIN2, 1);
+      #endif
       if (rx_pin_read())
         d |= 0x80;
     }
@@ -175,33 +162,22 @@ void SoftwareSerial::recv()
     }
     else
     {
-      DebugPulse(_DEBUG_PIN1, 1);
+      #if _DEBUG
+        DebugPulse(_DEBUG_PIN1, 1);
+      #endif
       _buffer_overflow = true;
     }
 
     // skip the stop bit
     tunedDelay(_rx_delay_stopbit);
-    DebugPulse(_DEBUG_PIN1, 1);
-
+    #if _DEBUG
+      DebugPulse(_DEBUG_PIN1, 1);
+    #endif
     // Re-enable interrupts when we're sure to be inside the stop bit
     setRxIntMsk(true);
 
   }
 
-#if GCC_VERSION < 40302
-// Work-around for avr-gcc 4.3.0 OSX version bug
-// Restore the registers that the compiler misses
-  asm volatile(
-    "pop r27 \n\t"
-    "pop r26 \n\t"
-    "pop r23 \n\t"
-    "pop r22 \n\t"
-    "pop r21 \n\t"
-    "pop r20 \n\t"
-    "pop r19 \n\t"
-    "pop r18 \n\t"
-    ::);
-#endif
 }
 
 uint8_t SoftwareSerial::rx_pin_read()
@@ -227,19 +203,28 @@ ISR(PCINT0_vect)
 {
   SoftwareSerial::handle_interrupt();
 }
+#elif defined(PCINT_vect)
+  ISR(PCINT_vect)
+  {
+    SoftwareSerial::handle_interrupt();
+  }
+#endif
+#if (defined (PCINT0_vect) || defined(PCINT_vect))
+  #if defined(PCINT1_vect)
+    ISR(PCINT1_vect, ISR_ALIASOF(PCINT0_vect));
+  #endif
+  #if defined(PCINT2_vect)
+    ISR(PCINT2_vect, ISR_ALIASOF(PCINT0_vect));
+  #endif
+  #if defined(PCINT3_vect)
+    ISR(PCINT3_vect, ISR_ALIASOF(PCINT0_vect));
+  #endif
+#else
+  #error "There is no PCINT vector known to this library; SoftwareSerial requires PCINT (pin change interrupts)"
+  #error "which are present on essenmtially all classic AVRs; are you using something ancient? The post-2016 (so called modern AVRs are not supported by this version)!"
 #endif
 
-#if defined(PCINT1_vect)
-ISR(PCINT1_vect, ISR_ALIASOF(PCINT0_vect));
-#endif
 
-#if defined(PCINT2_vect)
-ISR(PCINT2_vect, ISR_ALIASOF(PCINT0_vect));
-#endif
-
-#if defined(PCINT3_vect)
-ISR(PCINT3_vect, ISR_ALIASOF(PCINT0_vect));
-#endif
 
 //
 // Constructor
