@@ -47,7 +47,10 @@
 #include <inttypes.h>
 #include "Stream.h"
 
-#define BUFFER_LENGTH 32
+#if ((RAMEND+1) - RAMSTART) > 128
+  #define BUFFER_LENGTH 32
+#else
+  #define BUFFER_LENGTH 16
 
 // WIRE_HAS_END means Wire has end()
 #define WIRE_HAS_END 1

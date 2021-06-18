@@ -160,7 +160,7 @@ External crystal (all except 828, 43 and x8-family):
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 
-`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies, the usual caveats about software serial and baud rate accuracy on classic (pre-2016) AVR designs notwithstanding. These crystal options are not available for chips without a UART in versions of ATTinyCore older than 1.1.5, and are never recommended for parts without a hardware serial port.
+`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies, the usual caveats about software serial and baud rate accuracy on classic (pre-2016) AVR designs notwithstanding.
 
 `**` These options are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
 
@@ -170,21 +170,24 @@ All available clock options for the selected processor will be shown in the Tool
 
 `‡` The ULP is the "Ultra Low Power" oscillator that replaced the 128 kHz WDT oscillator on the 441/841/828/1634. Like the WDT oscillator, it is only calibrated very roughly - the spec is +/- 30% (over the whole operating range - so in practice it's usually not quite that bad). On the 1634 and 828, it always runs at 32 KHz, but on the 841, it can apparently clock the system up to 16 times that rate. Though there is a tuning register, and a nice responsive looking tuning curve in the typical properties section of the datasheet, look more closely - there are only 4 points marked on the horizontal axis: Sure enough in the register, there are only 2 bits of tuning for it.
 
-`!` Micros takes longer to return on these clocks (64/clock cycles per microsecond is not an integer).
+`!` Micros takes longer to return on these clocks  because (64/clock cycles per microsecond) is not an integer.
 
 `‼` `micros()` and `delayMicroseconds()` require a system clock of 1 MHz or higher.
 
 **Warning** Particularly in versions prior to 1.5.0, When using weird clock frequencies (those other than 16MHz, 8MHz, 4MHz, 2MHz, 1MHz, 0.5MHz), micros() is significantly slower (~ 110 clocks) (It reports the time at the point when it was called, not the end, however, and the time it gives is pretty close to reality). This combination of performance and accuracy is the result of hand tuning for these clock speeds. For other clock speeds (for example, if you add your own), it will be slower still - hundreds of clock cycles - though the numbers will be reasonably accurate, and reflect the time when it was called. millis() is not effected, only micros() and delay().
 
-This differs from the behavior of official Arduino core - the "stock" micros() executes equally fast at all clock speeds, and instead returns wrong values for "weird" clock speeds (64/(clock speed in microseconds, rounded down to integer), rounded down to integer. 12.8 MHz is a special case and is handled exactly.
+This differs from the behavior of official Arduino core - the "stock" micros() executes equally fast at all clock speeds, and instead simply returns wrong values when  (64/(clock speed in microseconds is not an integer. 12.8 MHz is a special case and is handled exactly by ATTinyCore (though not by the official one)
 
-Thanks to @cburstedde for his work this his work towards making this suck less in the 1.5.0 release!
+Thanks to @cburstedde for his work this his work towards making this suck far less in the 1.5.0 release!
 
 #### Using external CLOCK (instead of crystal) on other parts
-All of these parts support using and external clock as clock source. It is the most basic of clock sources - whereas a crystal requires an inverting amplifier, typically one of the more demanding parts of the microcontroller, the external clock requires almost nothhing from the chip being clocked that way. a
+All of these parts support using and external clock as clock source. It is the most basic of clock sources - whereas a crystal requires an inverting amplifier, typically one of the more demanding parts of the microcontroller, the external clock requires almost nothhing from the chip being clocked that way. What does this mean? On the few parts that do not support a crystal, it means you can get accurate timing. On everything else, it lets you get an extra pin as well. This comes at the cost of needing an additional part, external oscillator. These are available, but even the cheapest AliExpress sources I could find wantesd 40-80 cents each for them, and from reputable supply houses, they startt at around $1.40, likely making them the most expensive part on the board (or #2 if you cheap out and get random ones from china.). Many of them are in a fairly large 7050 (7mm x 5mm) pacakage, though they are available in much smaller ones. They usually need their own decoupling capacitor (0.01uF is the norm) and like any high frequency trace, the path to the clock in pin must be short.
+
+##### *oops! I thought my crystal was an external clock and now I can't program my chip!*
+Never fear. [Unbricking classic AVR parts bad clock setting](https://github.com/SpenceKonde/AVR-Guidance/tree/master/Troubleshooting/Unbricking)
 
 #### Determining clock speed and source from within the sketch
-The clock speed is made available via the F_CPU #define - you can test this using #if macro
+The clock speed is made available via the F_CPU #define - you can test this using #if macro. Note however that this tells you what speed it was compiled for. If the chip is in fact not running at that speed (because a different speed was selected when tyou last "burned bootloader", it has no way to know shhort of comparing to some other oscillator, (which sure, you could do with the RTC or something).
 
 In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values (as of 1.4.0, it is expanded to cover a few weird clocking situations: the low 4 bits identify the source, and high 4 bits identify special things regarding it:
 
@@ -212,7 +215,7 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 ### Assembler Listing generation
 
-In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions.
+In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. In 2.0.0 and later it gemnerates a memory map of dubious utility/
 
 ### Link-time Optimization (LTO) support
 
@@ -223,9 +226,14 @@ Link time optimization is enabled by default. If compiling with very old version
 For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with https://github.com/sudar/Arduino-Makefile - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
 
 ### I2C support
-**You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work. In all cases, including parts with hardware I2C where it may work sometimes, you should **always** use external pullup resistors, as the internal ones are far weaker than the I2C standard requires for reliable operation.
+**You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work. In all cases, including parts with hardware I2C where it may work sometimes, you should **always** use external pullup resistors, as the internal ones are far weaker than the I2C standard requires for reliable operation. While different ATtiny chips require three entirely different implemenetations of Wire.h - this is invisible to you as the user except as noted below. You just #include Wire.h and use it as notmal.
 
-On the following chips, I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core. Be aware that USI-based I2C is not available when USI-based SPI is in use.
+On all parts with more than 128b of SRAM, the buffer size in 32 bytes. On smaller parts, it is 16 bytes, but I'm not sure you could make those work with the Wire library anyway due to flash size constraints so this may not be relevant. Because of the graceless handling ofbuffer overflows, for consistent behavior it is important to use a consistent amount of ram for the buffers, so that libraries are not written assuming a larger one than your part uses. Since both a TX and RX bufer are used, though, obviously 32b was not going to happen with 128b of RAM.
+
+Among my cores,
+
+#### Implementation
+On the following chips, I2C functionality can be achieved with the hardware USI.
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (262/461/861)
@@ -233,14 +241,18 @@ On the following chips, I2C functionality can be achieved with the hardware USI.
 * ATtiny x313 (2313/4313)
 * ATtiny1634
 
-On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library. In versions prior to 1.2.2, USI on these devices is a flash-hog; this has been greatly improved in 1.2.2.
-* ATtiny828
+On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library.
+* ATtiny828 * due to amn errata, hardware slave functionality does not work unkless the wattchdog timer is enabled, as when it is not, the I2C pin is pulld down with around 1mA of currenrt.
 * ATtiny x41 (441/841)
 
 On the following chips, full master/slave I2C functionality is provided in hardware and the Wire library uses it:
 * ATtiny x8 (48, 88)
 
 ### SPI support:
+As is fairly widey known, the tinyAVR devices were not blessed with a true hardware serial port in most cases - many parts are stuck using the USI instead (same as is used for I2C), which as it haoppens is a truly dreadful excuse for a peripheral.
+
+On the following chips, SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the **USI does not have MISO/MOSI, it has DI/DO**; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). Clock dividers 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness. Also, interrupts are not disabled during data transfer as SPI clock doesn't need to be precise in most cases. If you use long interrupt routines or require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK`. Be aware that USI-based I2C is not available when USI-based SPI is in use.
+
 
 On the following chips, full SPI functionality is provided in hardware, and works identically to SPI on Atmega chips:
 * ATtiny828
@@ -248,7 +260,7 @@ On the following chips, full SPI functionality is provided in hardware, and work
 * ATtiny x41 (441/841)
 * ATtiny x8 (48, 88)
 
-On the following chips, SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the **USI does not have MISO/MOSI, it has DI/DO**; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). Clock dividers 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness. Also, interrupts are not disabled during data transfer as SPI clock doesn't need to be precise in most cases. If you use long interrupt routines or require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK`. Be aware that USI-based I2C is not available when USI-based SPI is in use.
+
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (262/461/861)
@@ -317,10 +329,9 @@ For Micronucleus boards, only options with are vaguely close to manufacturer's s
 
 ### Option to disable millis()/micros()
 
-The Tools -> millis()/micros() allows you to enable or disable the millis() and micros() timers. If set to enable (the default), millis(), micros() will be available. If set to disable, these will not be available, Serial methods which take a timeout as an argument will not have an accurate timeout (though the actual time will be proportional to the timeout supplied); delay will still work. Disabling millis() and micros() saves flash, and eliminates the millis interrupt every 1-2ms; this is especially useful on parts with very limited flash, as it saves a few hundred bytes.
+The Tools -> millis()/micros() allows you to enable or disable the millis() and micros() timers. If set to enable (the default), millis(), micros() will be available. If set to disable, these will not be available, Serial methods which take a timeout as an argument will not have an accurate timeout (though the actual time will be proportional to the timeout supplied); delay will still work. Disabling millis() and micros() saves flash, and eliminates the millis interrupt every 1-2ms; this is especially useful on parts with very limited flash, as it saves a few hundred bytes. We do not support using alternate timers for millis like megaTinyCore and DxCore do - there, the timers are consistent - The same code on DxCore and megaTiny Core handles both the type A and Type B timers om those parts. Except for the ubiquitous timer 0, there are almost as many timers as parts. It's challenging to evenm wrangle them into gemneratiogmn PW<
 
 ## Memory Lock Bits, disabling Reset
-
 ATTinyCore will never set lock bits automatically, nor will it set fuses to disable ISP programming (it is intentionally not made available as an option, since after doing that, an HVSP programmer is needed to further reprogram the chip, and inexperienced users would be at risk of bricking their chips this way). The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the fuse/lock bits. Disabling of reset is currently not an option, either - but for bootloader boards, this may change - VUSB bootloaders which disable reset are in widespread use, seemingly without issue. It will never be an option for non-bootloader boards because of the convoluted workflow required.
 
 
@@ -387,7 +398,7 @@ ATTinyCore itself is released under the [LGPL 2.1](LICENSE.md). It may be used, 
 
 The ATTinyCore hardware package (and by extension this repository) contains ATTinyCore as well as libraries and bootloaders. These are released under the same license, *unless specified otherwise*. For example, tinyNeoPixel and tinyNeoPixel_Static, being based on Adafruit's library, is released under GPLv3, as described in the LICENSE.md in those subfolders and within the body of the library files themselves.
 
-This does not apply to any tools or third party programs used by ATTinyCore. Installing ATTinyCore through board manager will install and/or update other tool(s) to compile and/or upload code. Those are covered by separate licenses included in their respective archives.
+Tools and third party programms used by ATTinyCore are governed by their own licenses; this includes tools installed by board manager, such as AVRdude and avr-gcc.
 
 ## Acknowledgements
 
