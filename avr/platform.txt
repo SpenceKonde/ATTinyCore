@@ -19,8 +19,8 @@ build.versiondefines=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DA
 # AVR compile variables
 # ---------------------
 
-compiler.warning_flags=-w
-compiler.warning_flags.none=-w
+compiler.warning_flags=-Wall
+compiler.warning_flags.none=-Wall
 compiler.warning_flags.default=-Wall
 compiler.warning_flags.more=-Wall
 compiler.warning_flags.all=-Wall -Wextra
@@ -28,13 +28,13 @@ compiler.warning_flags.all=-Wall -Wextra
 # Default "compiler.path" is correct, change only if you want to overidde the initial value
 compiler.path={runtime.tools.avr-gcc.path}/bin/
 compiler.c.cmd=avr-gcc
-compiler.c.flags=-c -g -Os {compiler.warning_flags} -std=gnu11 -ffunction-sections -fdata-sections -MMD {ltocflags}  -Werror=implicit-function-declaration -Wundef
-compiler.c.elf.flags={compiler.warning_flags} -Os {ltoelfflags} -Wl,--gc-sections
+compiler.c.flags=-c -g -Os {compiler.warning_flags} -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mrelax -Werror=implicit-function-declaration -Wundef
+compiler.c.elf.flags={compiler.warning_flags} -Os -g -flto -fuse-linker-plugin -Wl,--gc-sections -mrelax
 compiler.c.elf.cmd=avr-gcc
-compiler.S.flags=-c -g -x assembler-with-cpp {ltocppflags}
+compiler.S.flags=-c -g -x assembler-with-cpp -flto -MMD
 compiler.cpp.cmd=avr-g++
-compiler.cpp.flags=-c -g -Os {compiler.warning_flags} -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD {ltocppflags}
-compiler.ar.cmd=avr-{ltoarcmd}ar
+compiler.cpp.flags=-c -g -Os {compiler.warning_flags} -std=c++17 -fpermissive -Wno-sized-deallocation -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -Wno-error=narrowing -MMD -flto -mrelax
+compiler.ar.cmd=avr-gcc-ar
 compiler.ar.flags=rcs
 compiler.objcopy.cmd=avr-objcopy
 compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
@@ -89,26 +89,32 @@ recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
 ## Save disassembler listing
+recipe.hooks.objcopy.postobjcopy.1.pattern.windows=cmd /C "{compiler.path}{compiler.objdump.cmd}" {compiler.objdump.flags} "{build.path}/{build.project_name}.elf" > "{build.path}/{build.project_name}.lst"
+recipe.hooks.objcopy.postobjcopy.1.pattern.linux=bash -c "{compiler.path}{compiler.objdump.cmd} {compiler.objdump.flags} {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.lst"
+recipe.hooks.objcopy.postobjcopy.1.pattern.macosx=bash -c "{compiler.path}{compiler.objdump.cmd} {compiler.objdump.flags} {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.lst"
 
-recipe.hexlst_name={build.project_name}.t{build.attiny}{build.bootload}.{build.speed}c{build.clocksource}
 
-recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C "{compiler.path}{compiler.objdump.cmd}" {compiler.objdump.flags} "{build.path}/{build.project_name}.elf" > "{build.path}/{recipe.hexlst_name}.lst"
-recipe.hooks.savehex.presavehex.1.pattern.linux=chmod +x "{runtime.platform.path}/create_disassembler_listing.sh"
-recipe.hooks.savehex.presavehex.1.pattern.macosx=chmod +x "{runtime.platform.path}/create_disassembler_listing.sh"
-recipe.hooks.savehex.presavehex.2.pattern.linux="{runtime.platform.path}/create_disassembler_listing.sh" "{compiler.path}{compiler.objdump.cmd}" "{compiler.objdump.flags}" "{build.path}/{build.project_name}.elf" "{build.path}/{recipe.hexlst_name}.lst"
-recipe.hooks.savehex.presavehex.2.pattern.macosx="{runtime.platform.path}/create_disassembler_listing.sh" "{compiler.path}{compiler.objdump.cmd}" "{compiler.objdump.flags}" "{build.path}/{build.project_name}.elf" "{build.path}/{recipe.hexlst_name}.lst"
+## Save memory map
+recipe.hooks.objcopy.postobjcopy.2.pattern.windows=cmd /C "{compiler.path}{compiler.nm.cmd}" {compiler.nm.flags}  "{build.path}/{build.project_name}.elf" > "{build.path}/{build.project_name}.map"
+recipe.hooks.objcopy.postobjcopy.2.pattern.linux=bash -c "{compiler.path}{compiler.nm.cmd} {compiler.nm.flags}  {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.map"
+recipe.hooks.objcopy.postobjcopy.2.pattern.macosx=bash -c "{compiler.path}{compiler.nm.cmd} {compiler.nm.flags}  {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.map"
+
+## This is the name that memory maps, assembly listings and hex files will be output as
+build.extraassetname={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}cs{build.clocksource}.m{build.millistimer}{build.printfabr}{build.appspmabr}
 
 ## Save hex
-recipe.hooks.savehex.presavehex.3.pattern.windows="{runtime.platform.path}/delete_merged_output.bat" {build.export_merged_output} "{build.path}\{build.project_name}.with_bootloader.hex"
-recipe.hooks.savehex.presavehex.4.pattern.windows=cmd /C copy "{build.path}\{recipe.hexlst_name}.lst" "{sketch_path}"
-recipe.hooks.savehex.presavehex.3.pattern.linux=chmod +x "{runtime.platform.path}/delete_merged_output.sh"
-recipe.hooks.savehex.presavehex.4.pattern.linux="{runtime.platform.path}/delete_merged_output.sh" {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
-recipe.hooks.savehex.presavehex.5.pattern.linux=cp "{build.path}/{recipe.hexlst_name}.hex.lst" "{sketch_path}"
-recipe.hooks.savehex.presavehex.3.pattern.macosx=chmod +x "{runtime.platform.path}/delete_merged_output.sh"
-recipe.hooks.savehex.presavehex.4.pattern.macosx="{runtime.platform.path}/delete_merged_output.sh" {build.export_merged_output} "{build.path}/{build.project_name}.with_bootloader.hex"
-
 recipe.output.tmp_file={build.project_name}.hex
-recipe.output.save_file={recipe.hexlst_name}.hex
+recipe.output.save_file={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}.cs{build.clocksource}.m{build.millistimer}.hex
+
+## Save lst
+recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.lst" "{sketch_path}\{build.extraassetname}.lst"
+recipe.hooks.savehex.presavehex.1.pattern.linux=cp "{build.path}/{build.project_name}.lst" "{sketch_path}/{build.extraassetname}.lst"
+recipe.hooks.savehex.presavehex.1.pattern.macosx=cp "{build.path}/{build.project_name}.lst" "{sketch_path}/{build.extraassetname}.lst"
+
+## Save map
+recipe.hooks.savehex.presavehex.2.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.map" "{sketch_path}\{build.extraassetname}.map"
+recipe.hooks.savehex.presavehex.2.pattern.linux=cp "{build.path}/{build.project_name}.map" "{sketch_path}/{build.extraassetname}.map"
+recipe.hooks.savehex.presavehex.2.pattern.macosx=cp "{build.path}/{build.project_name}.map" "{sketch_path}/{build.extraassetname}.map"
 
 ## Preprocessor
 preproc.includes.flags=-w -x c++ -M -MG -MP
