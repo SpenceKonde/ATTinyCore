@@ -61,14 +61,14 @@ void TwoWire::begin(void)
   txBufferLength = 0;
 
   twi_init();
+  twi_attachSlaveTxEvent(onRequestService); // default callback must exist
+  twi_attachSlaveRxEvent(onReceiveService); // default callback must exist
 }
 
 void TwoWire::begin(uint8_t address)
 {
-  twi_setAddress(address);
-  twi_attachSlaveTxEvent(onRequestService);
-  twi_attachSlaveRxEvent(onReceiveService);
   begin();
+  twi_setAddress(address);
 }
 
 void TwoWire::begin(int address)
@@ -81,9 +81,58 @@ void TwoWire::end(void)
   twi_disable();
 }
 
-void TwoWire::setClock(uint32_t frequency)
+void TwoWire::setClock(uint32_t clock)
 {
-  TWBR = ((F_CPU / frequency) - 16) / 2;
+  twi_setFrequency(clock);
+}
+
+/***
+ * Sets the TWI timeout.
+ *
+ * This limits the maximum time to wait for the TWI hardware. If more time passes, the bus is assumed
+ * to have locked up (e.g. due to noise-induced glitches or faulty slaves) and the transaction is aborted.
+ * Optionally, the TWI hardware is also reset, which can be required to allow subsequent transactions to
+ * succeed in some cases (in particular when noise has made the TWI hardware think there is a second
+ * master that has claimed the bus).
+ *
+ * When a timeout is triggered, a flag is set that can be queried with `getWireTimeoutFlag()` and is cleared
+ * when `clearWireTimeoutFlag()` or `setWireTimeoutUs()` is called.
+ *
+ * Note that this timeout can also trigger while waiting for clock stretching or waiting for a second master
+ * to complete its transaction. So make sure to adapt the timeout to accomodate for those cases if needed.
+ * A typical timeout would be 25ms (which is the maximum clock stretching allowed by the SMBus protocol),
+ * but (much) shorter values will usually also work.
+ *
+ * In the future, a timeout will be enabled by default, so if you require the timeout to be disabled, it is
+ * recommended you disable it by default using `setWireTimeoutUs(0)`, even though that is currently
+ * the default.
+ *
+ * @param timeout a timeout value in microseconds, if zero then timeout checking is disabled
+ * @param reset_with_timeout if true then TWI interface will be automatically reset on timeout
+ *                           if false then TWI interface will not be reset on timeout
+
+ */
+void TwoWire::setWireTimeout(uint32_t timeout, bool reset_with_timeout)
+{
+  twi_setTimeoutInMicros(timeout, reset_with_timeout);
+}
+
+/***
+ * Returns the TWI timeout flag.
+ *
+ * @return true if timeout has occured since the flag was last cleared.
+ */
+bool TwoWire::getWireTimeoutFlag(void)
+{
+  return twi_manageTimeoutFlag(false);
+}
+
+/***
+ * Clears the TWI timeout flag.
+ */
+void TwoWire::clearWireTimeoutFlag(void)
+{
+  twi_manageTimeoutFlag(true);
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop)
@@ -170,7 +219,7 @@ void TwoWire::beginTransmission(int address)
 uint8_t TwoWire::endTransmission(uint8_t sendStop)
 {
   // transmit buffer (blocking)
-  int8_t ret = twi_writeTo(txAddress, txBuffer, txBufferLength, 1, sendStop);
+  uint8_t ret = twi_writeTo(txAddress, txBuffer, txBufferLength, 1, sendStop);
   // reset tx buffer iterator vars
   txBufferIndex = 0;
   txBufferLength = 0;
@@ -382,15 +431,34 @@ void TwoWire::begin(int address) {
 }
 
 void TwoWire::end(void) {
-  USI_TWI_Slave_Disable();
-  DDR_USI_CL &= ~(1 << PIN_USI_SCL); // Enable SCL as input.
-  DDR_USI &= ~(1 << PIN_USI_SDA); // Enable SDA as input.
-  PORT_USI &= ~(1 << PIN_USI_SDA); // Disable pullup on SDA.
-  PORT_USI_CL &= ~(1 << PIN_USI_SCL); // Disable pullup on SCL.
+  USI_TWI_Master_Disable();
 }
 
 void TwoWire::setClock(uint32_t clock) {
   USI_TWI_Master_Speed(clock>200000);
+}
+
+void TwoWire::setWireTimeout(uint32_t timeout, bool reset_with_timeout)
+{
+  USI_TWI_Master_Timeout(timeout, reset_with_timeout);
+}
+
+/***
+ * Returns the timeout flag.
+ *
+ * @return true if timeout has occured since the flag was last cleared.
+ */
+bool TwoWire::getWireTimeoutFlag(void)
+{
+  return USI_TWI_Master_Manage_Timeout_Flag(false);
+}
+
+/***
+ * Clears the timeout flag.
+ */
+void TwoWire::clearWireTimeoutFlag(void)
+{
+  USI_TWI_Master_Manage_Timeout_Flag(true);
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity,
@@ -490,6 +558,8 @@ uint8_t TwoWire::endTransmission(uint8_t sendStop) {
       return 2; //received NACK on transmit of address
     case USI_TWI_NO_ACK_ON_DATA:
       return 3; //received NACK on transmit of data
+    case USI_TWI_TIMEOUT:
+      return 5; //timeout
     }
     return 4; //other error
   }
@@ -683,6 +753,33 @@ void TwoWire::setClock(uint32_t clock) {
   // XXX: to be implemented.
   (void)clock; //disable warning
 }
+
+void TwoWire::setWireTimeout(uint32_t timeout, bool reset_with_timeout)
+{
+  // XXX: to be implemented.
+  (void)timeout; //disable warning
+  (void)reset_with_timeout; //disable warning
+}
+
+/***
+ * Returns the timeout flag.
+ *
+ * @return true if timeout has occured since the flag was last cleared.
+ */
+bool TwoWire::getWireTimeoutFlag(void)
+{
+  // XXX: to be implemented.
+  return false;
+}
+
+/***
+ * Clears the timeout flag.
+ */
+void TwoWire::clearWireTimeoutFlag(void)
+{
+  // XXX: to be implemented.
+}
+
 #ifndef WIRE_SLAVE_ONLY
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity,
   uint32_t iaddress, uint8_t isize,
