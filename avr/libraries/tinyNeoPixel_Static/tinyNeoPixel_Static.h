@@ -1,6 +1,16 @@
 /*--------------------------------------------------------------------
   This file is part of the tinyNeoPixel library, derived from
-  Adafruit_NeoPixel.
+  Adafruit_NeoPixel. Modification was carried out between 2016 and
+  2021 by Spence Konde for ATTinyCore, and later megaTinyCore and
+  DxCore. The latest modification eliminates the menu for the port -
+  It uses ST instructions now, and while the assembly is uglier, the
+  result is often smaller code that doesn't need a stupid menu option.
+
+  This is the "static allocation" version of this library. You must
+  pass a pointer to a suitable array to use as the frame buffer, and
+  you must ensure that the pin being used is set output. We don't do
+  that here, so that you can use direct port writes to set it output
+  while using less flash.
 
   NeoPixel is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as

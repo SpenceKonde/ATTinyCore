@@ -1,6 +1,10 @@
 /*--------------------------------------------------------------------
   This file is part of the tinyNeoPixel library, derived from
-  Adafruit_NeoPixel.
+  Adafruit_NeoPixel. Modification was carried out between 2016 and
+  2021 by Spence Konde for ATTinyCore, and later megaTinyCore and
+  DxCore. The latest modification eliminates the menu for the port -
+  It uses ST instructions now, and while the assembly is uglier, the
+  result is often smaller code that doesn't need a stupid menu option.
 
   NeoPixel is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -274,8 +278,10 @@ class tinyNeoPixel {
     gOffset,       // Index of green byte
     bOffset,       // Index of blue byte
     wOffset;       // Index of white byte (same as rOffset if no white)
+  #ifndef DISABLEMILLIS
   uint32_t
     endTime;       // Latch timing reference
+  #endif
   volatile uint8_t
     *port;         // Output PORT register
   uint8_t
