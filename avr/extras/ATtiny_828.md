@@ -1,9 +1,9 @@
-### ATtiny828(R)
+# ATtiny828(R)
 ![828 Pin Mapping](http://drazzy.com/e/img/PinoutT828.jpg "Arduino Pin Mapping for ATtiny828")
 
 Specification         |    ATtiny828   |    ATtiny828   |
 ----------------------|----------------|----------------|
-Bootloader (if any)   |                |       Optiboot |
+Bootloader (if any)   |           None |       Optiboot |
 Uploading uses        |   ISP/SPI pins | Serial Adapter |
 Flash available user  |     8192 bytes |     7680 bytes |
 RAM                   |      512 bytes |      512 bytes |
@@ -20,11 +20,12 @@ Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |
 External Crystal      |  Not supported |  Not supported |
 External Clock        |   All Standard | 16,12,10,8,4,1 |
 
-Note: The internal oscillator is is factory calibrated very well at 3.3v, but it is consistently several percent fast at 5V, enough that UART starts to become unreliable. The ATtiny828R has a tighter factory calibration of it's internal oscillator (I think with temperature calibration info maybe? supplied information on what makes the R different seems to be pretty thin). It is otherwise identical to the ATtiny828, and has the same problem at 5V.
+## General warning
+The ATtiny828 is a pretty sorry piece of hardware - it clearly had it's crown jewel ADC stolen from it at the last minute, It's got no hardware I2C master, the hardware I2C slave requires the WDT to be enabled because of that nasty silicon bug, the internal oscillator has the strong voltage dependance... The sad fact is that unless you need a huge number of single-ended ADC inputs, this chip just straight up sucks. Try to avoid using these.
 
-### Warning: Pin 27 (PD3) does not work as an input unless watchdog timer is running
-This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might note that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
-See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT.... Worse still, that's the clock pin for SPI and TWI. And TWI being an open drain bus is going to be pretty well hosed by that defect. This is a "Enable the WDT or disable TWI" level bug. It really is a crying shame how the 828 and 1634 were denied the fix they deserved - a fix for the pin errata, and it's crown jewel (the full on fancy-pants ATtiny841-style differential ADC with programmable gain selection which was clearly in the works for it). Note that, partly for this reason, when TWI is used in master-only mode (which is a software I2C master implementation) I2C is on PA4 and PA5, instead of PORTD, and is hence uneffected by this bug.
+## Warning: Pin 27 (PD3) does not work as an input unless watchdog timer is running
+This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically "if pin is output and high, it will continually draw current even without an external load". Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
+See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT.... Worse still, that's the clock pin for the USI, hence I2C slave and SPI generally. I2C, being an open drain bus, will not function when the WDT is disabled because of this unwanted pulldown effect. It really is a crying shame how the 828 and 1634 were denied the fix they deserved - a fix for the pin errata. Note that, partly for this reason, when TWI is used in master-only mode (which is a software I2C master implementation) I2C is on PA4 and PA5, instead of PORTD, and is hence uneffected by this bug.
 
 ## Programming
 The ATtiny828 can be programmed with any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
@@ -32,11 +33,14 @@ The ATtiny828 can be programmed with any ISP programmer. If using a version of A
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at 115200 baud for 12 MHz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 15744b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the booloader).
 
-### Clock options
+### No Micronucleus support is provided
+These chips do not warrant the development effort to make that happen.
+
+## Clock options
 The ATtiny828, like the ATtiny88, does not provide support for using an external crystal as a clock source, only the internal oscillator (at 8, 4 1 MHz) or an external *clock* source.
 
 ### Using external CLOCK on 828
-These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. Unlike the parts which support a crystal, where this "potentially dangerous" clock option is not available in the menus because there are menu options for the supported speeds with a crystal as a clock source, so the procedure below can be used. On the 48/88/828, these menu options will enable the external CLOCK option. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!**
+These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!**
 
 ### Internal Oscillator voltage dependence
 Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Internal, Vcc < 4.5v) and 8 MHz (Internal, Vcc > 4.5 MHz ) board definitions - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate chargeing powerhungry devices), and millis()/micros() will keep better time than in previous versions.
@@ -59,9 +63,13 @@ To use only TX or only RX channel, after Serial.begin(), one of the following co
 ```
 UCSRB &=~(1<<TXEN); // disable TX
 UCSRB &=~(1<<RXEN); // disable RX
+
 ```
 
-### ADC Reference options
+### ADC support
+There is abundant evidence that this device was intended to have a differential ADC; the register layout matches that of the ATtiny841 which has a vere nice differential ADC, except that all the pins that would be involved in that are marked reserved. If that wasn't enough to convince you, reading that chapter of the datasheet, it is clear that references to a differential ADC were scrubbed in a hurry at the last minute. [I have a theory here](https://github.com/SpenceKonde/AVR_Research/blob/main/UnsolvedMysteries.md#the-828-and-the-mystery-of-the-adc).
+
+#### ADC Reference options
 Despite having 28 ADC input channels, the 828 only has the two basic reference options.
 
 * DEFAULT: Vcc
@@ -71,9 +79,8 @@ Despite having 28 ADC input channels, the 828 only has the two basic reference o
 ### Weird I/O-pin related features
 There are a few strange features relating to the GPIO pins on the ATtinyx41 family which are found only in a small number of other parts released around the same time.
 
-
 #### PD3 silicon errata
-As mentioned above, the t828 has a serious silicon bug PD3, made all the worse by the :
+As mentioned above, the t828 has a serious silicon bug PD3, made all the worse by the important alternative functions of that pin.
 
 If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below) - so the real impact of this issue is in fact very low, assuming you know about it and don't waste hours or days trying to figure out what is going on.
 
@@ -94,7 +101,6 @@ void startSleep() { //call instead of sleep_cpu()
   WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt
 }
 ```
-One of the most frustrating things to me is that you can't rewrite the vectors arbirarily from within the ice,
 
 
 #### Special "high sink" port
@@ -117,39 +123,40 @@ I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your
 ###[Bare Boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/)
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny828, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
-vect_num | Vector Address | Vector Name | Interrupt Definition
------------- | ------------- | ------------ | -------------
-0 | 0x0000 | RESET_vect | Any reset (pin, WDT, power-on, BOD)
-1 | 0x0001 | INT0_vect | External Interrupt Request 0
-2 | 0x0002 | INT1_vect | External Interrupt Request 1
-3 | 0x0003 | PCINT0_vect | Pin Change Interrupt 0 (PORT A)
-4 | 0x0004 | PCINT1_vect | Pin Change Interrupt 1 (PORT B)
-5 | 0x0005 | PCINT2_vect | Pin Change Interrupt 2 (PORT C)
-6 | 0x0006 | PCINT3_vect | Pin Change Interrupt 3 (PORT D)
-7 | 0x0007 | WDT_vect | Watchdog Time-out (Interrupt Mode)
-8 | 0x0008 | TIM1_CAPT_vect | Timer/Counter1 Input Capture
-8 | 0x0008 | TIMER1_CAPT_vect | Alias - provided by ATTinyCore
-9 | 0x0009 | TIM1_COMPA_vect | Timer/Counter1 Compare Match A
-9 | 0x0009 | TIMER1_COMPA_vect | Alias - provided by ATTinyCore
-10 | 0x000A | TIM1_COMPB_vect | Timer/Counter1 Compare Match B
-10 | 0x000A | TIMER1_COMPB_vect | Alias - provided by ATTinyCore
-11 | 0x000B | TIM1_OVF_vect | Timer/Counter1 Overflow
-11 | 0x000B | TIMER1_OVF_vect | Alias - provided by ATTinyCore
-12 | 0x000C | TIM0_COMPA_vect | Timer/Counter0 Compare Match A
-12 | 0x000C | TIMER0_COMPA_vect | Alias - provided by ATTinyCore
-13 | 0x000D | TIM0_COMPB_vect | Timer/Counter0 Compare Match B
-13 | 0x000D | TIMER0_COMPB_vect | Alias - provided by ATTinyCore
-14 | 0x000E | TIM0_OVF_vect | Timer/Counter0 Overflow
-14 | 0x000E | TIMER0_OVF_vect | Alias - provided by ATTinyCore
-15 | 0x000F | SPI_vect | SPI Serial Transfer Complete
-16 | 0x0010 | USART0_RXS_vect | USART0 Rx Start
-17 | 0x0011 | USART0_RXC_vect | USART0 Rx Complete
-18 | 0x0012 | USART0_DRE_vect | USART0 Data Register Empty
-19 | 0x0013 | USART0_TXC_vect | USART0 Tx Complete
-20 | 0x0014 | ADC_READY_vect | ADC Conversion Complete
-21 | 0x0015 | EE_RDY_vect | EEPROM Ready
-22 | 0x0016 | ANA_COMP_vect | Analog Comparator
-23 | 0x0017 | TWI_vect | Two-Wire Interface
-24 | 0x0018 | SPM_RDY_vect | Store Program Memory Ready
-25 | 0x0019 | QTRIP_vect | QTouch
+This table lists all of the interrupt vectors available on the ATtiny828, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Addresses are in the program space, and are word addresses (not byte addresses). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
+
+vect_num | Addr.  | Vector Name        | Interrupt Definition                 |
+---------|--------|--------------------|--------------------------------------|
+0        | 0x0000 | RESET_vect         | Any reset (pin, WDT, power-on, BOD)  |
+1        | 0x0001 | INT0_vect          | External Interrupt Request 0         |
+2        | 0x0002 | INT1_vect          | External Interrupt Request 1         |
+3        | 0x0003 | PCINT0_vect        | Pin Change Interrupt 0 (PORT A)      |
+4        | 0x0004 | PCINT1_vect        | Pin Change Interrupt 1 (PORT B)      |
+5        | 0x0005 | PCINT2_vect        | Pin Change Interrupt 2 (PORT C)      |
+6        | 0x0006 | PCINT3_vect        | Pin Change Interrupt 3 (PORT D)      |
+7        | 0x0007 | WDT_vect           | Watchdog Time-out (Interrupt Mode)   |
+8        | 0x0008 | TIM1_CAPT_vect     | Timer/Counter1 Input Capture         |
+9        | 0x0009 | TIM1_COMPA_vect    | Timer/Counter1 Compare Match A       |
+10       | 0x000A | TIM1_COMPB_vect    | Timer/Counter1 Compare Match B       |
+11       | 0x000B | TIM1_OVF_vect      | Timer/Counter1 Overflow              |
+12       | 0x000C | TIM0_COMPA_vect    | Timer/Counter0 Compare Match A       |
+13       | 0x000D | TIM0_COMPB_vect    | Timer/Counter0 Compare Match B       |
+14       | 0x000E | TIM0_OVF_vect      | Timer/Counter0 Overflow              |
+15       | 0x000F | SPI_vect           | SPI Serial Transfer Complete         |
+16       | 0x0010 | USART0_RXS_vect    | USART0 Rx Start                      |
+17       | 0x0011 | USART0_RXC_vect    | USART0 Rx Complete                   |
+18       | 0x0012 | USART0_DRE_vect    | USART0 Data Register Empty           |
+19       | 0x0013 | USART0_TXC_vect    | USART0 Tx Complete                   |
+20       | 0x0014 | ADC_READY_vect     | ADC Conversion Complete              |
+21       | 0x0015 | EE_RDY_vect        | EEPROM Ready                         |
+22       | 0x0016 | ANA_COMP_vect      | Analog Comparator                    |
+23       | 0x0017 | TWI_vect           | Two-Wire slave Interface             |
+24       | 0x0018 | SPM_RDY_vect       | Store Program Memory Ready           |
+25       | 0x0019 | QTRIP_vect         | QTouch - No Arduino support          |
+8        | 0x0008 | TIMER1_CAPT_vect   | Alias - provided by ATTinyCore       |
+9        | 0x0009 | TIMER1_COMPA_vect  | Alias - provided by ATTinyCore       |
+10       | 0x000A | TIMER1_COMPB_vect  | Alias - provided by ATTinyCore       |
+11       | 0x000B | TIMER1_OVF_vect    | Alias - provided by ATTinyCore       |
+12       | 0x000C | TIMER0_COMPA_vect  | Alias - provided by ATTinyCore       |
+13       | 0x000D | TIMER0_COMPB_vect  | Alias - provided by ATTinyCore       |
+14       | 0x000E | TIMER0_OVF_vect    | Alias - provided by ATTinyCore       |

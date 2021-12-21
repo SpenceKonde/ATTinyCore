@@ -114,7 +114,9 @@ static const uint8_t A10 = ADC_CH(10);
 /* Builtin Software Serial "Serial"
  * TX is on AIN0, RX is on AIN1. Comparator interrupt used so PCINTs remain
  * available for other uses. Comparator pins in Analog section below.        */
-#define USE_SOFTWARE_SERIAL                  1
+#ifndef USE_SOFTWARE_SERIAL
+  #define USE_SOFTWARE_SERIAL                  1
+#endif
 
 /*---------------------------------------------------------------------------
  * Chip Features - Timers amnd PWM
@@ -191,20 +193,25 @@ had to do it in a "Timer0" transistor budget... */
 #define ADC_TEMPERATURE      ADC_CH(0x3F)
 
 /* Differential Analog Channels */
+
+// A0-A2 - duplicates of some options in first triad
 #define DIFF_A0_A1_20XA      ADC_CH(0x0B)
 #define DIFF_A0_A1_1XA       ADC_CH(0x0C)
 #define DIFF_A1_A1_20XA      ADC_CH(0x0D)
 #define DIFF_A2_A1_20XA      ADC_CH(0x0E)
 #define DIFF_A2_A1_1XA       ADC_CH(0x0F)
+// A2~A4
 #define DIFF_A2_A3_1X        ADC_CH(0x10)
 #define DIFF_A3_A3_20X       ADC_CH(0x11)
 #define DIFF_A4_A3_20X       ADC_CH(0x12)
 #define DIFF_A4_A3_1X        ADC_CH(0x13)
+// A4-A6 - duplicates of some options in second triad
 #define DIFF_A4_A5_20XA      ADC_CH(0x14)
 #define DIFF_A4_A5_1XA       ADC_CH(0x15)
 #define DIFF_A5_A5_20XA      ADC_CH(0x16)
 #define DIFF_A6_A5_20XA      ADC_CH(0x17)
 #define DIFF_A6_A5_1XA       ADC_CH(0x18)
+// A8~A10 - high oddballs
 #define DIFF_A8_A9_20X       ADC_CH(0x19)
 #define DIFF_A8_A9_1X        ADC_CH(0x1A)
 #define DIFF_A9_A9_20X       ADC_CH(0x1B)
@@ -213,6 +220,8 @@ had to do it in a "Timer0" transistor budget... */
 /* These support gain selection GSEL
  * is passed as high bit of the channel
  * so that analogRead still works  */
+// A0-2 are a full function triad.
+// A0 & A1
 #define DIFF_A0_A1_20X       ADC_CH(0x20)
 #define DIFF_A0_A1_32X       ADC_CH(0x60)
 #define DIFF_A0_A1_1X        ADC_CH(0x21)
@@ -221,6 +230,7 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A1_A0_32X       ADC_CH(0x62)
 #define DIFF_A1_A0_1X        ADC_CH(0x23)
 #define DIFF_A1_A0_8X        ADC_CH(0x63)
+// A1 & A2
 #define DIFF_A1_A2_20X       ADC_CH(0x24)
 #define DIFF_A1_A2_32X       ADC_CH(0x64)
 #define DIFF_A1_A2_1X        ADC_CH(0x25)
@@ -229,6 +239,7 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A2_A1_32X       ADC_CH(0x66)
 #define DIFF_A2_A1_1X        ADC_CH(0x27)
 #define DIFF_A2_A1_8X        ADC_CH(0x67)
+// A0 & A2
 #define DIFF_A2_A0_20X       ADC_CH(0x28)
 #define DIFF_A2_A0_32X       ADC_CH(0x68)
 #define DIFF_A2_A0_1X        ADC_CH(0x29)
@@ -237,6 +248,8 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A0_A2_32X       ADC_CH(0x6A)
 #define DIFF_A0_A2_1X        ADC_CH(0x2B)
 #define DIFF_A0_A2_8X        ADC_CH(0x6B)
+// A4-6 are a full function triad.
+// A4 & A5
 #define DIFF_A4_A5_20X       ADC_CH(0x2C)
 #define DIFF_A4_A5_32X       ADC_CH(0x6C)
 #define DIFF_A4_A5_1X        ADC_CH(0x2D)
@@ -245,6 +258,7 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A5_A4_32X       ADC_CH(0x6E)
 #define DIFF_A5_A4_1X        ADC_CH(0x2F)
 #define DIFF_A5_A4_8X        ADC_CH(0x6F)
+// A5 & A6
 #define DIFF_A5_A6_20X       ADC_CH(0x30)
 #define DIFF_A5_A6_32X       ADC_CH(0x70)
 #define DIFF_A5_A6_1X        ADC_CH(0x31)
@@ -253,6 +267,7 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A6_A5_32X       ADC_CH(0x72)
 #define DIFF_A6_A5_1X        ADC_CH(0x33)
 #define DIFF_A6_A5_8X        ADC_CH(0x73)
+// A4 & A6
 #define DIFF_A6_A4_20X       ADC_CH(0x34)
 #define DIFF_A6_A4_32X       ADC_CH(0x74)
 #define DIFF_A6_A4_1X        ADC_CH(0x35)
@@ -261,16 +276,19 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A4_A6_32X       ADC_CH(0x76)
 #define DIFF_A4_A6_1X        ADC_CH(0x37)
 #define DIFF_A4_A6_8X        ADC_CH(0x77)
+/* Same channels on both sides
+ * for offset correction */
+// Offset cal for A0, all gain options.
 #define DIFF_A0_A0_20X       ADC_CH(0x38)
 #define DIFF_A0_A0_32X       ADC_CH(0x78)
 #define DIFF_A0_A0_1X        ADC_CH(0x39)
 #define DIFF_A0_A0_8X        ADC_CH(0x79)
-/* Same channels on both sides
- * for offset correction */
+// Offset cal for A1, A2, high gain options only
 #define DIFF_A1_A1_20X       ADC_CH(0x3A)
 #define DIFF_A1_A1_32X       ADC_CH(0x7A)
 #define DIFF_A2_A2_20X       ADC_CH(0x3B)
 #define DIFF_A2_A2_32X       ADC_CH(0x7B)
+// Offset cal for second triad, high gain options only
 #define DIFF_A4_A4_20X       ADC_CH(0x3C)
 #define DIFF_A4_A4_32X       ADC_CH(0x7C)
 #define DIFF_A5_A5_20X       ADC_CH(0x3D)
@@ -279,11 +297,11 @@ had to do it in a "Timer0" transistor budget... */
 #define DIFF_A6_A6_32X       ADC_CH(0x7E)
 
 /* Analog Comparator - used for soft-serial*/
-#define ANALOG_COMP_DDR            (DDRA)
+#define ANALOG_COMP_DDR           (DDRA)
 #define ANALOG_COMP_PORT          (PORTA)
-#define ANALOG_COMP_PIN            (PINA)
-#define ANALOG_COMP_AIN0_BIT          (6)
-#define ANALOG_COMP_AIN1_BIT          (7)
+#define ANALOG_COMP_PIN           (PINA)
+#define ANALOG_COMP_AIN0_BIT      (6)
+#define ANALOG_COMP_AIN1_BIT      (7)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -302,21 +320,21 @@ had to do it in a "Timer0" transistor budget... */
  * refer back to these macros (PIN_USI_* )
  *---------------------------------------------------------------------------*/
 
-#define USE_SOFTWARE_SPI 1
+#define USE_SOFTWARE_SPI  (1)
 
 /* USI */
-#define PIN_USI_DI      PIN_PB0
-#define PIN_USI_DO      PIN_PB1
-#define PIN_USI_SCK     PIN_PB2
-#define SS              PIN_PB3
+#define PIN_USI_DI        (PIN_PB0)
+#define PIN_USI_DO        (PIN_PB1)
+#define PIN_USI_SCK       (PIN_PB2)
+#define SS                (PIN_PB3)
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
+#define USI_DATA_DDR      (DDRB)
+#define USI_DATA_PORT     (PORTB)
+#define USI_DATA_PIN      (PINB)
 
-#define USI_CLOCK_BIT     PINB2
-#define USI_DO_BIT        PINB1
-#define USI_DI_BIT        PINB0
+#define USI_CLOCK_BIT     (1 << 2)
+#define USI_DO_BIT        (1 << 1)
+#define USI_DI_BIT        (1 << 0)
 
 #define USI_START_VECTOR    USI_START_vect
 #define USI_OVERFLOW_VECTOR USI_OVF_vect
@@ -325,8 +343,8 @@ had to do it in a "Timer0" transistor budget... */
 #endif
 
 /* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX  PIN_PA6
-#define PIN_SOFTSERIAL_RX  PIN_PA7
+#define PIN_SOFTSERIAL_TX  (PIN_PA6)
+#define PIN_SOFTSERIAL_RX  (PIN_PA7)
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
@@ -341,8 +359,8 @@ had to do it in a "Timer0" transistor budget... */
  *           GND  6|    |15  AVCC
  *      (12) PB4  7|ax a|14  PA4 ( 4)
  *     *(13) PB5  8|ax a|13  PA5 ( 5)
- * INT0 (14) PB6  9|a  a|12  PA6 ( 6)
- *      (15) PB7 10|a  a|11  PA7 ( 7)
+ * INT0 (14) PB6  9|a  a|12  PA6 ( 6) AIN0/TX
+ *      (15) PB7 10|a  a|11  PA7 ( 7) AIN1/RX
  *                 +----+
  *
  * a indicates ADC pin

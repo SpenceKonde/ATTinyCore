@@ -25,19 +25,19 @@ Any of these parts can be programmed by use of an ISP programmer. If using a ver
 Self programming is not supported on these parts, it wasn't until the next generation that tinies gained self programming.
 
 ## PLL Clock
-The ATtiny x61-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16 MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. Previous versions of ATTinyCore provided this option on from a tools submenu, but it has been completely and totally broken in all released versions. Because manual configuration is straightforward this is is not optioned for this, nor any other part, in ATTinyCore 2.0.0
+The ATtinyw26 parts has an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16 MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. This is straightforward to configure by writing directly to registers - no wrapper is provided. Nobody noticed for years that it was broken when I offered one on the x5 and x61.
 
 ## Tone Support
-Tone() uses Timer1. For best results, use pin 6 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range
+Tone() uses Timer1. For best results, use pin PB0 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range
 
 ## I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. Thid is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all, but the flash consumption is less than that of the straight Wire library would with hardware TWI.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. Thid is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all, and the small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
 
 ## SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). What is marked on the pinout chart are the pins for ISP programming,.
+There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). What is marked on the pinout chart are the pins for ISP programming, so MISO and MOSI are the reverse of what is shown when acting as a master. The small flash of these parts may require use of more tightly optimized (and API-incompatible) library.
 
 ## UART (Serial) Support
-There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART). While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md)
+There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md). SoftwareSerial library is not supported. It uses PCINTs. which aren't readily usable on these parts (there is no PCMSK register)
 
 To disable the RX channel (to use only TX), the following commands should be used after calling Serial.begin(). No special action is needed to disable the TX line if only RX is needed.
 ```
@@ -65,7 +65,7 @@ This is the ONLY part I am aware of without an internal "1.1" (usually a bit hig
 ### Internal Sources
 | Voltage Source  | Description                            |
 |-----------------|----------------------------------------|
-| ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
+| ADC_INTERNAL1V1 | Reads the 1.18v bandgap reference <br\> which can't be used as AREF |
 | ADC_GROUND      | Reads ground - for offset correction   |
 
 ### Differential ADC
@@ -76,21 +76,21 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 |------------|------------|---------|--------|------------------|------------------|
 | ADC0 (PA0) | ADC1 (PA1) |     20x |   0x0B | DIFF_A0_A1_20X   |                  |
 | ADC0 (PA0) | ADC1 (PA1) |      1x |   0x0C | DIFF_A0_A1_1X    |                  |
-| ADC1 (PA1) | ADC1 (PA1) |     20x |   0x0D | DIFF_A1_A1_20X   | For offset       |
+| ADC1 (PA1) | ADC1 (PA1) |     20x |   0x0D | DIFF_A1_A1_20X   | For offset cal.  |
 | ADC2 (PA2) | ADC1 (PA1) |     20x |   0x0E | DIFF_A2_A1_20X   |                  |
 | ADC2 (PA2) | ADC1 (PA1) |      1x |   0x0F | DIFF_A2_A1_1X    |                  |
 | ADC2 (PA2) | ADC3 (PA4) |      1x |   0x10 | DIFF_A2_A3_1X    |                  |
-| ADC3 (PA4) | ADC3 (PA4) |     20x |   0x11 | DIFF_A3_A3_20X   | For offset       |
+| ADC3 (PA4) | ADC3 (PA4) |     20x |   0x11 | DIFF_A3_A3_20X   | For offset cal.  |
 | ADC4 (PA5) | ADC3 (PA4) |     20x |   0x12 | DIFF_A4_A3_20X   |                  |
 | ADC4 (PA5) | ADC3 (PA4) |      1x |   0x13 | DIFF_A4_A3_1X    |                  |
 | ADC4 (PA5) | ADC5 (PA6) |     20x |   0x14 | DIFF_A4_A5_20X   |                  |
 | ADC4 (PA5) | ADC5 (PA6) |      1x |   0x15 | DIFF_A4_A5_1X    |                  |
-| ADC5 (PA6) | ADC5 (PA6) |     20x |   0x16 | DIFF_A5_A5_20X   | For offset       |
+| ADC5 (PA6) | ADC5 (PA6) |     20x |   0x16 | DIFF_A5_A5_20X   | For offset cal.  |
 | ADC6 (PA7) | ADC5 (PA6) |     20x |   0x17 | DIFF_A6_A5_20X   |                  |
 | ADC6 (PA7) | ADC5 (PA6) |      1x |   0x18 | DIFF_A6_A5_1X    |                  |
 | ADC8 (PB5) | ADC9 (PB6) |     20x |   0x19 | DIFF_A8_A9_20X   |                  |
 | ADC8 (PB5) | ADC9 (PB6) |      1x |   0x1A | DIFF_A8_A9_1X    |                  |
-| ADC9 (PB6) | ADC9 (PB6) |     20x |   0x1B | DIFF_A9_A9_20X   | For offset       |
+| ADC9 (PB6) | ADC9 (PB6) |     20x |   0x1B | DIFF_A9_A9_20X   | For offset cal.  |
 | ADC10(PB7) | ADC9 (PB6) |     20x |   0x1C | DIFF_A10_A9_20X  |                  |
 | ADC10(PB7) | ADC9 (PB6) |      1x |   0x1D | DIFF_A10_A9_1X   |                  |
 
@@ -99,21 +99,25 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   8   |   9   |  10   |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 |   0   |       |       |       |       |       |       |       |       |       |       |
-|   1   | 1/20x |  20x  | 1/20x |       |       |       |       |       |       |       |
+|   1   | 1/20x | 20x*  | 1/20x |       |       |       |       |       |       |       |
 |   2   |       |       |       |       |       |       |       |       |       |       |
-|   3   |       |       |   1x  |  20x  | 1/20x |       |       |       |       |       |
+|   3   |       |       |   1x  | 20x*  | 1/20x |       |       |       |       |       |
 |   4   |       |       |       |       |       |       |       |       |       |       |
-|   5   |       |       |       |       | 1/20x |  20x  | 1/20x |       |       |       |
+|   5   |       |       |       |       | 1/20x | 20x*  | 1/20x |       |       |       |
 |   6   |       |       |       |       |       |       |       |       |       |       |
-|   9   |       |       |       |       |       |       |       | 1/20x |  20x  | 1/20x |
+|   9   |       |       |       |       |       |       |       | 1/20x | 20x*  | 1/20x |
+`*` this option is used to measure the offset of that gain stage (applicable to that negative pin only), in order to correct offset gain to within 1 LSB. Doing this is the responsability of the user.
 
 ### Temperature Measurement
-The ATtiny26 predates the usuakl temperature sensor, so no luck there.
+The ATtiny26 predates the usual temperature sensor. There is no temperature measurement.
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny 26 as well as the name you refer to them as when using the `ISR()` macro. Be aware that, like on all other AVRs, a non-existent vector is just a "warning" not an "error" - however, the misspelled vector doesn't end up in the vector table, so if it is enabled and triggered, the device will (at best) immediately reset (often not cleanly). The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed" (that is, 0x0001 is bytes 0x0002 and 0x0003). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 
-**Note about PCINTs:**. There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs like normal. But the PCINTs are not divided by port (see colored boxes in preliminarey diagram) Like the x61 that followed it, and unlike anything more recent, both of them call the same PCINT vector when triggered: *there's ONLY ONE PCINT VECTOR!* and... **THERE ARE NO PCMSK REGISTERS EITHER** - which is almost a guarantee that no library will work without modification if it relies on PCINTs! Instead interrupts are masked only by enabling a peripheral/alternate furnction on that pin.
+### PCINTs are awful here
+There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs like normal. But the PCINTs are not divided by port (see colored boxes in preliminarey diagram) Like the x61 that followed it, and unlike anything more recent, both of them call the same PCINT vector when triggered - *there's ONLY ONE PCINT VECTOR!* But that's not all, and this drives a yet another nail into the coffin of any hope of using a library that relies on PCINTs: **THERE ARE NO PCMSK REGISTERS EITHER** - this is almost a guarantee that no library will work without modification if it relies on PCINTs!
+
+Instead interrupts are masked only by enabling a peripheral/alternate furnction on that pin.
 
  # | Address | Vector Name          | Interrupt Definition
 ---|---------|----------------------|-------------
@@ -136,3 +140,6 @@ This table lists all of the interrupt vectors available on the ATtiny 26 as well
 16 |  0x0010 | TIMER0_CAPT_vect     | Timer/Counter1 Capture Event
 17 |  0x0011 | TIMER1_COMPD_vect    | Timer/Counter1 Compare Match D
 18 |  0x0012 | FAULT_PROTECTION_vect| Timer/Counter1 Fault Protection
+
+## In conclusion
+These parts are realy, really, bad. There is a reason that there are three followon versions to it. The followon (x61A) to the followon (x61) is old and unpopular. The only redeeming value this line had (the x61A is stil weird, and it's PCINTs still only had one vector and it still only had one PWM capable timer - plus it's timer0 was wacky too in different ways) was an ADC that blew the rest of the non-megaAVR parts out of the water, and in practical conditions was on a par with the best megaAVR ones (sure, it "only" went to 32x gain, not 200x gain like megaAVR did later on - with 1.1v bandgap that would mean a 50 uV per lsb. Do you think those megaAVR parts with differential ADCs had a prayer of that being above the noise floor? I suspect the 32x gain of the 861(A) was, in practice, comparable in terms of how many readable bits could be achieved in real-world condions. I say the same about the 841's 100x gain, especially seeing as it didn't have a separate analog supply pin/)

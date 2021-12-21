@@ -12,7 +12,7 @@ ADC Channels | 11 (including the one on reset)
 Differential ADC | Yes, 24 pairs, 1x/8x/20x/32x gain
 PWM Channels | 3
 Interfaces | USI, high speed timer
-Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal or clock* up to 20 MHz
+Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal or clock up to 20 MHz
 Packages | DIP-20, SOIC-20, MLF-32
 
 The 261/461/861 and 261a/461a/861a are functionally very similar; the latter replaced the former in 2009, and uses slightly less power. Actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
@@ -77,16 +77,15 @@ The ATtiny x61-series has two internal references, one of which can (optionally)
 ### Differential ADC
 There are 24 different differential pairs available. Seven of those are measuring the same positive and negative channel, these can be used to determine the offset error in the gain stage, which can then be subtracted from future measurements with the same gain selected. There are 31 combinations of gain and channel available with selectable gain (typically each pair offers both 1x/8x and 20/32x gain options), and 19 with fixed gain, 10 of which duplicate the ones with selectable gain, for a total of 81 possible settings. Using ATTinyCore (v2.0.0+) you can read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro; the gain selection bit is passed as the 6th bit of the channel (ex: `analogRead(ADC_CH(0x20|0x40))` to read ADC0 and ADC1 at 32x gain, equivalent to `analogRead(DIFF_A0_A1_32X)`), otherwise they will be interpreted as a (likely non-existent) digital pin. In the case of duplicates in the list of gain options, the one that does not use the `GSEL` bit to select the gain is named followed by an A (ex, `DIFF_A6_A5_20XA`).
 
-
 | Positive   | Negative   |   Gain  | Channel| Name 1x/20x mode | Name 8x/32x mode | Notes            |
 |------------|------------|---------|--------|------------------|------------------|------------------|
 | ADC2 (PA2) | ADC3 (PA4) |      1x |   0x10 | DIFF_A2_A3_1X    |                  |                  |
-| ADC3 (PA4) | ADC3 (PA4) |     20x |   0x11 | DIFF_A3_A3_20X   |                  | For offset       |
+| ADC3 (PA4) | ADC3 (PA4) |     20x |   0x11 | DIFF_A3_A3_20X   |                  | For offset cal.  |
 | ADC4 (PA5) | ADC3 (PA4) |     20x |   0x12 | DIFF_A4_A3_20X   |                  |                  |
 | ADC4 (PA5) | ADC3 (PA4) |      1x |   0x13 | DIFF_A4_A3_1X    |                  |                  |
 | ADC8 (PB5) | ADC9 (PB6) |     20x |   0x19 | DIFF_A8_A9_20X   |                  |                  |
 | ADC8 (PB5) | ADC9 (PB6) |      1x |   0x1A | DIFF_A8_A9_1X    |                  |                  |
-| ADC9 (PB6) | ADC9 (PB6) |     20x |   0x1B | DIFF_A9_A9_20X   |                  | For offset       |
+| ADC9 (PB6) | ADC9 (PB6) |     20x |   0x1B | DIFF_A9_A9_20X   |                  | For offset cal.  |
 | ADC10(PB7) | ADC9 (PB6) |     20x |   0x1C | DIFF_A10_A9_20X  |                  |                  |
 | ADC10(PB7) | ADC9 (PB6) |      1x |   0x1D | DIFF_A10_A9_1X   |                  |                  |
 | ADC0 (PA0) | ADC1 (PA1) | 20x/32x |   0x20 | DIFF_A0_A1_20X   | DIFF_A0_A1_32X   |                  |
@@ -113,13 +112,13 @@ There are 24 different differential pairs available. Seven of those are measurin
 | ADC6 (PA7) | ADC4 (PA5) |   1x/8x |   0x35 | DIFF_A6_A4_1X    | DIFF_A6_A4_8X    |                  |
 | ADC4 (PA5) | ADC6 (PA7) | 20x/32x |   0x36 | DIFF_A4_A6_20X   | DIFF_A4_A6_32X   |                  |
 | ADC4 (PA5) | ADC6 (PA7) |   1x/8x |   0x37 | DIFF_A4_A6_1X    | DIFF_A4_A6_8X    |                  |
-| ADC0 (PA0) | ADC0 (PA0) | 20x/32x |   0x38 | DIFF_A0_A0_20X   | DIFF_A0_A0_32X   | For offset       |
-| ADC0 (PA0) | ADC0 (PA0) |   1x/8x |   0x39 | DIFF_A0_A0_1X    | DIFF_A0_A0_8X    | For offset       |
-| ADC1 (PA1) | ADC1 (PA1) | 20x/32x |   0x3A | DIFF_A1_A1_20X   | DIFF_A1_A1_32X   | For offset       |
-| ADC2 (PA2) | ADC2 (PA2) | 20x/32x |   0x3B | DIFF_A2_A2_20X   | DIFF_A2_A2_32X   | For offset       |
-| ADC4 (PA5) | ADC4 (PA5) | 20x/32x |   0x3C | DIFF_A4_A4_20X   | DIFF_A4_A4_32X   | For offset       |
-| ADC5 (PA6) | ADC5 (PA6) | 20x/32x |   0x3D | DIFF_A5_A5_20X   | DIFF_A5_A5_32X   | For offset       |
-| ADC6 (PA7) | ADC6 (PA7) | 20x/32x |   0x3E | DIFF_A6_A6_20X   | DIFF_A6_A6_32X   | For offset       |
+| ADC0 (PA0) | ADC0 (PA0) | 20x/32x |   0x38 | DIFF_A0_A0_20X   | DIFF_A0_A0_32X   | For offset cal.  |
+| ADC0 (PA0) | ADC0 (PA0) |   1x/8x |   0x39 | DIFF_A0_A0_1X    | DIFF_A0_A0_8X    | For offset cal.  |
+| ADC1 (PA1) | ADC1 (PA1) | 20x/32x |   0x3A | DIFF_A1_A1_20X   | DIFF_A1_A1_32X   | For offset cal.  |
+| ADC2 (PA2) | ADC2 (PA2) | 20x/32x |   0x3B | DIFF_A2_A2_20X   | DIFF_A2_A2_32X   | For offset cal.  |
+| ADC4 (PA5) | ADC4 (PA5) | 20x/32x |   0x3C | DIFF_A4_A4_20X   | DIFF_A4_A4_32X   | For offset cal.  |
+| ADC5 (PA6) | ADC5 (PA6) | 20x/32x |   0x3D | DIFF_A5_A5_20X   | DIFF_A5_A5_32X   | For offset cal.  |
+| ADC6 (PA7) | ADC6 (PA7) | 20x/32x |   0x3E | DIFF_A6_A6_20X   | DIFF_A6_A6_32X   | For offset cal.  |
 | ADC0 (PA0) | ADC1 (PA1) |     20x |   0x0B | DIFF_A0_A1_20XA  |                  | Duplicate        |
 | ADC0 (PA0) | ADC1 (PA1) |      1x |   0x0C | DIFF_A0_A1_1XA   |                  | Duplicate        |
 | ADC1 (PA1) | ADC1 (PA1) |     20x |   0x0D | DIFF_A1_A1_20XA  |                  | Duplicate        |
@@ -131,8 +130,7 @@ There are 24 different differential pairs available. Seven of those are measurin
 | ADC6 (PA7) | ADC5 (PA6) |     20x |   0x17 | DIFF_A6_A5_20XA  |                  | Duplicate        |
 | ADC6 (PA7) | ADC5 (PA6) |      1x |   0x18 | DIFF_A6_A5_1XA   |                  | Duplicate        |
 
-Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny26 - the older version of these parts - with the same ADMUX values so that code and hardware could be directly copied. These do not support the GSEL for 8x or 32x gain. These are not "reversable" (meaning that if you guessed wrong about which was higher, all you could do is use the ADC in "bipolar input mode", which costs 1 bit of resolution). Then two of those "trios" of pins are available in both directions with GSEL: ADC0/ADC1/ADC2 and ADC4/ADC5/ADC6, and finally, ADC0-ADC0 is available with all gain options, and each of the other channels involved in the "second half" of the differential ADC are supported with 20x/32x gain. Since pairings and gain options available on the "first half" involving ADC1 and ADC5 are also available in the "second half" with additional functionality It is enough to make one wonder what the intent of the design was. Do they use the same pathways in the chip, or do you get different offsets when you, say measure ADC1 against itself using channel 0x0D (DIFF_A1_A1_20XA), vs channel 0x3A w/GSEL=0 (DIFF_A1_A1_20X)? Why did they choose to have two options to measure those 10 pairs - why not use those to support gain selection on more pins?
-
+Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny26 - the older version of these parts - with the same ADMUX values so that code and hardware could be directly copied. These do not support the GSEL for 8x or 32x gain. These are not "reversable" (meaning that if you guessed wrong about which was higher, all you could do is use the ADC in "bipolar input mode", which costs 1 bit of resolution). Then two of those "trios" of pins are available in both directions with GSEL: ADC0/ADC1/ADC2 and ADC4/ADC5/ADC6, and finally, ADC0-ADC0 is available with all gain options, and each of the other channels involved in the "second half" of the differential ADC are supported with 20x/32x gain. Since pairings and gain options available on the "first half" involving ADC1 and ADC5 are also available in the "second half" with additional functionality It is enough to make one wonder what the intent of the design was. Do they use the same pathways in the chip, or do you get different offsets when you, say measure ADC1 against itself using channel 0x0D (DIFF_A1_A1_20XA), vs channel 0x3A w/GSEL=0 (DIFF_A1_A1_20X)? If they use different pathways, then why did they choose to have two options to measure those 10 pairs - why not use those to support gain selection on more pins? If not - well, I guess it hangs together, they didn't want to add more mux channels and figured what they had was enough (I'm inclined to agree - this ADC is a beast for it's time).
 #### ADC Differential Pair Matrix
 **bold** indicates that an option has all gain options available. *italic* indicates only 20x/32x gain, and no text styling indicates that only 1x and 20x are available
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   8   |   9   |  10   |
@@ -177,4 +175,4 @@ This table lists all of the interrupt vectors available on the ATtiny x61-family
 18 |  0x0012 | FAULT_PROTECTION_vect| Timer/Counter1 Fault Protection
 
 ## 861 vs 861a - you said "almost" fully interchangible?
-Okay, there is one difference I'm aware of that makes them distinct: The older 861 design has the old, bifurcated calibration curve for the internal oscillator, that is, the speed jumps backwards as you increase the `OSCCAL` register from 127 to 128. The "bifurcated" oscillators are generally less accurate and less stable than ones like the one in the ATtiny861A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (since USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts.
+Okay, there is one difference I'm aware of that makes them distinct: The older 861 design has the old, bifurcated calibration curve for the internal oscillator, that is, the speed jumps backwards as you increase the `OSCCAL` register from 127 to 128. The "bifurcated" oscillators are generally less accurate and less stable than ones like the one in the ATtiny861A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (since USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts, and non-A parts are now more expensive, and have been for some time (they would love for people to switch to the A's so they could stop producing the non-A's)

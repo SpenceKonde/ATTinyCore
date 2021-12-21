@@ -1,9 +1,8 @@
-# Arduino AVR Core and platform.
-# ------------------------------
-
-# For more info:
-# https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
-
+#######################################
+#   ATTinyCore platform definition    #
+#                                     #
+#  github.com/SpenceKonde/ATTinyCore  #
+#######################################
 name=ATTinyCore
 
 versionnum.major=2
@@ -16,8 +15,11 @@ version={versionnum.major}.{versionnum.minor}.{versionnum.patch}{versionnum.post
 
 build.versiondefines=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_AVR -DATTINYCORE="{version}" -DATTINYCORE_MAJOR={versionnum.major}UL -DATTINYCORE_MINOR={versionnum.minor}UL -DATTINYCORE_PATCH={versionnum.patch}UL -DATTINYCORE_RELEASED={versionnum.released}
 
-# AVR compile variables
-# ---------------------
+build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} {build.millis} {build.pinmap}
+
+#########################
+# AVR compile variables #
+#########################
 
 compiler.warning_flags=-Wall
 compiler.warning_flags.none=-Wall
@@ -57,17 +59,26 @@ compiler.ar.extra_flags=
 compiler.objcopy.eep.extra_flags=
 compiler.elf2hex.extra_flags=
 
-# AVR compile patterns
-# --------------------
+####################
+# Compile Patterns #
+####################
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu}{build.optiondefines}  -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu}{build.optiondefines}  -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile S files
-recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Preprocessor
+preproc.includes.flags=-w -x c++ -M -MG -MP
+recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
+
+preproc.macros.flags=-w -x c++ -E -CC
+preprocessed_file_path={build.path}/nul
+recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
 
 ## Create archives
 archive_file_path={build.path}/{archive_file}
@@ -88,6 +99,18 @@ recipe.size.regex=^(?:\.text|\.data|\.bootloader)\s+([0-9]+).*
 recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
 recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
+
+
+####################################
+# Export Compiled Binary and more  #
+####################################
+# Export Compiled Binary will also #
+# generate an assembly listing and #
+# memory map for hand debugging,   #
+# optimization and analysis.       #
+####################################
+
+
 ## Save disassembler listing
 recipe.hooks.objcopy.postobjcopy.1.pattern.windows=cmd /C "{compiler.path}{compiler.objdump.cmd}" {compiler.objdump.flags} "{build.path}/{build.project_name}.elf" > "{build.path}/{build.project_name}.lst"
 recipe.hooks.objcopy.postobjcopy.1.pattern.linux=bash -c "{compiler.path}{compiler.objdump.cmd} {compiler.objdump.flags} {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.lst"
@@ -100,11 +123,11 @@ recipe.hooks.objcopy.postobjcopy.2.pattern.linux=bash -c "{compiler.path}{compil
 recipe.hooks.objcopy.postobjcopy.2.pattern.macosx=bash -c "{compiler.path}{compiler.nm.cmd} {compiler.nm.flags}  {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.map"
 
 ## This is the name that memory maps, assembly listings and hex files will be output as
-build.extraassetname={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}cs{build.clocksource}.m{build.millistimer}{build.printfabr}{build.appspmabr}
+build.extraassetname={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}c{build.clocksource}.{build.extraoptionabbr}
 
 ## Save hex
 recipe.output.tmp_file={build.project_name}.hex
-recipe.output.save_file={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}.cs{build.clocksource}.m{build.millistimer}.hex
+recipe.output.save_file={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}.c{build.clocksource}.{build.extraoptionabbr}.hex
 
 ## Save lst
 recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.lst" "{sketch_path}\{build.extraassetname}.lst"
@@ -116,16 +139,13 @@ recipe.hooks.savehex.presavehex.2.pattern.windows=cmd /C copy "{build.path}\{bui
 recipe.hooks.savehex.presavehex.2.pattern.linux=cp "{build.path}/{build.project_name}.map" "{sketch_path}/{build.extraassetname}.map"
 recipe.hooks.savehex.presavehex.2.pattern.macosx=cp "{build.path}/{build.project_name}.map" "{sketch_path}/{build.extraassetname}.map"
 
-## Preprocessor
-preproc.includes.flags=-w -x c++ -M -MG -MP
-recipe.preproc.includes="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.includes.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}"
 
-preproc.macros.flags=-w -x c++ -E -CC
-preprocessed_file_path={build.path}/nul
-recipe.preproc.macros="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {preproc.macros.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{preprocessed_file_path}"
 
-# AVR Uploader/Programmers tools
-# ------------------------------
+#########################################
+# avrdude - the classic AVR upload tool #
+# Used except for micronucleus uploads  #
+#########################################
+
 tools.avrdude.path={runtime.tools.avrdude.path}
 tools.avrdude.cmd.path={path}/bin/avrdude
 tools.avrdude.config.path={runtime.platform.path}/avrdude.conf
@@ -141,15 +161,17 @@ tools.avrdude.program.pattern="{cmd.path}" "-C{config.path}" {program.verbose} -
 
 tools.avrdude.erase.params.verbose=-v
 tools.avrdude.erase.params.quiet=-q -q
-tools.avrdude.erase.pattern="{cmd.path}" "-C{config.path}" {erase.verbose} -p{build.mcu} -c{protocol} {program.extra_params} -e -Uefuse:w:{bootloader.extended_fuses}:m -Uhfuse:w:{bootloader.high_fuses}:m -Ulfuse:w:{bootloader.low_fuses}:m "-Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i"
+# This is just a dummy pattern, only one step is used to write the bootloader.
+tools.avrdude.erase.pattern=
 
 tools.avrdude.bootloader.params.verbose=-v
 tools.avrdude.bootloader.params.quiet=-q -q
-#The bootloader is written in erase.pattern, so this is just a dummy line now
-tools.avrdude.bootloader.pattern=
+tools.avrdude.bootloader.pattern="{cmd.path}" "-C{config.path}" {erase.verbose} -p{build.mcu} -c{protocol} {program.extra_params} -e -Uefuse:w:{bootloader.extended_fuses}:m -Uhfuse:w:{bootloader.high_fuses}:m -Ulfuse:w:{bootloader.low_fuses}:m {bootloader.flashstring}
 
-# Micronucleus Loader
-# -------------------
+#########################################
+# Micronucleus - used for uploads using #
+# the VUSB bootloader of the same name  #
+#########################################
 
 tools.micronucleus.cmd.path={runtime.tools.micronucleus.path}/launcher
 
@@ -159,7 +181,7 @@ tools.micronucleus.upload.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:
 
 tools.micronucleus.bootloader.params.verbose=
 tools.micronucleus.bootloader.params.quiet=
-tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{runtime.platform.path}/bootloaders/{bootloader.file}:i
+tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 {bootloader.flashstring}
 
 tools.micronucleus.erase.params.verbose=
 tools.micronucleus.erase.params.quiet=

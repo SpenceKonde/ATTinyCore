@@ -9,7 +9,7 @@ Let's use that, not gitter.
 # ATTinyCore 2.0.0 - lots of changes, some of them big, a few of them may cause breakage.
 I cobbled ATTinyCore together with far less experience than I have now (indeed, I'd barely covered the basics when I started trying to get a working ATtiny841 core). I like to think I have a much better idea of how a core should be designed now. But this meant some terrible decisions were made in the past. Decisions that we have been paying the price for ever since. I decided that the core should be advanced to a state where the bad decisions have been fixed, and everything that needs to be exposed on the parts is exposed in a consistent manner (too much was done incrementally, and not enough planning was done, ever). This core should not expect any significant new feature enhancements from here on out. The new feature development will be for megaTinyCore and DxCore, as those represent the future of the AVR architecture. Bug fixes will still be made.
 The most significant changes are:
-1. **analogRead() and channel/pin numbers** ATTinyCore followed what the core it was based on did, which was to use analog channel numbers, not digital pin numbers for analogRead(). Originally, the An-constants were #defined as the number itself. Later, to make them work with the digital IO functions, I changed to  `#define An (n | 0x80)` - digital functions could check for the high bit, and if present, strip it off and use the analogInputToDigitalPin macro to find the digital pin number. I never did the inverse with analogRead() because it would have broken code which used the raw analog channel numbers. This is just absurd in this day and age, where every other core allows you to analogRead() digital pin numbers and it just works. As of 2.0.0, analogRead() takes either a digital pin number, a constant of the form An (one per analog pin, shown on pinout chart! corresponds directly to analog channels), one of the ADC_CHANNEL constants listed in the part-specific documentations pages (these are things like `ADC_TEMPERATURE` and `ADC_INTERNAL1V1`), or - assuming it has a differential ADC - one of the differential channels. If you were generating an analog channel at runtime, you can pass a number through the ADC_CH() macro to get a number that will be recognized as an analog __channel__ number (this is preferred to directly setting the high bit, since it makes clear that you're doing it to get that analog channel). Several people to whom I have spoken about this to 
+1. **analogRead() and channel/pin numbers** ATTinyCore followed what the core it was based on did, which was to use analog channel numbers, not digital pin numbers for analogRead(). Originally, the An-constants were #defined as the number itself. Later, to make them work with the digital IO functions, I changed to  `#define An (n | 0x80)` - digital functions could check for the high bit, and if present, strip it off and use the analogInputToDigitalPin macro to find the digital pin number. I never did the inverse with analogRead() because it would have broken code which used the raw analog channel numbers. This is just absurd in this day and age, where every other core allows you to analogRead() digital pin numbers and it just works. As of 2.0.0, analogRead() takes either a digital pin number, a constant of the form An (one per analog pin, shown on pinout chart! corresponds directly to analog channels), one of the ADC_CHANNEL constants listed in the part-specific documentations pages (these are things like `ADC_TEMPERATURE` and `ADC_INTERNAL1V1`), or - assuming it has a differential ADC - one of the differential channels. If you were generating an analog channel at runtime, you can pass a number through the ADC_CH() macro to get a number that will be recognized as an analog __channel__ number (this is preferred to directly setting the high bit, since it makes clear that you're doing it to get that analog channel). Several people to whom I have spoken about this to
 2. **Differential channels!** Yeah - about half of the parts we support have them, and they can be useful for accurately measuring small differences in voltage. These vary per part - some are rather basic, while the t861 and t841 are very fancy - and are listed in full in the part-specific documentation. These are now fully supported. There is also support for analogRead with Noise Reduction mode (chip goes into sleep mode while taking the reading. For parts that support both, there is also a way to select bipolar (-512 to 511) vs unipolar (0 to 1023) mode.
 3. All the analog reference sources are named consistently, old (deprecated) names for references are still supported, but not recommended. **potential breakage** If you used to refer to a reference with a raw number, instead of the name (ie, if you did analogReference(0) instead of analogReference(DEFAULT), this will be totally broken for values other than zero. The ADC_REF() macro can be used to convert from the REFS bits to a reference constant *if you must - but you shouldn't be using a raw number to select the reference if you want to be able to move it to different parts* - The 1.1v internal reference `INTERNAL1V1` is 2 on some parts, and 0 on others... almost everything has the 1.1v reference and everything can use Vcc, but that's really where the similarities end. If you are writing code that users might want to make work on any other part, you need to use the names, not numbers. With parts having at most 8 options for the analog reference, and most having fewer than that, I do not expect that this is a particularly burdensom requirement. .
 4. **Legacy PIN_xn constants gone** `PIN_An` constants have the standard meaning, ie, PIN_An is the digital pin that analog channel `An` is on. Previously some (but to my surprise and horror, not even all) parts had a set of `PIN_xn` constants defined that worked like the new `PIN_Pxn` ones do. I was reading pins_arduino.h from an official core a few weeks after implementing my `PIN_xn` constants for a bunch of parts and discovered that `PIN_An` was already in use meaning something different. Use `PIN_Pxn` where x is the letter of a port, and n is the number of a pin within that port.
@@ -225,73 +225,82 @@ Link time optimization is enabled by default. If compiling with very old version
 
 For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with https://github.com/sudar/Arduino-Makefile - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
 
-### I2C support
-**You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work. In all cases, including parts with hardware I2C where it may work sometimes, you should **always** use external pullup resistors, as the internal ones are far weaker than the I2C standard requires for reliable operation. While different ATtiny chips require three entirely different implemenetations of Wire.h - this is invisible to you as the user except as noted below. You just #include Wire.h and use it as notmal.
-
-On all parts with more than 128b of SRAM, the buffer size in 32 bytes. On smaller parts, it is 16 bytes, but I'm not sure you could make those work with the Wire library anyway due to flash size constraints so this may not be relevant. Because of the graceless handling ofbuffer overflows, for consistent behavior it is important to use a consistent amount of ram for the buffers, so that libraries are not written assuming a larger one than your part uses. Since both a TX and RX bufer are used, though, obviously 32b was not going to happen with 128b of RAM.
-
-Among my cores,
-
-#### Implementation
-On the following chips, I2C functionality can be achieved with the hardware USI.
-* ATtiny x5 (25/45/85)
-* ATtiny x4 (24/44/84)
-* ATtiny x61 (262/461/861)
-* ATtiny x7 (87/167)
-* ATtiny x313 (2313/4313)
-* ATtiny1634
-
-On the following chips, slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included Wire library.
-* ATtiny828 * due to amn errata, hardware slave functionality does not work unkless the wattchdog timer is enabled, as when it is not, the I2C pin is pulld down with around 1mA of currenrt.
-* ATtiny x41 (441/841)
-
-On the following chips, full master/slave I2C functionality is provided in hardware and the Wire library uses it:
-* ATtiny x8 (48, 88)
-
-### SPI support:
-As is fairly widey known, the tinyAVR devices were not blessed with a true hardware serial port in most cases - many parts are stuck using the USI instead (same as is used for I2C), which as it haoppens is a truly dreadful excuse for a peripheral.
-
-On the following chips, SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the **USI does not have MISO/MOSI, it has DI/DO**; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common). Clock dividers 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness. Also, interrupts are not disabled during data transfer as SPI clock doesn't need to be precise in most cases. If you use long interrupt routines or require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK`. Be aware that USI-based I2C is not available when USI-based SPI is in use.
+### I2C, SPI and Serial
+Most of these parts do not have hardware support for I2C, SPI, and/or UART (Serial) like an ATmega device would. **As much as possible we try to paper over the differences - you can include Wire.h or SPI.h and expect things to just work except as noted below** - this is achieved by a special version of Wire.h and SPI.h which presents the same API, but implements it very differebtly depending on the underlying hardeware. Hence **the use of libraries like USIWire, tinyWire, WireS, and so on is unnecessary** These libraries are also considered unsupported, as they should never be necessary. In the case of Serial/UART, where there is no hardware serial, the SoftwareSerial library can be used, but it is often undesirable because of how it takes over all the PCINTs. To address this, we provide a different software serial implementation which uses the analog comparator interrupt instead of a PCINT, allowing the PCINTs to be used freely. The RX pin is fixed, but the TX pin can be moved around to a limited subset of pins. See the serial section below for more information. The following table shows what hardware interface is available on each of these part.
 
 
-On the following chips, full SPI functionality is provided in hardware, and works identically to SPI on Atmega chips:
-* ATtiny828
-* ATtiny x7 (87/167) (it has both a USI and full SPI, but the SPI library will use the SPI hardware)
-* ATtiny x41 (441/841)
-* ATtiny x8 (48, 88)
+| Part(s)               | SPI           | I2C Master  | I2C Slave | Serial (TX, RX)   |
+|-----------------------|---------------|-------------|-----------|-------------------|
+| ATtiny x313           | USI           | USI         | USI       | 1x Hardware       |
+| ATtiny 43             | USI           | USI         | USI       | Software PA4, PA5 |
+| ATtiny x4             | USI           | USI         | USI       | Software PA1, PA2 |
+| ATtiny x5             | USI           | USI         | USI       | Software PB0, PA1 |
+| ATtiny 26             | USI           | USI         | USI       | Software PA6, PA7 |
+| ATtiny x61            | USI           | USI         | USI       | Software PA6, PA7 |
+| ATtiny x7             | Real SPI      | USI         | USI       | 1x Hardware (LIN) |
+| ATtiny x8             | Real SPI      | Real TWI    | Real TWI  | Software PD6, PD7 |
+| ATtiny x41            | Real SPI      | Software    | Slave TWI | 2x Hardware       |
+| ATtiny1634            | USI           | USI         | USI       | 2x Hardware       |
+| ATtiny828             | Real SPI      | Software    | Slave TWI | 1x Hardware       |
+
+There are some specific considerations relevant to each of these interfaces, detailed below.
+
+#### SPI
+Where real hardware SPI is available, SPI.h will behave identically to that on any classic AVR.
+
+On USI parts, there are a few minor concerns, though most things will work without issue, and it should all be handled transparently via the SPI library.
+* **USI does not have MISO/MOSI, it has DI/DO**
+  * when operating in master mode, DI is MISO, and DO is MOSI.
+  * When operating in slave mode, DI is MOSI and DO is MISO. Note that like all other versions of SPI.h, slave mode is not supported. You must use a different library for that.
+  * The #defines for MISO and MOSI assume master mode. PIN_USI_DI, PIN_USI_DO, and PIN_USI_SCK are defined and can be used for operation  in slave mode.
+* The clock dividers are implemented in software (this is one of the things that USI lacks). Clock dividers of 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness.
+* Interrupts are not disabled during data transfer. That means that an interrupt could fire in the middle of a byte, and one of the bits in that byte would be very long. This is usually fine. If it isn't, because you're working with devices that require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK` or disable interrupts in the normal ways.
+* Be aware that USI-based I2C is not available when USI-based SPI is in use (this should be obvious, as they used the same pins).
 
 
-* ATtiny x5 (25/45/85)
-* ATtiny x4 (24/44/84)
-* ATtiny x61 (262/461/861)
-* ATtiny x7 (87/167)
-* ATtiny x313 (2313/4313)
-* ATtiny1634
+#### I2C
+The situation regarding I2C is more complicated; The ATtiny48 and ATtiny88 have real hardware I2C, which works like it does on ATmega devices. Like SPI.h, the Wire.h library will handle most of these differences, and most things will work the same way.
 
-### Serial Support
+Most other devices must use the USI for I2C. In these cases:
+* **You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work.
+* The option to set the clock as I2C master does not work. The SCL clock speed is fixed.
 
-On the following chips, full serial (UART) support is provided in hardware, as Serial (and Serial1 for parts with two serial ports):
-* ATtiny x313 (2313/4313)
-* ATtiny x7 (87/167 - LIN support, including a very fancy baud rate generator)
-* ATtiny x41 (441/841 - two UARTs)
-* ATtiny1634 (two UARTs)
-* ATtiny828
+A small number of devices have support for hardware slave I2C **but neither a USI nor hardware TWI for master operation**. On THOSE parts, some additional considerations apply:
+* I2C slave works great through the included Wire.h library.
+  * You can even do an alternate address or masked address (where several of the bits of the incoming address are ignored) by setting te `TWSAM` register. That register works the same way as it does on modern (post-2016) AVRs - however, no wrapper is provided around setting it, unlike the modern AVRs (ex, megaTinyCore and DxCore)
+  * On the ATtiny828, you must have the watchdog timer enabled in order for the USI to work in I2C mode; one of the pins in afflicted with one of the nastiest silicon bugs in a pre-2016 tinyAVR, and when the WDT is not enabled (interrupt mode with an empty interrupt is fine),
+* Software I2C Master, on the other hand is... a little flaky on these parts, most notably, it's not possible to tell whether a transaction timed out, or if the slave just responded with a bunch of 0's. There is no clock configuration functionality here either. If planning a new project, consider using a different device (might I recommend a [modern tinyAVR](https://github.com/SpenceKonde/megaTinyCore/)?) if I2C master mode is a big part of your application.
 
-On the following chips, **no hardware serial is available**, however, a built-in software serial named `Serial` is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial. [See also the discussion of baud rates.](avr/extras/TinySoftSerialBaud.md)
-* ATtiny x5 (25/45/85)
-* ATtiny x4 (24/44/84)
-* ATtiny x61 (261/461/861)
-* ATtiny x8 (48/88)
-* ATtiny43
+Regardless of the implementation, simultaneously acting as both a master and a slave is never supported here. The hardware doesn't support it like it does on modern AVRs.
 
-This core is also fully compatible with the usual SoftwareSerial library if you want a software serial port on a different pin - however, you can still only transmit or receive on a single software serial instance at a time - on parts without hardware serial, this includes the builtin software serial "Serial" implementation noted above.
+##### Buffer size
+On all parts with more than 128b of SRAM, the buffer size in 32 bytes. On smaller parts, it is 16 bytes, but I'm not sure you could make those work with the Wire library anyway due to flash size constraints so this may not be relevant. All official cores use 32b buffers, and it is for this reason that a 32b buffer is used even on parts where the pair of buffers leads to using a painfully large fraction of the RAM  - libraries implicitly depend on the buffer being at least 32b, often without the author even being aware of that fact.
 
-**Warning: Internal oscillator and Serial**
+#### Serial Support
+To most of us, the Serial interface is the most important of the big three serial protocols. All parts, whether or not they have hardware serial, will have an object named serial that provides serial interface functionality. Where there is hardware serial, the Serial object is a normal fully featured, full duplex serial port that works just like any other AVR. The lucky chips that have two serial ports will also have Serial1 defined.
+
+Unfortunately, that's only 8 of the 21 parts supported by this core. The rest must use some form of software serial. While this core is fully compatible with the usual SoftwareSerial library, it comes with the usual disadvantages, most notably the fact that it grabs all the PCINT vectors for itself. To address that on the parts not blessed with hardware serial, we include a software serial implementation with a fixed RX pin, and a TX pin with a limited number of options - but which leaves the PCINT vectors available. It uises the analog comparator interrupt, and requires that the RX pin be the AIN1 pin. TX defaults to the AIN0 pin.
+
+Regardless of how you acheive the software serial, however, you can still only transmit or receive on a single software serial instance at a time (SoftwareSerial or the builtin tinySoftSerial). Transmit is always blocking - a call that writes via software serial will not return until the data is sent unlike hardware serial which puts it into a buffer to send in the background.
+
+```c
+// In other words
+Serial.println("Hello World");
+// on a part without hardware serial, which is hence using our builtin software implementation, is equivalent to:
+Serial.println("Hello World");
+Serial.flush();
+```
+
+##### Moving builtin soft-serial TX pin
+The builtin software serial port ("Serial" on parts without hardware serial) can be moved to any pin *as long as it is on the same port*. Use the `Serial.setTxBit(bit)` method. The 'bit' argument passed must be a number between 0 and 7, corresponding to the number within the port of the desired TX pin; **this should be called before** `Serial.begin()`. This option is only available on parts with the software serial.
+
+##### TX-only soft serial
+Many users have asked for a way to disable the receiving functionality of the builtin soft-serial entirely. New in 2.0.0, you can choose TX only the tools -> Software Serial menu. This will exclude everything except the transmit functionality. read() and peek() will always return -1, and available() will always return 0.
+
+##### Warning: Internal oscillator and Serial
 Note that when using the internal oscillator or pll clock, you may need to tune the chip (using one of many tiny tuning sketches) and set OSCCAL to the value the tuner gives you on startup in order to make serial (software or hardware) work at all - the internal clock is only calibrated to +/- 10% in most cases, while serial communication requires it to be within just a few percent. However, in practice, a larger portion of parts work without tuning than would be expected from the spec. That said, for the ATtiny x4, x5, x8, and x61-family I have yet to encounter a chip that was not close enough for serial using the internal oscillator at 3.3-5v at room temperature - This is consistent with the Typical Characteristics section of the datasheet, which indicates that the oscillator is fairly stable w/respect to voltage, but highly dependent on temperature.
 
-The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communications. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v, or with a Micronucleus bootloader) use an external crystal** until a tuning solution is available.
-
-A tuning sketch is planned for a future version of this core. Progress on this has been made - slowly and fitfully. The current plan is for Optiboot bootloader to be optionally burnable with a "tuning" sketch - this will write the calibration value to the space between the end of the bootloader and the end of flash, and the bootloader will load this value if it is set.  ( #139 ) Micronucleus using internal oscillator already does this using the USB clock as a timebase, and loads it before the sketch
+The ATtiny x41-family, 1634R, and 828R have an internal oscillator factory calibrated to +/- 2% - but only at operating voltage below 4v. Above 4v, the oscillator gets significantly faster, and is no longer good enough for UART communication if the UART baud rate calculation error is in the same direction - See [the AVR baud rate chart](https://docs.google.com/spreadsheets/d/1uzU_HqWEpK-wQUo4Q7FBZGtHOo_eY4P_BAzmVbKCj6Y/edit?usp=sharing). These parts have a clock speed menu option for the internal oscillator when Vcc > 4v and when it is <= 4V; when the >4V option is selected, we'll takea guess at what the calibration should be lowered to, which should be enough to get serial working.. The 1634 and 828 (non-R) are not as tightly calibrated (so they may need tuning even at 3.3v) and are a few cents less expensive, but suffer from the same problem at higher voltages. Due to these complexities, **it is recommended that those planning to use serial (except on a x41, 1634R or 828R at 2.5~3.3v, or with a Micronucleus bootloader) use an external crystal** until a tuning solution is available.
 
 ### ADC Support
 ATTinyCore 2.0.0 introduces a major enhancement to the handling of analog and digital pin numbers: Now, in all the #defined constants that refer to an analog channel, the high bit is set. (ie, ADC channel 4, A4, is defined by a line `#define A4 (0x80 | 4));` (actually, we also define ADC_CH() macro as shorthand for the bitwise or with 0x80. Ths advantage of this that it makes it more obvious why we're doing this to the number; if you see (0x80 | 4) you'd be like "wtf is this for? what does 0x80 have to do with anything?", whereas if you hadn't read this, and you saw ADC_CH(4) - you might not know exactly what's going on, but just from the name you'd know it was something to do with an analog reading, maybe of channel 4). Because all the analog channel number defines are all distinct from things that aren't analog channel numbers, the core's analogRead and digitalRead functions can tell the two apart; digitalRead(A3) will now look up what digital pin analog channel 3 is on, and use digitalRead on that, while analogRead(7) will now go look up what analog channel is on digital pin 7, and use analogRead on that.
@@ -300,41 +309,64 @@ ATTinyCore 2.0.0 introduces a major enhancement to the handling of analog and di
 On the ATtiny167 Digispark Pro pin mapping, "An" does not mean "Analog Chennel N", it means "The analog channel on the pin marked An on the Digispark Pro pinout chart" - which is the same as digital pin n. Use ADC_CH(n) to choose analog inputs by channel number. This inconsistency sucks - but analogRead(A3) reading the pin marked A9 on the pinout chart that everyone uses for the Digispark Pro isn't great behavior either...
 
 #### Differential ADC support
-ATTinyCore 2.0.0 includes proper support for using the differential ADC - which on many parts is as good as or better than the differential ADC found on ATmega parts of the same era (and in fact, in some use cases, is better than the one on the new AVR Dx-series parts!). Differential ADCs of varying sophistication are available on the following families of parts: x5, x7, x4, x61, x41,
+ATTinyCore 2.0.0 includes proper support for using the differential ADC - which on many parts is as good as or better than the differential ADC found on ATmega parts of the same era (and in fact, in some use cases, is better than the one on the new AVR Dx-series parts!). Differential ADCs of varying sophistication are available on the following families of parts: x5, x7, x4, x61, x41. Refer to the part specific documentation for the details on how to use it - generally there will be constants you pass in place of the pin number (listed in a table on the part specific documentation page).
 
+Some parts will additionally have one or two addtitional configuration functions related to the differential mode:
+##### analogGain()
+analogGain() is unique to the tiny841/441, which has too many differential channels and gain setting combinations to fit into a single byte. It is documented in the [ATtiny841/441 page](./avr/extras/ATtiny_x41.md). as it only applies to those devices. All others with programmable gain pass the gain setting as part of the constant.
+
+##### setADCBipolarMode(bool bipolar)
+This function is available on four families of parts including a total of 11 devices. These parts included an option to configure the differential ADC in either Unipolar mode or Bipolar mode. In bipolar mode, the value returned is signed. If reference was 1.0 V and you were looking at a pair of pins with voltages of 2.75 V and 2.5 V on them, your positive pin is 0.25 times the reference voltage above the negative pin and hence, the value returned would be 128. If the pins were reversed, it would be -128. In Unipolar mode, you gain an additional bit of precision.... if the positive pin is indeed larger. If it's not, you'll just get 0's back This is why some of the part have two options for a pair of pins, differing only in which one is positive vs negative - it's so you can swap the pins and use unipolar mode for higher accuracy. The argument is a boolean value indicating whether bipolar mode should be enabled (true = bipolar mode, false = unipolar mode. )
+
+Not all parts support the switch between unipolar and bipolar mode. The x4, x5, x61. and x7 do. The x41 supports only bipolar mode, while the 26 supports only unipolar mode. And obviously, devices without any differential ADC don't support this function either. Calling it for a part that doesn't support it will generate a compile error saying as much.
+
+##### ADC noise reduction mode
+Now that we've talked about ADC gain, which can be up to 100x on the 841 or 32x on the 861, we need to recognize that if you want to be measuring signal, rather than noise, you will need to take more care than usual. Some of this is in hardware - the AVCC pin (if present) should be connected with the inductor like the datasheet recommends rather than just being tied to Vcc like everyone in Arduinoland does normally. You should also probably be using the ADC noise reduction mode. This puts the processor to sleep during the conversion to reduce noise generated internally during that sensitive time.
+
+To use ADC noise reduction mode, simply use `analogRead_NR()` instead of `analogRead()`. There are really only a few caveats here:
+* The I/O clock will be stopped. This means timers will lose time (13 ADC clocks per reading; the ADC clock is 100-200 kHz on these so that means between 65 and 130 us of time is lost by millis/micros per ADC reading) and PWM will stop.
+* If interrupts are enabled, pin change interrupts and the WDT interrupt will wake the part prematurely. This may impact the quality of the readings. You may wish to disable these interrupts if they are in use.
+* Do not disable interrupts globally though, because then the ADC interrupt won't be able to wake the part.
+* This uses the ADC interrupt vector. Hence if at other points in time, you wanted to, say, use the ADC in free running mode, and run your own interrupt when a new result is ready, this is not compatible with `analogRead_NR()`. However analogRead_NR is isolated in it's own file, along with the empty ISR, so unless you're using `analogRead_NR()`, you can freely define that vector yourself.
 
 ### Timers and PWM
 All of the supported parts have hardware PWM (timer with output compare functionality) on at least one pin. See the part-specific documentation pages for a chart showing which pins have PWM. In addition to PWM, the on-chip timers are also used for millis() (and other timekeeping functions) and tone() - as well as by many libraries to achieve other functionality. Typically, a timer can only be used for one purpose at a time.
 
-On all supported parts, timekeeping functions are on timer0. On all parts except the tiny841/441 tone() is on timer1; on 841/441, in version 1.1.6 and later, tone() is on Timer2 to improve compatibility (on 1.1.5 and earlier, tone() is on Timer1 on all parts). This means that reconfiguring timer0 by manipulating it's registers will break millis() and delay(). Using tone() will prevent PWM from working on PWM pins controlled by Timer1 (Timer2 for 841/441), and manipulating it's registers will break tone(). Because tone() is now on Timer2 on the 841/441, you can use tone() at the same time as other libraries that use Timer1 (such as Servo, TimerOne, and many others).
+On all supported parts, timekeeping functions are on timer0. This means that reconfiguring timer0 by manipulating it's registers will break `millis()` and `delay()`; this is not recommended unless millis is disabled entirely.
 
-Most of the ATtiny parts only have two timers. The attiny841 has a third timer - but be aware that it's Timer2 is very different from the Timer2 on the atmega328p and most other atmega parts - the '841 has a second 16-bit timer (identical to timer1), while the atmega parts usually have an 8-bit asynchronous timer. This means that libraries designed to use Timer2 on the usual Arduino boards (ex, ServoTimer2) cannot be used with the 841.
+On all parts except the tiny841/441 `tone()` is on timer1; on 841/441. tone() is on Timer2 to improve compatibility; with Tone moved onto timer2, the many libraries that use timer1 (Servo, TimerOne, and many others) can be used alongside `tone()` on the 841/441. Using `tone()` will prevent PWM from working on PWM pins controlled by Timer1 (Timer2 for 841/441), and manipulating it's registers will break `tone()`.
+
+Most of the ATtiny parts only have two timers. The attiny841 has a third timer, timer2, which is an exact copy of the lovely 16-bit timer1, and completely different from the timer2 that most atmega devices have. Libraries designed to work with "Timer2" will not work on any of these parts, even the 841/441.
 
 ### Built-in tinyNeoPixel library
 
-The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. At speeds below 16MHz, you must select the port containing the pin you wish to use from the Tools -> tinyNeoPixel Port menu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](avr/extras/tinyNeoPixel.md) and included examples for more information.
+The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. Prior to 2.0.0, a tools submemu was needed to select the port. This is no longer required (the adafruit code was written with zero tolerance for any divergances from ideal timing; allowing for tiny divergences at points where it doesn't matter was all it took to reimplememt this without the need for that submenu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](avr/extras/tinyNeoPixel.md) and included examples for more information.
 
-### Retain EEPROM configuration option
-All non-bootloader board definitions have a menu option to control whether the contents of the EEPROM are erased when programming. This only applies to ISP programming, and you must "burn bootloader" to set the fuses to apply this. Because it only applies to ISP programming, it is not available for Bootloader board definitions. On those, EEPROM is never retained, on the reasoning that if you are burning the bootloader to a chip, you are trying to restore it to a "fresh" state.
+### Additional configuration options
+These are available from tools submenus
 
-### B. O. D. (brown out detect) configuration option
+#### Retain EEPROM
+All non-bootloader board definitions have a menu option to control whether the contents of the EEPROM are erased when programming. This only applies to ISP programming, and you must "burn bootloader" to set the fuses to apply this. Because it only applies to ISP programming, it is not available for Bootloader board definitions. on Optiboot definitions, EESAVE is never enabled, but since only ISP programming will normally erase the EEPROM, the only time you'd be running into this is if you were "rebootloading" it - which should always return it to a known state - or were writing over the bootloader with a sketch (which you probably shouldn't be doing anyway). Meanwhile if that option was present, it would cause a great deal of confusion since it would apply only to an uploading use case that you shouldn't be doing, and to rebootloading, not to normal uploads.
 
+#### B. O. D. (brown out detect)
 Brown-out detection continuously monitors Vcc, and holds the chip in reset state (BOR) if the applied voltage is below a certain threshold. This is a good idea with slow-rising power supplies or where it is expected that the supply voltage could droop below the required operating voltage for the frequency it is running at (see the speed grade specification for the part you're using) - without BOD enabled, this can put the chip into a hung state until manually reset. However, BOD increases power consumption slightly, and hence may be inappropriate in low power applications.
 
 The BOD voltage trigger level can be chosen from the tools -> BOD menu. The ATtiny441, 841, 828, and 1634 support independently configuring the BOD mode (active, sampled, disabled) for active and sleep modes (see the applicable datasheet for details). These are configured via the Tools -> BOD Mode (sleep) and Tools -> BOD Mode (active) menus.
 
+Unless the power consumption of the BOD is a show-stopper, **it is strongly recommended that BOD be enabled for any production system**. The failure mode from insufficient voltage is generally an ungraceful hang.
+
 In all cases, the selected BOD option(s) is/are configured by the fuses, so after changing these, you must "burn bootloader" to set the fuses.
 
-For Micronucleus boards, only options with are vaguely close to manufacturer's spec and "disabled" are available - since with those parts, we know without a doubt what that the clock speed will be, we know what BOD levels would be appropriate. There's not much point to using BOD if the BOD level is so far below spec that the chip would stop running before it was reached.
+Be aware that we do not check whether the clock speed and BOD threshold you selected make sense together. If you want to run at 16 MHz with a 1.8v BOD (which won't do a damned bit of good), we won't stop you.
 
-### Option to disable millis()/micros()
+#### Option to disable millis()/micros()
 
-The Tools -> millis()/micros() allows you to enable or disable the millis() and micros() timers. If set to enable (the default), millis(), micros() will be available. If set to disable, these will not be available, Serial methods which take a timeout as an argument will not have an accurate timeout (though the actual time will be proportional to the timeout supplied); delay will still work. Disabling millis() and micros() saves flash, and eliminates the millis interrupt every 1-2ms; this is especially useful on parts with very limited flash, as it saves a few hundred bytes. We do not support using alternate timers for millis like megaTinyCore and DxCore do - there, the timers are consistent - The same code on DxCore and megaTiny Core handles both the type A and Type B timers om those parts. Except for the ubiquitous timer 0, there are almost as many timers as parts. It's challenging to evenm wrangle them into gemneratiogmn PW<
+The Tools -> millis()/micros() allows you to enable or disable the millis() and micros() timers. If set to enable (the default), millis(), micros() will be available. If set to disable, these will not be available, Serial methods which take a timeout as an argument will not have an accurate timeout (though the actual time will be proportional to the timeout supplied); delay will still work. Disabling millis() and micros() saves flash, and eliminates the millis interrupt every 1-2ms; this is especially useful on parts with very limited flash, as it saves a few hundred bytes. We do not support using alternate timers for millis like megaTinyCore and DxCore do - there, the timers are consistent - The same code on DxCore and megaTiny Core handles both the type A and Type B timers om those parts. Over here, except for the ubiquitous timer 0, there are almost as many versions of timer1 as there are parts.
 
 ## Memory Lock Bits, disabling Reset
-ATTinyCore will never set lock bits automatically, nor will it set fuses to disable ISP programming (it is intentionally not made available as an option, since after doing that, an HVSP programmer is needed to further reprogram the chip, and inexperienced users would be at risk of bricking their chips this way). The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the fuse/lock bits. Disabling of reset is currently not an option, either - but for bootloader boards, this may change - VUSB bootloaders which disable reset are in widespread use, seemingly without issue. It will never be an option for non-bootloader boards because of the convoluted workflow required.
+ATTinyCore will never set lock bits, nor will it set fuses to disable ISP programming (it is intentionally not made available as an option, since after doing that an HV programmer is needed to further reprogram the chip, and inexperienced users would be at risk of bricking their chips this way). The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> manually set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the fuse/lock bits.
 
-
+Disabling of reset is only an option for boards definitions with a bootloader which uses a sound flash-erase implementation (Optiboot presently does not, while the VUSB bootloaders which disable reset are in widespread use, seemingly without issue) and for the 8 and 14-pin parts It will never be an option for non-bootloader board definitions for other parts. We recommend against it in all cases. The 8 and 14 pin parts can be unbricked with a comparatively simple HVSP programmer (only 4-7 pins - 4 pins + reset for 8-pin, plus 3 more tied low on 14-pin)/ Everything with more pins needs an HVPP programmer, involving a wire connected to every pin or almost every pin on the chip. The sheer number of connections makes it unlikely that it could ever be unbricked in-system if the "system" is much more than a breakout board. HVPP is extremely exotic within the hobby community, such that I've never heard anyone talk about unbricking with HVPP.
 
 ## Pin Mappings
 
@@ -389,7 +421,6 @@ Except for the x5, x4, x61, and x313-family, these are only available in surface
 
 
 ## Caveats
-
 * Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible. ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each programming operation. This may be due to bugs in USBAsp firmware - See this thread on the Arduino forums for information on updated USBAsp firmware: http://forum.arduino.cc/index.php?topic=363772 (Links to the new firmware are on pages 5-6 of that thread - the beginning is largely a discussion of the inadequacies of the existing firmware)
 * At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that serial (and hence the bootloader) does not work. Significant enhancements have been made on this front in 1.4.0; reburning bootloader should sort it out.
 

@@ -85,22 +85,22 @@ void analogReference(uint8_t mode) {
   if (__builtin_constant_p(mode)) { /* check for invalid constants passed to analogReference() */
     #if !defined(__AVR_ATtinyX7__)
       if ((mode & ADMUX_REFS_MASK) != mode ) {
-        badArg("That is not a reference, use the named constants listed in part-specific documentation");
+        badArg("Argument is not an analog reference, use the named constants listed in part-specific documentation");
       }
       #if defined(REFS2) && !defined(GSEL0) // x5 or x61
         if (mode == ADC_REF(3) || mode == ADC_REF(4) || mode == ADC_REF(5)) {
-          badArg("The requested reference is not a valid reference option, use named cosntants from part-specific documentation");
+          badArg("The requested reference is not a valid option, use the named cosntants from part-specific documentation");
         }
       #elif defined(__AVR_ATtinyX4__) || defined(__AVR_ATtiny1634__)
         if (mode == 0xC0) {
-          badArg("The requested reference is not a valid reference option, use named cosntants from part-specific documentation");
+          badArg("The requested reference is not a valid option, use the named cosntants from part-specific documentation");
         }
       #endif
     #else // is an x7 - this gets more interesting...
       if ((mode & 0xC6) != mode ) {
-        badArg("That is not a reference, use the named constants listed in part-specific documentation");
+        badArg("Argument is not an analog reference, use the named constants listed in part-specific documentation");
       } else if (mode & 0xC0 == 0x40) {
-        badArg("Invalid reference voltage: REFS=01, only REFS=10 or 11 valid - use named constants from part-specific documentation")
+        badArg("Invalid reference voltage requested. Use the named constants listed in part-specific documentation")
       } else
       #if !defined(ADC_ALLOW_BOGUS_XREF_AREF)
         // Make it easier if someone doesn't take my word for them not doing anything...
@@ -206,17 +206,14 @@ inline int analogRead(uint8_t pin) {
   #endif
 }
 
-/* in wiring_analog_noise.c so the ISR is only defined if using this
-int analogReadNR(uint8_t pin) {
-  _analogRead(pin, true)
-}
-*/
+
 
 #ifdef SLEEP_MODE_ADC
-  int _analogRead(uint8_t pin, bool use_noise_reduction) {
+  int _analogRead(uint8_t pin, bool use_noise_reduction)
 #else
-  int _analogRead(uint8_t pin) {
+  int _analogRead(uint8_t pin)
 #endif
+{
   #ifndef ADCSRA
     badCall("analogRead() cannot be used on a part without an ADC");
     /* if a device does not have an ADC, instead of giving a number we know is
@@ -289,12 +286,12 @@ int analogReadNR(uint8_t pin) {
         sleep_mode();
         ADCSRA &= ~(1 << ADIE); // Is it worth unsetting this?
       } else {
-        ADCSRA |= (1<<ADSC);    // Start conversion
+        ADCSRA |= (1 << ADSC);    // Start conversion
       }
     #else
-      ADCSRA |= (1<<ADSC);      // Start conversion
+      ADCSRA |= (1 << ADSC);      // Start conversion
     #endif
-    while(ADCSRA & (1<<ADSC));  // Wait for conversion to complete.
+    while (ADCSRA & (1 << ADSC));  // Wait for conversion to complete.
     // The hell! There is already an ADCW defined that just reads it directly, doing it this way causes the compiler
     // to (despite the freedom to do otherwise) reading them into r24 and r25 in the wrong order, then using 3 eor's
     // to fix that. That is probably the single stupidest thing I've seen the compiler do yet. There is literally no
@@ -305,15 +302,17 @@ int analogReadNR(uint8_t pin) {
     // On further study, I think this was due to the core authors reading the part about how you have o read ADCL before
     // ADCH and not having faith that the compiler would generate code that does that when asked to read ADCW.
     // I *do* have faith, however, for three reasons
-    // 1. That the header supplied by microchip defines ADCW and deosn't warn abot this implies that the ssue
-    // probably doesn't manifest when used reasonably.
+    // 1. That the header supplied by microchip defines ADCW and doesn't warn about this implies that the issue
+    // probably doesn't manifest when used reasonably. Comments to the effect of "You only need to worry about that
+    // when writing assembly" are ubiquitous, as is C accessing the registers in the normal order
     // 2. There is no plausible reason the compiler might feel it needed to access the regsters backards (nor could I get
     // it to generate unsafe code)
     // 3. Even if it did, it would only be a problem in weirdo atypical use cases that violate the expectations of the
     // the core (such that the user at that point is already, at best, in "it is the user's responsibility to ensure"
-    // zone - and possbly nasal-demon territory) and I stll have trouble contriving a situation where ti ould manifest
-    // bad behavior even then... especially with, worst case, the low byte being read in the next system clock (and
-    // like I said, I've never actually  seen code like that; concerns over that are I think entirely imaginary.)
+    // zone - and possbly violating the expectations of the hardware or compiler as well leaving them in nasal-demon
+    // territory) and I stll have trouble imagining a contrived situation that could break it. Especially with, worst
+    // case, the low byte being read in the next system clock (and like I said, I've never actually seen code like
+    // that; concerns over that are I think entirely imaginary.)
     return ADCW;
   #endif
 }
@@ -492,7 +491,7 @@ void analogWrite(uint8_t pin, int val) {
       #if defined(TCCR0A) && defined(COM0A1)
         if (timer == TIMER0A) {
           // connect pwm to pin on timer 0, channel A
-          TCCR0A |= (1<<COM0A1);
+          TCCR0A |= (1 << COM0A1);
           OCR0A = val; // set pwm duty
         } else
       #endif
@@ -500,7 +499,7 @@ void analogWrite(uint8_t pin, int val) {
       #if defined(TCCR0A) && defined(COM0B1)
         if (timer == TIMER0B) {
           // connect pwm to pin on timer 0, channel B
-          TCCR0A |= (1<<COM0B1);
+          TCCR0A |= (1 << COM0B1);
           OCR0B = val; // set pwm duty
         } else
       #endif
@@ -511,43 +510,43 @@ void analogWrite(uint8_t pin, int val) {
         //So this handles "normal" timers
         if (timer == TIMER1A) {
           // connect pwm to pin on timer 1, channel A
-          TCCR1A |= (1<<COM1A1);
+          TCCR1A |= (1 << COM1A1);
           OCR1A = val; // set pwm duty
         } else
       #endif
       #if defined(TCCR1A) && defined(COM1B1) && !defined(TCCR1D)
         if (timer == TIMER1B) {
           // connect pwm to pin on timer 1, channel B
-          TCCR1A |= (1<<COM1B1);
+          TCCR1A |= (1 << COM1B1);
           OCR1B = val; // set pwm duty
         } else
       #endif
       // Handle the Timer1 flexible PWM on the x7
       #if !defined(TCCR1E) && defined(TCCR1D)
-        if (timer&0x08) {
+        if (timer & 0x08) {
           //Timer 1
-          TCCR1A |= (1<<COM1B1)|(1<<COM1A1);
-          if (timer&0x04) {
+          TCCR1A |= (1 << COM1B1) | (1 << COM1A1);
+          if (timer & 0x04) {
             OCR1B = val;
           } else {
             OCR1A = val;
           }
-          TCCR1D |= (1<<(timer&0x07));
+          TCCR1D |= (1 << (timer & 0x07));
         } else
       #endif
       // ATtiny x61
       #if defined(TCCR1E) //Tiny861
         if (timer == TIMER1A) {
           // connect pwm to pin on timer 1, channel A
-          TCCR1C |= (1<<COM1A0S);
+          TCCR1C |= (1 << COM1A1S);
           OCR1A = val; // set pwm duty
         } else if (timer == TIMER1B) {
           // connect pwm to pin on timer 1, channel B
-          TCCR1C |= (1<<COM1B0S);
+          TCCR1C |= (1 << COM1B1S);
           OCR1B = val; // set pwm duty
         } else if (timer == TIMER1D) {
           // connect pwm to pin on timer 1, channel D
-          TCCR1C |= (1<<COM1D0);
+          TCCR1C |= (1 << COM1D1); /* #614 - not sure why I was doing it wrong for all PWM here.  */
           OCR1D = val; // set pwm duty
         } else
       #endif
@@ -555,7 +554,7 @@ void analogWrite(uint8_t pin, int val) {
       #if defined(TCCR1) && defined(COM1A1)
         if (timer == TIMER1A) {
           // connect pwm to pin on timer 1, channel A
-          TCCR1 |= (1<<COM1A1);
+          TCCR1 |= (1 << COM1A1);
           OCR1A = val; // set pwm duty
         } else
       #endif
@@ -563,7 +562,7 @@ void analogWrite(uint8_t pin, int val) {
       #if defined(TCCR1) && defined(COM1B1)
         if (timer == TIMER1B) {
           // connect pwm to pin on timer 1, channel B
-          GTCCR |= (1<<COM1B1);
+          GTCCR |= (1 << COM1B1);
           OCR1B = val; // set pwm duty
         } else
       #endif
