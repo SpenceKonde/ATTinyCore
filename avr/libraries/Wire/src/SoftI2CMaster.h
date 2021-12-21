@@ -39,7 +39,7 @@
  * - I2C_SLOWMODE = 1 meaning that the I2C bus will allow only up to 25 kHz
  * - I2C_NOINTERRUPT = 1 in order to prohibit interrupts while
  *   communicating (see below). This can be useful if you use the library
- *   for communicationg with SMbus devices, which have timeouts.
+ *   for communicating with SMbus devices, which have timeouts.
  *   Note, however, that interrupts are disabled from issuing a start condition
  *   until issuing a stop condition. So use this option with care!
  * - I2C_TIMEOUT = 0..10000 mssec in order to return from the I2C functions

@@ -1,8 +1,7 @@
-
 /* ATTinyCore VUSB pins/etc configuration information. When converting a VUSB library
  * to ATTinyCore, edit the usbconfig.h and remove the "hardware config" and
  * "optional MCU description" sections. In place of the Hardware Config,
- * #include pins_usb.h - that will pull in the
+ * #include pins_usb.h - that will pull in this.
  *
  */
 

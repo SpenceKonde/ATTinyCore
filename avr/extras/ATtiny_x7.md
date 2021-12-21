@@ -1,20 +1,26 @@
 ### ATtiny 87/167
 ![x7 pin mapping](Pinout_x7.jpg "Arduino Pin Mapping for ATtiny x7-family")
+![x7 pin mapping](Pinout_x7_digispark.jpg "Digispark Pin Mapping for ATtiny x7-family")
 
- Specifications |  .
------------- | -------------
-Flash (program memory)   | 8096b/16768b ( 7552b/15744b with Optiboot, 14842 with Micronucleus)
-RAM  | 512 bytes
-EEPROM | 512 bytes
-Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
-GPIO Pins | 15
-ADC Channels | 11
-PWM Channels | 3
-Interfaces | LIN/UART, USI, SPI
-Clock options | Internal 1/8 MHz, external crystal or clock* up to 20 MHz
-Clock options | Micronucleus 16 MHz w/USB, 8/4/1 MHz w/out USB from 16MHz ext. crystal
-
-* Manual steps required. See notes in README under "Using external CLOCK (not crystal).
+| Specification           |    ATtiny167   |    ATtiny167   |    ATtiny167   |    ATtiny87    |    ATtiny87    |    ATtiny87    |
+|-------------------------|----------------|----------------|----------------|----------------|----------------|----------------|
+| Bootloader (if any)     |                |       Optiboot |  Micronucleus  |                |       Optiboot |  Micronucleus  |
+| Uploading uses          |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter | USB (directly) |
+| Flash available user    |    16384 bytes |    15744 bytes |    14842 bytes |     8192 bytes |     7552 bytes | TBD   >=6650   |
+| RAM                     |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |
+| EEPROM                  |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |
+| GPIO Pins               |             15 |             15 |             13 |             15 |             15 |             13 |
+| ADC Channels            |             11 |             11 |             11 |             11 |             11 |             11 |
+| PWM Channels            | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex |
+| Interfaces              |       LIN/UART |       LIN/UART | vUSB, LIN/UART |       LIN/UART |       LIN/UART | vUSB, LIN/UART |
+| Interfaces (cont'd)     |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |
+| Clocking Options:       |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
+| Int. Oscillator         |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |
+| Int. WDT Oscillator     |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |  Not supported |
+| Internal, with tuning   |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |
+| External Crystal        |   All Standard |   All Standard | **16**,8,4,2,1 |   All Standard |   All Standard | **16**,8,4,2,1 |
+| External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
+| Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
@@ -25,7 +31,10 @@ This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal (if USB is not required, it can be prescaled as listed in the table for low power applications). See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
 
-**Currently the version of Micronucleus supplied with ATTinyCore for this part enters the bootloader upon power-on only. This will be made an option in future versions** The "stock" bootloader found on commercially available boards usually enters the bootloader on all reset sources.
+#### Supported Entry Conditions:
+* Power-on only
+* Reset-pin and power-on
+* Reset-pin only if reset enabled, any reset otherwise.
 
 ## Features
 
@@ -40,7 +49,7 @@ Example of a "guard" against wrong pin mapping:
 ```
 The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel!
 
-### Flexible PWM support (New 1.4.0)
+### Flexible PWM support
 The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
 
 ### Tone Support
@@ -69,26 +78,26 @@ The ATtiny x7 series features a mid-range ADC - it has the second reference volt
 | `INTERNAL`          | Same as `INTERNAL1V1`       | No, pin available             |
 
 ### Internal Sources
-| Voltage Source  | Description                            |
-|-----------------|----------------------------------------|
-| ADC_INTERNAL1V1 | Reads the INTERNAL1V1 reference        |
-| ADC_GROUND      | Reads ground - for offset correction?  |
-| ADC_AVCCDIV4    | Reads AVCC divided by 4                |
-| ADC_TEMPERATURE | Reads internal temperature sensor      |
+| Voltage Source    | Description                            |
+|-------------------|----------------------------------------|
+| `ADC_INTERNAL1V1` | Reads the INTERNAL1V1 reference        |
+| `ADC_GROUND`      | Reads ground - for offset correction?  |
+| `ADC_AVCCDIV4`    | Reads AVCC divided by 4                |
+| `ADC_TEMPERATURE` | Reads internal temperature sensor      |
 
 ### Differential ADC channels
-Though it's a far cry from what some of the classic tinyAVR parts have, the x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.  ATTinyCore (v2.0.0+) allows you to read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro (ex: `analogRead(ADC_CH(0x11))` to read ADC0 and ADC1 at 20x gain, equivalent to `analogRead(DIFF_A0_A1_20X)`), otherwise they will be interpreted as a (likely non-existent) digital pin (See [Analog and Digital Pins](AnalogAndDigitalPins.md) for more information).
+Though it's a far cry from what some of the classic tinyAVR parts have, the x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.  ATTinyCore (v2.0.0+) allows you to read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro (ex: `analogRead(ADC_CH(0x11))` to read ADC0 and ADC1 at 20x gain, equivalent to `analogRead(DIFF_A0_A1_20X)`), otherwise they will be interpreted as a (likely non-existent) digital pin.
 
-|  Positive  |   Negative  | 8X Gain |20X Gain| Name (8x Gain) | Name (20x Gain) |
-|------------|-------------|---------|--------|----------------|-----------------|
-| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  DIFF_A0_A1_1X |  DIFF_A0_A1_20X |
-| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  DIFF_A1_A2_1X |  DIFF_A1_A2_20X |
-| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  DIFF_A2_A3_1X |  DIFF_A2_A3_20X |
-| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  DIFF_A4_A5_1X |  DIFF_A4_A5_20X |
-| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  DIFF_A5_A6_1X |  DIFF_A5_A6_20X |
-| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  DIFF_A6_A7_1X |  DIFF_A6_A7_20X |
-| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  DIFF_A8_A9_1X |  DIFF_A8_A9_20X |
-| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | DIFF_A9_A10_1X | DIFF_A9_A10_20X |
+|  Positive  |   Negative  | 8X Gain |20X Gain|  Name (8x Gain)  |  Name (20x Gain)  |
+|------------|-------------|---------|--------|------------------|-------------------|
+| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  `DIFF_A0_A1_1X` |  `DIFF_A0_A1_20X` |
+| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  `DIFF_A1_A2_1X` |  `DIFF_A1_A2_20X` |
+| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  `DIFF_A2_A3_1X` |  `DIFF_A2_A3_20X` |
+| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  `DIFF_A4_A5_1X` |  `DIFF_A4_A5_20X` |
+| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  `DIFF_A5_A6_1X` |  `DIFF_A5_A6_20X` |
+| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  `DIFF_A6_A7_1X` |  `DIFF_A6_A7_20X` |
+| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_1X` |  `DIFF_A8_A9_20X` |
+| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_1X` | `DIFF_A9_A10_20X` |
 
 
 ### Temperature Measurement
@@ -100,29 +109,29 @@ Note that while the text of this section of the datasheet is essentially copied 
 I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. Unfortunately this design is currently out of stock; a revised version in in the works.
 * Micronucleus boards are readily available all over the internet, fairly cheaply, in several models. Search for things like "Digispark Pro", "Digispark ATtiny167", "ATtiny167 USB" and so on.
 
-
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 Addresses are for 87 and 167 - the 167, having 16k of flash, has 4-byte vectors instead of 2-byte vectors.
-vect_num | Vector Address | Vector Name | Interrupt Definition
-------------- | ------------- | ------------ | -------------
- 0 | 0x0000/0x0000 | RESET_vect | External Pin, Power-on Res
- 1 | 0x0001/0x0002 | INT0_vect | External Interrupt Request 0
- 2 | 0x0002/0x0004 | INT1_vect | External Interrupt Request 1
- 3 | 0x0003/0x0006 | PCINT0_vect | Pin Change Interrupt (PORT A)
- 4 | 0x0004/0x0008 | PCINT1_vect | Pin Change Interrupt (PORT B)
- 5 | 0x0005/0x000A | WDT_vect | Watchdog Time-out (Interrupt Mode)
- 6 | 0x0006/0x000C | TIMER1_CAPT_vect | Timer/Counter1 Capture
- 7 | 0x0007/0x000E | TIMER1_COMPA_vect | Timer/Counter1 Compare Match
- 8 | 0x0008/0x0010 | TIMER1_COMPB_vect | Timer/Coutner1 Compare Match
- 9 | 0x0009/0x0012 | TIMER1_OVF_vect | Timer/Counter1 Overflow
-10 | 0x000A/0x0014 | TIMER0_COMPA_vect | Timer/Counter0 Compare Match
-11 | 0x000B/0x0016 | TIMER0_OVF_vect | Timer/Counter0 Overflow
-12 | 0x000C/0x0018 | LIN_TC_vect | LIN/UART Transfer Complete
-13 | 0x000D/0x001A | LIN_ERR_vect | LIN/UART Error
-14 | 0x000E/0x001C | SPI_STC_vect | SPI Serial Transfer Complete
-15 | 0x000F/0x001E | ADC_READY_vect | Conversion Complete
-16 | 0x0010/0x0020 | EE_READY_vect | EEPROM Ready
-17 | 0x0011/0x0022 | ANALOG_COMP_vect | Analog Comparator
-18 | 0x0012/0x0024 | USI_START_vect | USI Start Condition
-19 | 0x0013/0x0026 | USI_OVF_vect | USI Counter Overflow
+
+|vect_num |87 addr |167 addr| Vector Name         | Interrupt Definition                |
+|---------|--------|--------|---------------------|-------------------------------------|
+| 0       | 0x0000 | 0x0000 | `RESET_vect`        | External Pin, Power-on Res          |
+| 1       | 0x0001 | 0x0002 | `INT0_vect`         | External Interrupt Request 0        |
+| 2       | 0x0002 | 0x0004 | `INT1_vect`         | External Interrupt Request 1        |
+| 3       | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORT A)       |
+| 4       | 0x0004 | 0x0008 | `PCINT1_vect`       | Pin Change Interrupt (PORT B)       |
+| 5       | 0x0005 | 0x000A | `WDT_vect`          | Watchdog Time-out (Interrupt Mode)  |
+| 6       | 0x0006 | 0x000C | `TIMER1_CAPT_vect`  | Timer/Counter1 Capture              |
+| 7       | 0x0007 | 0x000E | `TIMER1_COMPA_vect` | Timer/Counter1 Compare Match        |
+| 8       | 0x0008 | 0x0010 | `TIMER1_COMPB_vect` | Timer/Coutner1 Compare Match        |
+| 9       | 0x0009 | 0x0012 | `TIMER1_OVF_vect`   | Timer/Counter1 Overflow             |
+|10       | 0x000A | 0x0014 | `TIMER0_COMPA_vect` | Timer/Counter0 Compare Match        |
+|11       | 0x000B | 0x0016 | `TIMER0_OVF_vect`   | Timer/Counter0 Overflow             |
+|12       | 0x000C | 0x0018 | `LIN_TC_vect`       | LIN/UART Transfer Complete          |
+|13       | 0x000D | 0x001A | `LIN_ERR_vect`      | LIN/UART Error                      |
+|14       | 0x000E | 0x001C | `SPI_STC_vect`      | SPI Serial Transfer Complete        |
+|15       | 0x000F | 0x001E | `ADC_READY_vect`    | Conversion Complete                 |
+|16       | 0x0010 | 0x0020 | `EE_READY_vect`     | EEPROM Ready                        |
+|17       | 0x0011 | 0x0022 | `ANALOG_COMP_vect`  | Analog Comparator                   |
+|18       | 0x0012 | 0x0024 | `USI_START_vect`    | USI Start Condition                 |
+|19       | 0x0013 | 0x0026 | `USI_OVF_vect`      | USI Counter Overflow                |

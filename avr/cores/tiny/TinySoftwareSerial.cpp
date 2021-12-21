@@ -84,7 +84,6 @@ extern "C"{
     sbi(ACSR,ACI); //clear the flag.
   }
 
-  }
   soft_ring_buffer rx_buffer = {{ 0 }, 0, 0};
 #endif
 
@@ -102,8 +101,8 @@ void uartDelay() {
 TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit) {
   _rx_buffer = rx_buffer;
 
-  _rxmask = _BV(rxBit);
-  _txmask = _BV(txBit);
+  _rxmask   = _BV(rxBit);
+  _txmask   = _BV(txBit);
   _txunmask = ~_txmask;
 
   _delayCount = 0;

@@ -7,7 +7,7 @@ Specification         |    ATtiny88    |       ATtiny88 |    ATtiny88    |      
 ----------------------|----------------|----------------|----------------|----------------|----------------|
 Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |
 Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |
-Flash available user  |     8192 bytes |     8192 bytes |     6550 bytes |     4096 bytes |     3456 bytes |
+Flash available user  |     8192 bytes |     7552 bytes |     6550 bytes |     4096 bytes |     3456 bytes |
 RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
 EEPROM                |       64 bytes |       64 bytes |       64 bytes |       64 bytes |       64 bytes |
 GPIO Pins             |     26 + RESET |     26 + RESET |     25 + RESET |     26 + RESET |     26 + RESET |
@@ -21,6 +21,7 @@ Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |    8,
 External Crystal      |  Not supported |  Not supported |  Not supported |  Not supported |  Not supported |
 External Clock        |   All Standard | 16,12,10,8,4,1 | **16**,8,4,2,1 |   All Standard | 16,12,10,8,4,1 |
 Default Pin Mapping   |       Standard |       Standard |        MH-Tiny |       Standard |       Standard |
+
 USB only available at **BOLD** clock. [Notes on this table](SpecificationConventions.md).
 
 
@@ -36,7 +37,7 @@ This core includes an Optiboot bootloader for the ATtiny88/48, operating using s
 The Micronucleus bootloader for these parts uses a 16 MHz external clock source. Boards are commercially available (and cheap) under the name MH-Tiny (also MH-ET and several other names). USB is on pins 1 and 2 (`PIN_PD1` and `PIN_PD2`, and the LED is on pin 0; there are slight differences in the numbering of pins. Additionally, the  As of 1.4.1, the new entry mode options detailed in [Using Micronucleus](UsingMicronucleus.md) are available for the Tiny88 (MH-ET). Be aware that there are many bootloaders circulating, including the ones shipped with 1.4.0, which do not actually work on the MH-ET boards; if you have uploaded one of those, you can restore functionality by bootloading using an ISP programmer (provided you hadn't previously disabled reset, of course).
 
 ### Alternate pinout options
-The MH Tiny boards have pins labeled with a different pin mapping. Pins up to 13 (all of PORTD and first 6 pins of PORTB) are the same, PB6 is not available because it is the clock input, and from there on out, order is different as well. The pinout can be selected from the Tools -> Pin Mapping submenu, regardless of which bootloader, if any, is in use. This way if you are (for example) using the MH-Tiny hardware, but programming it via ISP (for example) you can choose to use the pin mapping that matches the numbers printed on the board. The standard pin mapping is the default if not using Micronucleus bootloader; if using that, we of course default to the MH-Tiny pin mapping. Be sure you have read our [Pin Mapping Guide](PinMapping.md)
+The MH Tiny boards have pins labeled with a different pin mapping. Pins up to 13 (all of PORTD and first 6 pins of PORTB) are the same, PB6 is not available because it is the clock input, and from there on out, order is different as well. The pinout can be selected from the Tools -> Pin Mapping submenu, regardless of which bootloader, if any, is in use. This way if you are (for example) using the MH-Tiny hardware, but programming it via ISP (for example) you can choose to use the pin mapping that matches the numbers printed on the board. The standard pin mapping is the default if not using Micronucleus bootloader; if using that, we of course default to the MH-Tiny pin mapping.
 
 
 Pin Mapping  |  Standard x8   |     MH-Tiny   |

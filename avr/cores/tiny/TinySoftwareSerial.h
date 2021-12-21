@@ -9,7 +9,7 @@
  * ATtiny 26:   Yes - RX on PA7, TX defaults to PA6, can be PA0~7. Flash will be mighty tight.
  * ATtiny x61:  Yes - RX on PA7, TX defaults to PA6, can be PA0~7.
  * ATtiny x8:   Yes - RX on PD7, TX defaults to PD6, can be PD0~7.
- * ATtiny 43:   Yes - RX on PA5, TX defaults to PA4, can be PA0~4 or PA6.
+ * ATtiny 43:   Yes - RX on PA-5, TX defaults to PA4, can be PA0~4 or PA6.
  * ATtiny x313: Yes, but it's got a hardware serial port so not enabled. RX would be on PB1.
  * ATtiny x7:   No - but it's got a hardware serial port.
  * ATtiny x41:  No - but it's got two hardware serial ports!

@@ -1,4 +1,3 @@
-
 int analogRead_NR(uint8_t pin) {
   _analogRead(pin, true)
 }

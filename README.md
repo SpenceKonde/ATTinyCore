@@ -20,9 +20,6 @@ The most significant changes are:
 
 
 
-
-
-
 ### [Installation](Installation.md)
 ### [Wiring and required external components](Wiring.md)
 ### [Using with Micronucleus boards](avr/extras/UsingMicronucleus.md)
@@ -35,11 +32,12 @@ The most significant changes are:
 This core supports the following processors - essentially every "classic" tinyAVR processor that makes sense to use with Arduino. The modern (post-2016 release) tinyAVR parts have their own core, as there is practically zero code at the core level that can be shared with classic parts (in exchange for the cores being totally different, sketches can often be moved between these with little to no effort - not always, but often) Click the processor name for part-specific information:
 
 * [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
+* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader - Micronucleus probably coming soon)
 * [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
 * [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
+* [ATtiny26](avr/extras/ATtiny_x61.md) (No bootloader, the predecessor of the x61-series)
+* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader - Micronucleus probably coming soon)
 * [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
 * [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
@@ -103,7 +101,9 @@ The Optiboot bootloader is included for the ATtiny441, 841, 44, 84, 45, 85, 461,
 The ATtiny441/841, ATtiny1634, ATtiny44/84, ATtiny45/85, ATtiny461/861, ATtiny48/88 and the ATtiny x7-family do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, another vector is used to point to point to the start of the applications - this interrupt cannot be used by the application - under the hood, the bootloader rewrites the reset and "save" interrupt vectors, pointing the save vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse). Up until version 1.2.0 of this core, the WDT vector was used for this purpose. In 1.2.0 and later, the EE_RDY vector (which is not used by anything in Arduino-land - the EEPROM library uses a busy-wait) is used instead. **If the bootloader was burned with 1.1.5 or earlier of this core, the WDT cannot be used to generate an interrupt** (WDT as reset source is fine) - re-burning bootloader with 1.2.0 or later will resolve this.
 
 #### A warning about Virtual Boot
-Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. A solution is possible, but needs a considerable amount of development effort.
+Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. A solution is possible - and it is well known and tested on Micronucleus. But bringing that to optiboot is non-trivial.
+
+**Because of this issue, Optiboot should not be used for production systems**
 
 See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
 
@@ -114,12 +114,10 @@ It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) suppor
 
 Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCore board is selected from the Tools -> Board menu, there will appear extra submenus under Tools menu where we can set several ATtiny properties:
 
-* Tools > Save EEPROM: (Boards without bootloader only - controls whether EEPROM is erased during a chip erase cycle)
-* Tools > Timer 1 clock: (ATtiny25/45/85 only - allows Timer1 to be clocked off the PLL for higher frequency PWM)
-* Tools > LTO: (Link Time Optimization makes sketches smaller, but requires AVR boards 1.6.11 or later)
-* Tools > B.O.D Level: (trigger voltage for Brown Out Detection - below this voltage, chip will be held in reset)
 * Tools > Chip: (Select the part being used )
 * Tools > Clock:  (Select the desired clock speed)
+* Tools > Save EEPROM: (Boards without bootloader only - controls whether EEPROM is erased during a chip erase cycle)
+* Tools > B.O.D Level: (trigger voltage for Brown Out Detection - below this voltage, chip will be held in reset)
 * Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
 * Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
 
@@ -157,6 +155,17 @@ External crystal (all except 828, 43 and x8-family):
 * 6 MHz !
 * 4 MHz
 
+External Clock:
+* 20 MHz !
+* 18.432 MHz* !
+* 16 MHz
+* 14.7456 MHz* !
+* 12 MHz !
+* 11.0592 MHz* !
+* 9.216 MHz* !
+* 8 MHz
+* 7.3728 MHz* !
+
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 
@@ -182,6 +191,7 @@ Thanks to @cburstedde for his work this his work towards making this suck far le
 
 #### Using external CLOCK (instead of crystal) on other parts
 All of these parts support using and external clock as clock source. It is the most basic of clock sources - whereas a crystal requires an inverting amplifier, typically one of the more demanding parts of the microcontroller, the external clock requires almost nothhing from the chip being clocked that way. What does this mean? On the few parts that do not support a crystal, it means you can get accurate timing. On everything else, it lets you get an extra pin as well. This comes at the cost of needing an additional part, external oscillator. These are available, but even the cheapest AliExpress sources I could find wantesd 40-80 cents each for them, and from reputable supply houses, they startt at around $1.40, likely making them the most expensive part on the board (or #2 if you cheap out and get random ones from china.). Many of them are in a fairly large 7050 (7mm x 5mm) pacakage, though they are available in much smaller ones. They usually need their own decoupling capacitor (0.01uF is the norm) and like any high frequency trace, the path to the clock in pin must be short.
+We now offer the option to use an external clock on all parts, at the same frequencies as a crystal is, except that especially slow speeds are dropped. External oscillators are power hogs! Don't use them if you care about power consumption!
 
 ##### *oops! I thought my crystal was an external clock and now I can't program my chip!*
 Never fear. [Unbricking classic AVR parts bad clock setting](https://github.com/SpenceKonde/AVR-Guidance/tree/master/Troubleshooting/Unbricking)
@@ -195,17 +205,17 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 > 1 - External Crystal
 
-> 2 - External Clock (only available within the core on the 48, 88 and 828, as described above - note that above steps to use external clock on other parts, this will still be 1, not 2; as far as the core knows, it's a crystal)
+> 2 - External Clock
 
 > 3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
 
 > 4 - Internal ULP oscillator (available only on the x41, 1634, and 828)
 
-> 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
+> 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0x10, not 5.)
 
 > 6 - Internal PLL (x5 and x61 only)
 
-> 15 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
+> 16 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
 
 > 17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
 
@@ -215,7 +225,7 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 ### Assembler Listing generation
 
-In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. In 2.0.0 and later it gemnerates a memory map of dubious utility/
+In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. In 2.0.0 and later it gemnerates a memory map. Tools submenu options which impact the compiled binary will be encoded in the name that the files are given.
 
 ### Link-time Optimization (LTO) support
 
