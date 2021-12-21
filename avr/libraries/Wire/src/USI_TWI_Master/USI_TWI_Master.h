@@ -23,8 +23,6 @@
 *                     returns with a fail, then use USI_TWI_Get_Status_Info to evaluate the
 *                     cause of the failure.
 *
-* Modified 2021 by Anthony Zhang (me@anthonyz.ca) to implement timeouts
-
 ****************************************************************************/
 
 #include <avr/io.h>
@@ -66,7 +64,6 @@
 #define USI_TWI_NO_ACK_ON_ADDRESS 0x06 // The slave did not acknowledge  the address
 #define USI_TWI_MISSING_START_CON 0x07 // Generated Start Condition not detected on bus
 #define USI_TWI_MISSING_STOP_CON 0x08  // Generated Stop Condition not detected on bus
-#define USI_TWI_TIMEOUT 0x09           // Timeout occurred during bus operation, hard reset recommended
 
 
 #include "pins_arduino.h"
@@ -82,11 +79,8 @@
 //********** Prototypes **********//
 
 void USI_TWI_Master_Initialise(void);
-void USI_TWI_Master_Disable(void);
 void USI_TWI_Master_Speed(uint8_t);
 unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *, unsigned char, unsigned char);
 unsigned char USI_TWI_Start_Transceiver_With_Data(unsigned char *, unsigned char);
 unsigned char USI_TWI_Get_State_Info(void);
-void USI_TWI_Master_Timeout(uint32_t, unsigned char);
-unsigned char USI_TWI_Master_Manage_Timeout_Flag(unsigned char);
 #endif
