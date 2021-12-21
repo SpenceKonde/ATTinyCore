@@ -23,17 +23,25 @@
 *                     returns a status byte, which can be used to evaluate the
 *                     success of the transmission.
 *
+* Modified 2021 by Anthony Zhang (me@anthonyz.ca) to implement timeouts
+*
 ****************************************************************************/
 
 
 #include <avr/io.h>
+#include "Arduino.h" // for micros
 
 #ifdef USIDR
 #include "USI_TWI_Master.h"
 
-unsigned char USI_TWI_Master_Transfer(unsigned char);
+unsigned char USI_TWI_Master_Transfer(unsigned char, unsigned char *);
 unsigned char USI_TWI_Master_Stop(void);
+void USI_Master_Handle_Timeout(unsigned char);
 static unsigned char USI_TWI_MASTER_SPEED=0;
+
+static volatile uint32_t timeout_us = 0ul;
+static volatile unsigned char timed_out_flag = FALSE;  // a timeout has been seen
+static volatile unsigned char do_reset_on_timeout = TRUE;  // reset the USI registers on timeout
 
 union USI_TWI_state {
   unsigned char errorState; // Can reuse the TWI_state for error states due to that it will not be need if there
@@ -71,6 +79,15 @@ void USI_TWI_Master_Initialise(void)
           (0 << USITC);
   USISR = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC) | // Clear flags,
           (0x0 << USICNT0);                                             // and reset counter.
+}
+
+void USI_TWI_Master_Disable(void) {
+  USICR = 0x00; // Disable USI
+  USISR = 0xF0; // Clear all flags and reset counter
+  DDR_USI_CL &= ~(1 << PIN_USI_SCL); // Enable SCL as input.
+  DDR_USI &= ~(1 << PIN_USI_SDA); // Enable SDA as input.
+  PORT_USI &= ~(1 << PIN_USI_SDA); // Disable pullup on SDA.
+  PORT_USI_CL &= ~(1 << PIN_USI_SCL); // Disable pullup on SCL.
 }
 
 /*---------------------------------------------------------------
@@ -150,8 +167,14 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
 
   /* Release SCL to ensure that (repeated) Start can be performed */
   PORT_USI_CL |= (1 << PIN_USI_SCL); // Release SCL.
-  while (!(PIN_USI_CL & (1 << PIN_USI_SCL)))
-    ; // Verify that SCL becomes high.
+  uint32_t startMicros = micros();
+  while (!(PIN_USI_CL & (1 << PIN_USI_SCL))) {  // Wait for SCL to go high.
+    if (timeout_us > 0ul && (micros() - startMicros) > timeout_us) {
+      USI_Master_Handle_Timeout(do_reset_on_timeout);
+      USI_TWI_state.errorState = USI_TWI_TIMEOUT;
+      return (FALSE);
+    }
+  }
   if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; // Delay for T4TWI if TWI_FAST_MODE
   else DELAY_T2TWI;    // Delay for T2TWI if TWI_STANDARD_MODE
 
@@ -175,18 +198,24 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
     /* If masterWrite cycle (or initial address transmission)*/
     if (USI_TWI_state.addressMode || USI_TWI_state.masterWriteDataMode) {
       /* Write a byte */
-      PORT_USI_CL &= ~(1 << PIN_USI_SCL);         // Pull SCL LOW.
+      PORT_USI_CL &= ~(1 << PIN_USI_SCL);      // Pull SCL LOW.
       USIDR = *(msg++);                        // Setup data.
-      USI_TWI_Master_Transfer(tempUSISR_8bit); // Send 8 bits on bus.
+      if (!USI_TWI_Master_Transfer(tempUSISR_8bit, NULL)) { // Send 8 bits on bus.
+        return FALSE;
+      }
 
       /* Clock and verify (N)ACK from slave */
       DDR_USI &= ~(1 << PIN_USI_SDA); // Enable SDA as input.
-      if (USI_TWI_Master_Transfer(tempUSISR_1bit) & (1 << TWI_NACK_BIT)) {
+      unsigned char dataOut;
+      if (!USI_TWI_Master_Transfer(tempUSISR_1bit, &dataOut)) {
+        return FALSE;
+      }
+      if (dataOut & (1 << TWI_NACK_BIT)) {
         if (USI_TWI_state.addressMode)
           USI_TWI_state.errorState = USI_TWI_NO_ACK_ON_ADDRESS;
         else
           USI_TWI_state.errorState = USI_TWI_NO_ACK_ON_DATA;
-        return (FALSE);
+        return FALSE;
       }
       USI_TWI_state.addressMode = FALSE; // Only perform address transmission once.
     }
@@ -194,7 +223,10 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
     else {
       /* Read a data byte */
       DDR_USI &= ~(1 << PIN_USI_SDA); // Enable SDA as input.
-      *(msg++) = USI_TWI_Master_Transfer(tempUSISR_8bit);
+      if (!USI_TWI_Master_Transfer(tempUSISR_8bit, msg)) {
+        return FALSE;
+      }
+      msg ++;
 
       /* Prepare to generate ACK (or NACK in case of End Of Transmission) */
       if (msgSize == 1) // If transmission of last byte was performed.
@@ -203,7 +235,9 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
       } else {
         USIDR = 0x00; // Load ACK. Set data register bit 7 (output for SDA) low.
       }
-      USI_TWI_Master_Transfer(tempUSISR_1bit); // Generate ACK/NACK.
+      if (!USI_TWI_Master_Transfer(tempUSISR_1bit, NULL)) { // Generate ACK/NACK.
+        return FALSE;
+      }
     }
   } while (--msgSize); // Until all data sent/received.
 
@@ -220,29 +254,44 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
  Data to be sent has to be placed into the USIDR prior to calling
  this function. Data read, will be return'ed from the function.
 ---------------------------------------------------------------*/
-unsigned char USI_TWI_Master_Transfer(unsigned char temp)
+unsigned char USI_TWI_Master_Transfer(unsigned char usiStatus, unsigned char *dataOut)
 {
-  USISR = temp;                                          // Set USISR according to temp.
-                                                         // Prepare clocking.
-  temp = (0 << USISIE) | (0 << USIOIE) |                 // Interrupts disabled
-         (1 << USIWM1) | (0 << USIWM0) |                 // Set USI in Two-wire mode.
-         (1 << USICS1) | (0 << USICS0) | (1 << USICLK) | // Software clock strobe as source.
-         (1 << USITC);                                   // Toggle Clock Port.
+  USISR = usiStatus; // Set USISR according to usiStatus.
+                     // Prepare clocking.
+  uint8_t usiControl = (0 << USISIE) | (0 << USIOIE) |                 // Interrupts disabled
+                       (1 << USIWM1) | (0 << USIWM0) |                 // Set USI in Two-wire mode.
+                       (1 << USICS1) | (0 << USICS0) | (1 << USICLK) | // Software clock strobe as source.
+                       (1 << USITC);                                   // Toggle Clock Port.
+  uint32_t startMicros = micros();
   do {
     if (USI_TWI_MASTER_SPEED) DELAY_T2TWI_FM; else DELAY_T2TWI;
-    USICR = temp; // Generate positive SCL edge.
-    while (!(PIN_USI_CL & (1 << PIN_USI_SCL)))
-      ; // Wait for SCL to go high.
+    USICR = usiControl; // Generate positive SCL edge.
+    while (!(PIN_USI_CL & (1 << PIN_USI_SCL))) {  // Wait for SCL to go high.
+      if (timeout_us > 0ul && (micros() - startMicros) > timeout_us) {
+        USI_Master_Handle_Timeout(do_reset_on_timeout);
+        USI_TWI_state.errorState = USI_TWI_TIMEOUT;
+        return FALSE;
+      }
+    }
     if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T4TWI;
-    USICR = temp;                   // Generate negative SCL edge.
+    USICR = usiControl; // Generate negative SCL edge.
+
+    // Handle case where SCL is always high but transfer never completes
+    if (timeout_us > 0ul && (micros() - startMicros) > timeout_us) {
+      USI_Master_Handle_Timeout(do_reset_on_timeout);
+      USI_TWI_state.errorState = USI_TWI_TIMEOUT;
+      return FALSE;
+    }
   } while (!(USISR & (1 << USIOIF))); // Check for transfer complete.
 
   if (USI_TWI_MASTER_SPEED) DELAY_T2TWI_FM; else DELAY_T2TWI;
-  temp  = USIDR;                 // Read out data.
-  USIDR = 0xFF;                  // Release SDA.
+  if (dataOut != NULL) {
+    *dataOut = USIDR; // Read out data.
+  }
+  USIDR = 0xFF; // Release SDA.
   DDR_USI |= (1 << PIN_USI_SDA); // Enable SDA as output.
 
-  return temp; // Return the data from the USIDR
+  return TRUE;
 }
 
 /*---------------------------------------------------------------
@@ -253,8 +302,14 @@ unsigned char USI_TWI_Master_Stop(void)
 {
   PORT_USI &= ~(1 << PIN_USI_SDA); // Pull SDA low.
   PORT_USI_CL |= (1 << PIN_USI_SCL);  // Release SCL.
-  while (!(PIN_USI_CL & (1 << PIN_USI_SCL)))
-    ; // Wait for SCL to go high.
+  uint32_t startMicros = micros();
+  while (!(PIN_USI_CL & (1 << PIN_USI_SCL))) {  // Wait for SCL to go high.
+    if (timeout_us > 0ul && (micros() - startMicros) > timeout_us) {
+      USI_Master_Handle_Timeout(do_reset_on_timeout);
+      USI_TWI_state.errorState = USI_TWI_TIMEOUT;
+      return (FALSE);
+    }
+  }
   if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T4TWI;
   PORT_USI |= (1 << PIN_USI_SDA); // Release SDA.
   if (USI_TWI_MASTER_SPEED) DELAY_T2TWI_FM; else DELAY_T2TWI;
@@ -268,4 +323,43 @@ unsigned char USI_TWI_Master_Stop(void)
 
   return (TRUE);
 }
+
+/*---------------------------------------------------------------
+ Function for configuring USI timeout settings.
+---------------------------------------------------------------*/
+void USI_TWI_Master_Timeout(uint32_t timeout, unsigned char reset_with_timeout) {
+  timed_out_flag = FALSE;
+  timeout_us = timeout;
+  do_reset_on_timeout = reset_with_timeout;
+}
+
+/*---------------------------------------------------------------
+ Function for reading and optionally clearing the timeout flag.
+---------------------------------------------------------------*/
+unsigned char USI_TWI_Master_Manage_Timeout_Flag(unsigned char clear_flag) {
+  unsigned char flag = timed_out_flag;
+  if (clear_flag) {
+    timed_out_flag = FALSE;
+  }
+  return flag;
+}
+
+void USI_Master_Handle_Timeout(unsigned char reset) {
+  timed_out_flag = TRUE;
+
+  if (reset) {
+    // remember bitrate and address settings
+    uint8_t previous_USICR = USICR;
+    uint8_t previous_USISR = USISR;
+
+    // reset the interface
+    USI_TWI_Master_Disable();
+    USI_TWI_Master_Initialise();
+
+    // reapply the previous register values
+    USICR = previous_USICR;
+    USISR = previous_USISR;
+  }
+}
+
 #endif
