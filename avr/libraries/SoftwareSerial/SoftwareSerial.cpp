@@ -383,17 +383,20 @@ int SoftwareSerial::read()
 
   // Read from "head"
   uint8_t d = _receive_buffer[_receive_buffer_head]; // grab next byte
-  _receive_buffer_head = (_receive_buffer_head + 1) % _SS_MAX_RX_BUFF;
+  _receive_buffer_head = (uint8_t)(_receive_buffer_head + 1) % _SS_MAX_RX_BUFF; // this cast saves 6 bytes
   return d;
 }
 
-int SoftwareSerial::available()
-{
-  if (!isListening())
+int SoftwareSerial::available() {
+  if (!isListening()) {
     return 0;
+  }
 
-  return (_receive_buffer_tail + _SS_MAX_RX_BUFF - _receive_buffer_head) % _SS_MAX_RX_BUFF;
+  return (uint8_t)(_receive_buffer_tail + _SS_MAX_RX_BUFF - _receive_buffer_head) % _SS_MAX_RX_BUFF;
+  // this cast saves 86 - and a even a uint16_t saves 78, and cuts > 10 us from the execution time
+  // The shortcut of & (2^n - 1) only works for unsigned operands.
 }
+
 
 size_t SoftwareSerial::write(uint8_t b)
 {
