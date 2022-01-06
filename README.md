@@ -31,24 +31,24 @@ The most significant changes are:
 ## ATtinyCore Universal
 This core supports the following processors - essentially every "classic" tinyAVR processor that makes sense to use with Arduino. The modern (post-2016 release) tinyAVR parts have their own core, as there is practically zero code at the core level that can be shared with classic parts (in exchange for the cores being totally different, sketches can often be moved between these with little to no effort - not always, but often) Click the processor name for part-specific information:
 
-* [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader - Micronucleus probably coming soon)
-* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
-* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny26](avr/extras/ATtiny_x61.md) (No bootloader, the predecessor of the x61-series)
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader - Micronucleus probably coming soon)
-* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
-* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
-* [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
+* [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader) - One of the last classic tinyAVR parts released, and probably the single best of them. This has a second 16-bit timer (like Timer1) giving it a total of 6 PWM channels, two hardware serial ports, analog input on every pin with differential capability with programmable gain. On top of that, if you tune the internal oscillator to nearly the maximum, 90+% of these will run at 16 MHz.
+* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader - Micronucleus probably coming soon) - One of the last classic tinyAVR parts released. Sporting 16k of flash, 1k of RAM, and dual hardware serial ports spread across it's 18 I/O pins, this is one of the stars of the classic AVR line, though it would have really benefited if it got the same featureset that the 841 did.
+* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader) - originally targeted at automotive applications, the x7-series offers 16 I/O pins, a hardware serial port with an advanced baud rate generator (it's intended for LIN, an automotive communication protocol, which requires flexible baud rate adjustment) and a differential ADC. TimerB is highly flexible about which pins it uses. A Digispark Pro was made with the Micronucleus bootloader (and the second-stupidest pin mapping I have ever seen on an AVR), and those are now available cheaply online. Before you ask - the stupidest pinpapping? That would be the one that the old ATTinyCore-with-167-support used before I took it over.
+* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader) - The most popular tinyAVR, with just 5 I/O pins, and available in a DIP package, this was popular even before the advent of the Digispark which paired it with the Micronucleus vUSB bootloader - those boards have now been widely cloned and are available for dirt cheap. This popularity is in spite of the tightly constrained pincount and weird Timer1 that is incompatible with many libraries. Can run from internal oscillator at 16 MHz using the on-chip PLL.
+* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader) - Probably the second most popular of the classic tinyAVR parts, being available in a 14-pin DIP package. There's nothing particularly exotic or standout about this, but it checks most of the boxes, having 2 PWM channels from each timer (both of which are normal and well-behaved), a modest differential ADC, and so on. No surprises really, either good or bad, and overall exactly what you'd expect from a 14-pin classic tinyAVR.
+* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader - Micronucleus probably coming soon) - One of the stranger tinyAVR parts, this was designed with two tasks in mind: making differential ADC measurements, and controlling 3-phase BLDC motors. Timer1 is weird - a 10-bit variation on the high-speed timer that the x5 used (complete with the deadtime generator and PLL), with a third output compare channel. The differential ADC is arguably the best one on a classic tinyAVR (the t841 is the one one that could put up a fight, but lacks a separate AVCC pin, so I can't say I have much faith that the 100x gain isn't just amplifying noise), and until the release of the tinyAVR 2-series in 2021, was in the top tier of ADC capability (that top tier has now been replaced with a top tier composed of the 2-series alone, as they wait for the AVR EA's to join them)
+* [ATtiny26](avr/extras/ATtiny_x61.md) (No bootloader. The predecessor of the already long-in-the-tooth x61-series). Added in 2.0.0 by commission from someone with a huge stash of them. Don't use these unless they're all you can get. Two PWM pins, and all the quirks of the x61, only moreso. At least it's got a differential ADC that is on the same level as most classic tinyAVRs with differential ADC.
+* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader) - a 32-pin (or 28-pin in DIP) tiny-ified version of the ATmega x8-series. Hardware TWI and SPI, lots of pins, and cheap - but no crystal, no hardware serial, and only timer1 can do PWM (at least it's a normal timer1). It should come as no surprise that the ADC the same boring 8-channel single-ended one the m328p has. Available with Micronucleus support as the "MH-tiny" or "MHET tiny" on eBay and Aliexpress.
+* [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader) - A 32-pin (28 I/O pin) part with hardware serial and an analog input on every pin - and a mysterious and tragic history that left it far less powerful than it could have been.
+* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader) - An expensive, ancient chip with tiny amount of flash. For a long time it was the only tinyAVR with a USART. There are far better choices now.
+* [ATtiny43U](avr/extras/ATtiny_43.md) (no bootloader) - An otherwise rather dismal part: 16 I/O pins, only 2 PWM channels, no differential ADC... with one unique feature: *an on-chip boost converter* allowing opperation from a single, partly discharged, alkaline battery. Unlike using an external boost converter, this can use it's knowledge of the chip state to inform the boost converter's tradeoff between power consumption and accurate regulation, saving significant power while lowering part count.
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
 ### Non-supported parts
 * [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great low-pin-count parts and work well with Arduino.
 * [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude
-* ATtiny26 are not supported by any Arduino core. They are the obsolete predecessor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such old and uninspiring parts.
+* ATtiny28L are not supported by any Arduino core. Ancient, weird, and most importantly, they don't have RAM, just registers. Yeah, seriously.
 * ATtiny 4/5/10/11 and any other "AVRrc" (reduced core) parts. [Try this core](https://github.com/technoblogy/attiny10core)
 * Anything with "mega" in the name - you want [one of MCUDude's cores](https://github.com/MCUdude/)
 * AVR Dx-series (AVR128DA64, etc) - [the crown jewel of the AVR product line](https://github.com/SpenceKonde/), supported by my DxCore.
@@ -100,6 +100,34 @@ The Optiboot bootloader is included for the ATtiny441, 841, 44, 84, 45, 85, 461,
 
 The ATtiny441/841, ATtiny1634, ATtiny44/84, ATtiny45/85, ATtiny461/861, ATtiny48/88 and the ATtiny x7-family do not have hardware bootloader support. To make the bootloader work, the "Virtual Boot" functionality of Optiboot is used. Because of this, another vector is used to point to point to the start of the applications - this interrupt cannot be used by the application - under the hood, the bootloader rewrites the reset and "save" interrupt vectors, pointing the save vector at the start of the program (where the reset vector would have pointed), and the reset vector to the bootloader (as there is no BOOTRST fuse). Up until version 1.2.0 of this core, the WDT vector was used for this purpose. In 1.2.0 and later, the EE_RDY vector (which is not used by anything in Arduino-land - the EEPROM library uses a busy-wait) is used instead. **If the bootloader was burned with 1.1.5 or earlier of this core, the WDT cannot be used to generate an interrupt** (WDT as reset source is fine) - re-burning bootloader with 1.2.0 or later will resolve this.
 
+#### Big changes coming in 2.0.0
+The baud rates used for uploading in 1.x were chosen poorly. 57600 baud at 8 MHz - and 115200 baud at 16 MHz already has 2% baud rate error before accounting for any oscilator error - and it's in the direction that makes the most common oscillator error with the 841, 1634, and 828 worse rather than counteracting it **those baud rates were not appropriate** and posed repeated headaches for users. For internal o
+Now the rates by the bootloadeer shall be:
+| System Clock | Baud (hw serial) | Baud (sw serial) |
+|       20 MHz |           115200 |            57600 |
+|     16.5 MHz |              n/a |              n/a |
+|       16 MHz |            76800 |            57600 |
+|     12.8 MHz |              n/a |              n/a |
+|       12 MHz |           115200 |            57600 |
+|        8 MHz |            76800 |            38400 |
+|        6 MHz |            57600 |            28800 |
+|   4 MHz xtal |            38400 |            19200 |
+|   4 MHz int. |            9600* |            4800* |
+|   2 MHz int. |            9600* |            4800* |
+|        1 MHz |            9600* |            4800* |
+|    3.686 MHz |           115200 |          19200** |
+|    7.372 MHz |           115200 |          38400** |
+|    9.216 MHz |           115200 |          38400** |
+|  11.0592 MHz |           115200 |          38400** |
+|  14.7456 MHz |           115200 |          57600** |
+|   18.432 MHz |           115200 |          57600** |
+
+`*` On these parts, the chip is started in 1 MHz mode via the CKDIV8 fuse, and that is the speed that Optiboot runs at, and only switched to the specified speed once the sketch starts running. One of the side benefits of this is that in many cases a single binary can be used for all of these speeds, as well as the 8 MHz (internal or xtal) or 4 MHz xtal cases, reducing the absurd number of bootloader binaries that we had to distribute.
+
+`**` These are USART crystals (they divide perfectly to common baud rates), and on parts with a hardware serial port, they eliminate calculation error in the baud rates. That's why can run the bootloader on parts with hardware serial at 115200 baud even at under 4 MHz(pending verification) - and why the common baud rates all come out perfectly. The cost is that all other timekeeping is worse (takes longer to return and/or is less accurate). **there is no benefit to using a USART crystal on parts without hardware serial** as the math there doesn't have the factor-of-eight reduction in precision that comes with the hardware serial port. Software serial is a real hackjob anyway, and is not recommended for any purposes.
+
+16.5 and 12.8 MHz are not supported for Optiboot. Those speeds are achieved by tuning performed by the bootloader (if micronucleus, which of course isn't optiboot) or by the initialization code that runs before setup (but after the bootloader). Even when the target speed is 16.5 or 12.8 via tuning, Optiboot will run at 16.0 or 8.0 MHz.
+
 #### A warning about Virtual Boot
 Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. A solution is possible - and it is well known and tested on Micronucleus. But bringing that to optiboot is non-trivial.
 
@@ -132,6 +160,7 @@ Internal:
 * 16 MHz (PLL clock, x5, x61 only)
 * 16 MHz (aggressively configured 441/841 only, including for vUSB support)
 * 4 MHz*** (except on x313, starts up at 1MHz and immediately switches to 4MHz before setup() is run)
+* 2 MHz*** (starts up at 1MHz and switches to 4MHz before setup() is run)
 * 16.5MHz † ! (PLL clock, tuned, x5, x61 only, for vUSB support)
 * 12 MHz † ‡ (Internal, tuned aggressively, for vUSB support)
 * 12.8MHz † ‡ (Internal, tuned aggressively, for vUSB support)
@@ -154,6 +183,7 @@ External crystal (all except 828, 43 and x8-family):
 * 7.3728 MHz* !
 * 6 MHz !
 * 4 MHz
+* 3.6864 MHz* ! (parts with hardware serial port only)
 
 External Clock:
 * 20 MHz !
@@ -165,6 +195,7 @@ External Clock:
 * 9.216 MHz* !
 * 8 MHz
 * 7.3728 MHz* !
+* 3.6864 MHz* ! (parts with hardware serial port only)
 
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
@@ -173,13 +204,13 @@ All available clock options for the selected processor will be shown in the Tool
 
 `**` These options are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
 
-`***` The 4MHz internal option is useful if you are running near the minimum voltage - the lowest voltage for most of these parts is 1.8v, and at that voltage, they are only rated for 4MHz maximum. This starts up at 1 MHz and then switches to 4 MHz. Hence, bootloader performance is very slow, as it doesn't (yet) do this itself.
+`***` The 4MHz internal option is useful if you are running near the minimum voltage - the lowest voltage for most of these parts is 1.8v, and at that voltage, they are only rated for 4MHz maximum. This starts up at 1 MHz and then switches to 4 MHz. Hence, bootloader performance is very slow, as it doesn't (yet) do this itself. The 2 MHz option serves the same purpose for the 841/441, which are within spec down to 1.7v - as long as the clock speed is kept to 2 MHz or below
 
 `†` These speeds support vUSB - 12 MHz and 16 MHz modes may not work reliably with aggressively tuned internal oscillators. 16.5 and 12.8 are much better - but 12.8 requires a very large amount of flash. Note that 64/12.8 is an integer, so this has inherrently better timekeeping capability than other odd speeds, though even the weird speeds do now work correctly. .
 
-`‡` The ULP is the "Ultra Low Power" oscillator that replaced the 128 kHz WDT oscillator on the 441/841/828/1634. Like the WDT oscillator, it is only calibrated very roughly - the spec is +/- 30% (over the whole operating range - so in practice it's usually not quite that bad). On the 1634 and 828, it always runs at 32 KHz, but on the 841, it can apparently clock the system up to 16 times that rate. Though there is a tuning register, and a nice responsive looking tuning curve in the typical properties section of the datasheet, look more closely - there are only 4 points marked on the horizontal axis: Sure enough in the register, there are only 2 bits of tuning for it.
+`‡` The ULP is the "Ultra Low Power" oscillator that replaced the 128 kHz WDT oscillator on the 441/841/828/1634. Like the WDT oscillator, it is only calibrated very roughly - the spec is +/- 30% (over the whole operating range - so in practice it's usually not quite that bad). On the 1634 and 828, it always runs at 32 KHz, but on the 841, it can apparently clock the system up to 16 times that rate. Though there is a tuning register, and a nice responsive looking tuning curve in the typical properties section of the datasheet, look more closely - there are only 4 points marked on the horizontal axis: Sure enough in the register, there are only 2 bits of tuning for it, and that graph just gives you a false impression otherwise.
 
-`!` Micros takes longer to return on these clocks  because (64/clock cycles per microsecond) is not an integer.
+`!` Micros takes longer to return on these clocks - the math for micros is easiest if the prescaler used by the millis timer (almost always 64, except at extremely low clock speeds) can be evenly divided by the clock speed in MHz; in that case, we can just rightshift the number of ticks. When it can't, we use bitshift/addition ersatz division, which is slower (we never use actual division - We did VERY briefly, until someone noticed just how long micros() was taking to return)
 
 `‼` `micros()` and `delayMicroseconds()` require a system clock of 1 MHz or higher.
 
@@ -190,7 +221,7 @@ This differs from the behavior of official Arduino core - the "stock" micros() e
 Thanks to @cburstedde for his work this his work towards making this suck far less in the 1.5.0 release!
 
 #### Using external CLOCK (instead of crystal) on other parts
-All of these parts support using and external clock as clock source. It is the most basic of clock sources - whereas a crystal requires an inverting amplifier, typically one of the more demanding parts of the microcontroller, the external clock requires almost nothhing from the chip being clocked that way. What does this mean? On the few parts that do not support a crystal, it means you can get accurate timing. On everything else, it lets you get an extra pin as well. This comes at the cost of needing an additional part, external oscillator. These are available, but even the cheapest AliExpress sources I could find wantesd 40-80 cents each for them, and from reputable supply houses, they startt at around $1.40, likely making them the most expensive part on the board (or #2 if you cheap out and get random ones from china.). Many of them are in a fairly large 7050 (7mm x 5mm) pacakage, though they are available in much smaller ones. They usually need their own decoupling capacitor (0.01uF is the norm) and like any high frequency trace, the path to the clock in pin must be short.
+All of these parts support using and external clock as clock source. It is the most basic of clock sources - whereas a crystal requires an internal inverting amplifier, typically one of the more demanding parts of the microcontroller, the external clock requires almost nothhing from the chip being clocked that way. What does this mean? On the few parts that do not support a crystal, it means you can get accurate timing. On everything else, it lets you get an extra pin as well. This comes at the cost of needing an additional part, external oscillator. These are available, but even the cheapest AliExpress sources I could find wantesd 40-80 cents each for them, and from reputable supply houses, they startt at around $1.40, likely making them the most expensive part on the board (or #2 if you cheap out and get random ones from china.). Many of them are in a fairly large 7050 (7mm x 5mm) pacakage, though they are available in much smaller ones. They usually need their own decoupling capacitor (0.01uF is the norm) and like any high frequency trace, the path to the clock in pin must be short.
 We now offer the option to use an external clock on all parts, at the same frequencies as a crystal is, except that especially slow speeds are dropped. External oscillators are power hogs! Don't use them if you care about power consumption!
 
 ##### *oops! I thought my crystal was an external clock and now I can't program my chip!*
@@ -410,7 +441,7 @@ Disabling of reset is only an option for boards definitions with a bootloader wh
 ![x313 Pin Mapping](avr/extras/Pinout_x313.jpg "Arduino Pin Mapping for ATtiny4313/2313")
 
 ### ATtiny43U
-![1634 pin mapping](avr/extras/Pinout_43.jpg "Arduino Pin Mapping for ATtiny43")
+![ATtiny43U pin mapping](avr/extras/Pinout_43.jpg "Arduino Pin Mapping for ATtiny43")
 
 
 Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu.
@@ -432,7 +463,14 @@ Except for the x5, x4, x61, and x313-family, these are only available in surface
 
 ## Caveats
 * Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible. ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each programming operation. This may be due to bugs in USBAsp firmware - See this thread on the Arduino forums for information on updated USBAsp firmware: http://forum.arduino.cc/index.php?topic=363772 (Links to the new firmware are on pages 5-6 of that thread - the beginning is largely a discussion of the inadequacies of the existing firmware)
-* At >4v, the speed of the internal oscillator on 828R, 1634R and 841 parts increases significantly - enough that serial (and hence the bootloader) does not work. Significant enhancements have been made on this front in 1.4.0; reburning bootloader should sort it out.
+* At >4v, the speed of the internal oscillator on 828, 1634 and 841 parts increases significantly - enough that serial (and hence the bootloader) does not work. Significant enhancements have been made on this front in 1.4.0; reburning bootloader should sort it out. These are further improved in 2.0.0. Avoid using 115200 baud and 57600 baud if using the internal oscillator and running an 828, 1634, or x41 at 4V or higher - those speeds are over 2% off due to baud calculation error in the same direction that the clock speed is off.
+* For that matter, don't use 115200 baud or 57600 baud on any classic AVR with a hardware serial port at 8/16 MHz, especially if they or the thing they are communicating with is using an internal oscillator. Don't use 115200 without a hardware serial port at all. and either a "USART crystal" as clock source, or a 12 MHz or 20 MHz clock source. For 8 and 16 MHz with hardware serial, 38400, 76800, and (at 16 MHz) 153600 get much better baud rate accuracy.
+* There is a right and a wrong way to perform a software reset.
+  * Unless you are using Optiboot and wish to reset *and* have the bootloader run, do not reset from software via `__asm__ __volatile__ (jmp 0)` - that performs a "dirty reset". After a dirty reset, it is expected that all core initialization functions may incorrectly initialize any aspect(s) of core functionality, resulting in failure modes ranging from subtle and confusing to hangs or bootloops. Instead, enable the watchdog timer, set to reset the device on timeout, and then enter an infinite loop and wait for the reset 16ms later.
+  * Do not attempt to generate a software reset by connecting an I/O pin to reset and driving it low; this is specifically warned about in the datasheet.
+  * If using the WDT reset on an Optiboot board, no additional actions are necessary; The bootloader will see that the reset cause was the WDT, assume that it was the thing that generated the reset, turn off the WDT and start the application.
+  * If using the WDT reset on a non-optiboot board definition, you must turn it off at the very start of setup() - the chip will reset with the watchdog still running at the minimum timeout.
+  * The only time that a dirty reset is acceptable (it is never recommended) is when Optiboot is in use and you need to make the bootloader run from within the app.
 
 ## License
 ATTinyCore itself is released under the [LGPL 2.1](LICENSE.md). It may be used, modified, and distributed, and it may be used as part of an application which, itself, is not open source (though any modifications to these libraries must be released under the LGPL as well). Unlike LGPLv3, if this is used in a commercial product, you are not required to provide means for user to update it. A historical investigation has determined that versions of this core have been released under the LGPLv2.1 in the past - it was an oversight on our part that the license file was omitted from this core previously.
