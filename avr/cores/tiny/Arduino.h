@@ -143,7 +143,7 @@ int8_t digitalReadFast(uint8_t pinNumber);
 int analogRead(uint8_t pinNumber);
 #ifdef SLEEP_MODE_ADC
   int analogRead_NR(uint8_t pin);
-S  int _analogRead(uint8_t pin, bool use_noise_reduction);
+  int _analogRead(uint8_t pin, bool use_noise_reduction);
 #else
   int _analogRead(uint8_t pin);
 #endif
