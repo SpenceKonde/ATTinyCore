@@ -81,7 +81,7 @@ static const uint8_t A10 = ADC_CH(10);
  *---------------------------------------------------------------------------*/
 
 #define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p)     (((p) >= 8) ? 5 : 4)
+#define digitalPinToPCICRbit(p)     (((p) >= 8 && (p) <= 11) ? (PCIE0) : (PCIE1))
 #define digitalPinToPCMSK(p)        (((p) >= 0 && (p) <= 16) ? ((p < 8) ? (&PCMSK0) : (&PCMSK1)) : ((uint8_t *)NULL))
 #define digitalPinToPCMSKbit(p)     ((p) & 0x07)
 
