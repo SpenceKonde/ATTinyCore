@@ -11,10 +11,13 @@
  * Microchip ATtiny841, ATtiny441
  *===========================================================================
  * ATTinyCore Legacy Pin Mapping (CounterClockwise)
- * CCW/Legacy pin mapping is inferior  Use the other one if you don't
- * have code or hardware marked with the CCW numbers.
+ * CCW/Legacy pin mapping is inferior. Use the other one if you don't
+ * have code or hardware marked with the CCW numbers. Not only does this require
+ * more shuffling around of bits (so some macros are slower), if a crystal is
+ * used that takes out pins 0 and 1 instead of pins at the end.
  *---------------------------------------------------------------------------*/
 
+#define ATTINYX41 1
 #define __AVR_ATtinyX41__
 
 #define NUM_DIGITAL_PINS            12
@@ -22,17 +25,18 @@
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-#define PIN_PA0  (10)
-#define PIN_PA1  ( 9)
-#define PIN_PA2  ( 8)
-#define PIN_PA3  ( 7)
-#define PIN_PA4  ( 6)
-#define PIN_PA5  ( 5)
-#define PIN_PA6  ( 4)
-#define PIN_PA7  ( 3)
-#define PIN_PB0  ( 0)
-#define PIN_PB1  ( 1)
+
+#define PIN_PB0  ( 0) /* XTAL2 */
+#define PIN_PB1  ( 1) /* XTAL1 */
 #define PIN_PB2  ( 2)
+#define PIN_PA7  ( 3)
+#define PIN_PA6  ( 4)
+#define PIN_PA5  ( 5)
+#define PIN_PA4  ( 6)
+#define PIN_PA3  ( 7)
+#define PIN_PA2  ( 8)
+#define PIN_PA1  ( 9)
+#define PIN_PA0  (10)
 #define PIN_PB3  (11)  /* RESET */
 
 #ifndef LED_BUILTIN
@@ -77,19 +81,19 @@ static const uint8_t A11 = ADC_CH(11);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) <= 2) ? PCIE1 : PCIE0)
-#define digitalPinToPCMSK(p)    (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p) (((p) <= 2) ? (p) : (10 - (p)))
+#define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 10) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p)     (((p) <= 2) ? PCIE1 : PCIE0)
+#define digitalPinToPCMSK(p)        (((p) <= 2) ? (&PCMSK1) : (((p) <= 10) ? (&PCMSK0) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSKbit(p)     (((p) <= 2) ? (p) : (10 - (p)))
 
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : NOT_AN_INTERRUPT)
+#define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (TODO)
-#define digitalPinToAnalogInput(p)  (TODO)
+#define analogInputToDigitalPin(p)  ((p) < 9 ? (10 - (p)) : ((p) == 9 ? 11 : 11 - (p)))
+#define digitalPinToAnalogInput(p)  ((p) < 11 ? (((p) > 1) ? 10 - (p) : 11 - (p)) : 9)
 
 /* Which pins have PWM? */
-#define digitalPinHasPWM(p)         ((p) > TODO && (p) < TODO)
+#define digitalPinHasPWM(p)         ((p) > 1 && (p) < 8)
 
 /* We have multiple pin mappings on this part; all have a #define, where
  * multiple are present, these are for compatibility with versions that
@@ -197,7 +201,6 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define INTERNAL2V2NOBP       INTERNAL2V2            /* deprecated */
 #define INTERNAL4V096NOBP     INTERNAL4V096          /* deprecated */
 
-
 /* Gain Options */
 #define GAIN_1X               (0xFF)
 #define GAIN_20X              (0xFE)
@@ -208,10 +211,11 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * 0x03 is not a valid option for the GSEL bits. */
 
 
-/* Special Analog Channels */
-#define ADC_GROUND      ADC_CH(0x20)
-#define ADC_INTERNAL1V1 ADC_CH(0x21)
-#define ADC_TEMPERATURE ADC_CH(0x22)
+/* Special Single-Ended Channels */
+#define ADC_TEMPERATURE ADC_CH(0x0C)
+#define ADC_INTERNAL1V1 ADC_CH(0x0D)
+#define ADC_GROUND      ADC_CH(0x0E)
+#define ADC_VCC         ADC_CH(0x0F) /* Not very useful! */
 
 /* Differential Channels */
 #define DIFF_A0_A1      ADC_CH(0x10)
@@ -323,8 +327,8 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  *  PWM SDA   MOSI (A6  4)  PA6  7|    |8   PA5  (A5  5) TX1 MISO     PWM
  *                                +----+
  *
- * Pins can be remapped, optional remap options denoted by *
- * These are not enabled by default.
+ *  Some pins can be remapped, remapped options for peripherals marked with a *. The default for those same options is shown without the *.
+ *  Any of the 8 PWM pins can use any of the three timers, TOCC0, 2, 4, and 6 use channel A, and TOCC1, 3, 5, and 7 use channel B.
  *---------------------------------------------------------------------------*/
 
 #warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
@@ -400,24 +404,3 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 
 #endif
 #endif
-
-
-/*
-#if defined(SUPER_PWM)
-  const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-  {
-    NOT_ON_TIMER,
-    NOT_ON_TIMER,
-    TOCC7,       / OCR2A /
-    TOCC6,       / OCR2B /
-    TOCC5,       / OCR1A /
-    TOCC4,       / OCR0B this is serial 1 TX /
-    TOCC3,       / OCR0A this is serial 1 RX, too, so it is initially given least desirable timer /
-    TOCC2,       / OCR1B /
-    TOCC1,       / OCR0A this is serial 0 RX /
-    TOCC0,       / OCR0B this is serial 0 TX, too, so it is initially given least desirable timer /
-    NOT_ON_TIMER,
-    NOT_ON_TIMER / RESET /
-  };
-#else
-*/

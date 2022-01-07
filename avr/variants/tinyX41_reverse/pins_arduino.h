@@ -11,10 +11,14 @@
  * Microchip ATtiny841, ATtiny441
  *===========================================================================
  * ATTinyCore Standard Pin Mapping (Clockwise)
+ * This is the suggested pin mapping for all new development - it's more
+ * efficient (among other things, analog and digital pin numbers are the same)
+ * and naturally places the three pins that may not be available for the
+ * application at the end.
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX4 1
-#define __AVR_ATtinyX4__
+#define ATTINYX41 1
+#define __AVR_ATtinyX41__
 
 #include <avr/pgmspace.h>
 
@@ -31,9 +35,9 @@
 #define PIN_PA5     ( 5)
 #define PIN_PA6     ( 6)
 #define PIN_PA7     ( 7)
-#define PIN_PB0     (10)
-#define PIN_PB1     ( 9)
 #define PIN_PB2     ( 8)
+#define PIN_PB1     ( 9)  /* XTAL1 */
+#define PIN_PB0     (10)  /* XTAL2 */
 #define PIN_PB3     (11)  /* RESET */
 
 #ifndef LED_BUILTIN
@@ -51,8 +55,8 @@
 #define PIN_A7      (PIN_PA7)
 #define PIN_A8      (PIN_PB2)
 #define PIN_A9      (PIN_PB3) /* RESET */
-#define PIN_A10     (PIN_PB0)
-#define PIN_A11     (PIN_PB1)
+#define PIN_A10     (PIN_PB0) /* XTAL1 */
+#define PIN_A11     (PIN_PB1) /* XTAL2 */
 
 /* An "analog pins" these map directly to analog channels */
 static const uint8_t A0  = ADC_CH(0);
@@ -83,7 +87,7 @@ static const uint8_t A11 = ADC_CH(11);
 #define digitalPinToPCMSK(p)        (((p) < 8) ? (&PCMSK0) : (((p) < 12) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p)     (((p) < 8) ? (p) : ((p == 8 ? 2 : (p==11 ? 3 : (p == 9 ? 1 : 0)))))
 
-#define digitalPinToInterrupt(p)    ((p) == 8 ? 0 : NOT_AN_INTERRUPT)
+#define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
 
 /* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  ((p) < 9 ? (p) : (p) == 9 ? (11) : ((p) + 1))
@@ -207,9 +211,10 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
 
 /* Special Single-Ended Channels */
-#define ADC_GROUND      ADC_CH(0x20)
-#define ADC_INTERNAL1V1 ADC_CH(0x21)
-#define ADC_TEMPERATURE ADC_CH(0x22)
+#define ADC_TEMPERATURE ADC_CH(0x0C)
+#define ADC_INTERNAL1V1 ADC_CH(0x0D)
+#define ADC_GROUND      ADC_CH(0x0E)
+#define ADC_VCC         ADC_CH(0x0F) /* Not very useful! */
 
 /* Differential Channels */
 #define DIFF_A0_A1      ADC_CH(0x10)
@@ -309,19 +314,22 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
 #ifdef ARDUINO_MAIN
 #warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"
-// ATMEL ATTINY841 / ATTinyCore Clockwise
-//
-//                                 +-\/-+
-//                          VCC   1|    |14  GND
-//                 (A11/10) PB0   2|    |13  PA0  (A0/0)     *MISO    AREF
-//                 (A10/9)  PB1   3|    |12  PA1  (A1/1) TX0 *MOSI    *PWM
-//           RESET (A9/11)  PB3   4|    |11  PA2  (A2/2) RX0 *SS      *PWM
-//  PWM INT0  *RX0  (A8/8)  PB2   5|    |10  PA3  (A3/3)     *SCK      PWM
-//  PWM SS    *TX0  (A7/7)  PA7   6|    |9   PA4  (A4/4) RX1 SCK  SCL  PWM
-//  PWM SDA   MOSI  (A6/6)  PA6   7|    |8   PA5  (A5/5) TX1 MISO      PWM
-//                                 +----+
-//
-//  Pins can be remapped, optional remap options denoted by *; these are not enabled by default.
+
+/*---------------------------------------------------------------------------
+ * ATMEL ATTINY841 / ATTinyCore Clockwise
+ *
+ *                                 +-\/-+
+ *                          VCC   1|    |14  GND
+ *                 (A11/10) PB0   2|    |13  PA0  (A0/0)     *MISO    AREF
+ *                 (A10/9)  PB1   3|    |12  PA1  (A1/1) TX0 *MOSI    *PWM
+ *           RESET (A9/11)  PB3   4|    |11  PA2  (A2/2) RX0 *SS      *PWM
+ *  PWM INT0  *RX0  (A8/8)  PB2   5|    |10  PA3  (A3/3)     *SCK      PWM
+ *  PWM SS    *TX0  (A7/7)  PA7   6|    |9   PA4  (A4/4) RX1 SCK  SCL  PWM
+ *  PWM SDA   MOSI  (A6/6)  PA6   7|    |8   PA5  (A5/5) TX1 MISO      PWM
+ *                                 +----+
+ *
+ *  Some pins can be remapped, remapped options for peripherals marked with a *. The default for those same options is shown without the *.
+ *  Any of the 8 PWM pins can use any of the three timers, TOCC0, 2, 4, and 6 use channel A, and TOCC1, 3, 5, and 7 use channel B.
 
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
@@ -384,8 +392,8 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
     TOCC0 | NOT_ON_TIMER,   /* this is serial 0 TX, lets not use it for pwm */
     TOCC1 | NOT_ON_TIMER,   /* this is serial 0 RX */
     TOCC2 | TIMER1B,  /* OCR1B */
-    TOCC3 | TIMER0A,  /* OCR0A this is serial 1 RX, too, so let's give it the least desirable timer */
-    TOCC4 | TIMER0B,  /* OCR0B this is serial 1 TX */
+    TOCC3 | TIMER0A,  /* OCR0A this is serial 1 RX, so let's give it the least desirable timer  */
+    TOCC4 | TIMER0B,  /* OCR0B this is serial 1 TX, so let's give it the least desirable timer  */
     TOCC5 | TIMER1A,  /* OCR1A */
     TOCC6 | TIMER2B,  /* OCR2B */
     TOCC7 | TIMER2A,  /* OCR2A */
