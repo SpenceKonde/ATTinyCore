@@ -31,10 +31,10 @@
 #define PIN_PA5     ( 5)
 #define PIN_PA6     ( 6)
 #define PIN_PA7     ( 7)
-#define PIN_PB0     (10)
-#define PIN_PB1     ( 9)
 #define PIN_PB2     ( 8)
-#define PIN_PB3     (11)   /* RESET */
+#define PIN_PB1     ( 9)  /* XTAL1 */
+#define PIN_PB0     (10)  /* XTAL2 */
+#define PIN_PB3     (11)  /* RESET */
 
 #ifndef LED_BUILTIN
   #define LED_BUILTIN (PIN_PB2)
@@ -71,7 +71,7 @@ static const uint8_t A7 = ADC_CH(7);
 
 #define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p)     (((p) <= 7) ? PCIE0 : PCIE1 )
-#define digitalPinToPCMSK(p)        (((p) <= 7) ? (&PCMSK0) : (((p) <= 10) ? (&PCMSK1) : ((uint8_t *)NULL) )
+#define digitalPinToPCMSK(p)        (((p) <= 7) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK1) : ((uint8_t *)NULL) )
 #define digitalPinToPCMSKbit(p)     (((p) <= 7) ? (p) : (10 - (p)))
 
 #define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
