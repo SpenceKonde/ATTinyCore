@@ -399,6 +399,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(3),
 };
 
+/* Include the TOCCn's in order to use the TOCPMOE register to easily turn PWM on and off. */
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER, /*  PA0 */
@@ -417,14 +418,14 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER0A,      /*  PC0 */
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  TIMER0B,
-  TIMER1A,
-  NOT_ON_TIMER, /* CLKI */
-  TIMER1B,
+  TOCC0 | TIMER0A,       /*  PC1 */
+  TOCC1 | NOT_ON_TIMER,  /*  PC2 */
+  TOCC2 | NOT_ON_TIMER,  /*  PC3 */
+  TOCC3 | NOT_ON_TIMER,  /*  PC4 */
+  TOCC4 | TIMER0B,       /*  PC5 */
+  TOCC5 | TIMER1A,       /*  PC6 */
+  TOCC6 | NOT_ON_TIMER,  /* CLKI */
+  TOCC7 | TIMER1B,       /*  PC7 */
   NOT_ON_TIMER, /*  PD0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER, /* RESET*/
