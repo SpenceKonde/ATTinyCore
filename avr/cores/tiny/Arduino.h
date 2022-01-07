@@ -215,9 +215,9 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
 #endif
 
-#define NOT_A_PIN 255
-#define NOT_A_TIMER 255
-#define NOT_A_PORT 0
+#define NOT_A_PIN     255
+#define NOT_A_TIMER   255 /* Not the same as NOT_ON_TIMER */
+#define NOT_A_PORT    0   /* Different from modern AVR!   */
 #define NOT_A_CHANNEL 127
 
 #define PA 1
@@ -235,13 +235,8 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define TIMER1D 7
 
 /* This is TRICKY
-  We need the bitmask, not bit position when we use this
-  Now for the (unimplemented) SUPER_PWM option, since we
-  have no specified timer for a given channel, it's easy.
-
-  But the rest of the time, including all supported
-  configurations as of the planned 2.0.0 release, the
-  analogWrite() function is going to need to know the
+  We need the bitmask, not bit position when we use this.
+  The analogWrite() function is going to need to know the
   timer + channel AND the TOCC bitmask, with the minimum
   possible effort. In this case, the byte breaks down as:
 
@@ -256,19 +251,8 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
   So timer number = TOCCn & 0x07, and
   TOCC mask = TOCCn & 0xF0 >> (TOCCn & 0x08)?4:0
-
-
-  */
-#if defined(SUPER_PWM)
-  #define TOCC0  (0x01)
-  #define TOCC1  (0x02)
-  #define TOCC2  (0x04)
-  #define TOCC3  (0x08)
-  #define TOCC4  (0x10)
-  #define TOCC5  (0x20)
-  #define TOCC6  (0x40)
-  #define TOCC7  (0x80)
-#else
+*/
+#if defined(TOCPMOE)
   #define TOCC0  (0x10)
   #define TOCC1  (0x20)
   #define TOCC2  (0x40)
@@ -283,36 +267,21 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   identical waveform on one or more of 4 pins per
   channel. Implementing this was faster than making
   an actual "decision" */
-
-#define TIM1AU (0x08)
-#define TIM1AV (0x09)
-#define TIM1AW (0x0A)
-#define TIM1AX (0x0B)
-#define TIM1BU (0x0C)
-#define TIM1BV (0x0D)
-#define TIM1BW (0x0E)
-#define TIM1BX (0x0F)
-
+#if defined()
+  #define TIM1AU (0x08)
+  #define TIM1AV (0x09)
+  #define TIM1AW (0x0A)
+  #define TIM1AX (0x0B)
+  #define TIM1BU (0x0C)
+  #define TIM1BV (0x0D)
+  #define TIM1BW (0x0E)
+  #define TIM1BX (0x0F)
+#endif
 #include "pins_arduino.h"
 
 // 99% of parts have the whole USI on one port. 1634 doesn't! Here, if pins_arduino.h has
 // defined a separate clock DDR, we leave it, otherwise point these defines at same port as
 // the data lines. We also use the pin definitions to generate SPI and TWI pin mappings.
-
-
-#if defined(PIN_TIMER_OC1A) && !defined(TIMER1_A_PIN)
-  #define TIMER1_A_PIN   PIN_TIMER_OC1A
-#endif
-#if defined(PIN_TIMER_OC1B) && !defined(TIMER1_B_PIN)
-  #define TIMER1_B_PIN   PIN_TIMER_OC1B
-#endif
-#if defined(PIN_TIMER_T1) && !defined(TIMER1_CLK_PIN)
-  #define TIMER1_CLK_PIN   PIN_TIMER_T1
-#endif
-#if defined(PIN_TIMER_ICP1) && !defined(TIMER1_ICP_PIN)
-  #define TIMER1_ICP_PIN  PIN_TIMER_ICP1
-#endif
-
 
 #ifndef USI_CLOCK_DDR
   #define USI_CLOCK_DDR   USI_DATA_DDR
@@ -337,7 +306,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
  * From what we got in pins_arduino.h as well as defines passed to the compiler from board submenu
  * options, determine which features to enable.
 =============================================================================*/
-
 
 #ifndef USE_SOFTWARE_SERIAL
   // Don't use builtin software serial unless the variant asked for it because there wasn't a hardware one.
@@ -385,11 +353,10 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
       #define INITIALIZE_ADC                        DEFAULT_INITIALIZE_ADC
     #endif
   #endif
-#else
-  #define HAVE_ADC                                  0
+#else                               0
   #if defined(INITIALIZE_ADC)
     #if INITIALIZE_ADC != 0
-      #error "STOP - Variant requested that the ADC be initialized, but this part does not have one (0 >= NUM_ANALOG_INPUTS). This indicates a critical defect in ATTinyCore which should be reported promptly."
+      #error "STOP - Variant requested that the ADC be initialized, but this part does not have one (NUM_ANALOG_INPUTS == 0). This indicates a critical defect in ATTinyCore which should be reported promptly."
     #endif
     #undef INITIALIZE_ADC
   #endif
@@ -411,8 +378,8 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
     #define TIMER_TO_USE_FOR_TONE                   0
   #endif
 #else
-  #if TIMER_TO_USE_FOR_TONE == TIMER_TO_USE_FOR_MILLIS
-    #error "Tone and millis are set to use the same timer. This should *never happen* - all of these parts have multiple timers, so it indicates a critical defect in ATTinyCore which should be reported promptly"
+  #if TIMER_TO_USE_FOR_TONE == TIMER_TO_USE_FOR_MILLIS && !defined(DISABLE_MILLIS)
+    #error "Tone and millis are set to use the same timer. This is unsupported. If you did not modify the core files, this is defect in ATTinyCore and should be reported promptly."
   #endif
 #endif
 #ifdef __cplusplus
@@ -444,8 +411,10 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 #endif
 
-/* SIGRD is missing from some of the IO headers, where it should be defined as 5 for most parts. Is sometimes omitted entirley and sometimes named SIGRD
- * this is one of the ways we work around this  */
+/* SIGRD is missing from some of the IO headers, where it should be defined as 5 for most parts.
+ * It is sometimes omitted entirely and sometimes named SIGRD. It works the same no matter what
+ * so it's unfortunate that they did that... I have not the faintest idea why they did.
+ * this is one of the ways we work around that  */
 #ifndef SIGRD
   #ifndef RSIG
     #define SIGRD 5
@@ -460,56 +429,88 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 /*---------------------------------------------------------------------------
  * Aliases for the interrupt service routine vector numbers so the code
- * doesn't have to be riddled with quite as many ifdefs.
+ * (core and app) doesn't have to be riddled with quite as many ifdefs
+ * Why couldn't they have picked one naming convention and stuck to it?
+ * TIMn or TIMERn - they're both perfectly fine naming conventions...
+ * And it would also have been okay if the decision of which to use was based
+ * on whether it was a normal timer or a funky one (like the high speed timers)
+ * But as far as I can tell, it was based on release date or coin flip.
+ * For minimum pain to users, we go both directions.
  *---------------------------------------------------------------------------*/
 
 #if defined(TIM0_CAPT_vect)   && !defined(TIMER0_CAPT_vect)
-#define TIMER0_CAPT_vect TIM0_CAPT_vect
+  #define TIMER0_CAPT_vect TIM0_CAPT_vect
 #endif
-
 #if defined(TIM0_COMPA_vect)  && !defined(TIMER0_COMPA_vect)
-#define TIMER0_COMPA_vect TIM0_COMPA_vect
+  #define TIMER0_COMPA_vect TIM0_COMPA_vect
 #endif
-
 #if defined(TIM0_COMPB_vect)  && !defined(TIMER0_COMPB_vect)
-#define TIMER0_COMPB_vect TIM0_COMPB_vect
+  #define TIMER0_COMPB_vect TIM0_COMPB_vect
 #endif
-
 #if defined(TIM0_OVF_vect)    && !defined(TIMER0_OVF_vect)
-#define TIMER0_OVF_vect TIM0_OVF_vect
+  #define TIMER0_OVF_vect TIM0_OVF_vect
 #endif
-
 #if defined(TIM1_CAPT_vect)   && !defined(TIMER1_CAPT_vect)
-#define TIMER1_CAPT_vect TIM1_CAPT_vect
+  #define TIMER1_CAPT_vect TIM1_CAPT_vect
+#endif
+#if defined(TIM1_COMPA_vect)    && !defined(TIMER1_COMPA_vect)
+  #define TIMER1_COMPA_vect TIM1_COMPA_vect
+#endif
+#if defined(TIM1_COMPB_vect)    && !defined(TIMER1_COMPB_vect)
+  #define TIMER1_COMPB_vect TIM1_COMPB_vect
+#endif
+#if defined(TIM1_OVF_vect)      && !defined(TIMER1_OVF_vect)
+  #define TIMER1_OVF_vect TIM1_OVF_vect
+#endif
+#if defined(TIM2_CAPT_vect)     && !defined(TIMER2_CAPT_vect)
+  #define TIMER2_CAPT_vect TIM2_CAPT_vect
+#endif
+#if defined(TIM2_COMPA_vect)    && !defined(TIMER2_COMPA_vect)
+  #define TIMER2_COMPA_vect TIM2_COMPA_vect
+#endif
+#if defined(TIM2_COMPB_vect)    && !defined(TIMER2_COMPB_vect)
+  #define TIMER2_COMPB_vect TIM2_COMPB_vect
+#endif
+#if defined(TIM2_OVF_vect)      && !defined(TIMER2_OVF_vect)
+  #define TIMER2_OVF_vect TIM2_OVF_vect
 #endif
 
-#if defined(TIM1_COMPA_vect)  && !defined(TIMER1_COMPA_vect)
-#define TIMER1_COMPA_vect TIM1_COMPA_vect
+// Now the other direction...
+#if defined(TIMER0_CAPT_vect)   && !defined(TIM0_CAPT_vect)
+  #define TIM0_CAPT_vect TIMER0_CAPT_vect
 #endif
-
-#if defined(TIM1_COMPB_vect)  && !defined(TIMER1_COMPB_vect)
-#define TIMER1_COMPB_vect TIM1_COMPB_vect
+#if defined(TIMER0_COMPA_vect)  && !defined(TIM0_COMPA_vect)
+  #define TIM0_COMPA_vect TIMER0_COMPA_vect
 #endif
-
-#if defined(TIM1_OVF_vect)    && !defined(TIMER1_OVF_vect)
-#define TIMER1_OVF_vect TIM1_OVF_vect
+#if defined(TIMER0_COMPB_vect)  && !defined(TIM0_COMPB_vect)
+  #define TIM0_COMPB_vect TIMER0_COMPB_vect
 #endif
-
-#if defined(TIM2_CAPT_vect)   && !defined(TIMER2_CAPT_vect)
-#define TIMER2_CAPT_vect TIM2_CAPT_vect
+#if defined(TIMER0_OVF_vect)    && !defined(TIM0_OVF_vect)
+  #define TIM0_OVF_vect TIMER0_OVF_vect
 #endif
-
-#if defined(TIM2_COMPA_vect)  && !defined(TIMER2_COMPA_vect)
-#define TIMER2_COMPA_vect TIM2_COMPA_vect
+#if defined(TIMER1_CAPT_vect)   && !defined(TIM1_CAPT_vect)
+  #define TIM1_CAPT_vect TIMER1_CAPT_vect
 #endif
-
-#if defined(TIM2_COMPB_vect)  && !defined(TIMER2_COMPB_vect)
-#define TIMER2_COMPB_vect TIM2_COMPB_vect
+#if defined(TIMER1_COMPA_vect)  && !defined(TIM1_COMPA_vect)
+  #define TIM1_COMPA_vect TIMER1_COMPA_vect
 #endif
-
-#if defined(TIM2_OVF_vect)    && !defined(TIMER2_OVF_vect)
-#define TIMER2_OVF_vect TIM2_OVF_vect
+#if defined(TIMER1_COMPB_vect)  && !defined(TIM1_COMPB_vect)
+  #define TIM1_COMPB_vect TIMER1_COMPB_vect
 #endif
-
+#if defined(TIMER1_OVF_vect)    && !defined(TIM1_OVF_vect)
+  #define TIM1_OVF_vect TIMER1_OVF_vect
+#endif
+#if defined(TIMER2_CAPT_vect)   && !defined(TIM2_CAPT_vect)
+  #define TIM2_CAPT_vect TIMER2_CAPT_vect
+#endif
+#if defined(TIMER2_COMPA_vect)  && !defined(TIM2_COMPA_vect)
+  #define TIM2_COMPA_vect TIMER2_COMPA_vect
+#endif
+#if defined(TIMER2_COMPB_vect)  && !defined(TIM2_COMPB_vect)
+  #define TIM2_COMPB_vect TIMER2_COMPB_vect
+#endif
+#if defined(TIMER2_OVF_vect)    && !defined(TIM2_OVF_vect)
+  #define TIM2_OVF_vect TIMER2_OVF_vect
+#endif
 
 #endif

@@ -51,7 +51,12 @@ uint8_t analog_reference = DEFAULT;
 #if defined(GSEL0)
   /* ATtiny841/441 have too many gain + channel combos to stuff it all into the channel
    * so we provide an analogGain() function that is analogous to analogReference.
-   * I don't think there's any advantage to setting it earlier though. */
+   * I don't think there's any advantage to setting it earlier though.
+   * In the relevant variant files the following are defined
+   * #define GAIN_1X   (0xFF)
+   * #define GAIN_20X  (0xFE)
+   * #define GAIN_100X (0xFD)
+   */
   uint8_t analog_gain = 0;
   void analogGain(uint8_t gain) {
     if (gain > 0xFC) {
@@ -70,7 +75,7 @@ uint8_t analog_reference = DEFAULT;
   }
 #else
   void analogGain( __attribute__ ((unused)) uint8_t gain) {
-    badCall("This part does not have a differential ADC.");
+    badCall("This part does not have a differential ADC. Classic AVRs do not support non-unity gain on single-ended measurements.");
   }
 #endif
 
@@ -178,13 +183,15 @@ void analogReference(uint8_t mode) {
 
 inline int analogRead(uint8_t pin) {
   if (!(pin & 0x80)) {
+    // All constants that specify a channel explicitly have the high bit set. If we got something without that
+    // it's a digital pin number, so figure out what channel that is.
     pin = digitalPinToAnalogInput(pin);
   }
   if (__builtin_constant_p(pin)) {
-    //the rest if this is all done by the optimizser only where pin is a constant. Otherwise, you get no
+    // The rest of this is all done by the optimizer only where pin is a constant. Otherwise, you get no
     // compile time error check, just runtime check yielding large negative value for invalid pin/options
-    if (pin==NOT_A_PIN) {
-      badArg("ADC channel does not exist, or analog input on that pin not supported");
+    if (pin==NOT_A_PIN) { // likely from passing a pin without analog capability
+      badArg("Analog input not supported on the specified pin");
     }
     #if defined(__AVR_ATtinyX61__)
       if ((pin & 0x3F) < 32 && (pin & 0x40))
@@ -249,13 +256,15 @@ inline int analogRead(uint8_t pin) {
      * and 24 bytes of flash, more on some parts; turns out a << 6 takes more
      * work than you'd think; integer promotion hurts. */
     #if defined(__AVR_ATtinyX61__)
-      // This one is wacky - with pre-shifting analog reference looks like:
-      // REFS1 | REFS0 | - | REFS2 | - | - | - | -
+      // This one is wacky - with pre-shifting analog reference is this:
+      //            REFS1 | REFS0 |   -   | REFS2 | -    |   -   |   -   |   -
+      // Channels     -   | GSEL  |  MUX5 | MUX4  | MUX3 | MUX2  | MUX1  | MUX0
+      // and relevant registers:
+      // ADCSRB       BIN | GSEL  |   -   | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
+      // ADMUX      REFS1 | REFS0 | ADLAR | MUX4  | MUX3 | MUX2  | MUX1  | MUX0
 
       ADMUX = ((analog_reference & 0xC0) | (pin & 0x1F));
       // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
-      // ADCSRB     BIN | GSEL | - | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
-      // BIN stands for Bipolar INput, not BINary
       ADCSRB = (ADCSRB & (0xA7)) | (analog_reference & 0x10) | (pin & 0x40) | ((pin & 0x20) >> 2);
       // ADCSRB = (ADCSRB & (0xA7)) | (analog_reference & 0x10) | (pin & 0x40) | ((pin & 0x20)?0x08:0);
     #elif defined(ADMUXB)
@@ -289,155 +298,45 @@ inline int analogRead(uint8_t pin) {
         ADCSRA |= (1 << ADSC);    // Start conversion
       }
     #else
-      ADCSRA |= (1 << ADSC);      // Start conversion
+      ADCSRA  |= (1 << ADSC);      // Start conversion
     #endif
     while (ADCSRA & (1 << ADSC));  // Wait for conversion to complete.
-    // The hell! There is already an ADCW defined that just reads it directly, doing it this way causes the compiler
-    // to (despite the freedom to do otherwise) reading them into r24 and r25 in the wrong order, then using 3 eor's
-    // to fix that. That is probably the single stupidest thing I've seen the compiler do yet. There is literally no
-    // reason it couldn't have read them into the correct registers to begin with!
-    // uint8_t low = ADCL;
-    // uint8_t high = ADCH;
-    // return (high << 8) | low;
-    // On further study, I think this was due to the core authors reading the part about how you have o read ADCL before
-    // ADCH and not having faith that the compiler would generate code that does that when asked to read ADCW.
-    // I *do* have faith, however, for three reasons
-    // 1. That the header supplied by microchip defines ADCW and doesn't warn about this implies that the issue
-    // probably doesn't manifest when used reasonably. Comments to the effect of "You only need to worry about that
-    // when writing assembly" are ubiquitous, as is C accessing the registers in the normal order
-    // 2. There is no plausible reason the compiler might feel it needed to access the regsters backards (nor could I get
-    // it to generate unsafe code)
-    // 3. Even if it did, it would only be a problem in weirdo atypical use cases that violate the expectations of the
-    // the core (such that the user at that point is already, at best, in "it is the user's responsibility to ensure"
-    // zone - and possbly violating the expectations of the hardware or compiler as well leaving them in nasal-demon
-    // territory) and I stll have trouble imagining a contrived situation that could break it. Especially with, worst
-    // case, the low byte being read in the next system clock (and like I said, I've never actually seen code like
-    // that; concerns over that are I think entirely imaginary.)
+    // Have to do even when using noise reduction mode because we could have woken to another interrupt prematurely.
+
+    /* Get and return result. Previously:
+    uint8_t low = ADCL;
+    uint8_t high = ADCH;
+    return (high << 8) | low;
+     * That sucks, doing it that way causes the compiler to (despite the freedom to do otherwise) read them into
+     * the wrong working registers, then fix that using the triple-eor method. That is a flagrant example of compiler stupidity.
+     * There is literally no reason it couldn't have read them into the correct registers to begin with!
+     * As for why they did it this way, instead of just, you know, USING THE ADCW 16-bit REGISTER ON ALL SUPPORTED PARTS.
+     * Which is, like, made for exactly this purpose?
+     * I think this was due to one of the authors reading the part about how you have to read ADCL before
+     * ADCH and not having faith that the compiler would generate code that does that when asked to read ADCW.
+     * (hey, at least they read the datasheet - some of the code this core inherited clearly was written by someone who hadn't)
+     * I *do* have faith, however, for three reasons
+     * 1. That the header supplied by microchip defines ADCW and doesn't warn about this implies that the issue
+     * probably doesn't manifest when used reasonably. Comments to the effect of "You only need to worry about that
+     * when writing assembly" are ubiquitous, as is C accessing the registers in the normal order
+     * 2. There is no plausible reason the compiler might feel it needed to access the registers backards (nor could I get
+     * it to generate unsafe code)
+     * 3. Even if it did, it would only be a problem in weirdo atypical use cases that violate the expectations of the
+     * the core (such that the user at that point is already, at best, in "it is the user's responsibility to ensure"
+     * zone) or this is a sideffect of a serious application bug, the behavior is already far from what was intended, so it's no worse like this.
+     * I stll have trouble imagining a contrived situation that could break use of ADCW and would not break with the original code.
+     * Obviously, code that called analogRead() within an interrupt firing at the wrong moment would get the result for the ongoing analogRead
+     * it interrupted. To analogRead safely inside an interrupt and outside of interrupts, you'd need to do this, and I can't justify the overhead.
+    uint8_t oldSREG = SREG;
+    cli();
+    uint16_t retval = ADCW;
+    SREG = oldSREG;
+    return retval;
+     * And so we can just do it the simple way:
+     */
     return ADCW;
   #endif
 }
-
-/* SUPER_PWM enables much more flexible, powerful PWM on the two parts with TOCC O=outputs.
- * This is far more powerful than the Timer1 Flexible pwm on the x7.... these are n
- * On the 16-bit timer(s), we put them into WGM 13 instead of the normal mode.
- *
- * setTimernTOP(value - 1-65535) - sets top of Timern
- * setTimernPS(value 1 - 5) - sets prescaler to 1, 8, 64, 256, or 1024. 0 stops clock, and 6/7 use external
- * 0 may be useful, but 6/7 almost certainly are not. Note that these timers are synchronous so
- * you must meet nyquist criterea for them to work here; they're not like the TCDs on the latest parts.
- * Not ready yet.
- */
-/*
-#if defined(SUPER_PWM)
-  #if defined(DISABLE_MILLIS)
-    inline void setTimer1PS(uint8_t psval) {
-      TCCR1B = TCCR2B & 0xF8 | (psval & 0x07);
-    }
-  #endif
-  inline void setTimer1TOP(uint16_t val) {
-    ICR1 = val;
-  }
-  inline void setTimer1PS(uint8_t psval) {
-    TCCR1B = TCCR2B & 0xF8 | (psval & 0x07);
-  }
-  #if defined(TCCR2A)
-    inline void setTimer2TOP(uint16_t val) {
-      ICR2 = val;
-    }
-    inline void setTimer2PS(uint8_t psval) {
-      TCCR2B = TCCR2B & 0xF8 | (psval & 0x07);
-    }
-  #endif
-  #if defined(TCCR2A)
-    // on ATTiny841 A/Bness is fixed per pin
-    #define PWM_TIMER0 0
-    #define PWM_TIMER1 0x55
-    #define PWM_TIMER2 0xAA
-  #else
-    // on ATtiny828 it's not, but there's only 4 channels
-    #define PWM_TIMER0A 0
-    #define PWM_TIMER0B 0x55
-    #define PWM_TIMER1A 0xAA
-    #define PWM_TIMER1B 0xFF
-  #endif
-
-
-  bool setPWMTimer(uint8_t pin, uint8_t newtimer, bool live) {
-    uint8_t timer=digitalPinToTimer(pin)
-    if (timer == NOT_ON_TIMER) return false;
-    uint8_t tmsk = (timer & 0xCC)? 0xF0 : 0x0F;
-    tmsk &= (timer & 0xAA) ? 0xCC : 0x33;
-    newtimer &= tmsk; //suddenly those wacky values make sense!
-    if (!live) {
-      TOCPMCOE &= ~timer;
-    }
-    if (timer > 0x0F)
-      TOCPMSA1 = (TOCPMSA1 & ~tmsk) | newtimer;
-    else
-      TOCPMSA0 = (TOCPMSA0 & ~tmsk) | newtimer;
-    return true;
-  }
-
-
-  // SUPER implementation of analogWrite()
-  void analogWrite(uint8_t pin, uint16_t val)
-  {
-    pinMode(pin, OUTPUT);
-    //  (once we determine which timer it's on
-    // we check for 255 if timer 0 - since if we stuff too large of a value into an 8-bit timer
-    // what we want if a duty cycle > TOP is passed is to just stay on, not turn off
-    // (val & 0xFF)/TOP of the way through the cycle
-    if (val == 0) {
-      digitalWrite(pin, LOW);
-#else // Normal, non-super entrance to analogWrite();
-
-
-
-
-
-    // 828 and x41 get their own implementation
-
-    #if defined(SUPER_PWM)
-      if (timer != 0) {
-        uint8_t tmsk = timer & 0xCC?0xF0:0x0F;
-        tmsk &= (timer & 0x55) ? 0x33 : 0xCC;
-        if (timer > 0x0F)
-          tmsk &= TOCPMSA1;
-        else
-          tmsk &= TOCPMSA0;
-        #if defined(__AVR_ATtinyX41__)
-          if (tmsk == 0) {
-            if (val > 255) {digitalWrite(pin,HIGH);} //
-            else {
-              if (timer & 0x55) OCR0B = val; // odd TOCCs are channel B
-              else OCR0A = val;
-            }
-          } else if (tmsk & 0xAA) {
-            if (timer & 0x55) OCR2B = val; // odd TOCCs are channel B
-            else OCR2A = val;
-          } else {
-            if (timer & 0x55) OCR1B = val; // odd TOCCs are channel B
-            else OCR1A = val;
-          }
-        #else // 828
-          if (tmsk & 0xAA) { //a high bit in the TOCMPSA is set, hence timer 1
-            if (tmsk & 0x55) OCR1B = val; // low bit set, hence channel B
-            else OCR1A = val;
-          } else {
-            if (tmsk & 0x55) OCR0B = val; // low bit set, hence channel B
-            else OCR0A = val;
-          }
-        #endif
-        TOCPMCOE |= timer;
-    #else // non SUPER
-
-
-
-
-
-
-
-*/
 
 
 void analogWrite(uint8_t pin, int val) {
@@ -454,7 +353,7 @@ void analogWrite(uint8_t pin, int val) {
     uint8_t timer = digitalPinToTimer(pin);
     #if defined(TOCPMCOE)
       if (timer != 0) {
-        uint8_t oechan = (timer & 0x08)? 0xF0 & timer : timer >> 4;
+        uint8_t oechan = (timer & 0x08) ? 0xF0 & timer : timer >> 4;
         // oechan
         timer &= 0x07;
         switch (timer) {
