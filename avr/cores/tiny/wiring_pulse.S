@@ -2,7 +2,7 @@
   wiring_pulse.s - pulseInASM() function in different flavours
   Part of Arduino - http://www.arduino.cc/
 
-  Copyright (c) 2014 Martino Facchin, 2020 Spence Konde
+  Copyright (c) 2014 Martino Facchin, 2020-2022 Spence Konde
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -48,15 +48,25 @@
  *
  * some compiler outputs were removed but the rest of the code is untouched
  *
- * Spence feb 2020: not untouched anymore! The first two loops ran in 11 cycles instead
+ * Spence, Feb 2020: not untouched anymore! The first two loops ran in 11 cycles instead
  * of 16, so if no pulse was detected, the timeout would be reached when
  * 11/16ths of the requested timeout had elapsed. This was fixed by the addition
- * of 2 rjmps to the next line (a 2 cycle nop that uses only 1 word) and 1 nop
+ * of 2 rjmps to the next line (for a 2 cycle nop that uses only 1 word) and 1 nop
  * to each of these loops before they decrement maxloops.
  * Additionally, removed duplication of return sequence to save 12b flash
  * which is conveniently exactly how much the other fix cost.
  * Feb 2021: Made it beautiful, and made previous added delays into
  * rjmp .+0 instead of jumping to label placed right ahead of them.
+ * Jan 2022: Fix a typo added last feb. Saved 8 bytes of flash by using movw instead of
+ * consecutive movs of adjacent registers and in one place in place of a pair of ldi 0
+ * immediately following ldi of 0 to two other registers at the end.
+ * Removed unused labels.
+ * Made the comments useful. It looks like this was compiled for an absolutely ancient chip.
+ * I think use of sbiw and movw could save another 4 words (8 bytes). Could also save 3 more
+ * and lose a nop from each loop. Except then, it would be 15 clocks per, and the uglier math at
+ * common clock speeds would cost more than that.
+ * I still have no idea why this is a separate .s file instead of some plain old inline assembly.
+ * Except maybe that nobody charged with dealing with this knew how to write assembly?
  */
 
 #include <avr/io.h>
@@ -66,47 +76,41 @@
 .global countPulseASM
 
 countPulseASM:
-
-.LM0:
-.LFBB1:
-    push r12     ;                     ;  130  pushqi1/1          [length = 1]
-    push r13     ;                     ;  131  pushqi1/1          [length = 1]
-    push r14     ;                     ;  132  pushqi1/1          [length = 1]
-    push r15     ;                     ;  133  pushqi1/1          [length = 1]
-    push r16     ;                     ;  134  pushqi1/1          [length = 1]
-    push r17     ;                     ;  135  pushqi1/1          [length = 1]
 /* prologue: function */
+    push r12;
+    push r13;
+    push r14;
+    push r15;
+    push r16;
+    push r17;
 /* frame size = 0 */
 /* stack size = 6 */
 .L__stack_usage = 6
-    mov r30,r24  ;  port, port         ;    2 *movhi/1            [length = 2]
-    mov r31,r25  ;  port, port
+    movw r30,r24  ; this was a mov instead of movw. Whyyy?
 /*     unsigned long width = 0;
 ***     // wait for any previous pulse to end
 ***     while ((*port & bit) == stateMask)
 */
-.LM1:
-    rjmp .L2     ;                     ;  181  jump               [length = 1]
+    rjmp .L2; Start in middle of the loop - more efficient that way.
+/* START LOOP ONE - WAIT FOR PREVIOUS PULSE TO END */
 .L4:
 /*         if (--maxloops == 0) */
-.LM2:
-    rjmp .+0     ; waste an extra 5 cycles
-    rjmp .+0     ;
-    nop          ;
-    nop ;
-    subi r16,1   ;  maxloops,          ;   17  addsi3/2           [length = 4]
-    sbc r17, r1  ;  maxloops
-    sbc r18, r1  ;  maxloops
-    sbc r19, r1  ;  maxloops
-    breq .L13    ; ,                   ;   19  branch             [length = 1]
+    rjmp .+0    ; waste an extra 5 cycles
+    rjmp .+0    ;
+    nop;
+    subi r16, 1 ; Decrement maxloops
+    sbc r17, r1 ; could these two be a sbiw? I think so... would save a word.
+    sbc r18, r1 ;
+    sbc r19, r1 ;
+    breq .L13   ; If that was zero, we timed out, so branch to where we zero out the value we return.
 .L2:
 /*         if (--maxloops == 0) */
-.LM3:
-    ld r25,Z     ;  D.1554, *port_7(D) ;   22  movqi_insn/4       [length = 1]
-    and r25,r22  ;  D.1554, bit        ;   24  andqi3/1           [length = 1]
-    cp r25,r20   ;  D.1554, stateMask  ;   25 *cmpqi/2            [length = 1]
-    breq .L4     ; ,                   ;   26  branch             [length = 1]
-    rjmp .L6     ;                     ;  184  jump               [length = 1]
+    ld r25,Z    ; Read the port
+    and r25,r22 ; bitwise and with the pin bitmask we are looking at
+    cp r25,r20  ; and compare it to what the pulse would be.
+    breq .L4    ; if equal, we are still waiting for a pulse that was in progress when we got here to end.
+    rjmp .L6    ; otherwise to the middle of the second loop.
+/* END LOOP ONE - PREVIOUS PULSE ENDED - START LOOP TWO */
 .L7:
 /*             return 0;
 ***
@@ -114,27 +118,27 @@ countPulseASM:
 ***     while ((*port & bit) != stateMask)
 ***         if (--maxloops == 0)
 */
-.LM4:
     rjmp .+0     ; waste an extra 5 cycles
     rjmp .+0     ;
     nop          ;
-    subi r16,1   ;  maxloops,          ;   31  addsi3/2           [length = 4]
-    sbc r17, r1  ;  maxloops
-    sbc r18, r1  ;  maxloops
-    sbc r19, r1  ;  maxloops
-    breq .L13    ; ,                   ;   33  branch             [length = 1]
+    subi r16,1   ; Decrement maxloops
+    sbc r17, r1  ; could these two be a sbiw? I think so... would save a word. timing is the same.
+    sbc r18, r1  ;
+    sbc r19, r1  ;
+    breq .L13    ; If that was zero, we timed out, so branch to where we zero out the value we return.
 .L6:
 /*         if (--maxloops == 0) */
-.LM5:
-    ld r25,Z     ;  D.1554, *port_7(D) ;   41  movqi_insn/4       [length = 1]
-    and r25,r22  ;  D.1554, bit        ;   43  andqi3/1           [length = 1]
-    cpse r25,r20 ;  D.1554, stateMask  ;   44  enable_interrupt-3 [length = 1]
-    rjmp .L7     ;
-    mov r12, r1  ;  width              ;    7 *movsi/2            [length = 4]
-    mov r13, r1  ;  width
-    mov r14, r1  ;  width
-    mov r15, r1  ;  width
-    rjmp .L9     ;                     ;  186  jump               [length = 1]
+    ld r25,Z     ; Read the port
+    and r25,r22  ; bitwise and with the pin bitmask we are looking at
+    cpse r25,r20 ; and compare it to what the pulse would be
+    rjmp .L7     ; skipped if equal, in which case the pulse has started...
+/* END LOOP TWO - PULSE HAS STARTED */
+    mov r12, r1  ; and we zero out the registers where we store the result
+    mov r13, r1  ;
+    mov r14, r1  ; Could we movw r14, r12? I think we could.
+    mov r15, r1  ; it is not part of loop so the timing impact is negligible.
+    rjmp .L9     ; and jump to the middle of the third loop...
+/* START LOOP THREE - TIMING THE PULSE */
 .L10:
 /*             return 0;
 ***
@@ -142,47 +146,39 @@ countPulseASM:
 ***     while ((*port & bit) == stateMask) {
 ***         if (++width == maxloops)
 */
-.LM6:
-    ldi r24,-1   ; ,                   ;   50  addsi3/3            [length = 5]
-    sub r12,r24  ;  width,
-    sbc r13,r24  ;  width,
-    sbc r14,r24  ;  width,
-    sbc r15,r24  ;  width,
-    cp r16,r12   ;  maxloops, width    ;   51 *cmpsi/2            [length = 4]
-    cpc r17,r13  ;  maxloops, width
-    cpc r18,r14  ;  maxloops, width
-    cpc r19,r15  ;  maxloops, width
-    breq .L13    ; ,                   ;   52  branch             [length = 1]
+    ldi r24,-1   ; If this was not timing critical, we could save 2 bytes and a clock with subi.
+    sub r12,r24  ; this is an add-one...
+    sbc r13,r24  ; three be a nop + sbiw? I think so... would save a word.
+    sbc r14,r24  ; we need the nop to keep the timing the same.
+    sbc r15,r24  ;
+    cp r16,r12   ;  compare with remaining time until timeout
+    cpc r17,r13  ;
+    cpc r18,r14  ;
+    cpc r19,r15  ;
+    breq .L13    ; pulse has not ended before timeout, so measurement would be wrong. Return 0.
 .L9:
 /*         if (++width == maxloops) */
-.LM7:
-    ld r24,Z     ;  D.1554, *port_7(D) ;   60  movqi_insn/4       [length = 1]
-    and r24,r22  ;  D.1554, bit        ;   62  andqi3/1           [length = 1]
-    cp r24,r20   ;  D.1554, stateMask  ;   63 *cmpqi/2            [length = 1]
-    breq .L10    ; ,                   ;   64  branch             [length = 1]
+    ld r24,Z     ; Read the port
+    and r24,r22  ; bitwise and with the pin bitmask we are looking at
+    cp r24,r20   ; and compare it to what the pulse would be
+    breq .L10    ; As long as they are the same we restart this loop and keep going
 /*             return 0;
 ***     }
 ***     return width;
 */
-.LM8:
-    mov r22,r12  ;  D.1553, width      ;  108  movqi_insn/1       [length = 1]
-    mov r23,r13  ;  D.1553, width      ;  109  movqi_insn/1       [length = 1]
-    mov r24,r14  ;  D.1553, width      ;  110  movqi_insn/1       [length = 1]
-    mov r25,r15  ;  D.1553, width      ;  111  movqi_insn/1       [length = 1]
-    rjmp .LM11   ;
-/* epilogue start */
+    movw r22, r12; Pulse ended before timeout - return result. These were previously 4 movs. Whyyyy?
+    movw r24, r14; All of these parts have movw.... Save 4 bytes
+    rjmp .L11    ; skip the zeroing of the return registers...
 .L13:
-.LM10:
-    ldi r22,0    ;  D.1553             ;  120  movqi_insn/1       [length = 1]
-    ldi r23,0    ;  D.1553             ;  121  movqi_insn/1       [length = 1]
-    ldi r24,0    ;  D.1553             ;  122  movqi_insn/1       [length = 1]
-    ldi r25,0    ;  D.1553             ;  123  movqi_insn/1       [length = 1]
+    ldi r22, 0   ; No pulse detected within timeout. Return zero.
+    ldi r23, 0   ;
+    movw r24, r22; saves a word vs 2 more ldi 0s
 /* epilogue start */
-.LM11:
-    pop r17      ;                     ;  138  popqi              [length = 1]
-    pop r16      ;                     ;  139  popqi              [length = 1]
-    pop r15      ;                     ;  140  popqi              [length = 1]
-    pop r14      ;                     ;  141  popqi              [length = 1]
-    pop r13      ;                     ;  142  popqi              [length = 1]
-    pop r12      ;                     ;  143  popqi              [length = 1]
-    ret          ;                        144  return_from_epilogue [length=1]
+.L11:
+    pop r17      ;
+    pop r16      ;
+    pop r15      ;
+    pop r14      ;
+    pop r13      ;
+    pop r12      ;
+    ret          ;
