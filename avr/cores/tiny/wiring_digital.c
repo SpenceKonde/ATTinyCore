@@ -3,7 +3,7 @@
  *   (c) 2005-2006 David A. Mellis as part of Arduino
  *   Modified  28-08-2009 for attiny84 R.Wiersma
  *   Modified  14-10-2009 for attiny45 Saposoft
- *   Modified extensively 2016-2021 Spence Konde for ATTinyCore
+ *   Modified extensively 2016-2022 Spence Konde for ATTinyCore
  *   Free Software - LGPL 2.1, please see LICENCE.md for details
  *---------------------------------------------------------------------------*/
 
@@ -22,7 +22,9 @@ inline __attribute__((always_inline)) void check_valid_digital_pin(uint8_t pin) 
 }
 
 void pinMode(uint8_t pin, uint8_t mode) {
-  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {
+    pin = analogInputToDigitalPin((pin & 127));
+  }
   check_valid_digital_pin(pin);
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
@@ -55,7 +57,7 @@ void pinMode(uint8_t pin, uint8_t mode) {
 
 static void turnOffPWM(uint8_t timer) {
   #if defined(TCCR0A) && defined(COM0A1)
-    if( timer == TIMER0A){
+    if( timer == TIMER0A) {
       TCCR0A &= ~(1 << COM0A1);
       // TCCR0A &= ~(1 << COM0A0); /* no user cleanup */
     } else
@@ -68,54 +70,42 @@ static void turnOffPWM(uint8_t timer) {
   #endif
   #ifdef __AVR_ATtinyX7__
     // Timer1 on x7
-    if (timer & 0x10) {
+    if (timer & 0x08) {
       TCCR1D &= ( ~(1 << (timer & 0x07)));
     }
   #elif defined(TCCR1E)
     // ATtiny x61
-    // This can be recoded to use the OCOEn bits in TCCR1E
-    // This would be much better - then we'd leave COM bits at 0, and just switch on and off the OCOEn bits
-    // In this case, we would use WGM10 or WGM11 (PWM6 mode). Only one duty cycle could be output on each of the three pairs of
-    // PWM pins, but it gives you more choice on which pins you use. Would implement it like we do on x7, ie, if you analogWrite()
-    // both pins, and didn't turn off PWM between with digitalWrite(), you'd have identical waveform on the two pins.
-    if( timer == TIMER1A){
+    if( timer == TIMER1A) {
       // disconnect pwm to pin on timer 1, channel A
-      TCCR1C &= ~(1<<COM1A1S);
-      // cbi(TCCR1C,COM1A0S); /* no user cleanup */
-    } else if (timer == TIMER1B){
+      TCCR1C &= ~(1 << COM1A1S);
+    } else if (timer == TIMER1B) {
       // disconnect pwm to pin on timer 1, channel B
-      TCCR1C &= ~(1<<COM1B1S);
-      // cbi(TCCR1C,COM1B0S); /* no user cleanup */
-    } else if (timer == TIMER1D){
+      TCCR1C &= ~(1 << COM1B1S);
+    } else if (timer == TIMER1D) {
       // disconnect pwm to pin on timer 1, channel D
-      TCCR1C &= ~(1<<COM1D1);
-      // cbi(TCCR1C,COM1D0); /* no user cleanup */
+      TCCR1C &= ~(1 << COM1D1);
     } else
   #else
     // Timer1 for non-x61/x7
     #if defined(TCCR1) && defined(COM1A1) // x5
-      if(timer == TIMER1A){
-        TCCR1 &= ~(1<<COM1A1);
-        // TCCR1 &= ~(1 << COM1A0); /* no user cleanup */
+      if(timer == TIMER1A) {
+        TCCR1 &= ~(1 << COM1A1);
       } else
     #endif
     #if defined(TCCR1) && defined(COM1B1) // x5
-      if( timer == TIMER1B){
-        GTCCR &= ~(1<<COM1B1);
-        // GTCCR &= ~(1 << COM1B1); /* no user cleanup */
+      if(timer == TIMER1B) {
+        GTCCR &= ~(1 << COM1B1);
       } else
     #endif
     #if defined(TCCR1A) && defined(COM1A1) // civilized parts
-      if( timer == TIMER1A){
-        TCCR1A &= ~(1<<COM1A1);
-        // TCCR1A &= ~(1 << COM1A0); /* no user cleanup */
+      if(timer == TIMER1A) {
+        TCCR1A &= ~(1 << COM1A1);
       } else
     #endif
 
     #if defined(TCCR1A) && defined(COM1B1) // civilized parts
-      if( timer == TIMER1B){
-        TCCR1A &= ~(1<<COM1B1);
-        // TCCR1A &= ~(1 << COM1B0); /* no user cleanup */
+      if(timer == TIMER1B) {
+        TCCR1A &= ~(1 << COM1B1);
       } else
     #endif
   #endif
@@ -155,7 +145,9 @@ void digitalWrite(uint8_t pin, uint8_t val) {
 
 inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
   check_constant_pin(pin);
-  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {
+    pin = analogInputToDigitalPin((pin & 127));
+  }
   check_valid_digital_pin(pin);
   if (pin==NOT_A_PIN) return; // sigh... I wish I didn't have to catch this... but it's all compile time known so w/e
   // Mega-0, Tiny-1 style IOPORTs
@@ -179,7 +171,9 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 int8_t digitalRead(uint8_t pin)
 {
   check_valid_digital_pin(pin);
-  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {
+    pin = analogInputToDigitalPin((pin & 127));
+  }
   //uint8_t timer = digitalPinToTimer(pin);
   uint8_t port = digitalPinToPort(pin);
   if (port == NOT_A_PORT) return NOT_A_PIN;
@@ -198,7 +192,9 @@ int8_t digitalRead(uint8_t pin)
 
 inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
   check_constant_pin(pin);
-  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
+  if (pin > 127) {
+    pin = analogInputToDigitalPin((pin & 127));
+  }
   check_valid_digital_pin(pin);
 
   uint8_t mask = digitalPinToBitMask(pin);
