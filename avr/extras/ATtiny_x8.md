@@ -24,8 +24,7 @@ Default Pin Mapping   |       Standard |       Standard |        MH-Tiny |      
 
 USB only available at **BOLD** clock. [Notes on this table](SpecificationConventions.md).
 
-
-The ATtiny x8-family is intended as a low cost option compatible with the popular ATmega x8 series. As such, they have a nearly identical pinout (with a couple of extra GPIO pins in the TQFP version). Although these have the full hardware I2C and SPI peripherals, they lack both a hardware serial port and the option to use a crystal as a clock source. A Micronucleus board is available with a 16 MHz external CLOCK under the name "MH Tiny". They use a pin numbering scheme that differs significantly from the standard one; a pin mapping is provided which matches the markings on the board.
+The ATtiny x8-family is intended as a low cost option compatible with the popular ATmega x8 series. As such, they have a nearly identical pinout (with a couple of extra GPIO pins in the TQFP version). Although these have the full hardware I2C and SPI peripherals, they lack both a hardware serial port and the option to use a crystal as a clock source. A Micronucleus board is available with a 16 MHz external CLOCK under the name "MH Tiny" (yes, that is overclocked, maximum is spec'ed at 12 MHz. But they seem to work under typical conditions though). They use a pin numbering scheme that differs significantly from the standard one; a pin mapping is provided which matches the markings on the board.
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer. This core includes a version of ArduinoAsISP with support for two additional features
@@ -62,16 +61,13 @@ There is full Hardware I2C! It is provided by Wire.h
 There is full Hardware SPI! It is provided by SPI.h
 
 ### UART (Serial) Support
-There is no hardware UART. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART).
+There is no hardware UART. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is defaults to AIN0 (PD6), RX is always AIN1 (PD7). Although it is named Serial, it is still a software implementation, so you cannot send and receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART).
 
 If running off the internal oscillator (since this chip does not support a crystal), you may need to calibrate it to get the speed close enough to the correct speed for UART communication to work, though as noted above, this is rarely necessary under typical operating conditions. While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md)
 
-To disable the RX channel (to use only TX), the following commands should be used after calling Serial.begin(). No special action is needed to disable the TX line if only RX is needed.
-```
-ACSR &=~(1<<ACIE);
-ACSR |=~(1<<ACD);
-```
+Though TX defaults to AIN0, it can be moved to any pin on PORTD using Serial.setTxBit(b) where b is the number in the pin name using Pxn notation (only pins on PORTD are valid, and unless it is set for TX only, AIN1 (PD7) is not valid) (2.0.0+ only - was broken in earlier versions).
 
+To disable the RX channel (to use only TX), select "TX only" from the Builtin SoftSerial tools menu. To disable the TX channel, simply don't print anything to it, and set it to the desired pinMode after Serial.begin()
 ## ADC Features
 The ATtiny88 ADC is about as boring as they come. It's a standard 8-channel (6 on DIP or 28-pin QFN packages), one reference, temp sensor. Single-ended only. Basically what any x8 atmega has too, which is also incredibly uninspiring.
 

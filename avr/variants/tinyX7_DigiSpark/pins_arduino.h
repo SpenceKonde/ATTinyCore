@@ -16,13 +16,14 @@
  * Use this pin mapping only if you are working with Digispark Pro
  * hardware (because then the numbers will match the markings on the
  * Digispark). Otherwise, use the "New" standard pin mapping.
+ * This pinmapping is awful on it's own merits.
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX7 1       //backwards compat
-#define __AVR_ATtinyX7__ //recommended
+#define ATTINYX7 1       // backwards compatibility
+#define __AVR_ATtinyX7__ // recommended
 
-#define NUM_DIGITAL_PINS            16
-#define NUM_ANALOG_INPUTS           11
+#define NUM_DIGITAL_PINS            (16)
+#define NUM_ANALOG_INPUTS           (11)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
@@ -47,16 +48,16 @@
   #define LED_BUILTIN (PIN_PB1)
 #endif
 
-#define PIN_A3      (3)
-#define PIN_A5      (5)
-#define PIN_A6      (6)
-#define PIN_A7      (7)
-#define PIN_A8      (8)
-#define PIN_A9      (9)
-#define PIN_A10     (10)
-#define PIN_A11     (11)
-#define PIN_A12     (12)
-#define PIN_A13     (13)
+#define PIN_A3    ( 3)
+#define PIN_A5    ( 5)
+#define PIN_A6    ( 6)
+#define PIN_A7    ( 7)
+#define PIN_A8    ( 8)
+#define PIN_A9    ( 9)
+#define PIN_A10   (10)
+#define PIN_A11   (11)
+#define PIN_A12   (12)
+#define PIN_A13   (13)
 
 /* DANGER - An does not refer to analog channel n */
 static const uint8_t A3  = ADC_CH(9);
@@ -66,7 +67,7 @@ static const uint8_t A7  = ADC_CH(1);
 static const uint8_t A8  = ADC_CH(2);
 static const uint8_t A9  = ADC_CH(3);
 static const uint8_t A10 = ADC_CH(4);
-static const uint8_t A11  = ADC_CH(5);
+static const uint8_t A11 = ADC_CH(5);
 static const uint8_t A12 = ADC_CH(6);
 static const uint8_t A13 = ADC_CH(2);
 
@@ -79,9 +80,9 @@ static const uint8_t A13 = ADC_CH(2);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)    (&PCICR)
-#define digitalPinToPCICRbit(p) ( ((p) >= 5 && (p) <= 12) ? PCIE0 : PCIE1 )
-#define digitalPinToPCMSK(p)    ( ((p) >= 5 && (p) <= 12) ? (&PCMSK0) : (&PCMSK1) )
+#define digitalPinToPCICR(p)     (&PCICR)
+#define digitalPinToPCICRbit(p)  (((p) >= 5 && (p) <= 12) ? PCIE0 : PCIE1 )
+#define digitalPinToPCMSK(p)     (((p) >= 5 && (p) <= 12) ? (&PCMSK0) : (&PCMSK1) )
 
 #define digitalPinToPCMSKbit(p) ( (((p) >= 0) && ((p) <= 2))  ? (p) :       \
                                 ( (((p) >= 6) && ((p) <= 13)) ? ((p) - 6) : \
@@ -90,7 +91,7 @@ static const uint8_t A13 = ADC_CH(2);
                                 ( 7) ) ) ) ) /* pin 5 */
 
 
-#define digitalPinToInterrupt(p)  ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)    ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
 
 /* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  (((p == 9) ? 3 : (p == 7) ? 5 : (p < 13 && p > 5) ? (p-6) : (p ==13) ? 13 : -1))
@@ -112,6 +113,58 @@ static const uint8_t A13 = ADC_CH(2);
 // We have hardware serial, so don't use soft serial.
 // #define USE_SOFTWARE_SERIAL                  0
 
+/*---------------------------------------------------------------------------
+ * Chip Features - Timers amnd PWM
+ *---------------------------------------------------------------------------
+ * Basic PWM is covered elsewhere, but this lets you look up what pin is on
+ * a given compare channel easily. Used to generate some pinmapping independent
+ * defines for TimerOne library back in Arduino.h
+ *
+ * Functions of timers associated with pins have pins specified by macros of
+ * the form PIN_TIMER_ followed by the function.
+ *
+ * PWM_CHANNEL_REMAPPING is defined and true where the PWM channels from timers
+ * has additional non-standard behavior allowing the remapping of output from
+ * otherwise normal pins (and interfering with naive code that enables them,
+ * though if the code acts only on the timer registers, it will often work if
+ * user code calls analogWrite() on the pin before letting the library use it.
+ * Where this is not the case, it is not defined.
+ *
+ * TIMER0_TYPICAL is 1 if that timer is present, and is an 8-bit timer with or
+ * without two output compare channels. PIN_TIMER_OC0A/OC0B will be defined if
+ * it has them.
+ *
+ * TIMER1_TYPICAL is 1 if that timer is present, and is a 16-bit timer with PWM
+ * as opposed to some bizarro one like the 85 and 861 have.
+ *
+ * TIMER2_TYPICAL is 1 if that timer is present, and is an 8-bit asynch timer,
+ * like on classic ATmega parts. There is only one ATTinyCore part with a
+ * Timer2, and this is false there, because that timer is instead like Timer1.
+ *
+ * We do not provide further macros to characterize the type of a timer in more
+ * detail but the sheer variety of atypical timers on classic AVRs made it hard
+ * to derive a quick test of whether the normal stuff will work.
+ *---------------------------------------------------------------------------*/
+
+#define PWM_CHANNEL_REMAPPING       (1) /*analogWrite() pin to enable PWM
+After doing that, the normal ways of manipulating registers for PWM will
+work for it unless or until digitalWrite() us called on it.
+Methods that use the standard ways to turn off PWM will prevent it from working
+afterwards if you then try to go back to core-provided PWM functions. The
+"standard" way uses the COMnx0 and COMnx1 bits in the TCCRny registers. We set
+those at power on only (so it has no space cost because we have to set them
+anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
+
+/* Timer 0 - 8-bit timer async support and only 1 PWM channel */
+#define TIMER0_TYPICAL              (0)
+#define PIN_TIMER_OC0A              (PIN_PA2) /* core default - TOCC3 */
+
+/* Timer 1 - 16-bit timer with PWM with automatic remapping with analogWrite to any pin on PORTB*/
+#define TIMER1_TYPICAL              (1)
+#define PIN_TIMER_OC1A              (PIN_PA6) /* core default - TOCC2*/
+#define PIN_TIMER_OC1B              (PIN_PA3) /* core default - */
+#define PIN_TIMER_T1                (PIN_PA5)
+#define PIN_TIMER_ICP1              (PIN_PA4)
 
 /*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
@@ -218,16 +271,16 @@ static const uint8_t A13 = ADC_CH(2);
  * Arduino-compatible "DigiSpark Pro" pin mapping
  *
  *                   +-\/-+
- *   RX   ( 6) PA0  1|a   |20  PB0 ( 0)
- *   TX   ( 7) PA1  2|a   |19  PB1 ( 1)
- *       *( 8) PA2  3|a   |18  PB2 ( 2)
+ *   RX   ( 6) PA0  1|a   |20  PB0 ( 0)*
+ *   TX   ( 7) PA1  2|a   |19  PB1 ( 1)*
+ *       *( 8) PA2  3|a   |18  PB2 ( 2)*
  *        ( 9) PA3  4|a   |17  PB3 ( 4)*
  *            AVCC  5|    |16  GND
  *            AGND  6|    |15  VCC
- *   INT1 (10) PA4  7|a   |14  PB4 (14) XTAL1
- *        (11) PA5  8|a  a|13  PB5 (15) XTAL2
+ *   INT1 (10) PA4  7|a   |14  PB4 (14)* XTAL1
+ *        (11) PA5  8|a  a|13  PB5 (15)* XTAL2
  *        (12) PA6  9|a  a|12  PB6 ( 3)* INT0
- *        ( 5) PA7 10|a  a|11  PB7 (13)
+ *        ( 5) PA7 10|a  a|11  PB7 (13)*
  *                   +----+
  *
  * * indicates PWM pin, a indicates ADC (analog input) pins

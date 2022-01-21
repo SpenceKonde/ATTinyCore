@@ -18,11 +18,11 @@
  * boards, otherwise use standard.
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX8 1       //backwards compat
-#define __AVR_ATtinyX8__ //recommended
+#define ATTINYX8 1       // backwards compatibility
+#define __AVR_ATtinyX8__ // recommended
 
-#define NUM_DIGITAL_PINS            27
-#define NUM_ANALOG_INPUTS           8
+#define NUM_DIGITAL_PINS  (27)
+#define NUM_ANALOG_INPUTS (8)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
@@ -59,14 +59,14 @@
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
-#define PIN_A0   (PIN_PC0)
-#define PIN_A1   (PIN_PC1)
-#define PIN_A2   (PIN_PC2)
-#define PIN_A3   (PIN_PC3)
-#define PIN_A4   (PIN_PC4)
-#define PIN_A5   (PIN_PC5)
-#define PIN_A6   (PIN_PA0)
-#define PIN_A7   (PIN_PA1)
+#define PIN_A0        (PIN_PC0)
+#define PIN_A1        (PIN_PC1)
+#define PIN_A2        (PIN_PC2)
+#define PIN_A3        (PIN_PC3)
+#define PIN_A4        (PIN_PC4)
+#define PIN_A5        (PIN_PC5)
+#define PIN_A6        (PIN_PA0)
+#define PIN_A7        (PIN_PA1)
 
 /* An "analog pins" these map directly to analog channels */
 static const uint8_t A0 = ADC_CH(0);
@@ -87,12 +87,12 @@ static const uint8_t A7 = ADC_CH(7);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)    (&PCICR)
-#define digitalPinToPCICRbit(p) ( ((p) <= 7) ? PCIE2 : ( ((p) <= 14) ? PCIE0 : ( ((p) <= 18) ? PCIE3 : PCIE1 ) ) )
-#define digitalPinToPCMSK(p)    ( ((p) <= 7) ? (&PCMSK2) : ( ((p) <= 14) ? (&PCMSK0) : ( ((p) <= 18) ? (&PCMSK3) : (&PCMSK1) ) ) )
-#define digitalPinToPCMSKbit(p) ( ((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : (((p) == 14) ? 7 : (((p) <= 16) ? ((p) - 14) : (((p) <= 18) ? ((p) - 17) : (((p) == 25) ? 7 : ((p) - 19) ) ) ) ) ) )
+#define digitalPinToPCICR(p)        (&PCICR)
+#define digitalPinToPCICRbit(p)     ( ((p) <= 7) ? PCIE2 : ( ((p) <= 14) ? PCIE0 : ( ((p) <= 18) ? PCIE3 : PCIE1 ) ) )
+#define digitalPinToPCMSK(p)        ( ((p) <= 7) ? (&PCMSK2) : ( ((p) <= 14) ? (&PCMSK0) : ( ((p) <= 18) ? (&PCMSK3) : (&PCMSK1) ) ) )
+#define digitalPinToPCMSKbit(p)     ( ((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : (((p) == 14) ? 7 : (((p) <= 16) ? ((p) - 14) : (((p) <= 18) ? ((p) - 17) : (((p) == 25) ? 7 : ((p) - 19) ) ) ) ) ) )
 
-#define digitalPinToInterrupt(p)  ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)    ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
 
 /* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  (((p) < 8) ? (((p) < 6) ? (p) + 11 :(p) + 19 ): -1)
@@ -148,9 +148,11 @@ static const uint8_t A7 = ADC_CH(7);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
+/* Timer 0 - 8-bit timer without PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_T0                (PIN_PD4)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PB1)
 #define PIN_TIMER_OC1B              (PIN_PB2)
@@ -179,11 +181,11 @@ static const uint8_t A7 = ADC_CH(7);
 /* Not a differential ADC */
 
 /* Analog Comparator - used for soft-serial*/
-#define ANALOG_COMP_DDR           DDRD
+#define ANALOG_COMP_DDR          DDRD
 #define ANALOG_COMP_PORT         PORTD
-#define ANALOG_COMP_PIN           PIND
-#define ANALOG_COMP_AIN0_BIT       (6)
-#define ANALOG_COMP_AIN1_BIT       (7)
+#define ANALOG_COMP_PIN          PIND
+#define ANALOG_COMP_AIN0_BIT     (6)
+#define ANALOG_COMP_AIN1_BIT     (7)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -207,10 +209,6 @@ static const uint8_t A7 = ADC_CH(7);
 /* Hardware TWI */
 #define SDA             PIN_PC4
 #define SCL             PIN_PC5
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX  PIN_PD6
-#define PIN_SOFTSERIAL_RX  PIN_PD7
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------

@@ -20,37 +20,37 @@
 #define ATTINY43 1
 #define __AVR_ATtiny43__
 
-#define NUM_DIGITAL_PINS            (12)
-#define NUM_ANALOG_INPUTS           (4)
+#define NUM_DIGITAL_PINS  (12)
+#define NUM_ANALOG_INPUTS ( 4)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-#define PIN_PA0  ( 8)
-#define PIN_PA1  ( 9)
-#define PIN_PA2  (10)
-#define PIN_PA3  (11)
-#define PIN_PA4  (12)
-#define PIN_PA5  (13)
-#define PIN_PA6  (14)
-#define PIN_PA7  (15) /* RESET */
-#define PIN_PB0  ( 0)
-#define PIN_PB1  ( 1)
-#define PIN_PB2  ( 2)
-#define PIN_PB3  ( 3)
-#define PIN_PB4  ( 4)
-#define PIN_PB5  ( 5)
-#define PIN_PB6  ( 6)
-#define PIN_PB7  ( 7)
+#define PIN_PA0           ( 8)
+#define PIN_PA1           ( 9)
+#define PIN_PA2           (10)
+#define PIN_PA3           (11)
+#define PIN_PA4           (12)
+#define PIN_PA5           (13)
+#define PIN_PA6           (14)
+#define PIN_PA7           (15) /* RESET */
+#define PIN_PB0           ( 0)
+#define PIN_PB1           ( 1)
+#define PIN_PB2           ( 2)
+#define PIN_PB3           ( 3)
+#define PIN_PB4           ( 4)
+#define PIN_PB5           ( 5)
+#define PIN_PB6           ( 6)
+#define PIN_PB7           ( 7)
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN (PIN_PA5)
+  #define LED_BUILTIN     (PIN_PA5)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
-#define PIN_A0  (PIN_PA0)
-#define PIN_A1  (PIN_PA1)
-#define PIN_A2  (PIN_PA2)
-#define PIN_A3  (PIN_PA3)
+#define PIN_A0            (PIN_PA0)
+#define PIN_A1            (PIN_PA1)
+#define PIN_A2            (PIN_PA2)
+#define PIN_A3            (PIN_PA3)
 
 /* An "analog pins" these map directly to analog channels */
 static const uint8_t A0 = ADC_CH(0);
@@ -67,12 +67,12 @@ static const uint8_t A3 = ADC_CH(3);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p) (((p) >= 0 && (p) <= 7) ? 5 : 4)
-#define digitalPinToPCMSK(p)    (((p) >= 0 && (p) <= 7) ? (&PCMSK1) : ((p) <= 15) ? (&PCMSK0) : ((uint8_t *)NULL))
-#define digitalPinToPCMSKbit(p) ((p) & 0x07)
+#define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p)     (((p) >= 0 && (p) <= 7) ? 5 : 4)
+#define digitalPinToPCMSK(p)        (((p) >= 0 && (p) <= 7) ? (&PCMSK1) : ((p) <= 15) ? (&PCMSK0) : ((uint8_t *)NULL))
+#define digitalPinToPCMSKbit(p)     ((p) & 0x07)
 
-#define digitalPinToInterrupt(p)  ((p) == 7 ? 0 : NOT_AN_INTERRUPT)
+#define digitalPinToInterrupt(p)    ((p) == PIN_PB7 ? 0 : NOT_AN_INTERRUPT)
 
 /* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  (((p) < 4) ? (P) + 8 : -1)
@@ -127,15 +127,17 @@ static const uint8_t A3 = ADC_CH(3);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
-#define TIMER0_TYPICAL              (1)
-#define PIN_TIMER_T0                (PIN_PB0)
-#define PIN_TIMER_OC0A              (PIN_PB1)
-#define PIN_TIMER_OC0B              (PIN_PB2)
+/* Timer 0 - 8-bit timer with PWM */
+#define TIMER0_TYPICAL        (1)
+#define PIN_TIMER_T0          (PIN_PB0)
+#define PIN_TIMER_OC0A        (PIN_PB1)
+#define PIN_TIMER_OC0B        (PIN_PB2)
 
-#define TIMER1_TYPICAL              (0) /* Clone of Timer0, so only 8-bit. laaame */
-#define PIN_TIMER_T1                (PIN_PB3)
-#define PIN_TIMER_OC1A              (PIN_PB4)
-#define PIN_TIMER_OC1B              (PIN_PB5)
+/* Timer 1 - 8-bit timer with PWM - laaaaaame */
+#define TIMER1_TYPICAL        (0)
+#define PIN_TIMER_T1          (PIN_PB3)
+#define PIN_TIMER_OC1A        (PIN_PB4)
+#define PIN_TIMER_OC1B        (PIN_PB5)
 
 /*---------------------------------------------------------------------------
  * Chip Features (or lack thereof) - Analog stuff
@@ -147,22 +149,25 @@ static const uint8_t A3 = ADC_CH(3);
 #define ADC_REF(x)            (x << 6)
 
 /* Analog reference bit masks.*/
-#define DEFAULT             ADC_REF(0)
-#define INTERNAL1V1         ADC_REF(1)
-#define INTERNAL           INTERNAL1V1
+#define DEFAULT               ADC_REF(0)
+#define INTERNAL1V1           ADC_REF(1)
+#define INTERNAL              INTERNAL1V1
 
 /* Special Analog Channels */
-#define ADC_GROUND        ADC_CH(0x04)
-#define ADC_INTERNAL1V1   ADC_CH(0x05)
-#define ADC_VBATDIV2      ADC_CH(0x06)
-#define ADC_TEMPERATURE   ADC_CH(0x07)
+#define ADC_GROUND            ADC_CH(0x04)
+#define ADC_INTERNAL1V1       ADC_CH(0x05)
+#define ADC_VBATDIV2          ADC_CH(0x06)
+#define ADC_TEMPERATURE       ADC_CH(0x07)
+
+/* Not a differential ADC     *
+ * single ended channels only */
 
 /* Analog Comparator - used for soft-serial*/
-#define ANALOG_COMP_DDR         (DDRA)
-#define ANALOG_COMP_PORT       (PORTA)
-#define ANALOG_COMP_PIN         (PINA)
-#define ANALOG_COMP_AIN0_BIT       (4)
-#define ANALOG_COMP_AIN1_BIT       (5)
+#define ANALOG_COMP_DDR       (DDRA)
+#define ANALOG_COMP_PORT      (PORTA)
+#define ANALOG_COMP_PIN       (PINA)
+#define ANALOG_COMP_AIN0_BIT  (4)
+#define ANALOG_COMP_AIN1_BIT  (5)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -184,28 +189,24 @@ static const uint8_t A3 = ADC_CH(3);
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_DI      PIN_PB4
-#define PIN_USI_DO      PIN_PB5
-#define PIN_USI_SCK     PIN_PB6
-#define SS              PIN_PB7
+#define PIN_USI_DI            PIN_PB4
+#define PIN_USI_DO            PIN_PB5
+#define PIN_USI_SCK           PIN_PB6
+#define SS                    PIN_PB7
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
+#define USI_DATA_DDR          DDRB
+#define USI_DATA_PORT         PORTB
+#define USI_DATA_PIN          PINB
 
-#define USI_CLOCK_BIT     PINB6
-#define USI_DO_BIT        PINB5
-#define USI_DI_BIT        PINB4
+#define USI_CLOCK_BIT         PINB6
+#define USI_DO_BIT            PINB5
+#define USI_DI_BIT            PINB4
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX                PIN_PA4
-#define PIN_SOFTSERIAL_RX                PIN_PA5
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
@@ -277,7 +278,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(5),
   _BV(6),
   _BV(7),
-  _BV(0), /* 0, port B */
+  _BV(0), /* 0, port A */
   _BV(1),
   _BV(2),
   _BV(3),

@@ -1,4 +1,4 @@
-#ifndef TinySoftwareSerial_h
+ #ifndef TinySoftwareSerial_h
 #define TinySoftwareSerial_h
 #include <inttypes.h>
 #include "Stream.h"
@@ -18,11 +18,50 @@
  */
 
 #if USE_SOFTWARE_SERIAL
+  #ifndef ANALOG_COMP_DDR
+    #error Please define ANALOG_COMP_DDR in the pins_arduino.h file!
+  #endif
+  #define SOFTSERIAL_DDR ANALOG_COMP_DDR
 
+  #ifndef ANALOG_COMP_PORT
+    #error Please define ANALOG_COMP_PORT in the pins_arduino.h file!
+  #endif
+  #define SOFTSERIAL_PORT ANALOG_COMP_PORT
+
+  #ifndef ANALOG_COMP_PIN
+    #error Please define ANALOG_COMP_PIN in the pins_arduino.h file!
+  #endif
+  #define SOFTSERIAL_PIN ANALOG_COMP_PIN
+
+  #ifndef ANALOG_COMP_AIN0_BIT
+    #error Please define ANALOG_COMP_AIN0_BIT in the pins_arduino.h file!
+  #endif
+
+  #ifndef ANALOG_COMP_AIN1_BIT
+    #error Please define ANALOG_COMP_AIN1_BIT in the pins_arduino.h file!
+  #endif
+
+  #if defined (((ACSRB) && !defined(ANALOG_COMP_AIN2_BIT)) && (defined(SOFTSERIAL_RXAIN0) || defined(SOFTSERIAL_RXAIN2)))
+    #ifndef ANALOG_COMP_AIN2_BIT
+      #error Please define ANALOG_COMP_AIN2_BIT in the pins_arduino.h file!
+    #endif
+  #endif
+  /* Spence: It would be pretty easy to adapt this to use INT0 instead if desired, controlled by the boards.txt menu */
+  #if !defined(ANALOG_COMP_vect) && defined(ANA_COMP_vect)
+  //rename the vector so we can use it.
+    #define SOFTSERIAL_vect ANA_COMP_vect
+  #elif defined (ANALOG_COMP_vect)
+    #define SOFTSERIAL_vect ANALOG_COMP_vect
+  #else
+    #error "Tiny Software Serial cannot find the Analog comparator interrupt vector!"
+  #endif
   #if !defined(ACSR) && defined(ACSRA)
     #define ACSR ACSRA
   #endif
-
+  #define USE_SBIC
+    // This option enables use of the sbic instruction instead of using Serial._rxmask in, and, breq .+2 sequence
+    // skip over the `sec` instruction. Looks like the code may date to when compatibility with AVR itself mattered
+    // (these parts are AVRe, atmega is AVRe+, and modern AVR is AVRxt)
   #ifndef SOFT_TX_ONLY
     #if (RAMEND < 250)
       #define SERIAL_BUFFER_SIZE 8
@@ -34,6 +73,16 @@
       /* never true for supported parts */
       #define SERIAL_BUFFER_SIZE 128
     #endif
+      #if defined(SOFTSERIAL_RXAIN0)
+        #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN0_BIT
+        #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN2_BIT
+      #elif defined(SOFTSERIAL_RXAIN2)
+        #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN2_BIT
+        #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
+      #else
+        #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN1_BIT
+        #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
+      #endif
     struct soft_ring_buffer
     {
       volatile unsigned char buffer[SERIAL_BUFFER_SIZE];
@@ -42,7 +91,7 @@
     };
   #endif
   extern "C"{
-    void uartDelay() __attribute__ ((naked,used)); //used attribute needed to prevent LTO from throwing it out.
+    void uartDelay() __attribute__ ((naked, used)); //used attribute needed to prevent LTO from throwing it out.
     #ifndef SOFT_TX_ONLY
       uint8_t getch();
       void store_char(unsigned char c, soft_ring_buffer *buffer);
@@ -51,13 +100,15 @@
   class TinySoftwareSerial : public Stream
   {
     public: //should be private but needed by extern "C" {} functions.
-    uint8_t _rxmask;
+    #ifndef SOFTSERIAL_USE_SBIC
+      uint8_t _rxmask;
+    #endif
     uint8_t _txmask;
     uint8_t _txunmask;
     soft_ring_buffer *_rx_buffer;
     uint8_t _delayCount;
     public:
-      TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit);
+      TinySoftwareSerial(soft_ring_buffer *rx_buffer);
       void begin(long);
       void setTxBit(uint8_t);
       void end();

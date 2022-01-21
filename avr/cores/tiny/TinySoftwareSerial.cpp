@@ -31,57 +31,60 @@
 #if USE_SOFTWARE_SERIAL
 #include "TinySoftwareSerial.h"
 
-// Define constants and variables for buffering incoming serial data. We're
-// using a ring buffer, in which rx_buffer_head is the index of the
-// location to which to write the next incoming character and rx_buffer_tail
-// is the index of the location from which to read.
-
+#define USE_SBIC
 extern "C"{
+
 #ifndef SOFT_TX_ONLY
-  uint8_t getch() {
-    uint8_t ch = 0;
+  __attribute__((always_inline)) uint8_t getch() {
+    uint8_t ch = 0x80;
       __asm__ __volatile__ (
-      "rcall uartDelay"        "\n\t"           // Get to 0.25 of start bit (our baud is too fast, so give room to correct)
-     "_rxstart: "
-      "rcall uartDelay"        "\n\t"           // Wait 0.25 bit period
-      "rcall uartDelay"        "\n\t"           // Wait 0.25 bit period
-      "rcall uartDelay"        "\n\t"           // Wait 0.25 bit period
-      "rcall uartDelay"        "\n\t"           // Wait 0.25 bit period
-      "clc"                    "\n\t"
-      "in    r23, %[pin]"      "\n\t"           // Could be changed to use SBIS
-      "and   r23, %[mask]"     "\n\t"
-      "breq  .+2"              "\n\t"
-      "sec"                    "\n\t"
-      "ror   %0"               "\n\t"
-      "dec   %[count]"         "\n\t"
-      "brne _rxstart"          "\n\t"
-      "rcall uartDelay"        "\n\t"           // Wait 0.25 bit period
-      "rcall uartDelay"        "\n\t"           // Wait 0.25 bit period
+      "clc"                      "\n\t"   // clear carry, we may then set it again. uartDelay DOES NOT CHANGE CARRY because they use DEC decrement the number...
+      "rcall uartDelay"          "\n\t"   // Get to 0.25 of start bit (our baud is too fast, so give room to correct). Spence: No, you get 0.25 bits further than you were when the start of the ISR finished.
+     "_rxstart:"                          //  That depends on baud rate / clock speed and the size of the interrupt vectors.... and halfway in is what you want.
+      "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
+      "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
+      "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
+      "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
+#ifndef USE_SBIC
+      "in      r23, %[pin]"      "\n\t"   // Three instructions and a register...
+      "and     r23, %[mask]"     "\n\t"   // just to do what can be done with one
+      "breq    .+2"              "\n\t"   // SBIC
+#else
+      "sbic %[pin], %[rxbit]"    "\n\t"   // How is this not better in every way?
+#endif
+      "sec"                      "\n\t"   // Set the carry flag so we can shift it in
+      "ror %[rxch]"              "\n\t"   // Man, they'd almost figured it out! They just missed the bit about staging it with 0x80 to avoid having to use a separate counter
+      // "dec   %[count]"        "\n\t"
+      // "brne _rxstart"         "\n\t"
+      "brcc _rxstart"            "\n\t"   // We staged ch with 0x80. So the first 7 ROR's will keep pushing that initial 1 bit to
+                                          // ever lower bit positions, until finally, after the 8th ROR, it will be in the carry register.
+                                          // this branch will finally not ne trigererd, and we exit. return the value.
+      //"rcall uartDelay"        "\n\t"   // Wait 0.25 bit period
+      //"rcall uartDelay"        "\n\t"   // Wait 0.25 bit period These two lines were to ensure that this ended only once we were into the stop bit. Old code did NOT guarantee that due to clock error.
+      "sbis %[pin], %[rxbit]"    "\n\t"   // but SBIS provides us with an easy solution - checking the port input bit itself, with an rjmp back to the test after it
+      "rjmp .-4"                 "\n\t"   // it will only skip the rjmp if the pin is high, and thus the last 0 bit is over, and we've recorded the last bit, and it's into the stop bit and we can
+                                          // let app code run until the next byte starts.
       :
-        "=r" (ch)
-      :
-        "0" ((uint8_t)0),
-        [count] "r" ((uint8_t)8),
-        [pin] "I" (_SFR_IO_ADDR(ANALOG_COMP_PIN)),
+        [rxch]"=r" (ch)
+      : [pin] "I" (_SFR_IO_ADDR(SOFTSERIAL_PIN)),
+#ifndef USE_SBIC
         [mask] "r" (Serial._rxmask)
+#else
+        [rxbit] "I" (SOFTSERIAL_RXBIT)
+#endif
       :
+#ifndef USE_SBIC
         "r23",
-        "r24",
-        "r25"
+#endif
+        "r0"
       );
     return ch;
   }
 
-  #if !defined(ANALOG_COMP_vect) && defined(ANA_COMP_vect)
-  //rename the vector so we can use it.
-    #define ANALOG_COMP_vect ANA_COMP_vect
-  #elif !defined (ANALOG_COMP_vect)
-    #error Tiny Software Serial cannot find the Analog comparator interrupt vector!
-  #endif
-  ISR(ANALOG_COMP_vect) {
+  ISR(SOFTSERIAL_vect) {
     char ch = getch(); //read in the character softwarily - I know its not a word, but it sounded cool, so you know what: #define softwarily 1
     store_char(ch, Serial._rx_buffer);
-    sbi(ACSR,ACI); //clear the flag.
+    sbi(ACSR, ACI); //clear the flag.
   }
 
   soft_ring_buffer rx_buffer = {{ 0 }, 0, 0};
@@ -90,74 +93,72 @@ extern "C"{
 
 void uartDelay() {
   __asm__ __volatile__ (
-    "mov  r25, %[count]"    "\n\t"
-    "dec  r25"              "\n\t"
+    "mov  r0, %[count]"     "\n\t"
+    "dec  r0"               "\n\t"
     "brne .-4"              "\n\t"
     "ret"                   "\n\t"
     ::[count] "r" ((uint8_t)Serial._delayCount)
   );
 }
-
-TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer, uint8_t txBit, uint8_t rxBit) {
+TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
   _rx_buffer = rx_buffer;
+  #ifndef USE_SBIC
+    _rxmask   = _BV(SOFTSERIAL_RXBIT);
+  #endif
 
-  _rxmask   = _BV(rxBit);
-  _txmask   = _BV(txBit);
+  _txmask   = _BV(SOFTSERIAL_TXBIT);
   _txunmask = ~_txmask;
 
   _delayCount = 0;
 }
 
 void TinySoftwareSerial::setTxBit(uint8_t txbit) {
-  _txmask=_BV(txbit);
-  _txunmask=~txbit;
+  _txmask   = _BV(txbit);
+  _txunmask =    ~txmask;
 }
 
 void TinySoftwareSerial::begin(long baud) {
-  long tempDelay = (((F_CPU/baud)-39)/12);
+  long tempDelay = (((F_CPU/baud) - 39) / 12);
   if ((tempDelay > 255) || (tempDelay <= 0)) {
-    end(); //Cannot start as it would screw up uartDelay().
+    return; //Cannot start - baud rate out of range.
   }
   _delayCount = (uint8_t)tempDelay;
   #ifndef SOFT_TX_ONLY
-    // cbi(ACSR,ACIE);   //turn off the comparator interrupt to allow change of ACD
-    // We will assume that the user has not reconfigured the AC first.
+    //Straight assignment, we need to configire all bits
     ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
-    /*
-    #ifdef ACBG
-      sbi(ACSR,ACBG);   //enable the internal bandgap reference - used instead of AIN0 to allow it to be used for TX
+    // These should compile to cbi and sbi - everything is compile time known.
+    SOFTSERIAL_DDR    &=  ~(1 << SOFTSERIAL_RXBIT);  // set RX to an input
+    SOFTSERIAL_PORT   |=   (1 << SOFTSERIAL_RXBIT);  // enable pullup on RX pin - to prevent accidental interrupt triggers.
+    #if !defined(__ATtinyx8__) // on most classic tinyies ACSR is in the low IO space, so we can use sbi, cbi instructions.
+      ACSR            |=   (1 <<  ACI);              // clear the flag - above configuration may cause it to be set.
+      ACSR            |=   (1 << ACIE);              // turn on the comparator interrupt
+    #else
+      ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE); // do this all with an LDI/OUT on the x8 series.
     #endif
-    cbi(ACSR,ACD);    //turn on the comparator for RX
-    #ifdef ACIC
-      cbi(ACSR,ACIC);   //prevent the comparator from affecting timer1 - just to be safe.
-    #endif
-    sbi(ACSR,ACIS1);  //interrupt on rising edge (this means RX has gone from Mark state to Start bit state).
-    sbi(ACSR,ACIS0);
-    */
-    //Setup the pins in case someone messed with them.
-    ANALOG_COMP_DDR   &= ~_rxmask; //set RX to an input
-    ANALOG_COMP_PORT  |=  _rxmask; //enable pullup on RX pin - to prevent accidental interrupt triggers.
-    ACSR              |= 1 << ACI;   // clear the flag - above configuration may cause it to be set.
-    ACSR              |= 1 << ACIE;  // turn on the comparator interrup
     #ifdef ACSRB
-      ACSRB = 0; //Use AIN0 as +, AIN1 as -, no hysteresis - just like ones without this register.
+      /* This is only the case on an ATtiny x61, out of the parts that support this builtin Software serial. The 1634 and 828 have it
+       * but they aren't supported because they have hardware serial. The 841 has multiple AC's, which would give the same sort of choices, except
+       * that t has hardware serial ports too. so we don't provide the builtin softSeral.
+       * On the 861, this is located in the low I/O space. We assume ACSRB is is POR state, hence 0, so it's better to use |=, which compiles to SBI instead of = x which compiles to ldi r__, x out ACSRB,x
+       */
+      #if defined(SOFTSERIAL_RXAIN0)
+        ACSRB |= 2; // Use PA6 (AIN0)
+      #elif defined(SOFTSERIAL_RXAIN2)
+        ACSRB |= 1; // Use PA5 (AIN2)
+      #endif
+      // Otherwise we leave it at 0;
     #endif
   #endif
-  ANALOG_COMP_DDR   |=  _txmask; //set TX to an output.
-  ANALOG_COMP_PORT  |=  _txmask; //set TX pin high
+  uint8_t oldsreg      =   SREG;    //  These are NOT going to get compiled to cbi/sbi as _txmask is not compile time known.
+  cli();                            //  so we need to protect this.
+  SOFTSERIAL_DDR      |=   _txmask; //  set TX to an output.
+  SOFTSERIAL_PORT     |=   _txmask; //  set TX pin high
+  SREG                 =   oldsreg; //  restore SREG.
 }
 
 void TinySoftwareSerial::end() {
   #ifndef SOFT_TX_ONLY
-    ACSR = (1 << ACD) | (1 << ACI) // turn off the analog comparator, clearing the flag while we're at it
-    /*
-    sbi(ACSR,ACI);   //clear the flag.
-    cbi(ACSR,ACIE);  //turn off the comparator interrupt to allow change of ACD, and because it needs to be turned off now too!
-    #ifdef ACBG
-      cbi(ACSR,ACBG); // disable the bandgap reference
-    #endif
-    sbi(ACSR,ACD);  // turn off the comparator to save power
-    */
+    ACSR = (1 << ACD) | (1 << ACI) // turn off the analog comparator, clearing the flag while we're at it. We also in the process clear all the other settings.
     _delayCount = 0;
     _rx_buffer->head = _rx_buffer->tail;
   #endif
@@ -215,38 +216,34 @@ size_t TinySoftwareSerial::write(uint8_t ch) {
   uint8_t oldSREG = SREG;
   cli(); //Prevent interrupts from breaking the transmission. Note: TinySoftwareSerial is half duplex.
   //it can either receive or send, not both (because receiving requires an interrupt and would stall transmission
+  uint8_t zerobit = SOFTSERIAL_PORT & ~_txmask;
+  uint8_t onebit = SOFTSERIAL_PORT | _txmask;
   __asm__ __volatile__ (
-    "com %[ch]"                 "\n\t" // ones complement, carry set
-    "sec"                       "\n\t"
+    "com %[ch]"                   "\n\t" // ones complement, carry set
+    "sec"                         "\n\t"
   "_txstart:"
-    "brcc _txpart2"             "\n\t"
-    "in r23,%[uartPort]"        "\n\t"
-    "and r23,%[uartUnmask]"     "\n\t"
-    "out %[uartPort], r23"      "\n\t"
-    "rjmp 3f"                   "\n\t"
-  "_txpart2:"
-    "in r23, %[uartPort]"       "\n\t"
-    "or r23, %[uartMask]"       "\n\t"
-    "out %[uartPort], r23"      "\n\t"
-    "nop"     "\n\t"
+    "brcc _txpart2"               "\n\t" //  1  no branch first bit
+    "out %[uartPort], %[zerobit]" "\n\t" //  2 output a zero bit
+    "rjmp .+4"                           //  4 jump to the delay part.
+  "_txpart2:"                            //  2 used with brcc with branch
+    "out %[uartPort], %[onebit]"  "\n\t" //  3 output a 1 bit
+    "nop"                         "\n\t" //  4 so the two paths have equal running time.
   "_txdelay:"
-    "rcall uartDelay"           "\n\t"
-    "rcall uartDelay"           "\n\t"
-    "rcall uartDelay"           "\n\t"
-    "rcall uartDelay"           "\n\t"
-    "lsr %[ch]"                 "\n\t"
-    "dec %[count]"              "\n\t"
-    "brne _txstart"             "\n\t"
+    "rcall uartDelay"             "\n\t"
+    "rcall uartDelay"             "\n\t"
+    "rcall uartDelay"             "\n\t"
+    "rcall uartDelay"             "\n\t"
+    "lsr %[ch]"                   "\n\t"
+    "dec %[count]"                "\n\t"
+    "brne _txstart"               "\n\t"
     :
     :
       [ch] "r" (ch),
       [count] "r" ((uint8_t)10),
-      [uartPort] "I" (_SFR_IO_ADDR(ANALOG_COMP_PORT)),
-      [uartMask] "r" (_txmask),
-      [uartUnmask] "r" (_txunmask)
-    : "r23",
-      "r24",
-      "r25"
+      [uartPort] "I" (_SFR_IO_ADDR(SOFTSERIAL_PORT)),
+      [zerobit] "r" (zerobit),
+      [onebit] "r" (onebit)
+    : "r0"
   );
   SREG = oldSREG;
   return 1;
@@ -259,27 +256,7 @@ void TinySoftwareSerial::flush() {
 TinySoftwareSerial::operator bool() {
   return true;
 }
-
-#ifndef ANALOG_COMP_DDR
-  #error Please define ANALOG_COMP_DDR in the pins_arduino.h file!
-#endif
-
-#ifndef ANALOG_COMP_PORT
-  #error Please define ANALOG_COMP_PORT in the pins_arduino.h file!
-#endif
-
-#ifndef ANALOG_COMP_PIN
-  #error Please define ANALOG_COMP_PIN in the pins_arduino.h file!
-#endif
-
-#ifndef ANALOG_COMP_AIN0_BIT
-  #error Please define ANALOG_COMP_AIN0_BIT in the pins_arduino.h file!
-#endif
-
-#ifndef ANALOG_COMP_AIN1_BIT
-  #error Please define ANALOG_COMP_AIN1_BIT in the pins_arduino.h file!
-#endif
-
-TinySoftwareSerial Serial(&rx_buffer, ANALOG_COMP_AIN0_BIT, ANALOG_COMP_AIN1_BIT);
+#ifndef SOFTSERIAL_USE_SBIC
+  TinySoftwareSerial Serial(&rx_buffer);
 
 #endif // whole file

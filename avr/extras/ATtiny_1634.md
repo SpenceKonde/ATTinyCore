@@ -95,40 +95,40 @@ void startSleep() { //call instead of sleep_cpu()
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny1634, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
-vect_num | Vector Address | Vector Name | Interrupt Definition
------------- | ------------- | ------------ | -------------
-0 | 0x0000 | RESET_vect | Any reset (pin, WDT, power-on, BOD)
-1 | 0x0002 | INT0_vect | External Interrupt Request 0
-2 | 0x0004 | PCINT0_vect | Pin Change Interrupt 0 (PORT A)
-3 | 0x0006 | PCINT1_vect | Pin Change Interrupt 1 (PORT B)
-4 | 0x0008 | PCINT2_vect | Pin Change Interrupt 2 (PORT C)
-5 | 0x000A | WDT_vect | Watchdog Time-out (Interrupt Mode)
-6 | 0x000C | TIM1_CAPT_vect | Timer/Counter1 Input Capture
-6 | 0x000C | TIMER1_CAPT_vect | Alias - provided by ATTinyCore
-7 | 0x000E | TIM1_COMPA_vect | Timer/Counter1 Compare Match A
-7 | 0x000E | TIMER1_COMPA_vect | Alias - provided by ATTinyCore
-8 | 0x0010 | TIM1_COMPB_vect | Timer/Counter1 Compare Match B
-8 | 0x0010 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore
-9 | 0x0012 | TIM1_OVF_vect | Timer/Counter1 Overflow
-9 | 0x0012 | TIMER1_OVF_vect | Alias - provided by ATTinyCore
-10 | 0x0014 | TIM0_COMPA_vect | Timer/Counter0 Compare Match A
-10 | 0x0014 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore
-11 | 0x0016 | TIM0_COMPB_vect | Timer/Counter0 Compare Match B
-11 | 0x0016 | TIMER0_COMPB_vect | Alias - provided by ATTinyCore
-12 | 0x0018 | TIM0_OVF_vect | Timer/Counter0 Overflow
-12 | 0x0018 | TIMER0_OVF_vect | Alias - provided by ATTinyCore
-13 | 0x001A | ANA_COMP_vect | Analog Comparator
-14 | 0x001C | ADC_READY_vect | ADC Conversion Complete
-15 | 0x001E | USART0_RXS_vect | USART0 Rx Start
-16 | 0x0020 | USART0_RXC_vect | USART0 Rx Complete
-17 | 0x0022 | USART0_DRE_vect | USART0 Data Register Empty
-18 | 0x0024 | USART0_TXC_vect | USART0 Tx Complete
-19 | 0x0026 | USART1_RXS_vect | USART1 Rx Start
-20 | 0x0028 | USART1_RXC_vect | USART1 Rx Complete
-21 | 0x002A | USART1_DRE_vect | USART1 Data Register Empty
-22 | 0x002C | USART1_TXC_vect | USART1 Tx Complete
-23 | 0x002E | USI_STR_vect | USI START
-24 | 0x0030 | USI_OVF_vect | USI Overflow
-25 | 0x0032 | TWI_vect | Two-Wire Interface
-26 | 0x0034 | EE_RDY_vect | EEPROM Ready
-27 | 0x0036 | QTRIP_vect | QTouch
+vect_num | Addr.  | Vector Name       | Interrupt Definition                  |
+|--------|--------|-------------------|---------------------------------------|
+|      0 | 0x0000 | RESET_vect        | Any reset (pin, WDT, power-on, BOD)   |
+|      1 | 0x0002 | INT0_vect         | External Interrupt Request 0          |
+|      2 | 0x0004 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)       |
+|      3 | 0x0006 | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)       |
+|      4 | 0x0008 | PCINT2_vect       | Pin Change Interrupt 2 (PORT C)       |
+|      5 | 0x000A | WDT_vect          | Watchdog Time-out (Interrupt Mode)    |
+|      6 | 0x000C |   TIM1_CAPT_vect  | Timer/Counter1 Input Capture          |
+|      6 | 0x000C | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore        |
+|      7 | 0x000E |   TIM1_COMPA_vect | Timer/Counter1 Compare Match A        |
+|      7 | 0x000E | TIMER1_COMPA_vect | Alias - provided by ATTinyCore        |
+|      8 | 0x0010 |   TIM1_COMPB_vect | Timer/Counter1 Compare Match B        |
+|      8 | 0x0010 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore        |
+|      9 | 0x0012 |   TIM1_OVF_vect   | Timer/Counter1 Overflow               |
+|      9 | 0x0012 | TIMER1_OVF_vect   | Alias - provided by ATTinyCore        |
+|     10 | 0x0014 |   TIM0_COMPA_vect | Timer/Counter0 Compare Match A        |
+|     10 | 0x0014 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore        |
+|     11 | 0x0016 |   TIM0_COMPB_vect | Timer/Counter0 Compare Match B        |
+|     11 | 0x0016 | TIMER0_COMPB_vect | Alias - provided by ATTinyCore        |
+|     12 | 0x0018 |   TIM0_OVF_vect   | Timer/Counter0 Overflow               |
+|     12 | 0x0018 | TIMER0_OVF_vect   | Alias - provided by ATTinyCore        |
+|     13 | 0x001A | ANA_COMP_vect     | Analog Comparator                     |
+|     14 | 0x001C | ADC_READY_vect    | ADC Conversion Complete               |
+|     15 | 0x001E | USART0_RXS_vect   | USART0 Rx Start                       |
+|     16 | 0x0020 | USART0_RXC_vect   | USART0 Rx Complete                    |
+|     17 | 0x0022 | USART0_DRE_vect   | USART0 Data Register Empty            |
+|     18 | 0x0024 | USART0_TXC_vect   | USART0 Tx Complete                    |
+|     19 | 0x0026 | USART1_RXS_vect   | USART1 Rx Start                       |
+|     20 | 0x0028 | USART1_RXC_vect   | USART1 Rx Complete                    |
+|     21 | 0x002A | USART1_DRE_vect   | USART1 Data Register Empty            |
+|     22 | 0x002C | USART1_TXC_vect   | USART1 Tx Complete                    |
+|     23 | 0x002E | USI_STR_vect      | USI START                             |
+|     24 | 0x0030 | USI_OVF_vect      | USI Overflow                          |
+|     25 | 0x0032 | TWI_vect          | Two-Wire Interface                    |
+|     26 | 0x0034 | EE_RDY_vect       | EEPROM Ready                          |
+|     27 | 0x0036 | QTRIP_vect        | QTouch                                |

@@ -134,11 +134,13 @@ static const uint8_t A7 = ADC_CH(7);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
+/* Timer 0 - 8-bit timer with PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_OC0A              (PIN_PB2)
 #define PIN_TIMER_OC0B              (PIN_PA7)
 #define PIN_TIMER_T0                (PIN_PA3)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PA6)
 #define PIN_TIMER_OC1B              (PIN_PA5)
@@ -252,28 +254,24 @@ static const uint8_t A7 = ADC_CH(7);
 #define USE_SOFTWARE_SPI 1
 
 /* USI */
-#define PIN_USI_DI      PIN_PA6
-#define PIN_USI_DO      PIN_PA5
-#define PIN_USI_SCK     PIN_PA4
-#define SS              PIN_PA3
+#define PIN_USI_DI            PIN_PA6
+#define PIN_USI_DO            PIN_PA5
+#define PIN_USI_SCK           PIN_PA4
+#define SS                    PIN_PA3
 
-#define USI_DATA_DDR       DDRA
-#define USI_DATA_PORT     PORTA
-#define USI_DATA_PIN       PINA
+#define USI_DATA_DDR          DDRA
+#define USI_DATA_PORT         PORTA
+#define USI_DATA_PIN          PINA
 
-#define USI_CLOCK_BIT     PINA4
-#define USI_DO_BIT        PINA5
-#define USI_DI_BIT        PINA6
+#define USI_CLOCK_BIT         PINA4
+#define USI_DO_BIT            PINA5
+#define USI_DI_BIT            PINA6
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX                PIN_PA1
-#define PIN_SOFTSERIAL_RX                PIN_PA2
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------

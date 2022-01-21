@@ -270,19 +270,23 @@ For those who prefer to compile with a makefile instead of the IDE, sketches can
 Most of these parts do not have hardware support for I2C, SPI, and/or UART (Serial) like an ATmega device would. **As much as possible we try to paper over the differences - you can include Wire.h or SPI.h and expect things to just work except as noted below** - this is achieved by a special version of Wire.h and SPI.h which presents the same API, but implements it very differebtly depending on the underlying hardeware. Hence **the use of libraries like USIWire, tinyWire, WireS, and so on is unnecessary** These libraries are also considered unsupported, as they should never be necessary. In the case of Serial/UART, where there is no hardware serial, the SoftwareSerial library can be used, but it is often undesirable because of how it takes over all the PCINTs. To address this, we provide a different software serial implementation which uses the analog comparator interrupt instead of a PCINT, allowing the PCINTs to be used freely. The RX pin is fixed, but the TX pin can be moved around to a limited subset of pins. See the serial section below for more information. The following table shows what hardware interface is available on each of these part.
 
 
-| Part(s)               | SPI           | I2C Master  | I2C Slave | Serial (TX, RX)   |
+| Part(s)               | SPI           | I2C Master  | I2C Slave | Serial (TX* , RX) |
 |-----------------------|---------------|-------------|-----------|-------------------|
 | ATtiny x313           | USI           | USI         | USI       | 1x Hardware       |
 | ATtiny 43             | USI           | USI         | USI       | Software PA4, PA5 |
 | ATtiny x4             | USI           | USI         | USI       | Software PA1, PA2 |
 | ATtiny x5             | USI           | USI         | USI       | Software PB0, PA1 |
 | ATtiny 26             | USI           | USI         | USI       | Software PA6, PA7 |
-| ATtiny x61            | USI           | USI         | USI       | Software PA6, PA7 |
+| ATtiny x61            | USI           | USI         | USI       | Software PA6, **  |
 | ATtiny x7             | Real SPI      | USI         | USI       | 1x Hardware (LIN) |
 | ATtiny x8             | Real SPI      | Real TWI    | Real TWI  | Software PD6, PD7 |
 | ATtiny x41            | Real SPI      | Software    | Slave TWI | 2x Hardware       |
-| ATtiny1634            | USI           | USI         | USI       | 2x Hardware       |
+| ATtiny1634            | USI           | USI         | Slave TWI | 2x Hardware ***   |
 | ATtiny828             | Real SPI      | Software    | Slave TWI | 1x Hardware       |
+
+`*` - TX pin can be moved to any other pin on that port with Serial.setTxBit().
+`**` - RX can be on PA5, PA6, or PA7 (default), controlled by the tools submenu.
+`***` - Serial1 shares pins with the USI and slave TWI interface, which basically means you have to choose between USI (SPI or I2C master) or I2C slave, or a second serial port.
 
 There are some specific considerations relevant to each of these interfaces, detailed below.
 

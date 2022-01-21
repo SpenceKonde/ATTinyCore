@@ -8,7 +8,6 @@
 #ifndef PINS_USB_H
 #define PINS_USB_H
 /* ---------------------------- Hardware Config ---------------------------- */
-
 #if   defined(__AVR_ATtiny44__)  || defined(__AVR_ATtiny84__) \
    || defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny841__)
    /* Seriously? These both exist? WHYYYYYY? D+ on PB1 is probably better

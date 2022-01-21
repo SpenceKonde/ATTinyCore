@@ -76,10 +76,9 @@ static const uint8_t A10 = ADC_CH(10);
  *---------------------------------------------------------------------------*/
 
 #define digitalPinToPCICR(p)        ((((p) >= 6 && (p) <= 15) || (p)==3) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p)      (((p) >= 8 && (p) <  12)  ?  5 : 4)
+#define digitalPinToPCICRbit(p)     ( ((p) >= 8 && (p) <  12)  ?  5 : 4)
 #define digitalPinToPCMSK(p)        (badCall("there IS NO PCMSK HERE. You can enable PCINTs on PB0:3 and on all the other PCINT pins."))
 #define digitalPinToPCMSKbit(p)     (badCall("there IS NO PCMSK HERE. You can enable PCINTs on PB0:3 and on all the other PCINT pins."))
-
 
 #define digitalPinToInterrupt(p)    ((p) == 14 ? 0 : NOT_AN_INTERRUPT)
 
@@ -137,16 +136,12 @@ static const uint8_t A10 = ADC_CH(10);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
-#define TIMER0_TYPICAL              (0) /* 16-bit with ICP and "output" compare
-except that there's no output to speak of! OC0A and OC0B are just interrupts.
-It looks like they rolled together the traditional Timer0 "it's a basic
-8-bit utility timer" and Timer1 "it's your 16-bit timer for input capture" but
-had to do it in a "Timer0" transistor budget... */
-
+/* Timer 0 - 8-bit timer without PWM */
+#define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_T0                (PIN_PB7)
-#define PIN_TIMER_ICP0              (PIN_PA4)
 
-#define TIMER1_TYPICAL              (0) /* 10-bit high speed w/3 PWM outputs */
+/* Timer 1: 8 bit high speed timer with PWM */
+#define TIMER1_TYPICAL              (0)
 #define PIN_TIMER_OC1A              (PIN_PB1)
 #define PIN_TIMER_OC1B              (PIN_PB3)
 
@@ -236,10 +231,10 @@ had to do it in a "Timer0" transistor budget... */
 
 /* Analog Comparator - used for soft-serial*/
 #define ANALOG_COMP_DDR            (DDRA)
-#define ANALOG_COMP_PORT          (PORTA)
+#define ANALOG_COMP_PORT           (PORTA)
 #define ANALOG_COMP_PIN            (PINA)
-#define ANALOG_COMP_AIN0_BIT          (6)
-#define ANALOG_COMP_AIN1_BIT          (7)
+#define ANALOG_COMP_AIN0_BIT       (6)
+#define ANALOG_COMP_AIN1_BIT       (7)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -261,28 +256,24 @@ had to do it in a "Timer0" transistor budget... */
 #define USE_SOFTWARE_SPI 1
 
 /* USI */
-#define PIN_USI_DI      PIN_PB0
-#define PIN_USI_DO      PIN_PB1
-#define PIN_USI_SCK     PIN_PB2
-#define SS              PIN_PB3
+#define PIN_USI_DI            PIN_PB0
+#define PIN_USI_DO            PIN_PB1
+#define PIN_USI_SCK           PIN_PB2
+#define SS                    PIN_PB3
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
+#define USI_DATA_DDR          DDRB
+#define USI_DATA_PORT         PORTB
+#define USI_DATA_PIN          PINB
 
-#define USI_CLOCK_BIT     PINB2
-#define USI_DO_BIT        PINB1
-#define USI_DI_BIT        PINB0
+#define USI_CLOCK_BIT         PINB2
+#define USI_DO_BIT            PINB1
+#define USI_DI_BIT            PINB0
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX  PIN_PA6
-#define PIN_SOFTSERIAL_RX  PIN_PA7
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
@@ -291,12 +282,12 @@ had to do it in a "Timer0" transistor budget... */
  *                 +-\/-+
  *      ( 8) PB0  1|   a|20  PA0 ( 0)
  *     *( 9) PB1  2|   a|19  PA1 ( 1)
- *      (10) PB2  3|   a|18  PA2 ( 2) INT1
- *     *(11) PB3  4|   a|17  PA3 ( 3)
+ *      (10) PB2  3|   a|18  PA2 ( 2)
+ *     *(11) PB3  4|    |17  PA3 ( 3)
  *           VCC  5|    |16  AGND
  *           GND  6|    |15  AVCC
  *      (12) PB4  7|ax a|14  PA4 ( 4)
- *     *(13) PB5  8|ax a|13  PA5 ( 5)
+ *      (13) PB5  8|ax a|13  PA5 ( 5)
  * INT0 (14) PB6  9|a  a|12  PA6 ( 6)
  *      (15) PB7 10|a  a|11  PA7 ( 7)
  *                 +----+
@@ -381,7 +372,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   TIMER1B,
   NOT_ON_TIMER,
-  TIMER1D,
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
 };

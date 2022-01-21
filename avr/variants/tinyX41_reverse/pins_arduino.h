@@ -22,55 +22,55 @@
 
 #include <avr/pgmspace.h>
 
-#define NUM_DIGITAL_PINS            12
-#define NUM_ANALOG_INPUTS           12
+#define NUM_DIGITAL_PINS    (12)
+#define NUM_ANALOG_INPUTS   (12)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-#define PIN_PA0     ( 0)
-#define PIN_PA1     ( 1)
-#define PIN_PA2     ( 2)
-#define PIN_PA3     ( 3)
-#define PIN_PA4     ( 4)
-#define PIN_PA5     ( 5)
-#define PIN_PA6     ( 6)
-#define PIN_PA7     ( 7)
-#define PIN_PB2     ( 8)
-#define PIN_PB1     ( 9)  /* XTAL1 */
-#define PIN_PB0     (10)  /* XTAL2 */
-#define PIN_PB3     (11)  /* RESET */
+#define PIN_PA0             ( 0)
+#define PIN_PA1             ( 1)
+#define PIN_PA2             ( 2)
+#define PIN_PA3             ( 3)
+#define PIN_PA4             ( 4)
+#define PIN_PA5             ( 5)
+#define PIN_PA6             ( 6)
+#define PIN_PA7             ( 7)
+#define PIN_PB2             ( 8)
+#define PIN_PB1             ( 9)  /* XTAL1 */
+#define PIN_PB0             (10)  /* XTAL2 */
+#define PIN_PB3             (11)  /* RESET */
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN (PIN_PB2)
+  #define LED_BUILTIN       (PIN_PB2)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
-#define PIN_A0      (PIN_PA0)
-#define PIN_A1      (PIN_PA1)
-#define PIN_A2      (PIN_PA2)
-#define PIN_A3      (PIN_PA3)
-#define PIN_A4      (PIN_PA4)
-#define PIN_A5      (PIN_PA5)
-#define PIN_A6      (PIN_PA6)
-#define PIN_A7      (PIN_PA7)
-#define PIN_A8      (PIN_PB2)
-#define PIN_A9      (PIN_PB3) /* RESET */
-#define PIN_A10     (PIN_PB0) /* XTAL1 */
-#define PIN_A11     (PIN_PB1) /* XTAL2 */
+#define PIN_A0              (PIN_PA0)
+#define PIN_A1              (PIN_PA1)
+#define PIN_A2              (PIN_PA2)
+#define PIN_A3              (PIN_PA3)
+#define PIN_A4              (PIN_PA4)
+#define PIN_A5              (PIN_PA5)
+#define PIN_A6              (PIN_PA6)
+#define PIN_A7              (PIN_PA7)
+#define PIN_A8              (PIN_PB2)
+#define PIN_A9              (PIN_PB3) /* RESET */
+#define PIN_A10             (PIN_PB0) /* XTAL1 */
+#define PIN_A11             (PIN_PB1) /* XTAL2 */
 
 /* An "analog pins" these map directly to analog channels */
-static const uint8_t A0  = ADC_CH(0);
-static const uint8_t A1  = ADC_CH(1);
-static const uint8_t A2  = ADC_CH(2);
-static const uint8_t A3  = ADC_CH(3);
-static const uint8_t A4  = ADC_CH(4);
-static const uint8_t A5  = ADC_CH(5);
-static const uint8_t A6  = ADC_CH(6);
-static const uint8_t A7  = ADC_CH(7);
-static const uint8_t A8  = ADC_CH(8);
-static const uint8_t A9  = ADC_CH(9); /* RESET */
-static const uint8_t A10 = ADC_CH(10);
-static const uint8_t A11 = ADC_CH(11);
+static const uint8_t A0  =  ADC_CH(0);
+static const uint8_t A1  =  ADC_CH(1);
+static const uint8_t A2  =  ADC_CH(2);
+static const uint8_t A3  =  ADC_CH(3);
+static const uint8_t A4  =  ADC_CH(4);
+static const uint8_t A5  =  ADC_CH(5);
+static const uint8_t A6  =  ADC_CH(6);
+static const uint8_t A7  =  ADC_CH(7);
+static const uint8_t A8  =  ADC_CH(8);
+static const uint8_t A9  =  ADC_CH(9); /* RESET */
+static const uint8_t A10 =  ADC_CH(10);
+static const uint8_t A11 =  ADC_CH(11);
 
 
 /* Interrupt macros to go from pin to PCMSK register and bit within it, and
@@ -152,17 +152,20 @@ afterwards if you then try to go back to core-provided PWM functions. The
 those at power on only (so it has no space cost because we have to set them
 anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
+/* Timer 0 - 8-bit timer with PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_OC0A              (PIN_PA4) /* core default - TOCC3 */
 #define PIN_TIMER_OC0B              (PIN_PA5) /* core default - TOCC4 */
 #define PIN_TIMER_T0                (PIN_PA3)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PA6) /* core default - TOCC2*/
 #define PIN_TIMER_OC1B              (PIN_PA3) /* core default - */
 #define PIN_TIMER_T1                (PIN_PA4)
 #define PIN_TIMER_ICP1              (PIN_PA7)
 
+/* Timer 2 - 16-bit timer with PWM */
 #define TIMER2_TYPICAL              (0) /* No, it's like Timer1 */
 #define PIN_TIMER_OC2A              (PIN_PA7) /* core default */
 #define PIN_TIMER_OC2B              (PIN_PB2) /* core default */
@@ -176,7 +179,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * registers to avoid leftshifting at runtime, which is surprisingly slow and
  * wasteful of flash.
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)              (x << 5)
+#define ADC_REF(x)            (x << 5)
 
 /* Analog reference bit masks. */
 #define DEFAULT               ADC_REF(0x00)
@@ -329,7 +332,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  *                                 +----+
  *
  *  Some pins can be remapped, remapped options for peripherals marked with a *. The default for those same options is shown without the *.
- *  Any of the 8 PWM pins can use any of the three timers, TOCC0, 2, 4, and 6 use channel A, and TOCC1, 3, 5, and 7 use channel B.
+ *  Any of the 8 PWM pins can use any of the three timers, TOCC0, 2, 4, and 6 use channel A, and TOCC1, 3, 5, and 7 use channel B. */
 
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
@@ -406,24 +409,3 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 #endif
 
 #endif
-
-
-/*
-#if defined(SUPER_PWM)
-  const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-  {
-    NOT_ON_TIMER,
-    TOCC0,  / OCR0B this is serial 0 TX, too, so it is initially given least desirable timer /
-    TOCC1,  / OCR0A this is serial 0 RX /
-    TOCC2,  / OCR1B /
-    TOCC3,  / OCR0A this is serial 1 RX, too, so it is initially given least desirable timer /
-    TOCC4,  / OCR0B this is serial 1 TX /
-    TOCC5,  / OCR1A /
-    TOCC6,  / OCR2B /
-    TOCC7,  / OCR2A /
-    NOT_ON_TIMER,
-    NOT_ON_TIMER,
-    NOT_ON_TIMER,
-  };
-#else
-  /

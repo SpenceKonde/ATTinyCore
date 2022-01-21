@@ -15,11 +15,11 @@
  * MH-ET/MH-Tiny board, which have a different numbering scheme.
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX8 1       //backwards compat
-#define __AVR_ATtinyX8__ //recommended
+#define ATTINYX8 1       // backwards compatibility
+#define __AVR_ATtinyX8__ // recommended
 
-#define NUM_DIGITAL_PINS            28
-#define NUM_ANALOG_INPUTS          8
+#define NUM_DIGITAL_PINS  (28)
+#define NUM_ANALOG_INPUTS (8)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
@@ -53,18 +53,18 @@
 #define PIN_PC6  (27)
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN   (PIN_PB5)
+  #define LED_BUILTIN (PIN_PB5)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
-#define PIN_A0   (PIN_PC0)
-#define PIN_A1   (PIN_PC1)
-#define PIN_A2   (PIN_PC2)
-#define PIN_A3   (PIN_PC3)
-#define PIN_A4   (PIN_PC4)
-#define PIN_A5   (PIN_PC5)
-#define PIN_A6   (PIN_PA0)
-#define PIN_A7   (PIN_PA1)
+#define PIN_A0        (PIN_PC0)
+#define PIN_A1        (PIN_PC1)
+#define PIN_A2        (PIN_PC2)
+#define PIN_A3        (PIN_PC3)
+#define PIN_A4        (PIN_PC4)
+#define PIN_A5        (PIN_PC5)
+#define PIN_A6        (PIN_PA0)
+#define PIN_A7        (PIN_PA1)
 
 /* The "analog pins" of the form An, where n is a number map directly to
  * analog channels of the same number. Except on Digispark Pro pin mapping.
@@ -100,6 +100,9 @@ static const uint8_t A7 = ADC_CH(7);
 
 /* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
+
+
+#define PINMAPPING_NORMAL
 
 /*---------------------------------------------------------------------------
  * Core Configuration where these are not the defaults
@@ -146,9 +149,11 @@ static const uint8_t A7 = ADC_CH(7);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
+/* Timer 0 - 8-bit timer without PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_T0                (PIN_PD4)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PB1)
 #define PIN_TIMER_OC1B              (PIN_PB2)
@@ -165,23 +170,24 @@ static const uint8_t A7 = ADC_CH(7);
 #define ADC_REF(x)            (x << 6)
 
 /*  Analog reference bit masks. */
-#define DEFAULT             ADC_REF(1)
-#define INTERNAL1V1         ADC_REF(0)
-#define INTERNAL           INTERNAL1V1
+#define DEFAULT               ADC_REF(1)
+#define INTERNAL1V1           ADC_REF(0)
+#define INTERNAL              INTERNAL1V1
 
 /* Special Analog Channels */
-#define ADC_TEMPERATURE   ADC_CH(0x08)
-#define ADC_INTERNAL1V1   ADC_CH(0x0E)
-#define ADC_GROUND        ADC_CH(0x0F)
+#define ADC_TEMPERATURE       ADC_CH(0x08)
+#define ADC_INTERNAL1V1       ADC_CH(0x0E)
+#define ADC_GROUND            ADC_CH(0x0F)
 
-/* Not a differential ADC */
+/* Not a differential ADC     *
+ * single ended channels only */
 
 /* Analog Comparator - used for soft-serial*/
-#define ANALOG_COMP_DDR           DDRD
-#define ANALOG_COMP_PORT         PORTD
-#define ANALOG_COMP_PIN           PIND
-#define ANALOG_COMP_AIN0_BIT       (6)
-#define ANALOG_COMP_AIN1_BIT       (7)
+#define ANALOG_COMP_DDR       DDRD
+#define ANALOG_COMP_PORT      PORTD
+#define ANALOG_COMP_PIN       PIND
+#define ANALOG_COMP_AIN0_BIT  (6)
+#define ANALOG_COMP_AIN1_BIT  (7)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -196,20 +202,15 @@ static const uint8_t A7 = ADC_CH(7);
  * using the USI is never illuminating, but is every bit as annoying.
  *---------------------------------------------------------------------------*/
 
-
 /* Hardware SPI */
-#define SS                 PIN_PB2
-#define MOSI               PIN_PB3
-#define MISO               PIN_PB4
-#define SCK                PIN_PB5
+#define SS                    PIN_PB2
+#define MOSI                  PIN_PB3
+#define MISO                  PIN_PB4
+#define SCK                   PIN_PB5
 
 /* Hardware TWI */
-#define SDA                PIN_PC4
-#define SCL                PIN_PC5
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX  PIN_PD6
-#define PIN_SOFTSERIAL_RX  PIN_PD7
+#define SDA                   PIN_PC4
+#define SCL                   PIN_PC5
 
 #ifdef ARDUINO_MAIN
 

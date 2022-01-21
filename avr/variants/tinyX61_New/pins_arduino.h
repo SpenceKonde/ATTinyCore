@@ -16,47 +16,47 @@
  * the complexity of the macros.
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX61 1  //backwards compatibility
-#define __AVR_ATtinyX61__ //recommended
+#define ATTINYX61 1  // backwards compatibility
+#define __AVR_ATtinyX61__ // recommended
 
-#define NUM_DIGITAL_PINS            (16)
-#define NUM_ANALOG_INPUTS           (11)
+#define NUM_DIGITAL_PINS  (16)
+#define NUM_ANALOG_INPUTS (11)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-#define PIN_PA0          ( 0)
-#define PIN_PA1          ( 1)
-#define PIN_PA2          ( 2)
-#define PIN_PA3          ( 3)
-#define PIN_PA4          ( 4)
-#define PIN_PA5          ( 5)
-#define PIN_PA6          ( 6)
-#define PIN_PA7          ( 7)
-#define PIN_PB0          ( 8)
-#define PIN_PB1          ( 9)
-#define PIN_PB2          (10)
-#define PIN_PB3          (11)
-#define PIN_PB4          (12)
-#define PIN_PB5          (13)
-#define PIN_PB6          (14)
-#define PIN_PB7          (15) /* RESET */
+#define PIN_PA0           ( 0)
+#define PIN_PA1           ( 1)
+#define PIN_PA2           ( 2)
+#define PIN_PA3           ( 3)
+#define PIN_PA4           ( 4)
+#define PIN_PA5           ( 5)
+#define PIN_PA6           ( 6)
+#define PIN_PA7           ( 7)
+#define PIN_PB0           ( 8)
+#define PIN_PB1           ( 9)
+#define PIN_PB2           (10)
+#define PIN_PB3           (11)
+#define PIN_PB4           (12)
+#define PIN_PB5           (13)
+#define PIN_PB6           (14)
+#define PIN_PB7           (15) /* RESET */
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN (PIN_PB6)
+  #define LED_BUILTIN     (PIN_PB6)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
-#define PIN_A0      (PIN_PA0)
-#define PIN_A1      (PIN_PA1)
-#define PIN_A2      (PIN_PA2)
-#define PIN_A3      (PIN_PA4)
-#define PIN_A4      (PIN_PA5)
-#define PIN_A5      (PIN_PA6)
-#define PIN_A6      (PIN_PA7)
-#define PIN_A7      (PIN_PB4)
-#define PIN_A8      (PIN_PB5)
-#define PIN_A9      (PIN_PB6)
-#define PIN_A10     (PIN_PB7)
+#define PIN_A0            (PIN_PA0)
+#define PIN_A1            (PIN_PA1)
+#define PIN_A2            (PIN_PA2)
+#define PIN_A3            (PIN_PA4) /* PA3 is the AREF pin */
+#define PIN_A4            (PIN_PA5)
+#define PIN_A5            (PIN_PA6)
+#define PIN_A6            (PIN_PA7)
+#define PIN_A7            (PIN_PB4)
+#define PIN_A8            (PIN_PB5)
+#define PIN_A9            (PIN_PB6)
+#define PIN_A10           (PIN_PB7)
 
 /* An "analog pins" these map directly to analog channels */
 static const uint8_t A0  = ADC_CH(0);
@@ -151,20 +151,16 @@ static const uint8_t A10 = ADC_CH(10);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
-#define TIMER0_TYPICAL              (0) /* 16-bit with ICP and "output" compare
-except that there's no output to speak of! OC0A and OC0B are just interrupts.
-It looks like they rolled together the traditional Timer0 "it's a basic
-8-bit utility timer" and Timer1 "it's your 16-bit timer for input capture" but
-had to do it in a "Timer0" transistor budget... */
-
+/* Timer 0 - 16-bit utility timer without PWM!*/
+#define TIMER0_TYPICAL              (0)
 #define PIN_TIMER_T0                (PIN_PB7)
 #define PIN_TIMER_ICP0              (PIN_PA4)
 
-#define TIMER1_TYPICAL              (0) /* 10-bit high speed w/3 PWM outputs */
+/* Timer 1 - 10-bit high speed timer with three pwm channels */
+#define TIMER1_TYPICAL              (0)
 #define PIN_TIMER_OC1A              (PIN_PB1)
 #define PIN_TIMER_OC1B              (PIN_PB3)
 #define PIN_TIMER_OC1D              (PIN_PB5)
-
 
 /*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
@@ -300,6 +296,7 @@ had to do it in a "Timer0" transistor budget... */
 #define ANALOG_COMP_DDR           (DDRA)
 #define ANALOG_COMP_PORT          (PORTA)
 #define ANALOG_COMP_PIN           (PINA)
+#define ANALOG_COMP_AIN2_BIT      (5)
 #define ANALOG_COMP_AIN0_BIT      (6)
 #define ANALOG_COMP_AIN1_BIT      (7)
 
@@ -320,31 +317,27 @@ had to do it in a "Timer0" transistor budget... */
  * refer back to these macros (PIN_USI_* )
  *---------------------------------------------------------------------------*/
 
-#define USE_SOFTWARE_SPI  (1)
+#define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_DI        (PIN_PB0)
-#define PIN_USI_DO        (PIN_PB1)
-#define PIN_USI_SCK       (PIN_PB2)
-#define SS                (PIN_PB3)
+#define PIN_USI_DI            (PIN_PB0)
+#define PIN_USI_DO            (PIN_PB1)
+#define PIN_USI_SCK           (PIN_PB2)
+#define SS                    (PIN_PB3)
 
-#define USI_DATA_DDR      (DDRB)
-#define USI_DATA_PORT     (PORTB)
-#define USI_DATA_PIN      (PINB)
+#define USI_DATA_DDR          (DDRB)
+#define USI_DATA_PORT         (PORTB)
+#define USI_DATA_PIN          (PINB)
 
-#define USI_CLOCK_BIT     (1 << 2)
-#define USI_DO_BIT        (1 << 1)
-#define USI_DI_BIT        (1 << 0)
+#define USI_CLOCK_BIT         (1 << 2)
+#define USI_DO_BIT            (1 << 1)
+#define USI_DI_BIT            (1 << 0)
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX  (PIN_PA6)
-#define PIN_SOFTSERIAL_RX  (PIN_PA7)
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
@@ -354,7 +347,7 @@ had to do it in a "Timer0" transistor budget... */
  *      ( 8) PB0  1|   a|20  PA0 ( 0)
  *     *( 9) PB1  2|   a|19  PA1 ( 1)
  *      (10) PB2  3|   a|18  PA2 ( 2) INT1
- *     *(11) PB3  4|   a|17  PA3 ( 3)
+ *     *(11) PB3  4|    |17  PA3 ( 3)
  *           VCC  5|    |16  AGND
  *           GND  6|    |15  AVCC
  *      (12) PB4  7|ax a|14  PA4 ( 4)

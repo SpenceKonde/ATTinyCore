@@ -47,7 +47,9 @@ Example of a "guard" against wrong pin mapping:
 #error "Sketch was written for new pinmapping!"
 #endif
 ```
-The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel!
+The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel for that mapping.
+
+The legacy pin mapping is even stranger - it is as if someone tried to make a pin mapping that precluded any sort of simplification of the math, and as a result, it is significantly less efficient.
 
 ### Flexible PWM support
 The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
@@ -56,7 +58,7 @@ The two channels of Timer1 can each output on one or more of 4 pins, albeit with
 Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
 
 ### SPI Support
 There is a full hardware SPI port and the normal SPI library can be used.
@@ -90,14 +92,14 @@ Though it's a far cry from what some of the classic tinyAVR parts have, the x7-s
 
 |  Positive  |   Negative  | 8X Gain |20X Gain|  Name (8x Gain)  |  Name (20x Gain)  |
 |------------|-------------|---------|--------|------------------|-------------------|
-| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  `DIFF_A0_A1_1X` |  `DIFF_A0_A1_20X` |
-| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  `DIFF_A1_A2_1X` |  `DIFF_A1_A2_20X` |
-| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  `DIFF_A2_A3_1X` |  `DIFF_A2_A3_20X` |
-| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  `DIFF_A4_A5_1X` |  `DIFF_A4_A5_20X` |
-| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  `DIFF_A5_A6_1X` |  `DIFF_A5_A6_20X` |
-| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  `DIFF_A6_A7_1X` |  `DIFF_A6_A7_20X` |
-| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_1X` |  `DIFF_A8_A9_20X` |
-| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_1X` | `DIFF_A9_A10_20X` |
+| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  `DIFF_A0_A1_8X` |  `DIFF_A0_A1_20X` |
+| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  `DIFF_A1_A2_8X` |  `DIFF_A1_A2_20X` |
+| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  `DIFF_A2_A3_8X` |  `DIFF_A2_A3_20X` |
+| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  `DIFF_A4_A5_8X` |  `DIFF_A4_A5_20X` |
+| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  `DIFF_A5_A6_8X` |  `DIFF_A5_A6_20X` |
+| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  `DIFF_A6_A7_8X` |  `DIFF_A6_A7_20X` |
+| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_8X` |  `DIFF_A8_A9_20X` |
+| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_8X` | `DIFF_A9_A10_20X` |
 
 
 ### Temperature Measurement
@@ -113,25 +115,25 @@ I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your
 This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 Addresses are for 87 and 167 - the 167, having 16k of flash, has 4-byte vectors instead of 2-byte vectors.
 
-|vect_num |87 addr |167 addr| Vector Name         | Interrupt Definition                |
-|---------|--------|--------|---------------------|-------------------------------------|
-| 0       | 0x0000 | 0x0000 | `RESET_vect`        | External Pin, Power-on Res          |
-| 1       | 0x0001 | 0x0002 | `INT0_vect`         | External Interrupt Request 0        |
-| 2       | 0x0002 | 0x0004 | `INT1_vect`         | External Interrupt Request 1        |
-| 3       | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORT A)       |
-| 4       | 0x0004 | 0x0008 | `PCINT1_vect`       | Pin Change Interrupt (PORT B)       |
-| 5       | 0x0005 | 0x000A | `WDT_vect`          | Watchdog Time-out (Interrupt Mode)  |
-| 6       | 0x0006 | 0x000C | `TIMER1_CAPT_vect`  | Timer/Counter1 Capture              |
-| 7       | 0x0007 | 0x000E | `TIMER1_COMPA_vect` | Timer/Counter1 Compare Match        |
-| 8       | 0x0008 | 0x0010 | `TIMER1_COMPB_vect` | Timer/Coutner1 Compare Match        |
-| 9       | 0x0009 | 0x0012 | `TIMER1_OVF_vect`   | Timer/Counter1 Overflow             |
-|10       | 0x000A | 0x0014 | `TIMER0_COMPA_vect` | Timer/Counter0 Compare Match        |
-|11       | 0x000B | 0x0016 | `TIMER0_OVF_vect`   | Timer/Counter0 Overflow             |
-|12       | 0x000C | 0x0018 | `LIN_TC_vect`       | LIN/UART Transfer Complete          |
-|13       | 0x000D | 0x001A | `LIN_ERR_vect`      | LIN/UART Error                      |
-|14       | 0x000E | 0x001C | `SPI_STC_vect`      | SPI Serial Transfer Complete        |
-|15       | 0x000F | 0x001E | `ADC_READY_vect`    | Conversion Complete                 |
-|16       | 0x0010 | 0x0020 | `EE_READY_vect`     | EEPROM Ready                        |
-|17       | 0x0011 | 0x0022 | `ANALOG_COMP_vect`  | Analog Comparator                   |
-|18       | 0x0012 | 0x0024 | `USI_START_vect`    | USI Start Condition                 |
-|19       | 0x0013 | 0x0026 | `USI_OVF_vect`      | USI Counter Overflow                |
+|  # |87 addr |167 addr| Vector Name         | Interrupt Definition                |
+|----|--------|--------|---------------------|-------------------------------------|
+|  0 | 0x0000 | 0x0000 | `RESET_vect`        | External Pin, Power-on Res          |
+|  1 | 0x0001 | 0x0002 | `INT0_vect`         | External Interrupt Request 0        |
+|  2 | 0x0002 | 0x0004 | `INT1_vect`         | External Interrupt Request 1        |
+|  3 | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORT A)       |
+|  4 | 0x0004 | 0x0008 | `PCINT1_vect`       | Pin Change Interrupt (PORT B)       |
+|  5 | 0x0005 | 0x000A | `WDT_vect`          | Watchdog Time-out (Interrupt Mode)  |
+|  6 | 0x0006 | 0x000C | `TIMER1_CAPT_vect`  | Timer/Counter1 Capture              |
+|  7 | 0x0007 | 0x000E | `TIMER1_COMPA_vect` | Timer/Counter1 Compare Match        |
+|  8 | 0x0008 | 0x0010 | `TIMER1_COMPB_vect` | Timer/Coutner1 Compare Match        |
+|  9 | 0x0009 | 0x0012 | `TIMER1_OVF_vect`   | Timer/Counter1 Overflow             |
+| 10 | 0x000A | 0x0014 | `TIMER0_COMPA_vect` | Timer/Counter0 Compare Match        |
+| 11 | 0x000B | 0x0016 | `TIMER0_OVF_vect`   | Timer/Counter0 Overflow             |
+| 12 | 0x000C | 0x0018 | `LIN_TC_vect`       | LIN/UART Transfer Complete          |
+| 13 | 0x000D | 0x001A | `LIN_ERR_vect`      | LIN/UART Error                      |
+| 14 | 0x000E | 0x001C | `SPI_STC_vect`      | SPI Serial Transfer Complete        |
+| 15 | 0x000F | 0x001E | `ADC_READY_vect`    | Conversion Complete                 |
+| 16 | 0x0010 | 0x0020 | `EE_READY_vect`     | EEPROM Ready                        |
+| 17 | 0x0011 | 0x0022 | `ANALOG_COMP_vect`  | Analog Comparator                   |
+| 18 | 0x0012 | 0x0024 | `USI_START_vect`    | USI Start Condition                 |
+| 19 | 0x0013 | 0x0026 | `USI_OVF_vect`      | USI Counter Overflow                |

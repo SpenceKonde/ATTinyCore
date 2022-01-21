@@ -74,6 +74,13 @@ ponyser.program.tool=avrdude
 ponyser.program.protocol=ponyser
 ponyser.program.extra_params=-P{serial.port}
 
+ftdisyncbb.name=FT232RL (the blue knockoff board w/2x3 pin header and voltage switch - that's an ISP header!)
+ftdisyncbb.communication=usb
+ftdisyncbb.protocol=bwmega
+ftdisyncbb.program.tool=avrdude
+ftdisyncbb.program.protocol=bwmega
+ftdisyncbb.program.extra_params=-Pusb
+
 stk500.name=Atmel STK500
 stk500.communication=serial
 stk500.protocol=stk500

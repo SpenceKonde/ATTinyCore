@@ -1,23 +1,31 @@
 ### ATtiny 441/841
 ![x41 Pin Mapping](Pinout_x41.jpg "Arduino Pin Mapping for ATtiny x41")
 
- Specifications |  .
------------- | -------------
-Flash (program memory)   | 4096b / 8192b ( 3456b/7552b with Optiboot, 6586b with Micronucleus)
-RAM  | 256/512 bytes
-EEPROM | 256/512 bytes
-Bootloader | Yes, Optiboot (serial) or Micronucleus (VUSB)
-GPIO Pins | 11
-ADC Channels | 12 (including the one on reset), many differential channels
-PWM Channels | 6
-Interfaces | 2x UART, SPI, slave I2C
-Clock options | Internal 1/8 MHz, ~16 MHz w/caveats, external crystal or clock* up to 16MHz, o/c to 20MHz.
-Clock options | Micronucleus 8 MHz Internal, or 1 or ~16 MHz from 8 MHz internal
-Packages | SOIC-14, MLF-20 (QFN), VQFN-20
-
-* Manual steps required. See notes in README under "Using external CLOCK (not crystal)"
+Specification         |    ATtiny841   |      ATtiny841 |    ATtiny841   |     ATtiny441  |      ATtiny441 |
+----------------------|----------------|----------------|----------------|----------------|----------------|
+Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |
+Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |
+Flash available user  |     8192 bytes |     7552 bytes |     6586 bytes |     4096 bytes |     3456 bytes |
+RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
+EEPROM                |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |
+GPIO Pins             |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |     11 + RESET |
+ADC Channels          |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |  12 (incl RST) |
+Differential ADC      |  Yes, v. fancy |  Yes, v. fancy |  Yes, v. fancy |  Yes, v. fancy |  Yes, v. fancy |
+PWM Channels          |              6 |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |      2 (9, 10) |
+Interfaces            |  2x USART, SPI |       SPI, I2C | vUSB, SPI, I2C |       SPI, I2C |       SPI, I2C |
+Interfaces            |      I2C slave |      I2C slave |      I2C slave |      I2C slave |      I2C slave |
+Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
+Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |
+Internal, with tuning | 16, 12, 8@5/3v3| 16, 12, 8@5/3v3| 16, 12, 8@5/3v3| 16, 12, 8@5/3v3| 16, 12, 8@5/3v3|
+External Crystal      |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |
+External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |
+Int. ULP Oscillator   |   32, 64, 128, |  Not supported |  Not supported |   32, 64, 128, |  Not supported |
+Int. ULP Osc. Cont.   | 256 or 512 kHz |                |                | 256 or 512 kHz |                |
+Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
 
 Two pinout options are available, clockwise and counterclockwise, see below for more information. Be sure that the one you have selected is the one that you intend!
+
+These parts are available in a SOIC-14, 4x4mm QFN-20, or 3x3mm VQFN-20. No, I don't know why they didn't use a 16-pin QFN either.
 
 The ATtiny x41-family is a more advanced version of the ATtiny x4-family. It is pin compatible, though available only in surface mount packages, and offers an incredible array of peripherals, whilst costing only slightly more than an ATtiny 84. Tests have shown that despite manufacturer spec'ed max speed of 16 MHz, they typically work without issue at 20 MHz @ 5v and room temperature.
 
@@ -58,13 +66,13 @@ Example of a "guard" against wrong pin mapping:
 The standard Tone() function is supported on these parts. For best results, use PA5 (pin 5 on either pinout) or PA6 (pin 4 on counterclockwise, pin 6 on clockwise), as this will use hardware output compare to generate the square wave, instead of interrupts.
 
 ### I2C support
-There is no I2C master functionality implemented in hardware. As of version 1.1.3, the included Wire.h library will use a software implementation to provide I2C master functionality, and the hardware I2C slave for slave functionality, and can be used as a drop-in replacement for Wire.h with the caveat that clock speed cannot be set. **You must have external pullup resistors installed** in order for I2C functionality to work reliably.
+**There is no I2C master functionality implemented in hardware**. The included Wire.h library will use a software implementation to provide I2C master functionality, and the hardware I2C slave for slave functionality, and can be used as a drop-in replacement for Wire.h with the caveat that clock speed cannot be set. **You must have external pullup resistors installed** in order for I2C functionality to work reliably; be aware that error reporting of the software I2C master is hit or miss.
 
 ### SPI Support
 There is hardware SPI support. Use the normal SPI module.
 
 ### UART (Serial) Support
-There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
+There are **two** hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
 
 To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead) - Note that this works on any hardware serial port from any classic AVR, with *very* few exceptions. (off the top of my head, some very early ATmegas don't have the 0 in the register names for their only USART, and the ATtiny87/167, because it doesn't have a USART, it has a fancypants LIN thing that makes a killer UART (no S - it doesn't support the rarely used synchronous mode, nor can you turn it into an SPI module like you can a normal USART) if you turn off all the LIN stuff)
 ```
@@ -216,21 +224,21 @@ PORTCR=(1<<BBMA)|(1<<BBMB); //BBMA controls PORTA, BBMB controls PORTB.
 
 
 ## Tuning Constant Locations
-The 841/441, owing to the incredible power of it's oscillator, can be run at many speeds from the internal oscillator with proper calibration. We support storage of 4 calibration values. The included tuner uses these 4 locations for OSCCAL tuning values. If tuning is enabled, the OSCCAL tuning locations are checked at startup. Our demonstration code for temperature measurement shows setting calibration byte for temperature calibrated at a single point, as well (offset). Slope would require performing a 2-point calibration.
+The 841/441, owing to the incredible power of it's oscillator, can be run at many speeds from the internal oscillator with proper calibration. We support storage of 4 calibration values. The included tuner uses these 4 locations for OSCCAL tuning values. If tuning is enabled, the OSCCAL tuning locations are checked at startup if tuning is enabled.
+
 **ISP programming (no bootloader)**: EESAVE fuse set, stored in EEPROM
 **Bootloader used**: Saved between end of bootloader and end of flash. See File -> Examples -> Temperature and Voltage
 
 | Tuning Constant         | Location EEPROM | Location Flash |
 |-------------------------|-----------------|----------------|
-| Temperature Offset      | E2END - 5       | FLASHEND - 7   |
-| Temperature Slope       | E2END - 4       | FLASHEND - 6   |
-| Tuned OSCCAL0 8 MHz/5V  | E2END - 3       | FLASHEND - 5   |
-| Tuned OSCCAL0 12 MHz/5V | E2END - 2       | FLASHEND - 4   |
-| Tuned OSCCAL0 16 MHz/5V | E2END - 1       | FLASHEND - 3   |
-| Tuned OSCCAL0 16.5 MHz  | E2END - 0       | FLASHEND - 2   |
+| Tuned OSCCAL0 8 MHz/3V3 | E2END - 3       | FLASHEND - 5   |
+| Tuned OSCCAL0 8 MHz/5V  | E2END - 2       | FLASHEND - 4   |
+| Tuned OSCCAL0 12 MHz*   | E2END - 1       | FLASHEND - 3   |
+| Tuned OSCCAL0 16 MHz*   | E2END - 0       | FLASHEND - 2   |
 | Bootloader Signature 1  | Not Used        | FLASHEND - 1   |
 | Bootloader Signature 2  | Not Used        | FLASHEND       |
 
+`*` Calibration at aprx. 5v is assumed and implied
 
 
 ## Purchasing ATtiny841 Boards
@@ -246,47 +254,48 @@ The Wattuino board does not support maintenance of this core, but it does suppor
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x41-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
-vect_num | Vector Address | Vector Name | Interrupt Definition
------------- | ------------- | ------------ | -------------
-0 | 0x0000 | RESET_vect | Any reset (pin, WDT, power-on, BOD)
-1 | 0x0001 | INT0_vect | External Interrupt Request 0
-2 | 0x0002 | PCINT0_vect | Pin Change Interrupt 0 (PORT A)
-3 | 0x0003 | PCINT1_vect | Pin Change Interrupt 1 (PORT B)
-4 | 0x0004 | WDT_vect | Watchdog Time-out (Interrupt Mode)
-5 | 0x0005 | TIM1_CAPT_vect | Timer/Counter1 Capture Event
-5 | 0x0005 | TIMER1_CAPT_vect | Alias - provided by ATTinyCore
-6 | 0x0006 | TIM1_COMPA_vect | Timer/Counter1 Compare Match A
-6 | 0x0006 | TIMER1_COMPA_vect | Alias - provided by ATTinyCore
-7 | 0x0007 | TIM1_COMPB_vect | Timer/Counter1 Compare Match B
-7 | 0x0007 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore
-8 | 0x0008 | TIM1_OVF_vect | Timer/Counter1 Overflow
-8 | 0x0008 | TIMER1_OVF_vect | Alias - provided by ATTinyCore
-9 | 0x0009 | TIM0_COMPA_vect | Timer/Counter0 Compare Match A
-9 | 0x0009 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore
-10 | 0x000A | TIM0_COMPB_vect | Timer/Counter0 Compare Match B
-10 | 0x000A | TIMER0_COMPB_vect | Alias - provided by ATTinyCore
-11 | 0x000B | TIM0_OVF_vect | Timer/Counter0 Overflow
-11 | 0x000B | TIMER0_OVF_vect | Alias - provided by ATTinyCore
-12 | 0x000C | ANA_COMP0_vect | Analog Comparator 0
-13 | 0x000D | ADC_READY_vect | ADC Conversion Complete
-14 | 0x000E | EE_RDY_vect | EEPROM Ready
-15 | 0x000F | ANA_COMP1_vect | Analog Comparator 1
-16 | 0x0010 | TIM2_CAPT_vect | Timer/Counter2 Capture Event
-16 | 0x0010 | TIMER2_CAPT_vect | Alias - provided by ATTinyCore
-17 | 0x0011 | TIM2_COMPA_vect | Timer/Counter2 Compare Match A
-17 | 0x0011 | TIMER2_COMPA_vect | Alias - provided by ATTinyCore
-18 | 0x0012 | TIM2_COMPB_vect | Timer/Counter2 Compare Match B
-18 | 0x0012 | TIMER2_COMPB_vect | Alias - provided by ATTinyCore
-19 | 0x0013 | TIM2_OVF_vect | Timer/Counter2 Overflow
-19 | 0x0013 | TIMER2_OVF_vect | Alias - provided by ATTinyCore
-20 | 0x0014 | SPI_vect | SPI Serial Transfer Complete
-21 | 0x0015 | USART0_RXS_vect | USART0 Rx Start
-22 | 0x0016 | USART0_RXC_vect | USART0 Rx Complete
-23 | 0x0017 | USART0_DRE_vect | USART0 Data Register Empty
-24 | 0x0018 | USART0_TXC_vect | USART0 Tx Complete
-25 | 0x0019 | USART1_RXS_vect | USART1 Rx Start
-26 | 0x001A | USART1_RXC_vect | USART1 Rx Complete
-27 | 0x001B | USART1_DRE_vect | USART1 Data Register Empty
-28 | 0x001C | USART1_TXC_vect | USART1 Tx Complete
-29 | 0x001D | TWI_vect | TWI Slave Interrupt
-30 | 0x001E | QTRIP_vect | QTouch
+
+vect_num | Addr.  | Vector Name       | Interrupt Definition
+|--------|--------|-------------------|-------------------------------------|
+|      0 | 0x0000 | RESET_vect        | Any reset (pin, WDT, power-on, BOD) |
+|      1 | 0x0001 | INT0_vect         | External Interrupt Request 0        |
+|      2 | 0x0002 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |
+|      3 | 0x0003 | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)     |
+|      4 | 0x0004 | WDT_vect          | Watchdog Time-out (Interrupt Mode)  |
+|      5 | 0x0005 | TIM1_CAPT_vect    | Timer/Counter1 Capture Event        |
+|      5 | 0x0005 | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore      |
+|      6 | 0x0006 | TIM1_COMPA_vect   | Timer/Counter1 Compare Match A      |
+|      6 | 0x0006 | TIMER1_COMPA_vect | Alias - provided by ATTinyCore      |
+|      7 | 0x0007 | TIM1_COMPB_vect   | Timer/Counter1 Compare Match B      |
+|      7 | 0x0007 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore      |
+|      8 | 0x0008 | TIM1_OVF_vect     | Timer/Counter1 Overflow             |
+|      8 | 0x0008 | TIMER1_OVF_vect   | Alias - provided by ATTinyCore      |
+|      9 | 0x0009 | TIM0_COMPA_vect   | Timer/Counter0 Compare Match A      |
+|      9 | 0x0009 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore      |
+|     10 | 0x000A | TIM0_COMPB_vect   | Timer/Counter0 Compare Match B      |
+|     10 | 0x000A | TIMER0_COMPB_vect | Alias - provided by ATTinyCore      |
+|     11 | 0x000B | TIM0_OVF_vect     | Timer/Counter0 Overflow             |
+|     11 | 0x000B | TIMER0_OVF_vect   | Alias - provided by ATTinyCore      |
+|     12 | 0x000C | ANA_COMP0_vect    | Analog Comparator 0                 |
+|     13 | 0x000D | ADC_READY_vect    | ADC Conversion Complete             |
+|     14 | 0x000E | EE_RDY_vect       | EEPROM Ready                        |
+|     15 | 0x000F | ANA_COMP1_vect    | Analog Comparator 1                 |
+|     16 | 0x0010 | TIM2_CAPT_vect    | Timer/Counter2 Capture Event        |
+|     16 | 0x0010 | TIMER2_CAPT_vect  | Alias - provided by ATTinyCore      |
+|     17 | 0x0011 | TIM2_COMPA_vect   | Timer/Counter2 Compare Match A      |
+|     17 | 0x0011 | TIMER2_COMPA_vect | Alias - provided by ATTinyCore      |
+|     18 | 0x0012 | TIM2_COMPB_vect   | Timer/Counter2 Compare Match B      |
+|     18 | 0x0012 | TIMER2_COMPB_vect | Alias - provided by ATTinyCore      |
+|     19 | 0x0013 | TIM2_OVF_vect     | Timer/Counter2 Overflow             |
+|     19 | 0x0013 | TIMER2_OVF_vect   | Alias - provided by ATTinyCore      |
+|     20 | 0x0014 | SPI_vect          | SPI Serial Transfer Complete        |
+|     21 | 0x0015 | USART0_RXS_vect   | USART0 Rx Start                     |
+|     22 | 0x0016 | USART0_RXC_vect   | USART0 Rx Complete                  |
+|     23 | 0x0017 | USART0_DRE_vect   | USART0 Data Register Empty          |
+|     24 | 0x0018 | USART0_TXC_vect   | USART0 Tx Complete                  |
+|     25 | 0x0019 | USART1_RXS_vect   | USART1 Rx Start                     |
+|     26 | 0x001A | USART1_RXC_vect   | USART1 Rx Complete                  |
+|     27 | 0x001B | USART1_DRE_vect   | USART1 Data Register Empty          |
+|     28 | 0x001C | USART1_TXC_vect   | USART1 Tx Complete                  |
+|     29 | 0x001D | TWI_vect          | TWI Slave Interrupt                 |
+|     30 | 0x001E | QTRIP_vect        | QTouch                              |

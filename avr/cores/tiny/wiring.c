@@ -1060,24 +1060,24 @@ void initToneTimer(void)
 
 
 /* This attempts to grab a tuning constant from flash (if it's USING_BOOTLOADER) or EEPROM (if not). Note that it is not called unless ENABLE_TUNING is set.
- * inline for flash savings (call overhead) not speed; it is only ever called once, on startup, so I think it would get inlined anyway most of the time
+ * inlined for flash savings (call overhead) not speed; it is only ever called once, on startup, so I think it would get inlined anyway most of the time
  * addresses for key values:
  * FLASHEND is second byte of bootloader version, FLASHEND-1 is first byte. (all_
- * OFFSET:   Normal:  PLLs:   x41:        1634/828:
+ * OFFSET:   Normal:  PLLs:   x41:          1634/828:
  * LASTCAL-0   12.8    16.5   16.0 @ 5V0    12.8 @ 5V0
  * LASTCAL-1   12.0    16.0   12.8 @ 5V0    12.0 @ 5V0
- * LASTCAL-2    8.0    CUST   12.0 @ 5V0     8.0 @ 5V0
- * LASTCAL-3   CUST    0x00    8.0 @ 5V0    CUST
- * LASTCAL-4                  CUST
+ * LASTCAL-2    8.0   CUSTOM  12.0 @ 5V0     8.0 @ 5V0
+ * LASTCAL-3  CUSTOM   0x00   CUST/0x00     CUSTOM
+ * LASTCAL-4
  * LASTCAL-5                  0x00
  *
- * Note that a "tuned" value os 0x00 or 0xFF is never treated as acceptable except for 0xFF in the case of
+ * Note that a "tuned" value os 0x00 or 0xFF is never treated as acceptable except for 0xFF in the case of 16 MHz tuning for x41.
  *
  * ENABLE_TUNING values:
  * 1 = use for required changes (it started app boot-tuned wrong, so we need to fix it, or we wanted tuned frequency like 12 or 16.5 from non-bootloaded.
  * 2 = use stored cal contents for 8 MHz even if we start up like that.
- * 4 = enable custom tuning (CUST slot above)
- * 8 = paranoid - don't truest that boot tuning actually happened
+ * 4 = enable custom tuning (CUST slot above - we make no promises about any timekeeping functions)
+ * 8 = paranoid - don't trust that boot tuning actually happened
  */
 #if USING_BOOTLOADER
   #define read_tuning_byte(x) pgm_read_byte_near(x)
@@ -1096,25 +1096,25 @@ uint8_t read_factory_calibration(void)
   return value;
 }
 
-// only called in one place most likely, let's try to inline it.
+// only called in one place most likely, but we'll try to make sure the compiler inlines it just the same. It's 3 instructions, so it absolutely ought to be.
 inline void __attribute__((always_inline)) set_OSCCAL(uint8_t cal) {
   #ifdef OSCCAL0
     OSCCAL0 = cal;
   #else
     OSCCAL = cal;
   #endif
-  __asm__ __volatile__ ("nop" "\n\t");
+  __asm__ __volatile__ ("nop" "\n\t"); /* This is the "trick" that micronucleus uses to avoid crashes from sudden frequency change. Since micronucleus works, I'll copy that trick.
 }
 
 static inline bool __attribute__((always_inline)) check_tuning() {
-  // It is almost inconceivable that 0 would be desired tuning
+  // It is almost inconceivable that 0 would be the desired tuning
   // If this is still 0 by the end, we didn't have a valid tuning constant.
   uint8_t tuneval = 0;
   #if (CLOCK_SOURCE == 6)
   /* start PLL timer tuning */
     #if (F_CPU == 16500000)
       tuneval = read_tuning_byte(LASTCAL - 0);
-    #elif (F_CPU == 16000000) // 16 or divided down 16.
+    #elif (F_CPU == 16000000 || F_CPU == 8000000 || F_CPU) // 16 or divided down 16.
       tuneval = read_tuning_byte(LASTCAL - 1);
     #else // Custom tuning
       tuneval = read_tuning_byte(LASTCAL - 2);
@@ -1236,21 +1236,22 @@ void init_clock() {
             CLKPR = 6;                // prescale by 64 for 0.25MHz
           #elif (F_CPU ==   125000L)  // but if using micronucleus to get code onto chip, no choice
             CLKPR = 7;                // prescale by 128 for 125kHz
-          #else// (F_CPU ==   62500L)  // This is far too slow for anything to work right!
+          #else // (F_CPU ==   62500L)  // This is far too slow for anything to work right!
             CLKPR = 8;                // prescale by 256 for 62.50kHz
           #endif
         #endif // Not 16 MHz
       #elif (F_CPU != 16500000L)  // second case - first was not 16.5 AND one of the normal ones - hence it's a custom tuning on a part that's starting
-        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 4)   // up from VUSB and tuned it's osc for 16.5... You know what a normal, every day occurence that is right?
+        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 4)   // from VUSB and tuned it's osc for 16.5... You know what a normal, every day occurence that is right?
           check_tuning();   // if tuning is enabled for custom speed (ENABLE_TUNING & 4) - use tuned value - if we have one.
-        #else               // If we don't, we're up a certain creek without a useful implement, as we don't know 'til runtime, when we can't tell the user!
-                            // If we're here, though, they didn't even have a boat because custom tuning is disabled.
+                            // If we don't, we're up a certain creek without a useful implement, as we don't know 'til runtime, when we can't tell the user!
+        #else
+          // If we're here, though, they didn't even have a boat because custom tuning is disabled, so we can tell them at compile time.
           #error "Requested PLL-derived frequency is a custom tuning, which is not enabled."
         #endif // end of check for custom tuning enabled.
       #else
         // Chip was tuned by bootloader to 16.5 MHz, and that's what we're telling it to run at - that was easy. But - if we're paranoid, we can get our stored one!
         #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 8)
-          check_tuning(); // Don't trust that boot tuning happenedl; maybe it may get uploaded with programmer ((ENABLE_TUNING) & 4)
+          check_tuning(); // Don't trust that boot tuning happened.
         #endif
       #endif
     #elif (F_CPU == 16500000L)    // not using a bootloader configured to leave OSC at 16.5 MHz - but that's what we want to run at...

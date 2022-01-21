@@ -150,11 +150,13 @@ static const uint8_t A11 = ADC_CH(11);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
+/* Timer 0 - 8-bit timer with PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_OC0A              (PIN_PC0)
 #define PIN_TIMER_OC0B              (PIN_PA5)
 #define PIN_TIMER_T0                (PIN_PA4)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PB3)
 #define PIN_TIMER_OC1B              (PIN_PA6)
@@ -185,10 +187,10 @@ static const uint8_t A11 = ADC_CH(11);
 
 /* Analog Comparator - not used by core */
 #define ANALOG_COMP_DDR         (DDRA)
-#define ANALOG_COMP_PORT       (PORTA)
+#define ANALOG_COMP_PORT        (PORTA)
 #define ANALOG_COMP_PIN         (PINA)
-#define ANALOG_COMP_AIN0_BIT       (1)
-#define ANALOG_COMP_AIN1_BIT       (2)
+#define ANALOG_COMP_AIN0_BIT    (1)
+#define ANALOG_COMP_AIN1_BIT    (2)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -214,37 +216,37 @@ static const uint8_t A11 = ADC_CH(11);
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define SS              PIN_PC2
-#define PIN_USI_DI      PIN_PB1
-#define PIN_USI_DO      PIN_PB2
-#define PIN_USI_SCK     PIN_PC1
+#define SS                    PIN_PC2
+#define PIN_USI_DI            PIN_PB1
+#define PIN_USI_DO            PIN_PB2
+#define PIN_USI_SCK           PIN_PC1
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
-#define USI_DATA_PUE       PUEB
+#define USI_DATA_DDR          DDRB
+#define USI_DATA_PORT         PORTB
+#define USI_DATA_PIN          PINB
+#define USI_DATA_PUE          PUEB
 
-#define USI_CLOCK_DDR      DDRC
-#define USI_CLOCK_PORT    PORTC
-#define USI_CLOCK_PIN      PINC
-#define USI_CLOCK_PUE      PUEC
+#define USI_CLOCK_DDR         DDRC
+#define USI_CLOCK_PORT        PORTC
+#define USI_CLOCK_PIN         PINC
+#define USI_CLOCK_PUE         PUEC
 
-#define USI_CLOCK_BIT     PINC1
-#define USI_DO_BIT        PINB2
-#define USI_DI_BIT        PINB1
+#define USI_CLOCK_BIT         PINC1
+#define USI_DO_BIT            PINB2
+#define USI_DI_BIT            PINB1
 
-#define USI_START_VECTOR USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
 
 /* Two hardware serial ports */
-#define PIN_HWSERIAL0_TX         PIN_PB0
-#define PIN_HWSERIAL0_RX         PIN_PA7
+#define PIN_HWSERIAL0_TX      PIN_PB0
+#define PIN_HWSERIAL0_RX      PIN_PA7
 
-#define PIN_HWSERIAL1_TX         PIN_PB1
-#define PIN_HWSERIAL1_RX         PIN_PB2
+#define PIN_HWSERIAL1_TX      PIN_PB1
+#define PIN_HWSERIAL1_RX      PIN_PB2
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 ## Programming the ATtiny parts
 
-All parts supported by ATTinyCore can be programmed using ISP (also called ICSP or SPI programming), using the SCK, MISO, MOSI and Reset pins. Most breakout boards (including all the ones I sell) provide a 6-pin (2x3) ISP programming header that matches the 6-pin connector used on common programmers. You will need an ISP programmer - the USBAsp and USBTinyISP programmers are readily available from ebay, amazon, aliexpress and many other vendors, typically for prices of around $3. If you get a USBAsp, be sure to get one with the 10-pin to 6-pin adapter. You can also use another Arduino (I know the AVR-based ones work, eg, nano, uno, pro mini - I can't make any promises about the fancier, non-AVR boards) using the Arduino as ISP sketch; upload this sketch to the board, and then place a ~10uF capacitor between reset and ground on that Arduino (this disables autoreset - it must be removed before you try to upload a different sketch).
+All parts supported by ATTinyCore can be programmed using ISP (also called ICSP or SPI programming), using the SCK, MISO, MOSI and Reset pins. Most breakout boards (including all the ones I sell) provide a 6-pin (2x3) ISP programming header that matches the 6-pin connector used on common programmers. You will need an ISP programmer - the USBAsp and USBTinyISP programmers are readily available from ebay, amazon, aliexpress and many other vendors, typically for prices of around $3. If you get a USBAsp, be sure to get one with the 10-pin to 6-pin adapter. You can also use another Arduino (I know the AVR-based ones work, eg, nano, uno, pro mini - I can't make any promises about the fancier, non-AVR boards) using the Arduino as ISP sketch; upload this sketch to the board, and then place a approx. 10uF (within a factor of 10) capacitor between reset and ground on that Arduino (this disables autoreset - it must be removed before you try to upload a different sketch).
 
 If a bootloader has already been loaded on the board (this must be done using ISP programming, unless you bought the board pre-bootloaded), it can be programmed via a Serial adapter. Be sure the serial adapter has a DTR pin broken out. I recommend the version available on ebay by searching for 'CH340G 6-pin' on ebay, and looking for the black boards with the little 3.3v/5v voltage switch (the black ones with no switch don't break out DTR), or the green boards with the microUSB connector and 3.3v/5v voltage switch. Both of those have the standard FTDI pinout used on on Pro Mini and on my boards, and I have used both with great success.
 
@@ -18,6 +18,21 @@ Ensure that you have connected all necessary external components (see [Wiring Gu
 * MOSI of programmer (pin 11 on Uno/Nano/ProMini) to MOSI of target
 * Pin 10 (pin 10 on Uno/Nano/ProMini, or pin "RST" pin on the ISP connector of a dedicated programer) to RST of target
 
+You must have a supported programmer:
+* AVR ISP
+* Diamex USB ISP
+* AVRISP mkII
+* USBtinyISP
+* USBasp
+* Parallel Programmer
+* Arduino as ISP
+* Arduino Leo/Micro as ISP
+* AVR Dragon ISP mode
+* Ponyser Programmer
+* FT232 in bitbang mode (see below)
+* Atmel STK500
+* Atmel-ICE
+
 Be sure that you do not have anything on any of these pins that would load them down, including LEDs (if the series resistor is large - think >1k ohm, this is generally not a problem), these need to be disconnected while programming. If you have any SPI devices connected to the target, you must either disconnect them while programming, or connect a 10k resistor between their CS line and Gnd.
 
 From the IDE, select your programmer from the Tools -> Programmer menu. Be sure to select the version with (ATTinyCore) after the name of the programmer. From the Tools -> Board menu, select the board that you are using. Do not select a board definition marked Optiboot unless you are planning to "Burn Bootloader" to prepare it for serial programming. From the Tools -> Chip menu, select the specific part you are using (if applicable). Select the desired BOD settings and clock source. If you are using an external crystal, you must have that crystal, and it's associated loading capacitors (see [Wiring Guide](Wiring.md)) connected, otherwise the chip cannot be reprogrammed until these are installed. If you are using a 48/88/828 with the External Clock option, you must have the external clock connected to the XTAL1 pin. If you are enabling BOD, you must select a voltage that is significantly less than the supply voltage - it should be the lowest voltage that the chip will plausibly run at; if you set BOD to a voltage higher than the supply voltage, it cannot be reprogrammed until a higher voltage is supplied.
@@ -27,6 +42,21 @@ If this is the first time you are using a brand new chip, or if you need to chan
 If burning the bootloader, do Tools -> Burn Bootloader. You should see output on the console reporting that it was successfully written.
 
 If uploading a sketch, click upload. You should see output on the console reporting that the sketch was successfully uploaded.
+
+#### FTDI in bitbang mode?
+Go search aliexpress, or ebay, or whatever the equivalent is in your country. You will find a blue "FTDI" serial adapter. Look through the designs on offer until you see one with a mini USB connector a switch to select voltage, an unmarked 2x3 set of pins in the middle, and the normal FTDI pinout. The build quality is abysmal, the last batch I got, it felt like the solder had been severely oxidized, the chip was off center on most of them, and obviously the FTDI chip is one ofthe counterfeits (which seem to work just as well as any that I've tried.... they run under $2 US on aliexpress. That mysterious 2x3 header? Yeah, thats for ISP programming using synchronous bitbang mode. This option enables it, a feature that in and of it self makes this the best of the FT232 clone adapter boards, and quite an appealing package. It can have the added diode and/or resistors to act as a UPDI programmer on modern AVRs connected permanently and still do ISP like this!
+For other FT232RL adapters that break out the modem control lines, it's:
+
+| Signal | FT232RL pin |
+|--------|-------------|
+| miso   | DSR         |
+| sck    | DCD         |
+| mosi   | CTS         |
+| reset  | RI          |
+
+Note that this can only be done with FT232RL's.
+
+This is not the same as the protocols that involve any-old-serial-adapter's modem control lines, generally using a pulse on TX in place of SCK, and reading one bit at a time from a modem control input amd semdomg the same. Those are agonizingly slow, only a desperation tactic to get optiboot onto something when you've just got nothing. They are not supported by this core.
 
 ### Programming via Serial (Optiboot)
 

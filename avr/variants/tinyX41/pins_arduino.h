@@ -153,17 +153,20 @@ afterwards if you then try to go back to core-provided PWM functions. The
 those at power on only (so it has no space cost because we have to set them
 anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
+/* Timer 0 - 8-bit timer with PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_OC0A              (PIN_PA4) /* core default - TOCC3 */
 #define PIN_TIMER_OC0B              (PIN_PA5) /* core default - TOCC4 */
 #define PIN_TIMER_T0                (PIN_PA3)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PA6) /* core default - TOCC2*/
 #define PIN_TIMER_OC1B              (PIN_PA3) /* core default - */
 #define PIN_TIMER_T1                (PIN_PA4)
 #define PIN_TIMER_ICP1              (PIN_PA7)
 
+/* Timer 2 - 16-bit timer with PWM */
 #define TIMER2_TYPICAL              (0) /* No, it's like timer1 */
 #define PIN_TIMER_OC2A              (PIN_PA7) /* core default */
 #define PIN_TIMER_OC2B              (PIN_PB2) /* core default */

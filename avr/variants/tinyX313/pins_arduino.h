@@ -13,11 +13,11 @@
  * ATTinyCore Standard Pin Mapping
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX313 1       //backwards compatibility
-#define __AVR_ATtinyX313__ //recommended
+#define ATTINYX313 1       // backwards compatibility
+#define __AVR_ATtinyX313__ // recommended
 
-#define NUM_DIGITAL_PINS            18
-#define NUM_ANALOG_INPUTS           0
+#define NUM_DIGITAL_PINS            (18)
+#define NUM_ANALOG_INPUTS           ( 0)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
@@ -115,11 +115,13 @@
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
+/* Timer 0 - 8-bit timer with PWM */
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_OC0A              (PIN_PD5)
 #define PIN_TIMER_OC0B              (PIN_PB2)
 #define PIN_TIMER_T0                (PIN_PD4)
 
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PB3)
 #define PIN_TIMER_OC1B              (PIN_PB4)
@@ -133,11 +135,11 @@
 /* Part has NO ADC */
 
 /* Analog Comparator - not used by core */
-#define ANALOG_COMP_DDR               DDRB
-#define ANALOG_COMP_PORT              PORTB
-#define ANALOG_COMP_PIN               PINB
-#define ANALOG_COMP_AIN0_BIT          0
-#define ANALOG_COMP_AIN1_BIT          1
+#define ANALOG_COMP_DDR             DDRB
+#define ANALOG_COMP_PORT            PORTB
+#define ANALOG_COMP_PIN             PINB
+#define ANALOG_COMP_AIN0_BIT        0
+#define ANALOG_COMP_AIN1_BIT        1
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -163,28 +165,28 @@
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_DI      PIN_PB5
-#define PIN_USI_DO      PIN_PB6
-#define PIN_USI_SCK     PIN_PB7
-#define SS              PIN_PB1
+#define PIN_USI_DI            PIN_PB5
+#define PIN_USI_DO            PIN_PB6
+#define PIN_USI_SCK           PIN_PB7
+#define SS                    PIN_PB1
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
+#define USI_DATA_DDR          DDRB
+#define USI_DATA_PORT         PORTB
+#define USI_DATA_PIN          PINB
 
-#define USI_CLOCK_BIT     PINB7
-#define USI_DO_BIT        PINB6
-#define USI_DI_BIT        PINB5
+#define USI_CLOCK_BIT         PINB7
+#define USI_DO_BIT            PINB6
+#define USI_DI_BIT            PINB5
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
 
 /* One hardware serial port */
-#define PIN_HWSERIAL0_TX         PIN_PD1
-#define PIN_HWSERIAL0_RX         PIN_PD0
+#define PIN_HWSERIAL0_TX      PIN_PD1
+#define PIN_HWSERIAL0_RX      PIN_PD0
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------

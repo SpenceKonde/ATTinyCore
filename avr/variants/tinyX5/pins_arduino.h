@@ -13,23 +13,23 @@
  * Basic Pin Definitions | Interrupt Macros |
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX5 1       //backwards compatibility
+#define ATTINYX5 1       // backwards compatibility
 #define __AVR_ATtinyX5__ //this is recommended way
 
-#define NUM_DIGITAL_PINS         6
-#define NUM_ANALOG_INPUTS        4
+#define NUM_DIGITAL_PINS  (6)
+#define NUM_ANALOG_INPUTS (4)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-#define PIN_PB0                 (0)
-#define PIN_PB1                 (1)
-#define PIN_PB2                 (2)
-#define PIN_PB3                 (3)
-#define PIN_PB4                 (4)
-#define PIN_PB5                 (5)
+#define PIN_PB0           (0)
+#define PIN_PB1           (1)
+#define PIN_PB2           (2)
+#define PIN_PB3           (3)
+#define PIN_PB4           (4)
+#define PIN_PB5           (5)
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN       (PIN_PB1)
+  #define LED_BUILTIN     (PIN_PB1)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
@@ -56,7 +56,7 @@ static const uint8_t A3 = ADC_CH(3);
  *---------------------------------------------------------------------------*/
 
 #define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 5) ? (&GIMSK) : ((uint8_t *) NULL))
-#define digitalPinToPCICRbit(p)     5
+#define digitalPinToPCICRbit(p)     (5)
 #define digitalPinToPCMSK(p)        (((p) >= 0 && (p) <= 5) ? (&PCMSK) : ((uint8_t *) NULL))
 #define digitalPinToPCMSKbit(p)     (p)
 
@@ -84,6 +84,49 @@ static const uint8_t A3 = ADC_CH(3);
 #define USE_SOFTWARE_SERIAL                     1
 
 /*---------------------------------------------------------------------------
+ * Chip Features - Timers amnd PWM
+ *---------------------------------------------------------------------------
+ * Basic PWM is covered elsewhere, but this lets you look up what pin is on
+ * a given compare channel easily. Used to generate some pinmapping independent
+ * defines for TimerOne library back in Arduino.h
+ *
+ * Functions of timers associated with pins have pins specified by macros of
+ * the form PIN_TIMER_ followed by the function.
+ *
+ * PWM_CHANNEL_REMAPPING is defined and true where the PWM channels from timers
+ * has additional non-standard behavior allowing the remapping of output from
+ * otherwise normal pins (and interfering with naive code that enables them,
+ * though if the code acts only on the timer registers, it will often work if
+ * user code calls analogWrite() on the pin before letting the library use it.
+ * Where this is not the case, it is not defined.
+ *
+ * TIMER0_TYPICAL is 1 if that timer is present, and is an 8-bit timer with or
+ * without two output compare channels. PIN_TIMER_OC0A/OC0B will be defined if
+ * it has them.
+ *
+ * TIMER1_TYPICAL is 1 if that timer is present, and is a 16-bit timer with PWM
+ * as opposed to some bizarro one like the 85 and 861 have.
+ *
+ * TIMER2_TYPICAL is 1 if that timer is present, and is an 8-bit asynch timer,
+ * like on classic ATmega parts. There is only one ATTinyCore part with a
+ * Timer2, and this is false there, because that timer is instead like Timer1.
+ *
+ * We do not provide further macros to characterize the type of a timer in more
+ * detail but the sheer variety of atypical timers on classic AVRs made it hard
+ * to derive a quick test of whether the normal stuff will work.
+ *---------------------------------------------------------------------------*/
+
+/* Timer 0 - 8-bit timer with PWM */
+#define TIMER0_TYPICAL              (1)
+#define PIN_TIMER_OC0A              (PIN_PB0)
+#define PIN_TIMER_OC0B              (PIN_PB1)
+
+/* Timer 1 - 8-bit high speed timer with PWM */
+#define TIMER1_TYPICAL              (0)
+#define PIN_TIMER_OC1A              (PIN_PB1)
+#define PIN_TIMER_OC1B              (PIN_PB4)
+
+/*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
  *---------------------------------------------------------------------------
  * Analog reference constants are pre-shifted to their final position in the
@@ -92,19 +135,19 @@ static const uint8_t A3 = ADC_CH(3);
  * reorder the bits so they line up. Aren't you glad that's not happening at
  * runtime?
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)          ((((x) & 0x03) << 6) | (((x) & 0x04) << 2))
+#define ADC_REF(x)           ((((x) & 0x03) << 6) | (((x) & 0x04) << 2))
 
 /* Analog Reference bit masks */
-#define DEFAULT             ADC_REF(0x00)
-#define EXTERNAL            ADC_REF(0x01)
-#define INTERNAL1V1         ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL2V56_NO_CAP ADC_REF(0x06) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL2V56_CAP    ADC_REF(0x07) /* Connect a capacitor between AREF and ground for improved reference stability */
-#define INTERNAL2V56        INTERNAL2V56_NO_CAP
-#define INTERNAL            INTERNAL
+#define DEFAULT              ADC_REF(0x00)
+#define EXTERNAL             ADC_REF(0x01)
+#define INTERNAL1V1          ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
+#define INTERNAL2V56_NO_CAP  ADC_REF(0x06) /* Not connected to AREF; AREF may be used for other purposes */
+#define INTERNAL2V56_CAP     ADC_REF(0x07) /* Connect a capacitor between AREF and ground for improved reference stability */
+#define INTERNAL2V56         INTERNAL2V56_NO_CAP
+#define INTERNAL             INTERNAL
 
 /* Special Analog Channels */
-#define ADC_INTERNAL         ADC_CH(0x0C)
+#define ADC_INTERNAL1V1      ADC_CH(0x0C)
 #define ADC_GROUND           ADC_CH(0x0D)
 #define ADC_TEMPERATURE      ADC_CH(0x0F)
 
@@ -123,11 +166,11 @@ static const uint8_t A3 = ADC_CH(3);
 #define DIFF_A1_A0_20X       ADC_CH(0x2B)
 
 /* Analog Comparator - used for soft-serial*/
-#define ANALOG_COMP_DDR             DDRB
-#define ANALOG_COMP_PORT           PORTB
-#define ANALOG_COMP_PIN             PINB
-#define ANALOG_COMP_AIN0_BIT           0
-#define ANALOG_COMP_AIN1_BIT           1
+#define ANALOG_COMP_DDR      DDRB
+#define ANALOG_COMP_PORT     PORTB
+#define ANALOG_COMP_PIN      PINB
+#define ANALOG_COMP_AIN0_BIT (0)
+#define ANALOG_COMP_AIN1_BIT (1)
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -153,29 +196,25 @@ static const uint8_t A3 = ADC_CH(3);
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_SCK     PIN_PB2
-#define PIN_USI_DO      PIN_PB1
-#define PIN_USI_DI      PIN_PB0
+#define PIN_USI_SCK           PIN_PB2
+#define PIN_USI_DO            PIN_PB1
+#define PIN_USI_DI            PIN_PB0
 
-#define SS              PIN_PB3
+#define SS                    PIN_PB3
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
+#define USI_DATA_DDR          DDRB
+#define USI_DATA_PORT         PORTB
+#define USI_DATA_PIN          PINB
 
-#define USI_CLOCK_BIT     PINB2
-#define USI_DO_BIT        PINB1
-#define USI_DI_BIT        PINB0
+#define USI_CLOCK_BIT         PINB2
+#define USI_DO_BIT            PINB1
+#define USI_DI_BIT            PINB0
 
-#define USI_START_VECTOR  USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
-
-/* Serial Ports - just the Software one */
-#define PIN_SOFTSERIAL_TX                PIN_PB0
-#define PIN_SOFTSERIAL_RX                PIN_PB1
 
 
 #ifdef ARDUINO_MAIN
@@ -183,7 +222,7 @@ static const uint8_t A3 = ADC_CH(3);
  * ATMEL ATTINY85/45/25 ATTinyCore Standard Pin Mapping
  *
  *                       +-\/-+
- *        A0  (5)  PB5  1|    |8   VCC
+ * RESET  A0  (5)  PB5  1|    |8   VCC
  *        A3  (3)  PB3  2|    |7   PB2  (2)  A1  INT0
  *  PWM   A2  (4)  PB4  3|    |6   PB1  (1)      PWM (OC0B or OC1A)
  * (OC1B)          GND  4|    |5   PB0  (0)      PWM (OC0A)
@@ -219,7 +258,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PB,
   PB,
   PB,
-  PB, /* 5 */
+  PB, /* 5, RESET */
 
 };
 
@@ -228,9 +267,9 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
-  _BV(3), /* 3 port B */
+  _BV(3),
   _BV(4),
-  _BV(5),
+  _BV(5), /* 5, RESET */
 
 };
 

@@ -1,19 +1,26 @@
-### ATtiny 261/461/861(a)
+# ATtiny 261/461/861(a)
 ![x61 pin mapping](Pinout_x61.jpg "Arduino Pin Mapping for ATtiny x61-family")
 
-Specifications |  .
------------- | -------------
-Flash (program memory)   | 2048b/4096b/8192b (3456b/7552b with optiboot)
-RAM  | 128/256/512 bytes
-EEPROM | 128/256/512 bytes
-Bootloader   | Yes, Optiboot (serial)
-GPIO Pins    | 15
-ADC Channels | 11 (including the one on reset)
-Differential ADC | Yes, 24 pairs, 1x/8x/20x/32x gain
-PWM Channels | 3
-Interfaces | USI, high speed timer
-Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal or clock up to 20 MHz
-Packages | DIP-20, SOIC-20, MLF-32
+Specification         |      ATtiny861   |        ATtiny861 |      ATtiny861   |       ATtiny461  |       ATtiny461  |       ATtiny261  |
+----------------------|------------------|------------------|------------------|------------------|------------------|------------------|
+Bootloader (if any)   |                  |         Optiboot |    Micronucleus  |                  |         Optiboot |                  |
+Uploading uses        |     ISP/SPI pins |   Serial Adapter |   USB (directly) |     ISP/SPI pins |   Serial Adapter |     ISP/SPI pins |
+Flash available user  |       8192 bytes |       7552 bytes |        TBD bytes |       4096 bytes |       3456 bytes |             2048 |
+RAM                   |        512 bytes |        512 bytes |        512 bytes |        256 bytes |        256 bytes |              128 |
+EEPROM                |        512 bytes |        512 bytes |        512 bytes |        256 bytes |        256 bytes |              128 |
+GPIO Pins             |       15 + RESET |       15 + RESET |       15 + RESET |       15 + RESET |       15 + RESET |       15 + RESET |
+ADC Channels          |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |    11 (incl RST) |
+Differential ADC      |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |1x/8x/20x/32 gain |
+PWM Channels          | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 | 3: PB1, PB3, PB5 |
+Interfaces            |              USI |              USI |        vUSB, USI |              USI |              USI |              USI |
+Clocking Options:     |           in MHz |           in MHz |           in MHz |           in MHz |           in MHz |           in MHz |
+Int. Oscillator       |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |      16.5. 16, 8 |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |
+Internal, with tuning |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |
+External Crystal      |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
+External Clock        |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
+Int. WDT Oscillator   |          128 kHz |          128 kHz |          128 kHz |          128 kHz |          128 kHz |          128 kHz |
+Default Pin Mapping   |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |
+
 
 The 261/461/861 and 261a/461a/861a are functionally very similar; the latter replaced the former in 2009, and uses slightly less power. Actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
 
@@ -28,31 +35,49 @@ This core includes an Optiboot bootloader for the ATtiny861/461, operating using
 ### Micronucleus Bootloader
 As of 2.0.0, a Micronucleus bootloader is included as well! With a PLL begging to be nudged up half a Mhz for the the 16.5 MHz option, it has finally fulfilled it's destiny. Build it from the DIP version,
 
-### PLL Clock
-The ATtiny x61-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. As a result, it is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16 MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below.
+## Features
 
-### Timer1 Clock Source option
-The ATtiny x61-family parts are equipped with a special high speed 8/10-bit timer, Timer1 (this is very different from the traditional 16-bit Timer1 used on the atmega328p and almost every other chip in the 8-bit AVR product line). This timer can be clocked off the system clock, OR from the PLL at 64 MHz or 32 MHz. This will impact the frequency of all PWM output.
+### Pin mapping options
+Historically, there was on pin mapping for the x61-series used by ATTinyCore. It was inherited from older versions of this core. During developoment of 1.5.0, it was realized that the traditional pinout, to put it bluntly, sucked, and a rational pinout was created. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. The new pinout is recommended for all new development; it is not only more coherent, but also more efficient (it simplifies some math that must be done at runtime.)
+
+Example of a "guard" against wrong pin mapping:
+```c
+#ifdef PINMAPPING_LEGACY
+  #error "Sketch was written for clockwise pin mapping!"
+#endif
+```
+### PLL Clock
+The ATtiny x61-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. It is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below. For use with USB libraries, a 16.5 MHz clock option is available; with the Micronucleus bootloader, a tuned value calculated from the USB clock is used, and this is the default clock option, otherwise, a heuristic is used to determine the tuning to get 16.5 MHz if the chip has not been "tuned" with a tuning sketch. .
+
+### Timer1 is a high speed timer
+This means it can be clocked at 64 MHz from the on-chip PLL. In the past a menu option was provided to configure this. It never worked, and in any event is insufficient to do much of practical use with. It was eliminated for 2.0.0. Instead, see the [ATTinyCore library](../libraries/ATTinyCore/README.md)
 
 ### Tone Support
-Tone() uses Timer1. For best results, use pin 6 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, tones can be generated up into the MHz range. If Timer1 is set to use the PLL clock (provided this is done using the menu option, not manually), Tone will figure this out and output the requested frequency. With Timer1 running off the PLL @ 64 MHz, tone() should be able to output a 32 MHz signal on pin 6! If using SoftwareSerial or the builtin software serial "Serial", tone() will only work on pin 6 while the software serial is actively transmitting or receiving. As only Timer1 is capable of hardware PWM on the x61 series, tone() will break all PWM functionality.
+Tone() uses Timer1. If the high speed functionality of Timer1 has been enabled (see link above), tone() will not produce the expected frequencies, but rather ones 2 or 4 times higher. For best results, use pin 1 or 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, "tones" can be generated up into the MHz range.  If using SoftwareSerial or the builtin software serial "Serial", tone() will work on the PWM pins while the software serial is active but not on any other pins.  As only Timer1 is capable of hardware PWM on the x61 series, tone() will break all PWM functionality.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. This was definitely broken prior to 1.5.0. It's current status has not been verified.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire.h library included with this core.. This was definitely broken prior to 1.5.0. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
 
 ### SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common).
+There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported).
 
 ### UART (Serial) Support
-There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART). While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md)
+There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs. Because the analog comparator here is more sophisticated, you can choose to use either AIN0, AIN1, or AIN2 as the RX pin from the Builtin SoftSerial menu. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART). While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](TinySoftSerialBaud.md)
 
-To disable the RX channel (to use only TX), the following commands should be used after calling Serial.begin(). No special action is needed to disable the TX line if only RX is needed.
-```
-ACSR &= ~(1 << ACIE);
-ACSR |= ~(1 << ACD);
-```
+| RX      | Pin | TX  (default) | Pin |
+|---------|-----|---------------|-----|
+| AIN1    | PA7 | AIN0          | PA6 |
+| AIN2    | PA5 | AIN0          | PA6 |
+| AIN0    | PA6 | AIN2          | PA5 |
+| TX only | N/A | AIN0          | PA6 |
+
+
+Though TX defaults to AIN0 (or AIN2), it can be moved to any pin on PORTA using Serial.setTxBit(b) where b is the number in the pin name using Pxn notation (only pins on PORTA are valid) (2.0.0+ only - was broken in earlier versions).
+
+To disable the RX channel (to use only TX), select "TX only" from the Builtin SoftSerial tools menu. To disable the TX channel, simply don't print anything to it, and set it to the desired pinMode after Serial.begin()
+
 ### Servo Support
-As of version 1.2.2, the builtin Servo library supports the ATtiny x61-family. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial". This  On prior versions, a third party library must be used. The servo library will disable all PWM channels (as Timer1 is the only timer capable of hardware PWM).
+Although the timers are quite different, and historically there have been issues with the Servo library, we include a builtin Servo library that supports the Tiny x5 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial).  On prior versions, a third party library must be used. The servo library will disable PWM on pin 4, regardless of which pin is used for output, and cannot be used at the same time as Tone. If you have installed a version of Servo through Library Manager, instead include `Servo_ATTinyCore.h` or it will use the incompatible library installed through library manager.
 
 ## ADC Features
 The ATtiny861 has a surprisingly sophisticated ADC, one more advanced than many ATmega parts, with many differential channels, most with selectable gain. As of ATTinyCore 2.0.0, these are available through analogRead!  When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available.
@@ -148,7 +173,7 @@ Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny2
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x61-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, the misspelled vector doesn't end up in the vector table, so if it is enabled and triggered, the device will (at best) immediately reset (often not cleanly). The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed" (that is, 0x0001 is bytes 0x0002 and 0x0003). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
+This table lists all of the interrupt vectors available on the ATtiny x61-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
 
 **Note about PCINTs:** There's a `PCMSK0` and `PCMSK1` for port A and B respectively, like normal. There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs on each port, like normal. But both of them call the same PCINT vector when triggered: *there's ONLY ONE PCINT VECTOR!*
 
