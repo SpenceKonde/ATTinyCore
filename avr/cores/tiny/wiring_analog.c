@@ -104,15 +104,15 @@ void analogReference(uint8_t mode) {
     #else // is an x7 - this gets more interesting...
       if ((mode & 0xC6) != mode ) {
         badArg("Argument is not an analog reference, use the named constants listed in part-specific documentation");
-      } else if (mode & 0xC0 == 0x40) {
-        badArg("Invalid reference voltage requested. Use the named constants listed in part-specific documentation")
+      } else if ((mode & 0xC0) == 0x40) {
+        badArg("Invalid reference voltage requested. Use the named constants listed in part-specific documentation");
       } else
       #if !defined(ADC_ALLOW_BOGUS_XREF_AREF)
         // Make it easier if someone doesn't take my word for them not doing anything...
-        if (mode & 0x08 && mode & 0xC4) {
-          badArg("Invalid reference - AREFEN only valid when all other bits are zero - use named constants from part-specific documentation")
-        } else if (mode & 0x04 && !(mode & 0xC0)) {
-          badArg("Invalid reference - XREFEN only valid with internal reference - use named constants from part-specific documentation")
+        if ((mode & 0x08) && (mode & 0xC4)) {
+          badArg("Invalid reference - AREFEN only valid when all other bits are zero - use named constants from part-specific documentation");
+        } else if ((mode & 0x04) && !(mode & 0xC0)) {
+          badArg("Invalid reference - XREFEN only valid with internal reference - use named constants from part-specific documentation");
         }
       #endif
     #endif

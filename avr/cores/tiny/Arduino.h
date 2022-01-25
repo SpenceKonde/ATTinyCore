@@ -252,7 +252,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   So timer number = TOCCn & 0x07, and
   TOCC mask = TOCCn & 0xF0 >> (TOCCn & 0x08)?4:0
 */
-#if defined(TOCPMOE)
+#if defined(TOCPMCOE)
   #define TOCC0  (0x10)
   #define TOCC1  (0x20)
   #define TOCC2  (0x40)
@@ -267,7 +267,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   identical waveform on one or more of 4 pins per
   channel. Implementing this was faster than making
   an actual "decision" */
-#if defined()
+#if defined(OC1AX)
   #define TIM1AU (0x08)
   #define TIM1AV (0x09)
   #define TIM1AW (0x0A)
@@ -353,7 +353,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
       #define INITIALIZE_ADC                        DEFAULT_INITIALIZE_ADC
     #endif
   #endif
-#else                               0
+#else
   #if defined(INITIALIZE_ADC)
     #if INITIALIZE_ADC != 0
       #error "STOP - Variant requested that the ADC be initialized, but this part does not have one (NUM_ANALOG_INPUTS == 0). This indicates a critical defect in ATTinyCore which should be reported promptly."
@@ -424,7 +424,8 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   #endif
 #else
   #ifndef RSIG
-  #define RSIG SIGRD
+    #define RSIG SIGRD
+  #endif
 #endif
 
 /*---------------------------------------------------------------------------

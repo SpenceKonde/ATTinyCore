@@ -11,7 +11,7 @@
 #include "wiring_private.h"
 #include <avr/boot.h>
 
-#if USING_BOOTLOADER==1
+#if USING_BOOTLOADER
   #include <avr/pgmspace.h>
 #else
   #include <avr/eeprom.h>
@@ -928,6 +928,7 @@ void initToneTimer(void)
 #if INITIALIZE_SECONDARY_TIMERS
   static void initToneTimerInternal(void)
   {
+    /* This never worked right
     #if (defined(PLLTIMER1) || defined(LOWPLLTIMER1)) && !defined(PLLCSR)
       #error "Chip does not have PLL (only x5, x61 series do), which is selected (somehow) as timer1 clock source. If you have not modified the core, please report this to core maintainer."
     #elif defined(LOWPLLTIMER1) && CLOCK_SOURCE == 6
@@ -945,7 +946,7 @@ void initToneTimer(void)
         PLLCSR = (1 << PCKE) | (1 << LSM) | (1 << PLLE);
       }
     #endif
-
+    */
 
     #if defined(__AVR_ATtinyX41__)
       TCCR1A   = (1 << WGM10) | (1 << COM1A1)| (1 << COM1B1); // enable OC1A, OC1B
@@ -1103,7 +1104,7 @@ inline void __attribute__((always_inline)) set_OSCCAL(uint8_t cal) {
   #else
     OSCCAL = cal;
   #endif
-  __asm__ __volatile__ ("nop" "\n\t"); /* This is the "trick" that micronucleus uses to avoid crashes from sudden frequency change. Since micronucleus works, I'll copy that trick.
+  __asm__ __volatile__ ("nop" "\n\t"); /* This is the "trick" that micronucleus uses to avoid crashes from sudden frequency change. Since micronucleus works, I'll copy that trick. */
 }
 
 static inline bool __attribute__((always_inline)) check_tuning() {
@@ -1141,8 +1142,17 @@ static inline bool __attribute__((always_inline)) check_tuning() {
           // cal because no tuning or not enabled, and the guess didn't work; running tuning sketch should fix it.;
           set_OSCCAL(tuneval != 0 ? tuneval : tune8);
           return 1;
+        } else {
+          uint8_t osccal=OSCCAL0;
+          if (osccal < 82) {
+            set_OSCCAL(OSCCAL0+174);
+            return 1;
+          } else if (osccal < 88) {
+            set_OSCCAL(255);
+            return 1;
+          }
+          return 0;
         }
-        // let it fall through to return 0 at end.
       #elif (F_CPU == 12800000)
         tuneval = read_tuning_byte(LASTCAL - 1);
       #elif (F_CPU == 12000000)
@@ -1245,7 +1255,7 @@ void init_clock() {
           check_tuning();   // if tuning is enabled for custom speed (ENABLE_TUNING & 4) - use tuned value - if we have one.
                             // If we don't, we're up a certain creek without a useful implement, as we don't know 'til runtime, when we can't tell the user!
         #else
-          // If we're here, though, they didn't even have a boat because custom tuning is disabled, so we can tell them at compile time.
+          // If we're here, though, we didn't even have a boat because custom tuning is disabled, so we can tell them at compile time.
           #error "Requested PLL-derived frequency is a custom tuning, which is not enabled."
         #endif // end of check for custom tuning enabled.
       #else
@@ -1399,9 +1409,9 @@ void init_clock() {
       #endif // end of check for custom tuning enabled.
     #endif
     /* End of internal osc prescale and tuning */
-  #elif (CLOCK_SOURCE == 17 || CLOCK_SOURCE == 18)
+  #elif (CLOCK_SOURCE == 0x11 || CLOCK_SOURCE == 0x12)
     // external 16MHz CLOCK or Crystal, but maybe they want to go slower to save power...
-    // This is used only for board definitions where the crystal has a good reason for being 16 MHz
+    // This is used only for board definitions where the crystal is forced to be 16 MHz and nothing else.
     // That is, on Micronucleus boards that use it for the bootloader. Many people use these as just an easy way
     // to program the part, and want to use them at low voltages or for low power applications after uploading
     // code via USB, so the answer of "use an appropriate crystal then" doesn't hold water. That, by the way

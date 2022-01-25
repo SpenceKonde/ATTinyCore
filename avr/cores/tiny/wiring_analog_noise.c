@@ -1,7 +1,9 @@
+#include "wiring_private.h"
+#include "pins_arduino.h"
+#ifdef SLEEP_MODE_ADC
 int analogRead_NR(uint8_t pin) {
-  _analogRead(pin, true)
+  return _analogRead(pin, true);
 }
 
-EMPTY_ISR(ADC_vect) {
-  //serves only to wake up the part.
-}
+EMPTY_INTERRUPT(ADC_vect)
+#endif
