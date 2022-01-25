@@ -15,7 +15,7 @@ version={versionnum.major}.{versionnum.minor}.{versionnum.patch}{versionnum.post
 
 build.versiondefines=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_AVR -DATTINYCORE="{version}" -DATTINYCORE_MAJOR={versionnum.major}UL -DATTINYCORE_MINOR={versionnum.minor}UL -DATTINYCORE_PATCH={versionnum.patch}UL -DATTINYCORE_RELEASED={versionnum.released}
 
-build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} {build.millis} {build.pinmap}
+build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} {build.millis} {build.tuneorcal} {build.wiremode} {build.bootloader} {build.usbpinset} {build.softser}
 
 #########################
 # AVR compile variables #
@@ -42,6 +42,8 @@ compiler.objcopy.cmd=avr-objcopy
 compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
 compiler.objdump.cmd=avr-objdump
 compiler.objdump.flags=--disassemble --source --line-numbers --demangle --section=.text
+compiler.nm.cmd=avr-nm
+compiler.nm.flags=--numeric-sort --line-numbers --demangle --print-size --format=s
 compiler.elf2hex.flags=-O ihex -R .eeprom
 compiler.elf2hex.cmd=avr-objcopy
 compiler.ldflags=
@@ -64,10 +66,10 @@ compiler.elf2hex.extra_flags=
 ####################
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu}{build.optiondefines}  -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu}{build.optiondefines}  -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile S files
 recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
@@ -123,11 +125,11 @@ recipe.hooks.objcopy.postobjcopy.2.pattern.linux=bash -c "{compiler.path}{compil
 recipe.hooks.objcopy.postobjcopy.2.pattern.macosx=bash -c "{compiler.path}{compiler.nm.cmd} {compiler.nm.flags}  {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.map"
 
 ## This is the name that memory maps, assembly listings and hex files will be output as
-build.extraassetname={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}c{build.clocksource}.{build.extraoptionabbr}
+build.extraassetname={build.project_name}.{build.mcu}{build.mcupostfix}{build.pinsetabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}
 
 ## Save hex
 recipe.output.tmp_file={build.project_name}.hex
-recipe.output.save_file={build.project_name}.{build.mcu}{build.mcupostfix}.{build.speed}.c{build.clocksource}.{build.extraoptionabbr}.hex
+recipe.output.save_file={build.project_name}.{build.mcu}{build.mcupostfix}{build.pinsetabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}.hex
 
 ## Save lst
 recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.lst" "{sketch_path}\{build.extraassetname}.lst"
@@ -181,7 +183,7 @@ tools.micronucleus.upload.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:
 
 tools.micronucleus.bootloader.params.verbose=
 tools.micronucleus.bootloader.params.quiet=
-tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 {bootloader.flashstring}
+tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{bootloader.file}:i
 
 tools.micronucleus.erase.params.verbose=
 tools.micronucleus.erase.params.quiet=
