@@ -1,34 +1,56 @@
 ### ATtiny 1634(R)
 ![1634 Pin Mapping](Pinout_1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
- Specifications |  .
------------- | -------------
-Flash (program memory)   | 16384b ( 15744b with Optiboot)
-RAM  | 1024 bytes
-EEPROM | 256 bytes
-Bootloader | Yes, Optiboot (serial)
-GPIO Pins | 17
-ADC Channels | 12
-PWM Channels | 4
-Interfaces | 2x UART, USI, slave I2C
-Clock options | Internal 1/8MHz, external crystal or clock up to 12MHz, overclocking to 16MHz.
+Specification         |    ATtiny1634  |    ATtiny1634  |    ATtiny1634  |
+----------------------|----------------|----------------|----------------|
+Bootloader (if any)   |           None |       Optiboot |  Micronucleus  |
+Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |
+Flash available       |    16384 bytes |    15744 bytes |      TBD bytes |
+RAM                   |     1024 bytes |      128 bytes |      128 bytes |
+EEPROM                |      256 bytes |       64 bytes |       64 bytes |
+GPIO Pins             |     17 + RESET |     17 + RESET |     17 + RESET |
+ADC Channels          |             12 |           None |           None |
+PWM Channels          |              4 |              4 |              4 |
+Interfaces            |   USI, 2xUSART |     USI, USART |     USI, USART |
+Interfaces            |      I2C slave |     USI, USART |     USI, USART |
+Clocking Options      |         in MHz |         in MHz |         in MHz |
+Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |     8, 4, 2, 1 |
+Int. ULP Oscillator   |        128 kHz |        128 kHz |        128 kHz |
+Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |    8, 12, 12.8 |
+External Crystal      |   Up to 16 MHz |   Up to 16 MHz |   Up to 16 MHz |
+External Clock        |   Up to 16 MHz |   Up to 16 MHz |   Up to 16 MHz |
+LED_BUILTIN           |        PIN_PC0 |        PIN_PC0 |        PIN_PC2 |
 
+Unlike most classic ATtiny parts, the 1634 is only spec'ed for maximum clock speed of 12 MHz. However experience has shown that it generally works at 16 MHz @ 5V.
 The ATtiny1634R has a more tightly factory calibrated internal oscillator. It is otherwise identical, has the same signature, and is interchangible.
 
-### Warning: Pin 14 (PB3) does not work as an input unless watchdog timer is running
-This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other thingss is not running, it is "internally pulled down"; phrased more pessimistically, one might say that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
+### Warning: PB3 does not work as an input unless watchdog timer is running
+This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might say that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
 See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT....
 
 ## Programming
-The ATtiny1634 can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+The ATtiny1634 can be programmed by use of any ISP programmer. ATTinyCore 2.0.0 supports the following programming options:
+
 
 ### Optiboot Bootloader
-This core includes an Optiboot bootloader for the ATtiny1634, operating on the hardware UART0 (Serial) port at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md). The bootloader uses 640b of space, leaving 15744b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the booloader).
+This core includes an Optiboot bootloader for the ATtiny1634, operating on either of the hardware serial ports, 0 or 1, at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md). The bootloader uses 640b of space, leaving 15744b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). This bootloader is not production grade; it can fail to erase properly which requires ISP programming (reburning bootloader, nothing fancy - but often problematic in production situations)
+
+### Micronucleus Bootloader
+New in 2.0.0. D+ is on PC4, D- is on PC5, and it tries to blink an LED on PC2. The Azduino USB 1634, an "ultramini" form factor designed to fit into a DIP socket, will be available from my Tindie store some time after the Chinese New Year holiday ends and PCBs can be manufactured again. It uses the internal oscillator tuned up to 12 MHz like the ATtiny84 and 841 do; it has not been tested thoroughly on this part, but at least the erase mechanism should be sound.
 
 ## Features
 
+### Two pin mapping options
+When I first merged in support for the tiny1634, I lacked the background to assess the pin mapping that the original author (TC-world as I recall) had chosen. With greater experience, it is evident that it is markedly worse than it could have been I think it was designed with it's prime directive to make 0 and 1 be the serial pins, which was very common practice in those days - and to try to have the SPI be on the same numbered pins as the '328p. As the market has become less of a monoculture, that convention has become less ubiquitous, which is good, because it's destructive . 2.0.0 introduces a more rational pin mapping with the pins numbered in clockwise order instead of counterclockwise. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. Your sketch can check for PINMAPPING_CCW or PINMAPPING_CW macro (eg, `#ifdef PINMAPPING_CCW` - I would recommend checking for the incompatible one, and immediately #error'ing if you find it). Remember also that you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 1 in the counterclockwise mapping. The clockwise mapping is strictly better than the counterclockwise one - the macros are more efficient (hence smaller binary sizes)
+Example of a "guard" against wrong pin mapping:
+```
+#ifdef PINMAPPING_CCW
+#error "Sketch was written for clockwise pin mapping!"
+#endif
+```
+
 ### Internal Oscillator voltage dependence
-Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Internal, Vcc < 4.5v) and 8 MHz (Internal, Vcc > 4.5 MHz ) board definitions - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. The new baud rate changes in 2.0.0 should further improve bootloader reliability here (see the Optiboot reference linked above).
+Like the tiny828 and x41, While the calibration of the internal oscillator on the 1634 is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact is  magnified by the fact that the bootloader used 57600 baud at 8 MHz - which is off by more than 2% even assuming a perfect oscillator due to baud rate math. The fact that many USB ports actually supply 5.2-5.3V to help charge cellphones of course only makes it that much worse. in 1.5.0 a workaround was implemented to try to make matters better on this front, but he new baud rate changes in 2.0.0 should provide substantial improvements in bootloader reliability here (see the Optiboot reference linked above).
 
 We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate chargeing powerhungry devices), and millis()/micros() will keep better time than in previous versions.
 
@@ -69,6 +91,8 @@ I (Spence Konde / Dr. Azzy) sell ATtiny1634 boards through my Tindie store - you
 ![Picture of ATtiny1634 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2015-06-21T05:40:17.284Z-T1634AMain3.png.855x570_q85_pad_rcrop.png)
 * [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny1634-dev-board-woptiboot-assembled/)
 * [Bare Boards](https://www.tindie.com/products/DrAzzy/attiny1634-breakout-wserial-header-bare-board/)
+* **Azduino 1634 Ultramini - Coming Q2 2022**- fits in a DIP-24 socket (2 pins missing on each side to leave room for the chip).
+* **Azduino USB 1634 Ultramini - Coming Q2 2022** - fits in a DIP-24 socket (2 pins missing on each side to leave room for the chip), with a MicroUSB socket extending past one end.
 
 ### PB3 silicon errata workaround
 If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below) - so the real impact of this issue is in fact very low, assuming you know about it and don't waste hours or days trying to figure out what is going on.

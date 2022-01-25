@@ -20,6 +20,7 @@ External Crystal      |   All Standard |   All Standard |  Not supported |   All
 External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
 Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |
 Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
+LED_BUILTIN           |        PIN_PB2 |        PIN_PB2 |     PB2 or PB0 |        PIN_PB2 |        PIN_PB2 |     PB2 or PB0 |
 
 
 The 24/44/84 and 24a/44a/84a are functionally identical; the latter replaced the former in 2008, and uses slightly less power, and actual ATtiny84 parts are rarely seen in circulation today. They have the same signatures and are fully interchangible, except that the internal oscillator on the x4 not-A is worse (enough-so that the micronucleus bootloader may not be able to work on them). It is extremely common to refer to the ATtiny84a as an ATtiny84, and actual x4-not-A parts are exotic. Microchip still makes them, but charges a large premium for them to encourage people to migrate to less obsolete hardware.
@@ -29,7 +30,7 @@ These parts are available in DIP-14, SOIC-14, and 4mm x 4mm QFN-20.
 Two pinouts are available for compatibility with other cores, see below for more information. Be sure you are using the pinout you think you are!
 
 ## Programming
-All of these parts can be programmed via ISP,
+All of these parts can be programmed via ISP
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny84/44, operating using software serial at at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md)) - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.

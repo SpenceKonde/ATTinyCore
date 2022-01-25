@@ -21,20 +21,24 @@
 | External Crystal        |   All Standard |   All Standard | **16**,8,4,2,1 |   All Standard |   All Standard | **16**,8,4,2,1 |
 | External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
 | Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
+| LED_BUILTIN             | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0* | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0* |
+
+`*` - the bootloader will always use either PA6 or PB1 unless you build your own binaries. The legacy pinout that it was paired with is absolutely godawful, and nobody should ever use it!
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any supported ISP programmer. It is recommended to use Arduino 1.8.13 or later; earlier versions will show all programmers, instead of just the ones that will work with this core.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on the hardware UART/LIN port at 115200 baud for 12 or 16 MHz clock speed, and 57600 when running at 8 MHz. In order to work on the x7 series, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application.  This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
+#### Supported Entry Conditions:
+* Reset only, upload must start w/in 1 second (for use with autoreset)
+* Reset and Power On, with 8-secind wait (for use without autoreset)
+
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal (if USB is not required, it can be prescaled as listed in the table for low power applications). See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
 
-#### Supported Entry Conditions:
-* Power-on only
-* Reset-pin and power-on
-* Reset-pin only if reset enabled, any reset otherwise.
+Two versions of the bootloader are provided, one for use with Digispark Pro boards with the LED on PB1, and one for use on our Azduino boards with the LED on PA6 (this is easier to route on the 0.425" wide PCB, which is sized to plug into a DIP-24 socket (6 pin positions near the middle are unused - the two centermost ones (to make room for the chip) and PB4 and PB5 (which are used for the crystal - which we needed space for on the PCB).
 
 ## Features
 
