@@ -15,26 +15,49 @@ Any changes listed at the top, without a version number above thenm, have not be
 * All functions that take a pin number or analog channel will test the high bit. They will interconvert as needed.
 * Add support for tuning based on values stored in flash (if bootloader in use - at end just before version number), or at end of EEPROM (if no bootloader - must set EESAVE for this to work)
 * Remove the second core that had been used for 841/828/1634
-* Add support for ADC noise reduction mode on parts that have that functionality.
-* Add support for analogRead() with differential channels and available gain options.
-* analogReference() immediately sets the reference bits (necessary if using XREF option for x7 parts, probably helps whenever cap is used with first few readings, otherwise harmless) *
-* Compile-time error checking for passing constants to analogRead() that aren't analog channels or digital pins with ACD input, calling analogRead() on x313 (with no ADC).
-* Runtime error checking invalid ADC calls *
-* PWM with 841/441/828 will leave COM bits untouched, and just turn the TOCCMOE bits on and off, so it won't stomp on user code that changes the timer mapping or configuration. (#471)
-* Code commenting has been edited for accuracy and improved. In the past, we were always trying to "guess" at what future parts might have for registers, and testing for registers rather than part identities. But this is now a core for a static set of parts (Well, except maybe the ATtiny26, which someone is paying me to add). Though we always should have done this, there's now no excuse for not putting comments indicating what parts these are trying to select for (at least where the #ifdef'ed code is dealing with some idiosyncracy of specific parts. Which was like, most of the time this was done). This used to make wiring.c in particular very hard to read "Okay, if TCCR1E exists, they're doing some really crazy shit. Which parts does this apply to? I'm here to change something on the ATtiny x5 parts - which pieces of this code should I be looking at?"
-* Improve TinySoftwareSerial. setTxPin() now works correctly. x61 has three options for the RX pin. Tighten up the assembly by making use of SBIC, and make sure it waits until the start of the first stop bit always but never longer than necessary. Improve overall efficiency of initialization. (SBI/CBI abuse!)
+* analogRead():
+  * Add support for ADC noise reduction mode on parts that have that functionality.
+  * Add support for analogRead() with differential channels and available gain options.
+  * analogReference() immediately sets the reference bits (necessary if using XREF option for x7 parts, probably helps whenever cap is used with first few readings, otherwise harmless) *
+  * Compile-time error checking for passing constants to analogRead() that aren't analog channels or digital pins with ACD input, calling analogRead() on x313 (with no ADC).
+  * Runtime error checking invalid ADC calls *
+* PWM and Timers:
+  * PWM with 841/441/828 will leave COM bits untouched, and just turn the TOCCMOE bits on and off, so it won't stomp on user code that changes the timer mapping or configuration. (#471)
+  * Code commenting has been edited for accuracy and improved. In the past, we were always trying to "guess" at what future parts might have for registers, and testing for registers rather than part identities. But this is now a core for a static set of parts (Well, except maybe the ATtiny26, which someone is paying me to add). Though we always should have done this, there's now no excuse for not putting comments indicating what parts these are trying to select for (at least where the #ifdef'ed code is dealing with some idiosyncracy of specific parts. Which was like, most of the time this was done). This used to make wiring.c in particular very hard to read "Okay, if TCCR1E exists, they're doing some really crazy shit. Which parts does this apply to? I'm here to change something on the ATtiny x5 parts - which pieces of this code should I be looking at?"
+* Improve TinySoftwareSerial:
+  * setTxPin() now works correctly.
+  * x61 has three options for the RX pin.
+  * Add option to disable RX. TX is automatically disabled if you don't reference Serial.
+  * Tighten up the assembly by making use of SBIC, and make sure it waits until the start of the first stop bit always but never longer than necessary.
+  * Improve overall efficiency of initialization (it was guilty of SBI/CBI macro abuse)
 * Todo: Further platform.txt enhancements.
 * Todo: Adapt digitalI/O functions to use PUE registers if appropriate.
 * PWM on third channel on x61
-* Todo: Micronucleus!
-* Todo: Boards.txt refactor.
-* Todo: Attend to platform.txt and boards.txt UI constistancy issues from email
+* Micronucleus
+  * Design hardware for testing with.
+  * Add pins to pins_usb.
+  * Implement new entry condition options.
+  * Create template bootloaderconfiguration with pins_usb content integrated
+  * Todo: Create configurations for each combination of board and entry condition:
+    * Both pin options for 84, 841
+    * Both LED options for 87, 167
+    * 861, 85, 88, 1634
+* Boards.txt refactor.
+  * Make most boards compile Bare Minimum example.
+  * Add support for external clock on all parts.
+  * Add support for 2 and 4 MHz from internal on all parts. This is done by dividing the 8 MHz clock. **THE BOOTLOADER RUNS AT 1 MHz - I am NOT going to build a million versions of Optiboot**
+  * boards.txt shallt not be manually edited, it is created with create_boards_txt.py. The file size is untenable to maintain by hand!
+* Attend to platform.txt and boards.txt UI constistancy issues from email
 * Deal with missing data from header files for some parts. SIGRD/RSIG, and PCMSK on 4313 which should have been PCMSK0 (#564)
-* Todo: Adjust optiboot upload speeds, they were not chosen well previously (sorry, this does mean burn bootloader may be required - that's why it's 2.0.0 not 1.x.x; they will work better, and in some cases, upload more quickly too - particularly where there is no hardware USART. I swear sometimes it looks like I did things just to punish people not using parts with a hardware serial port. Now the upload speed used is 4800 below 4 MHz 19200 from 4 up to 8, 38400 from 8 to 12, and 56700 above that that when there's no hardware USART. When there is, 9600 baud at 1 MHz, 57600 from 8 through 10, and 115200 above that. Fix issue with ATtiny48 binaries not writing (something is clearly wrong with the size checking, they should *not* have built like that. (#575))
-* Add support for FTDI sync bitbang with those chinese adapters with the ISP headers.
-* TinySoftSerial overhauled. Faster, better, smaller.
+* Todo: Optiboot
+  * Adjust optiboot upload speeds, they were not chosen well previously (sorry, this does mean burn bootloader may be required - that's why it's 2.0.0 not 1.x.x; they will work better, and in some cases, upload more quickly too - particularly where there is no hardware USART.
+  * Fix issue with ATtiny48 binaries not writing (something is clearly wrong with the size checking, they should *not* have built like that. (#575))
+  * Write script to generate new makefile. Each speed for each part needs two builds 1 second (autoreset, no run on POR), and 8 second (no autoreset, do run on POR).
+  * 441, 841, and 1634 need one for each of their two ports.
+* Programmers.txt
+  * Reorder the entries in descending order of usefulness.
+  * Add support for FTDI sync bitbang with those chinese adapters with the ISP headers
 * ATTinyCore.h now does more than just act as a placeholder.
-Note: Added features marked with * are planned to be optionally disablable to save flash, though they are not particularly flash-hungry. When you only have 2k, everything matters....
 
 
 ## 1.5.0

@@ -1,0 +1,82 @@
+################################################################################
+#                                                                              #
+#       ####  ########  ########                  #####                        #
+#      #    #    ##        ##                    ##```                         #
+#      #    #    ##        ##   ### #   # #   #  ##      ###  ####  ####       #
+#      ######    ##        ##    #  ##  #  # #   ##     #   # #   # #          #
+#      #    #    ##        ##    #  # # #   #    ##     #   # ####  ###        #
+#      #    #    ##        ##    #  #  ##   #    ##___  #   # # #   #          #
+#      #    #    ##        ##   ### #   #   #     #####  ###  #  #  ####       #
+#______________________________________________________________________________#
+#                                                                              #
+#      Copyright Spence Konde and other          ##                            #
+#      contributors 2018-2021                   #  #                           #
+#      megaTinyCore is free software.     # #     #        ###        ###      #
+#      (LGPL v2.1) see LICENSE.md and     # #    #    ##         ##            #
+#      License section of README.md        #    ####  ##         ##            #
+#______________________________________________________________________________#
+#                 BOARDS.TXT SHOULD NOT BE EDITED DIRECTLY                     #
+#     It is generated with extras/development/create_boards_txt.py             #
+#     That file is horrifying, but trying to maintain a >5k line boards.txt    #
+#     was simply not tenable. Please submit no PRs to change boards.txt        #
+#     Changes need to be made in those scripts instead.                        #
+#______________________________________________________________________________#
+#           THIS SHOULD BE CONSIDERED A BETA (AT BEST) CURRENTLY!              #
+#           That is why the version above is not 2.0.0                         #
+#______________________________________________________________________________#
+#                                                                              #
+#              ###  #   #  ####   #   #  ####  #   #  #   #   ###              #
+#             #     #   #  #   #  ## ##  #     ##  #  #   #  #                 #
+#              ###  #   #  ####   # # #  ###   # # #  #   #   ###              #
+#                 # #   #  #   #  #   #  #     #  ##  #   #      #             #
+#              ###   ###   ####   #   #  ####  #   #   ###    ###              #
+#______________________________________________________________________________#
+#                                                                              #
+#    There are many menus provided for configuring various aspects of the      #
+#    core. Many require setting fuses, and these are only written when the     #
+#    "Burn Bootloader" command is used (even for boards without one - it       #
+#    still is the only thing that sets fuses, because setting fuses wrong      #
+#    can leave the board in a near-bricked state.                              #
+#                                                                              #
+#    Not all menus are available for all board - some are specific to one      #
+#    bootloader, or to one or more boards. Refer to the documentation for      #
+#    more information.                                                         #
+#______________________________________________________________________________#
+
+menu.chip=Chip
+menu.clock=Clock Source+Speed (Only set on bootload)
+menu.pinmap=Pin Mapping
+menu.millis=millis()/micros()
+menu.softserial=Built-in Software Serial ("Serial")
+menu.bod=B.O.D. Level (Only set on bootload)
+
+# Not used for bootloader configurations:
+menu.eesave=Save EEPROM (Only set on bootload)
+
+
+# Specific to the x41, 1634 and 828:
+menu.bodact=B.O.D. Mode (active) (Only set on bootload)
+menu.bodpd=B.O.D. Mode (sleep) (Only set on bootload)
+
+# Specific to 828 and 841:
+menu.wiremode=Wire Modes
+
+# Only relevant for bootloader board definitions:
+menu.bootentry=Bootloader Entry Conditions (only set on bootload)
+
+# Specific to the 1634 and x41 with Optiboot:
+menu.bootloaderuart=Bootloader UART (only set on bootload)
+
+# Specific to Micronucleus:
+menu.USBpins=Micronucleus USB Pins (set on bootload, must match hardware)
+menu.burnmode=Burn Bootloader Method
+menu.resetpin=Reset Pin (Only set on bootload via ISP)
+
+#______________________________________________________________________________#
+#                                                                              #
+#      ####    ###    ###   ####   ####       #   #  ###  #   # ####  ###      #
+#      #   #  #   #  #   #  #   #  #   #      ##  # #   # ## ## #    #         #
+#      ####   #   #  #####  ####   #   #      # # # ##### # # # ###   ###      #
+#      #   #  #   #  #   #  #  #   #   #      #  ## #   # #   # #        #     #
+#      ####    ###   #   #  #   #  ####       #   # #   # #   # ####  ###      #
+#______________________________________________________________________________#
