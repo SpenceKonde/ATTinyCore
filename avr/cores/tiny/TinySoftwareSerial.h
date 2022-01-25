@@ -1,4 +1,4 @@
- #ifndef TinySoftwareSerial_h
+#ifndef TinySoftwareSerial_h
 #define TinySoftwareSerial_h
 #include <inttypes.h>
 #include "Stream.h"
@@ -41,7 +41,7 @@
     #error Please define ANALOG_COMP_AIN1_BIT in the pins_arduino.h file!
   #endif
 
-  #if defined (((ACSRB) && !defined(ANALOG_COMP_AIN2_BIT)) && (defined(SOFTSERIAL_RXAIN0) || defined(SOFTSERIAL_RXAIN2)))
+  #if ((defined(ACSRB) && !defined(ANALOG_COMP_AIN2_BIT)) && (defined(SOFTSERIAL_RXAIN0) || defined(SOFTSERIAL_RXAIN2)))
     #ifndef ANALOG_COMP_AIN2_BIT
       #error Please define ANALOG_COMP_AIN2_BIT in the pins_arduino.h file!
     #endif
@@ -73,16 +73,16 @@
       /* never true for supported parts */
       #define SERIAL_BUFFER_SIZE 128
     #endif
-      #if defined(SOFTSERIAL_RXAIN0)
-        #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN0_BIT
-        #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN2_BIT
-      #elif defined(SOFTSERIAL_RXAIN2)
-        #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN2_BIT
-        #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
-      #else
-        #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN1_BIT
-        #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
-      #endif
+    #if defined(SOFTSERIAL_RXAIN0)
+      #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN0_BIT
+      #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN2_BIT
+    #elif defined(SOFTSERIAL_RXAIN2)
+      #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN2_BIT
+      #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
+    #else
+      #define SOFTSERIAL_RXBIT ANALOG_COMP_AIN1_BIT
+      #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
+    #endif
     struct soft_ring_buffer
     {
       volatile unsigned char buffer[SERIAL_BUFFER_SIZE];
@@ -100,9 +100,6 @@
   class TinySoftwareSerial : public Stream
   {
     public: //should be private but needed by extern "C" {} functions.
-    #ifndef SOFTSERIAL_USE_SBIC
-      uint8_t _rxmask;
-    #endif
     uint8_t _txmask;
     uint8_t _txunmask;
     soft_ring_buffer *_rx_buffer;
