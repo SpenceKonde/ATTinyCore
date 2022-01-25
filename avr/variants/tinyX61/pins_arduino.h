@@ -10,12 +10,11 @@
 /*===========================================================================
  * Microchip ATtiny861A, ATtiny461A, and ATtiny261A and non-A versions
  *===========================================================================
- * ATTinyCore Legacy Pin Mapping
- * This is an AWFUL legacy pin mapping, a work of inspired evil! Use the new
- * one unless you have to test old code, Port to new mapping ASAP.
+ * ATTinyCore Standard Pin Mapping
+ * This is the newer, rationalized pin layout. The old one was so
+ * convoluted that it impacted performance and code size due to
+ * the complexity of the macros.
  *---------------------------------------------------------------------------*/
-
-#warning "Deprecated pin mapping. Not for use with new code"
 
 #define ATTINYX61 1  // backwards compatibility
 #define __AVR_ATtinyX61__ // recommended
@@ -28,18 +27,18 @@
 #define PIN_PA0           ( 0)
 #define PIN_PA1           ( 1)
 #define PIN_PA2           ( 2)
-#define PIN_PA3           (14)
-#define PIN_PA4           (10)
-#define PIN_PA5           (11)
-#define PIN_PA6           (12)
-#define PIN_PA7           (13)
-#define PIN_PB0           ( 9)
-#define PIN_PB1           ( 8)
-#define PIN_PB2           ( 7)
-#define PIN_PB3           ( 6)
-#define PIN_PB4           ( 5)
-#define PIN_PB5           ( 4)
-#define PIN_PB6           ( 3)
+#define PIN_PA3           ( 3)
+#define PIN_PA4           ( 4)
+#define PIN_PA5           ( 5)
+#define PIN_PA6           ( 6)
+#define PIN_PA7           ( 7)
+#define PIN_PB0           ( 8)
+#define PIN_PB1           ( 9)
+#define PIN_PB2           (10)
+#define PIN_PB3           (11)
+#define PIN_PB4           (12)
+#define PIN_PB5           (13)
+#define PIN_PB6           (14)
 #define PIN_PB7           (15) /* RESET */
 
 #ifndef LED_BUILTIN
@@ -50,7 +49,7 @@
 #define PIN_A0            (PIN_PA0)
 #define PIN_A1            (PIN_PA1)
 #define PIN_A2            (PIN_PA2)
-#define PIN_A3            (PIN_PA4)
+#define PIN_A3            (PIN_PA4) /* PA3 is the AREF pin */
 #define PIN_A4            (PIN_PA5)
 #define PIN_A5            (PIN_PA6)
 #define PIN_A6            (PIN_PA7)
@@ -82,31 +81,33 @@ static const uint8_t A10 = ADC_CH(10);
  *---------------------------------------------------------------------------*/
 
 #define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p)     (((p) >= 6 && (p) <=  9) ? 4 : 5)
-#define digitalPinToPCMSK(p)       ((((p) >= 0 && (p) <=  2) || ((p) >= 10 && (p) <= 14)) ? (&PCMSK0) : ((((p) >= 3 && (p) <= 9) || ((p) == 15)) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p)     (((p) >= 0 && (p) <=  2) ? (p) :(((p) >= 10 && (p) <= 13) ? ((p) - 6) : (((p) == 14) ? (3) : (((p) >= 3 && (p) <= 9) ? (9 - (p)) : (7)))))
+#define digitalPinToPCICRbit(p)     (((p) >= 8 && (p) <= 11) ? (PCIE0) : (PCIE1))
+#define digitalPinToPCMSK(p)        (((p) >= 0 && (p) <= 16) ? ((p < 8) ? (&PCMSK0) : (&PCMSK1)) : ((uint8_t *)NULL))
+#define digitalPinToPCMSKbit(p)     ((p) & 0x07)
 
-#define digitalPinToInterrupt(p)     ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA2? 1 : NOT_AN_INTERRUPT))
 
-/* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  ((p < 3) ? (p): (((p) >= 3 && (p) <= 6) ? ((p) + 7) : (((p) >= 7 && (p) <= 9) ? (12 - (p)) : -1)))
-#define digitalPinToAnalogInput(p)  ((p < 3) ? (p): ((p) >= 10 && (p) <= 13 ) ? ((p) - 7) : (((p) < 6 ) ? (12 - (p)) : ((p == 15) ? 10: -1 )))
+#define digitalPinToInterrupt(p)    ((p) == 14 ? 0 : ((p)==2 ? 1: NOT_AN_INTERRUPT))
 
 /* Which pins have PWM? */
-#define digitalPinHasPWM(p)          ((p) == PIN_PB1 || (p) == PIN_PB3 || (p) == PIN_PB5)
+#define digitalPinHasPWM(p)         ((p) == PIN_PB1 || (p) == PIN_PB3 || (p) == PIN_PB5)
+
+/* Analog Channel <-> Digital Pin macros */
+#define analogInputToDigitalPin(p)  ((p < 3) ? (p): (((p) < 7) ? ((p) + 1) : ((p) < 11) ? ((p) + 5) : NOT_A_PIN))
+#define digitalPinToAnalogInput(p)  ((p < 3) ? (p): (((p) > 3) && (p) < 8) ? ((p) - 1) : (((p) < 16 && (p) > 11 ) ? ((p) - 5) : NOT_A_PIN))
+
 
 /* We have multiple pin mappings on this part; all have a #define, where
  * multiple are present, these are for compatibility with versions that
  * used less-clear names. The first #define is recommended, all others are
  * deprecated. */
-#define PINMAPPING_LEGACY
-
+#define PINMAPPING_STANDARD
+#define PINMAPPING_NEW
 
 /*---------------------------------------------------------------------------
  * Core Configuration where these are not the defaults
  *---------------------------------------------------------------------------*/
 
-// Choosing not to initialise saves flash.   1 = initialise.
+// Choosing not to initialise saves flash.           1 = initialise.
 // #define DEFAULT_INITIALIZE_ADC                    1
 // #define DEFAULT_INITIALIZE_SECONDARY_TIMERS       1
 
@@ -116,6 +117,7 @@ static const uint8_t A10 = ADC_CH(10);
 #ifndef USE_SOFTWARE_SERIAL
   #define USE_SOFTWARE_SERIAL                  1
 #endif
+
 /*---------------------------------------------------------------------------
  * Chip Features - Timers amnd PWM
  *---------------------------------------------------------------------------
@@ -169,7 +171,7 @@ static const uint8_t A10 = ADC_CH(10);
  * reorder the bits so they line up. Aren't you glad that's not happening at
  * runtime?
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)          ((((x) & 0x03) << 6) | (((x) & 0x04) << 2)
+#define ADC_REF(x)          ((((x) & 0x03) << 6) | (((x) & 0x04) << 2))
 
 /* Analog Reference bit masks */
 #define DEFAULT             ADC_REF(0x00)
@@ -187,6 +189,7 @@ static const uint8_t A10 = ADC_CH(10);
 #define ADC_TEMPERATURE      ADC_CH(0x3F)
 
 /* Differential Analog Channels */
+
 // A0-A2 - duplicates of some options in first triad
 #define DIFF_A0_A1_20XA      ADC_CH(0x0B)
 #define DIFF_A0_A1_1XA       ADC_CH(0x0C)
@@ -289,7 +292,6 @@ static const uint8_t A10 = ADC_CH(10);
 #define DIFF_A6_A6_20X       ADC_CH(0x3E)
 #define DIFF_A6_A6_32X       ADC_CH(0x7E)
 
-
 /* Analog Comparator - used for soft-serial*/
 #define ANALOG_COMP_DDR           (DDRA)
 #define ANALOG_COMP_PORT          (PORTA)
@@ -315,44 +317,44 @@ static const uint8_t A10 = ADC_CH(10);
  * refer back to these macros (PIN_USI_* )
  *---------------------------------------------------------------------------*/
 
-#define USE_SOFTWARE_SPI  (1)
+#define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_DI        (PIN_PB0)
-#define PIN_USI_DO        (PIN_PB1)
-#define PIN_USI_SCK       (PIN_PB2)
-#define SS                (PIN_PB3)
+#define PIN_USI_DI            (PIN_PB0)
+#define PIN_USI_DO            (PIN_PB1)
+#define PIN_USI_SCK           (PIN_PB2)
+#define SS                    (PIN_PB3)
 
-#define USI_DATA_DDR      (DDRB)
-#define USI_DATA_PORT     (PORTB)
-#define USI_DATA_PIN      (PINB)
+#define USI_DATA_DDR          (DDRB)
+#define USI_DATA_PORT         (PORTB)
+#define USI_DATA_PIN          (PINB)
 
-#define USI_CLOCK_BIT     (1 << 2)
-#define USI_DO_BIT        (1 << 1)
-#define USI_DI_BIT        (1 << 0)
+#define USI_CLOCK_BIT         (1 << 2)
+#define USI_DO_BIT            (1 << 1)
+#define USI_DI_BIT            (1 << 0)
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
- * ATMEL ATTINY861 ATTinyCore Legacy Pin Mapping
+ * ATMEL ATTINY861 ATTinyCore Standard Pin Mapping
  *
- *                   +-\/-+
- *        ( 9) PB0  1|   a|20  PA0 ( 0)
- *       *( 8) PB1  2|   a|19  PA1 ( 1)
- *        ( 7) PB2  3|   a|18  PA2 ( 2) INT1
- *       *( 6) PB3  4|    |17  PA3 (14)
- *             VCC  5|    |16  AGND
- *             GND  6|    |15  AVCC
- *        ( 5) PB4  7|ax a|14  PA4 (10)
- *       *( 4) PB5  8|ax a|13  PA5 (11)
- *   INT0 ( 3) PB6  9|a  a|12  PA6 (12) AIN0/TX
- *        (15) PB7 10|a  a|11  PA7 (13) AIN1/RX
- *                   +----+
+ *                 +-\/-+
+ *      ( 8) PB0  1|   a|20  PA0 ( 0)
+ *     *( 9) PB1  2|   a|19  PA1 ( 1)
+ *      (10) PB2  3|   a|18  PA2 ( 2) INT1
+ *     *(11) PB3  4|    |17  PA3 ( 3)
+ *           VCC  5|    |16  AGND
+ *           GND  6|    |15  AVCC
+ *      (12) PB4  7|ax a|14  PA4 ( 4)
+ *     *(13) PB5  8|ax a|13  PA5 ( 5)
+ * INT0 (14) PB6  9|a  a|12  PA6 ( 6) AIN0/TX
+ *      (15) PB7 10|a  a|11  PA7 ( 7) AIN1/RX
+ *                 +----+
  *
  * a indicates ADC pin
  * x indicates XTAL pin
@@ -384,18 +386,18 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PA, /* 0 */
   PA,
   PA,
-  PB, /* 3 */
-  PB,
-  PB,
-  PB,
-  PB,
-  PB,
-  PB,
-  PA, /* 10 */
   PA,
   PA,
   PA,
   PA,
+  PA,
+  PB, /* 8 */
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
+  PB,
   PB, /* 15 */
 };
 
@@ -404,18 +406,18 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(0), /* 0 */
   _BV(1),
   _BV(2),
-  _BV(6), /* 3 */
-  _BV(5),
-  _BV(4),
   _BV(3),
-  _BV(2),
-  _BV(1),
-  _BV(0),
-  _BV(4), /* 10 */
+  _BV(4),
   _BV(5),
   _BV(6),
   _BV(7),
+  _BV(0), /* 8 */
+  _BV(1),
+  _BV(2),
   _BV(3),
+  _BV(4),
+  _BV(5),
+  _BV(6),
   _BV(7), /* 15 */
 };
 
@@ -425,16 +427,16 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER1D,
   NOT_ON_TIMER,
-  TIMER1B,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIMER1A,
   NOT_ON_TIMER,
+  TIMER1B,
   NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIMER1D,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
 };

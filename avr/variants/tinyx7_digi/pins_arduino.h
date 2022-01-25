@@ -184,7 +184,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * used two bits, one of which is ignored when internal ref is in use and the
  * other which is ignored when internal ref not in use...
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)       ((((x) & 0x03) << 6) | (((x) & 0x0C) >> 1)
+#define ADC_REF(x)       ((((x) & 0x03) << 6) | (((x) & 0x0C) >> 1))
 
 /* Analog Reference bit masks */
 #define DEFAULT           ADC_REF(0x00)

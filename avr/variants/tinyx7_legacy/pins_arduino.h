@@ -10,17 +10,13 @@
 #include <avr/pgmspace.h>
 
 /*===========================================================================
- * Microchip ATtiny167, ATtiny87
+ * Microchip ATtiny167, ATtiny87 "Digispark Pro"
  *===========================================================================
- * ATTinyCore Standard Pin Mapping
- * PA0 -> PA7 -> PB0 ->PB7 straight through no exceptions. Dead simple and
- * naturally ends on Reset. Only awkward bit is that the crystal goes on pins
- * PB4 and PB5, so if using a crystal, pin 11 is available, pin 15 is never
- * available because it's reset, but the crystal is on pins 12 and 13 leaving
- * 14 standing off to the side. Of course if you use PIN_Pxn to refer to pins
- * you won't even notice this odd looking happenstance.
- * This is recommended for all applications except where Digispark Pro hardware
- * or clone thereof is being used.
+ * Basic Pin Definitions | Interrupt Macros | Legacy/compatibility
+ *---------------------------------------------------------------------------
+ * This is an horrifying legacy pin mapping, it is so bad that there are
+ * significant effects on code size and performance. Do not use this unless
+ * you have a gun to your head. Rven then you might come to regret it.
  *---------------------------------------------------------------------------*/
 
 #define ATTINYX7 1       // backwards compatibility
@@ -33,23 +29,23 @@
  * as it is totally unambiguous, but numbers may be used too */
 #define PIN_PA0  ( 0)
 #define PIN_PA1  ( 1)
-#define PIN_PA2  ( 2)
+#define PIN_PB6  ( 2)
 #define PIN_PA3  ( 3)
-#define PIN_PA4  ( 4)
-#define PIN_PA5  ( 5)
-#define PIN_PA6  ( 6)
-#define PIN_PA7  ( 7)
-#define PIN_PB0  ( 8)
-#define PIN_PB1  ( 9)
-#define PIN_PB2  (10)
-#define PIN_PB3  (11)
-#define PIN_PB4  (12) /* XTAL1 */
-#define PIN_PB5  (13) /* XTAL2 */
-#define PIN_PB6  (14)
-#define PIN_PB7  (15) /* RESET */
+#define PIN_PB0  ( 4)
+#define PIN_PB1  ( 5)
+#define PIN_PB2  ( 6)
+#define PIN_PB3  ( 7)
+#define PIN_PB4  ( 8)
+#define PIN_PB5  ( 9)
+#define PIN_PA6  (10)
+#define PIN_PA4  (11)
+#define PIN_PA2  (12)
+#define PIN_PA5  (13)
+#define PIN_PA7  (14)
+#define PIN_PB7  (15)
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN (PIN_PA3)
+  #define LED_BUILTIN (PIN_PB0)
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
@@ -66,17 +62,18 @@
 #define PIN_A10       (PIN_PB7)
 
 /* An "analog pins" these map directly to analog channels */
-static const uint8_t  A0 =  ADC_CH(0);
-static const uint8_t  A1 =  ADC_CH(1);
-static const uint8_t  A2 =  ADC_CH(2);
-static const uint8_t  A3 =  ADC_CH(3);
-static const uint8_t  A4 =  ADC_CH(4);
-static const uint8_t  A5 =  ADC_CH(5);
-static const uint8_t  A6 =  ADC_CH(6);
-static const uint8_t  A7 =  ADC_CH(7);
-static const uint8_t  A8 =  ADC_CH(8);
-static const uint8_t  A9 =  ADC_CH(9);
+static const uint8_t A0  = ADC_CH(0);
+static const uint8_t A1  = ADC_CH(1);
+static const uint8_t A2  = ADC_CH(2);
+static const uint8_t A3  = ADC_CH(3);
+static const uint8_t A4  = ADC_CH(4);
+static const uint8_t A5  = ADC_CH(5);
+static const uint8_t A6  = ADC_CH(6);
+static const uint8_t A7  = ADC_CH(7);
+static const uint8_t A8  = ADC_CH(8);
+static const uint8_t A9  = ADC_CH(9);
 static const uint8_t A10 = ADC_CH(10);
+
 
 /* Interrupt macros to go from pin to PCMSK register and bit within it, and
  * the register to enable/disable banks of PCINTs, and bit within it PCICR
@@ -87,21 +84,27 @@ static const uint8_t A10 = ADC_CH(10);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)        (&PCICR)
-#define digitalPinToPCICRbit(p)     ((p) >= 8 ? 1 : 0)
-#define digitalPinToPCMSK(p)        ((p) >= 8 ?(&PCMSK1) : (&PCMSK0))
-#define digitalPinToPCMSKbit(p)     (p & 15)
+#define digitalPinToPCICR(p)       (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICRbit(p) (digitalPinToPort(p) == PA ? 4 : 5)
+#define digitalPinToPCMSK(p)      ((((p) >= 0 && (p) <= 15) ? (digitalPinToPort(p) == PA ? &PCMSK0 : &PCMSK1) : (uint8_t *)NULL))
+#define digitalPinToPCMSKbit(p)    (((p) >= 0 && (p) <= 15) ? (const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_pos_PGM, (p))) : -1)
 
-#define digitalPinToInterrupt(p)    ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)    ((p) == 2 ? 0 : ((p)==11?1: NOT_AN_INTERRUPT))
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  ((p) < 8 ? (p) :((p) + 5))
-#define digitalPinToAnalogInput(p)  ((p) < 8 ? (p) : ((p) > 12 ? (p - 5) : (-1)))
+#define analogInputToDigitalPin(p) (((p) >= NUM_DIGITAL_PINS)  ? NOT_A_PIN : (const_array_or_pgm_(pgm_read_byte, analog_input_to_digital_pin_PGM, (p))))
+#define digitalPinToAnalogInput(p) (((p) >= NUM_ANALOG_INPUTS) ? NOT_A_PIN : (const_array_or_pgm_(pgm_read_byte, digital_pin_to_analog_input_PGM, (p))))
 
 /* Which pins have PWM? */
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) > 7 )
+#define digitalPinHasPWM(p)        ((p) == 2 || ((p) > 3 && (p) < 10) || (p) == 15 )
 
-#define PINMAPPING_NEW
+/* We have multiple pin mappings on this part; all have a #define, where
+ * multiple are present, these are for compatibility with versions that
+ * used less-clear names. The first #define is recommended, all others are
+ * deprecated. */
+
+#define PINMAPPING_LEGACY
+#define PINMAPPING_OLD
 
 /*---------------------------------------------------------------------------
  * Core Configuration where these are not the defaults
@@ -184,7 +187,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * used two bits, one of which is ignored when internal ref is in use and the
  * other which is ignored when internal ref not in use...
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)       ((((x) & 0x03) << 6) | (((x) & 0x0C) >> 1)
+#define ADC_REF(x)       ((((x) & 0x03) << 6) | (((x) & 0x0C) >> 1))
 
 /* Analog Reference bit masks */
 #define DEFAULT           ADC_REF(0x00)
@@ -264,23 +267,23 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define PIN_HWSERIAL0_RX      PIN_PA0
 #define HWSERIAL0_IS_LIN
 
-#ifdef ARDUINO_MAIN
 
+#ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY167/ATTINY87
- * Arduino-compatible pin mapping
+ * Legacy Arduino-compatible pin mapping - an inspired work of evil
  *
  *                   +-\/-+
- *   RX   ( 0) PA0  1|a   |20  PB0 ( 8)
- *   TX   ( 1) PA1  2|a   |19  PB1 ( 9)
- *       *( 2) PA2  3|a   |18  PB2 (10)
- *   INT1 ( 3) PA3  4|a   |17  PB3 (11)*
+ *     RX ( 0) PA0  1|a   |20  PB0 ( 4)*
+ *     TX ( 1) PA1  2|a   |19  PB1 ( 5)*
+ *       *(12) PA2  3|a   |18  PB2 ( 6)*
+ *        ( 3) PA3  4|a   |17  PB3 ( 7)*
  *            AVCC  5|    |16  GND
  *            AGND  6|    |15  VCC
- *        ( 4) PA4  7|a   |14  PB4 (12)  XTAL1
- *        ( 5) PA5  8|a  a|13  PB5 (13)  XTAL2
- *        ( 6) PA6  9|a  a|12  PB6 (14)* INT0
- *        ( 7) PA7 10|a  a|11  PB7 (15)  RESET
+ *   INT1 (11) PA4  7|a   |14  PB4 ( 8)*
+ *        (13) PA5  8|a  a|13  PB5 ( 9)*
+ *        (10) PA6  9|a  a|12  PB6 ( 2)* INT0
+ *        (14) PA7 10|a  a|11  PB7 (15)* Reset
  *                   +----+
  *
  * * indicates PWM pin, a indicates ADC (analog input) pins
@@ -307,55 +310,87 @@ const uint8_t PROGMEM port_to_input_PGM[] =
   (uint8_t)(uint16_t)&PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
+// Wow, a core finally did such a perverse job of distributing pins that I needed to make a progmem array to sort out analog and digital pins.
+const uint8_t PROGMEM digital_pin_to_analog_input_PGM[] =
 {
-  PA, /* 0 */
-  PA,
-  PA, /* 2 */
-  PA, /* 3 */
-  PA, /* 4 */
-  PA,
-  PA,
-  PA,
-  PB,
-  PB,
-  PB, /* 10 */
-  PB,
-  PB,
-  PB,
-  PB,
-  PB, /* 15 */
+  ( 0), /* 0 */
+  ( 1),
+  ( 9), /* 2 */
+  ( 3), /* 3 */
+  NOT_A_PIN, /* 4 */
+  NOT_A_PIN,
+  NOT_A_PIN,
+  NOT_A_PIN,
+  NOT_A_PIN,
+  ( 8),
+  ( 6), /* 10 */
+  ( 4),
+  ( 2),
+  ( 5),
+  ( 7),
+  (10) /* 15 */
+};
+
+const uint8_t PROGMEM analog_input_to_digital_pin_PGM [] =
+{
+  ( 0), /* 0 */
+  ( 1),
+  (12), /* 2 */
+  ( 3), /* 3 */
+  (11), /* 4 */
+  (13),
+  (10),
+  (14),
+  ( 9),
+  ( 2),
+  (15)  /* 10 */
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
   _BV(0), /* 0 */
   _BV(1),
-  _BV(2), /* 2 */
+  _BV(6), /* 2 */
   _BV(3), /* 3 */
-  _BV(4), /* 4 */
-  _BV(5),
-  _BV(6),
-  _BV(7),
-  _BV(0),
+  _BV(0), /* 4 */
   _BV(1),
-  _BV(2), /* 10 */
+  _BV(2),
   _BV(3),
   _BV(4),
   _BV(5),
-  _BV(6),
+  _BV(6), /* 10 */
+  _BV(4),
+  _BV(2),
+  _BV(5),
+  _BV(7),
   _BV(7), /* 15 */
+};
+
+const uint8_t PROGMEM digital_pin_to_bit_pos_PGM[] =
+{
+  (0), /* 0 */
+  (1),
+  (6), /* 2 */
+  (3), /* 3 */
+  (0), /* 4 */
+  (1),
+  (2),
+  (3),
+  (4),
+  (5),
+  (6), /* 10 */
+  (4),
+  (2),
+  (5),
+  (7),
+  (7), /* 15 */
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER0A,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIM1AX,
   NOT_ON_TIMER,
   TIM1AU,
   TIM1BU,
@@ -363,9 +398,14 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   TIM1BV,
   TIM1AW,
   TIM1BW,
-  TIM1AX,
-  TIM1BX
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIMER0A,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  TIM1BX,
 };
+
 
 #endif
 

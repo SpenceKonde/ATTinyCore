@@ -10,46 +10,49 @@
 /*===========================================================================
  * Microchip ATtiny84A, ATtiny44A, and ATtiny24A and non-A versions
  *===========================================================================
- * Basic Pin Definitions | Interrupt Macros | Counter-Clockwise
- *---------------------------------------------------------------------------
- * If you have a choice, the other (clockwise) pin mapping is
- * objectively better - this one is only for compatibility.
+ * Clockwise mapping
+ * If you have a choice, this is the pin mapping to use.
  *---------------------------------------------------------------------------*/
 
 
 #define ATTINYX4 1
 #define __AVR_ATtinyX4__
 
-#define NUM_DIGITAL_PINS  (12)
-#define NUM_ANALOG_INPUTS ( 8)
+#define NUM_DIGITAL_PINS            (12)
+#define NUM_ANALOG_INPUTS           ( 8)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-#define PIN_PA0           (10)
-#define PIN_PA1           ( 9)
-#define PIN_PA2           ( 8)
-#define PIN_PA3           ( 7)
-#define PIN_PA4           ( 6)
-#define PIN_PA5           ( 5)
-#define PIN_PA6           ( 4)
-#define PIN_PA7           ( 3)
-#define PIN_PB0           ( 0)
-#define PIN_PB1           ( 1)
-#define PIN_PB2           ( 2)
-#define PIN_PB3           (11)  /* RESET */
+#define PIN_PA0     ( 0)
+#define PIN_PA1     ( 1)
+#define PIN_PA2     ( 2)
+#define PIN_PA3     ( 3)
+#define PIN_PA4     ( 4)
+#define PIN_PA5     ( 5)
+#define PIN_PA6     ( 6)
+#define PIN_PA7     ( 7)
+#define PIN_PB2     ( 8)
+#define PIN_PB1     ( 9)  /* XTAL1 */
+#define PIN_PB0     (10)  /* XTAL2 */
+#define PIN_PB3     (11)  /* RESET */
+
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN     (PIN_PB2)
+  #ifndef USB_TWOPLUS
+    #define LED_BUILTIN (PIN_PB2)
+  #else
+    #define LED_BUILTIN (PIN_PB0)
+  #endif
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */
-#define PIN_A0            (PIN_PA0)
-#define PIN_A1            (PIN_PA1)
-#define PIN_A2            (PIN_PA2)
-#define PIN_A3            (PIN_PA3)
-#define PIN_A4            (PIN_PA4)
-#define PIN_A5            (PIN_PA5)
-#define PIN_A6            (PIN_PA6)
-#define PIN_A7            (PIN_PA7)
+#define PIN_A0      (PIN_PA0)
+#define PIN_A1      (PIN_PA1)
+#define PIN_A2      (PIN_PA2)
+#define PIN_A3      (PIN_PA3)
+#define PIN_A4      (PIN_PA4)
+#define PIN_A5      (PIN_PA5)
+#define PIN_A6      (PIN_PA6)
+#define PIN_A7      (PIN_PA7)
 
 /* An "analog pins" these map directly to analog channels */
 static const uint8_t A0 = ADC_CH(0);
@@ -61,8 +64,6 @@ static const uint8_t A5 = ADC_CH(5);
 static const uint8_t A6 = ADC_CH(6);
 static const uint8_t A7 = ADC_CH(7);
 
-#define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
-
 /* Interrupt macros to go from pin to PCMSK register and bit within it, and
  * the register to enable/disable banks of PCINTs, and bit within it PCICR
  * is almost always the same for all PCINTs; but must return null pointer
@@ -73,22 +74,24 @@ static const uint8_t A7 = ADC_CH(7);
  *---------------------------------------------------------------------------*/
 
 #define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
-#define digitalPinToPCICRbit(p)     (((p) >= 3 && (p) <= 10) ? 4 : 5)
-#define digitalPinToPCMSK(p)        (((p) >= 3 && (p) <= 10) ? (&PCMSK0) : ((((p) >= 0 && (p) <= 2) || ((p) == 11)) ? (&PCMSK1) : ((uint8_t *)NULL)))
-#define digitalPinToPCMSKbit(p)     (((p) >= 3 && (p) <= 10) ? (10 - (p)) : (((p) == 11) ? 3 : (p)))
+#define digitalPinToPCICRbit(p)     (((p) <= 7) ? PCIE0 : PCIE1 )
+#define digitalPinToPCMSK(p)        (((p) <= 7) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK1) : ((uint8_t *)NULL) )
+#define digitalPinToPCMSKbit(p)     (((p) <= 7) ? (p) : (10 - (p)))
+
+#define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p) < 8) ? 10 - (p) : NOT_A_PIN)
-#define digitalPinToAnalogInput(p)  (((p) > 2 && ((p) < 11)) ? 10 - (p) : NOT_A_CHANNEL)
+#define analogInputToDigitalPin(p)  ((p) < 8 ? (p) : -1)
+#define digitalPinToAnalogInput(p)  ((p) < 8 ? (p) : -1)
 
 /* Which pins have PWM? */
-#define digitalPinHasPWM(p)         ((p) >= 2 && (p) <= 5)
+#define digitalPinHasPWM(p)         ((p) >= 5 && (p) <= 8)
 
 /* We have multiple pin mappings on this part; all have a #define, where
  * multiple are present, these are for compatibility with versions that
  * used less-clear names. The first #define is recommended, all others are
  * deprecated. */
-#define PINMAPPING_CCW
+#define PINMAPPING_CW
 
 /*---------------------------------------------------------------------------
  * Core Configuration where these are not the defaults
@@ -224,11 +227,12 @@ static const uint8_t A7 = ADC_CH(7);
 #define DIFF_A7_A7_20X    ADC_CH(0x27)
 
 /* Analog Comparator - used for soft-serial*/
-#define ANALOG_COMP_DDR             DDRA
-#define ANALOG_COMP_PORT            PORTA
-#define ANALOG_COMP_PIN             PINA
-#define ANALOG_COMP_AIN0_BIT        (1)
-#define ANALOG_COMP_AIN1_BIT        (2)
+#define ANALOG_COMP_DDR               DDRA
+#define ANALOG_COMP_PORT              PORTA
+#define ANALOG_COMP_PIN               PINA
+#define ANALOG_COMP_AIN0_BIT          1
+#define ANALOG_COMP_AIN1_BIT          2
+
 
 /*---------------------------------------------------------------------------
  * Chip Features - SPI, I2C, USART, etc
@@ -275,23 +279,22 @@ static const uint8_t A7 = ADC_CH(7);
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
- * ATMEL ATTINY84/44/24 ATTinyCore Legacy (Counterclockwise) Pin Mapping
+ * ATMEL ATTINY84/44/24  ATTinyCore Standard (Clockwise) Pin Mapping
  *
  *                         +-\/-+
  *                   VCC  1|    |14  GND
- *             ( 0)  PB0  2|x  a|13  PA0  (10)  AREF
- *             ( 1)  PB1  3|x  a|12  PA1  ( 9)
- *             (11)  PB3  4|   a|11  PA2  ( 8)
- *  PWM  INT0  ( 2)  PB2  5|   a|10  PA3  ( 7)
- *  PWM        ( 3)  PA7  6|a  a|9   PA4  ( 6)
- *  PWM        ( 4)  PA6  7|a  a|8   PA5  ( 5)  PWM
+ *             (10)  PB0  2|x  a|13  PA0  ( 0)  AREF
+ *             ( 9)  PB1  3|x  a|12  PA1  ( 1)
+ *             (11)  PB3  4|   a|11  PA2  ( 2)
+ *  PWM  INT0  ( 8)  PB2  5|   a|10  PA3  ( 3)
+ *  PWM        ( 7)  PA7  6|a  a|9   PA4  ( 4)
+ *  PWM        ( 6)  PA6  7|a  a|8   PA5  ( 5)  PWM
  *                         +----+
  * a indicates ADC pin
  * x indicates XTAL pin
  *---------------------------------------------------------------------------*/
-#pragma message("This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order")
 
-// #warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
+#warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order."
 
 const uint8_t PROGMEM port_to_mode_PGM[] =
 {
@@ -316,31 +319,31 @@ const uint8_t PROGMEM port_to_input_PGM[] =
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 {
-  PB, /* 0 */
+  PA, /* 0 */
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PA,
+  PB, /* 8 */
   PB,
   PB,
-  PA,
-  PA,
-  PA,
-  PA,
-  PA,
-  PA, /* 8 */
-  PA,
-  PA,
   PB, /* 11 */
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 {
-  _BV(0), /* 0, port B */
+  _BV(0), /* port A */
   _BV(1),
   _BV(2),
-  _BV(7), /* 3 port B */
-  _BV(6),
-  _BV(5),
-  _BV(4),
   _BV(3),
-  _BV(2),
+  _BV(4),
+  _BV(5),
+  _BV(6),
+  _BV(7),
+  _BV(2), /* port B */
   _BV(1),
   _BV(0),
   _BV(3),
@@ -350,14 +353,13 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
 {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
-  TIMER0A, /* OC0A */
-  TIMER0B, /* OC0B */
-  TIMER1A, /* OC1A */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
   TIMER1B, /* OC1B */
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
-  NOT_ON_TIMER,
+  TIMER1A, /* OC1A */
+  TIMER0B, /* OC0B */
+  TIMER0A, /* OC0A */
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
