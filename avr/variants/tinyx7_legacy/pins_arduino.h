@@ -91,6 +91,9 @@ static const uint8_t A10 = ADC_CH(10);
 
 #define digitalPinToInterrupt(p)    ((p) == 2 ? 0 : ((p)==11?1: NOT_AN_INTERRUPT))
 
+extern const uint8_t PROGMEM digital_pin_to_analog_input_PGM[];
+extern const uint8_t PROGMEM analog_input_to_digital_pin_PGM[];
+
 /* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p) (((p) >= NUM_DIGITAL_PINS)  ? NOT_A_PIN : (const_array_or_pgm_(pgm_read_byte, analog_input_to_digital_pin_PGM, (p))))
 #define digitalPinToAnalogInput(p) (((p) >= NUM_ANALOG_INPUTS) ? NOT_A_PIN : (const_array_or_pgm_(pgm_read_byte, digital_pin_to_analog_input_PGM, (p))))
@@ -308,6 +311,25 @@ const uint8_t PROGMEM port_to_input_PGM[] =
   NOT_A_PORT,
   (uint8_t)(uint16_t)&PINA,
   (uint8_t)(uint16_t)&PINB,
+};
+const uint8_t PROGMEM digital_pin_to_port_PGM[] =
+{
+  ( 1), /* 0 */
+  ( 1),
+  ( 2), /* 2 */
+  ( 1), /* 3 */
+  ( 2),  /* 4 */
+  ( 2),
+  ( 2),
+  ( 2),
+  ( 2),
+  ( 2),
+  ( 1), /* 10 */
+  ( 1),
+  ( 1),
+  ( 1),
+  ( 1),
+  ( 2) /* 15 */
 };
 
 // Wow, a core finally did such a perverse job of distributing pins that I needed to make a progmem array to sort out analog and digital pins.
