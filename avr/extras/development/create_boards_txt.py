@@ -159,7 +159,7 @@ boardnames = [
   "attiny1634.name=ATtiny1634 (No Bootloader)",
   "attinyx313.name=ATtiny4313/2313 (No Bootloader)",
   "attiny828.name=ATtiny828 (No Bootloader)",
-  "attiny43.name=ATtiny43 (No Bootloader)",
+  "attiny43u.name=ATtiny43 (No Bootloader)",
   "attiny26.name=ATtiny26 (No Bootloader)",
   "attinyx4opti.name=ATtiny84/44 w/Optiboot serial bootloader",
   "attinyx41opti.name=ATtiny841/441 w/Optiboot serial bootloader",
@@ -200,7 +200,7 @@ chipmenu = {
   "attiny1634": "",
   "attiny1634opti": "",
   "attiny1634micr": "",
-  "attiny43": "",
+  "attiny43u": "",
   "attiny828": "",
   "attiny828opti": ""
 }
