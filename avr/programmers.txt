@@ -1,4 +1,54 @@
-avrisp.name=AVR ISP
+arduinoasisp.name=Arduino as ISP
+arduinoasisp.communication=serial
+arduinoasisp.protocol=stk500v1
+arduinoasisp.speed=19200
+arduinoasisp.program.protocol=stk500v1
+arduinoasisp.program.speed=19200
+arduinoasisp.program.tool=avrdude
+arduinoasisp.program.extra_params=-P{serial.port} -b{program.speed}
+
+arduinoasisp32u4.name=Arduino Leo/Micro as ISP (ATmega32U4)
+arduinoasisp32u4.communication=serial
+arduinoasisp32u4.protocol=arduino
+arduinoasisp32u4.speed=19200
+arduinoasisp32u4.program.protocol=arduino
+arduinoasisp32u4.program.speed=19200
+arduinoasisp32u4.program.tool=avrdude
+arduinoasisp32u4.program.extra_params=-P{serial.port} -b{program.speed}
+
+usbasp.name=USBasp
+usbasp.communication=usb
+usbasp.protocol=usbasp
+usbasp.program.tool=avrdude
+usbasp.program.extra_params=
+
+usbtinyisp.name=USBtinyISP - SLOW, for new or 1 MHz parts
+usbtinyisp.protocol=usbtiny
+usbtinyisp.program.tool=avrdude
+usbtinyisp.program.speed=0.3
+usbtinyisp.program.extra_params=-B{program.speed}
+
+usbtinyisp2.name=USBtinyISP - FAST, for parts running >=2 MHz
+usbtinyisp2.protocol=usbtiny
+usbtinyisp2.program.tool=avrdude
+usbtinyisp2.program.speed=8
+usbtinyisp2.program.extra_params=-B{program.speed}
+
+ftdisyncbb.name=FT232RL (the blue knockoff board w/2x3 pin header and voltage switch - that's an ISP header!)
+ftdisyncbb.communication=usb
+ftdisyncbb.protocol=bwmega
+ftdisyncbb.program.tool=avrdude
+ftdisyncbb.program.protocol=bwmega
+ftdisyncbb.program.extra_params=-Pusb
+
+ponyser.name=Ponyser Programmer
+ponyser.communication=serial
+ponyser.protocol=ponyser
+ponyser.program.tool=avrdude
+ponyser.program.protocol=ponyser
+ponyser.program.extra_params=-P{serial.port}
+
+avrisp.name=AVR ISP or Atmel STK500
 avrisp.communication=serial
 avrisp.protocol=stk500v1
 avrisp.program.tool=avrdude
@@ -19,74 +69,11 @@ avrispmkii.program.protocol=stk500v2
 avrispmkii.program.tool=avrdude
 avrispmkii.program.extra_params=-Pusb
 
-usbtinyisp.name=USBtinyISP (ATTinyCore) SLOW, for new or 1 MHz parts
-usbtinyisp.protocol=usbtiny
-usbtinyisp.program.tool=avrdude
-usbtinyisp.program.speed=0.3
-usbtinyisp.program.extra_params=-B{program.speed}
-
-usbtinyisp2.name=USBtinyISP (ATTinyCore) FAST, for parts running >=2 MHz
-usbtinyisp2.protocol=usbtiny
-usbtinyisp2.program.tool=avrdude
-usbtinyisp2.program.speed=8
-usbtinyisp2.program.extra_params=-B{program.speed}
-
-usbasp.name=USBasp (ATTinyCore)
-usbasp.communication=usb
-usbasp.protocol=usbasp
-usbasp.program.tool=avrdude
-usbasp.program.extra_params=
-
-parallel.name=Parallel Programmer
-parallel.protocol=dapa
-parallel.force=true
-parallel.delay=200
-parallel.program.tool=avrdude
-
-arduinoasisp.name=Arduino as ISP
-arduinoasisp.communication=serial
-arduinoasisp.protocol=stk500v1
-arduinoasisp.speed=19200
-arduinoasisp.program.protocol=stk500v1
-arduinoasisp.program.speed=19200
-arduinoasisp.program.tool=avrdude
-arduinoasisp.program.extra_params=-P{serial.port} -b{program.speed}
-
-arduinoasisp32u4.name=Arduino Leo/Micro as ISP (ATmega32U4)
-arduinoasisp32u4.communication=serial
-arduinoasisp32u4.protocol=arduino
-arduinoasisp32u4.speed=19200
-arduinoasisp32u4.program.protocol=arduino
-arduinoasisp32u4.program.speed=19200
-arduinoasisp32u4.program.tool=avrdude
-arduinoasisp32u4.program.extra_params=-P{serial.port} -b{program.speed}
-
-dragon.name=AVR Dragon ISP mode (ATTinyCore)
+dragon.name=AVR Dragon ISP mode
 dragon.communication=usb
 dragon.protocol=dragon_isp
 dragon.program.tool=avrdude
 dragon.program.extra_params=-Pusb
-
-ponyser.name=Ponyser Programmer
-ponyser.communication=serial
-ponyser.protocol=ponyser
-ponyser.program.tool=avrdude
-ponyser.program.protocol=ponyser
-ponyser.program.extra_params=-P{serial.port}
-
-ftdisyncbb.name=FT232RL (the blue knockoff board w/2x3 pin header and voltage switch - that's an ISP header!)
-ftdisyncbb.communication=usb
-ftdisyncbb.protocol=bwmega
-ftdisyncbb.program.tool=avrdude
-ftdisyncbb.program.protocol=bwmega
-ftdisyncbb.program.extra_params=-Pusb
-
-stk500.name=Atmel STK500
-stk500.communication=serial
-stk500.protocol=stk500
-stk500.program.protocol=stk500
-stk500.program.tool=avrdude
-stk500.program.extra_params=-P{serial.port}
 
 atmel_ice.name=Atmel-ICE
 atmel_ice.communication=usb
@@ -94,6 +81,12 @@ atmel_ice.protocol=atmelice_isp
 atmel_ice.program.protocol=atmelice_isp
 atmel_ice.program.tool=avrdude
 atmel_ice.program.extra_params=-Pusb
+
+parallel.name=Parallel Programmer
+parallel.protocol=dapa
+parallel.force=true
+parallel.delay=200
+parallel.program.tool=avrdude
 
 micronucleusprog.name=Micronucleus
 micronucleusprog.communication=usb
