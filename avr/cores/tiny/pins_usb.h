@@ -18,16 +18,16 @@
     * 84, with 1 for D-  - maybe was an 84-not-A with the crap internal
     * oscillator, and they used with external clock? Anyway, so much
     * for a nice clean set of configurations! I get to build 5 versions of
-    * the binaries (no PLUS_ON_2 for 841 unless someone shows me hardware)
+    * the binaries (no USB_TWOPLUS for 841 unless someone shows me hardware)
     * too, multiplied by 3-5 entry modes each, and for the
     * 841, there's 12 MHz and 16 MHz too, since the internal osc is
     * really able to hit 16 MHz if you crank it to the max. Can't wait!
     */
   #define USB_CFG_IOPORTNAME      B
-  #if defined(PLUS_ON_0)
+  #if defined(USB_ONEMINUS)
     #define USB_CFG_DMINUS_BIT    1
     #define USB_CFG_DPLUS_BIT     0
-  #elif defined(PLUS_ON_2)
+  #elif defined(USB_TWOPLUS)
     #define USB_CFG_DMINUS_BIT    1
     #define USB_CFG_DPLUS_BIT     2
   #else
@@ -45,9 +45,9 @@
 
 
 #elif defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
-  #define USB_CFG_IOPORTNAME    B
-  #define USB_CFG_DMINUS_BIT    3
-  #define USB_CFG_DPLUS_BIT     4
+  #define USB_CFG_IOPORTNAME      B
+  #define USB_CFG_DMINUS_BIT      3
+  #define USB_CFG_DPLUS_BIT       4
   #define USB_INTR_CFG            PCMSK
   #define USB_INTR_CFG_SET        (1 << USB_CFG_DPLUS_BIT)
   #define USB_INTR_ENABLE_BIT     PCIE
@@ -55,9 +55,9 @@
   #define USB_INTR_VECTOR         PCINT0_vect
 
 #elif defined(__AVR_ATtiny87__) || defined(__AVR_ATtiny167__)
-  #define USB_CFG_IOPORTNAME    B
-  #define USB_CFG_DMINUS_BIT    3
-  #define USB_CFG_DPLUS_BIT     6
+  #define USB_CFG_IOPORTNAME      B
+  #define USB_CFG_DMINUS_BIT      3
+  #define USB_CFG_DPLUS_BIT       6
   /* WHY IS THIS A PCINT?!?! D+ IS ON INT0! */
   #define USB_INTR_CFG            PCMSK1
   #define USB_INTR_CFG_SET        (1 << USB_CFG_DPLUS_BIT)
@@ -71,18 +71,31 @@
 
 #elif defined(__AVR_ATtiny461__) || defined(__AVR_ATtiny861__)
   #define USB_CFG_IOPORTNAME     B
-  /* #define USB_CFG_DMINUS_BIT     5
-   * #define USB_CFG_DMINUS_BIT     4
-   * This is TBD - am leaning towards 4 instead of 5,
-   * because 5 can do PWM and you probably want that pin unencumbered.
-   * Either way, INT0 is on PB6.
-   */
-  #define USB_CFG_DPLUS_BIT       6
+  // #define USB_CFG_DMINUS_BIT     5
+  #define USB_CFG_DMINUS_BIT     4
+  #define USB_CFG_DPLUS_BIT      6
+  #define USB_INTR_CFG           MCUCR
+  #define USB_INTR_CFG_SET       (1) /* change */
+  #define USB_INTR_CFG_CLR       0
+  #define USB_INTR_ENABLE        GIMSK
+  #define USB_INTR_ENABLE_BIT    (1 << 6) /* INT0 */
+  #define USB_INTR_PENDING       GIFR
+  #define USB_INTR_PENDING_BIT   (1 << 6) /* INTF0 */
+  #define USB_INTR_VECTOR        INT0_vect
+
 
 #elif defined(__AVR_ATtiny48__) || defined(__AVR_ATtiny88__)
-  #define USB_CFG_IOPORTNAME    D
-  #define USB_CFG_DMINUS_BIT    1
-  #define USB_CFG_DPLUS_BIT     2 /* INT0 */
+  #define USB_CFG_IOPORTNAME     D
+  #define USB_CFG_DMINUS_BIT     1
+  #define USB_CFG_DPLUS_BIT      2 /* INT0 */
+  #define USB_INTR_CFG           EICRA
+  #define USB_INTR_CFG_SET       (1) /*ISC01 = 0, ISC00 = 1: Change */
+  #define USB_INTR_CFG_CLR       0
+  #define USB_INTR_ENABLE        EIMSK
+  #define USB_INTR_ENABLE_BIT    (1) /* INT0 */
+  #define USB_INTR_PENDING       EIFR
+  #define USB_INTR_PENDING_BIT   (1) /* INTF0 */
+  #define USB_INTR_VECTOR        INT0_vect
 
 #elif defined(__AVR_ATtiny1634__)
   #define USB_CFG_IOPORTNAME    C
