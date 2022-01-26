@@ -4848,8 +4848,8 @@ attiny85micr.menu.bootentry.always.upload.maximum_size=6588
 # Pins used for USB            #
 ################################
 attiny85micr.menu.usbpins.standard=Standard, PB3: D- PB4: D+ PB1: LED
-attiny85micrmenu.usbpins.standard.bootloader.usbpinset=
-attiny85micrmenu.usbpins.standard.bootloader.usbpinsetname=
+attiny85micr.menu.usbpins.standard.bootloader.usbpinset=
+attiny85micr.menu.usbpins.standard.bootloader.usbpinsetname=
 attiny85micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
 attiny85micr.menu.resetpin.reset.bootloader.rstbit=1
 attiny85micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
@@ -4987,8 +4987,8 @@ attiny88micr.menu.bootentry.jumper.upload.maximum_size=6718
 # Pins used for USB            #
 ################################
 attiny88micr.menu.usbpins.standard=MH Tiny - PD1: D-, PD2: D+, PD0: LED
-attiny88micrmenu.usbpins.standard.bootloader.usbpinset=
-attiny88micrmenu.usbpins.standard.bootloader.usbpinsetname=
+attiny88micr.menu.usbpins.standard.bootloader.usbpinset=
+attiny88micr.menu.usbpins.standard.bootloader.usbpinsetname=
 attiny88micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
 attiny88micr.menu.resetpin.reset.bootloader.rstbit=1
 attiny88micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
@@ -5286,8 +5286,8 @@ attiny861micr.menu.bootentry.always.upload.maximum_size=6588
 # Pins used for USB            #
 ################################
 attiny861micr.menu.usbpins.standard=Standard - PB4: D-, PB6: D+, PB5: LED
-attiny861micrmenu.usbpins.standard.bootloader.usbpinset=
-attiny861micrmenu.usbpins.standard.bootloader.usbpinsetname=
+attiny861micr.menu.usbpins.standard.bootloader.usbpinset=
+attiny861micr.menu.usbpins.standard.bootloader.usbpinsetname=
 attiny861micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
 attiny861micr.menu.resetpin.reset.bootloader.rstbit=1
 attiny861micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
@@ -5563,8 +5563,8 @@ attiny1634micr.menu.bootentry.jumper.bootloader.entrymode=jumper
 # Pins used for USB            #
 ################################
 attiny1634micr.menu.usbpins.standard=Standard: PC4: D-, PC5: D+, PC2: LED
-attiny1634micrmenu.usbpins.standard.bootloader.usbpinset=
-attiny1634micrmenu.usbpins.standard.bootloader.usbpinsetname=
+attiny1634micr.menu.usbpins.standard.bootloader.usbpinset=
+attiny1634micr.menu.usbpins.standard.bootloader.usbpinsetname=
 attiny1634micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
 attiny1634micr.menu.resetpin.reset.bootloader.rstbit=1
 attiny1634micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
