@@ -38,7 +38,7 @@ This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal (if USB is not required, it can be prescaled as listed in the table for low power applications). See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
 
-Two versions of the bootloader are provided, one for use with Digispark Pro boards with the LED on PB1, and one for use on our Azduino boards with the LED on PA6 (this is easier to route on the 0.425" wide PCB, which is sized to plug into a DIP-24 socket (6 pin positions near the middle are unused - the two centermost ones (to make room for the chip) and PB4 and PB5 (which are used for the crystal - which we needed space for on the PCB).
+Two versions of the bootloader are provided, one for use with Digispark Pro boards with the LED on PB1, and one for use on our Azduino boards with the LED on PA6 (this is easier to route on the 0.425" wide PCB, which is sized to plug into a DIP-24 socket - 6 pin positions near the middle are unused, 2 forced by the width of the chip, and 2 by the fact that you don't *want* the crystal pins broken out).
 
 ## Features
 
@@ -53,10 +53,10 @@ Example of a "guard" against wrong pin mapping:
 ```
 The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel for that mapping.
 
-The legacy pin mapping is even stranger - it is as if someone tried to make a pin mapping that precluded any sort of simplification of the math, and as a result, it is significantly less efficient.
+The legacy pin mapping is even stranger - and also really really bad. It is as if someone tried to make a pin mapping that precluded any sort of simplification of the math, anywhere - and they were largely successful. It's the only place where I had to use a lookup table to convert between analog and digital pin numbers....
 
 ### Flexible PWM support
-The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second ommand. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
+The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
 
 ### Tone Support
 Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.

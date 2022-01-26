@@ -15,35 +15,37 @@ Currently, where multiple versions of the bootloader are included with different
 
 ### Entering the Bootloader
 The Micronucleus bootloader supports a number of methods for entering the bootloader, and several were added during the course of adding support for it to ATTinyCore; the best choice will depend on your development methodology, end use, and personal preferences (many people seem to favor running at power so they can disable reset, others prefer to not run on power on so there isn't that 6 second delay between when it's connected and when the sketch runs, etc). The following are supplied as prebuilt binaries for all applicable parts in 2.0.0:
-
-#### Prebuilt entry conditions
 * Power-on only
 * Reset-pin and power-on
 * Reset-pin alone if reset is enabled - but - if reset is set as an I/O pin, and held high during an reset, it will also enter the bootloader so you can unbrick the board.
 * Any sort of clean reset, but not direct jumps.
-* Any time execution reaches the reset vector (by any reset, OR by a "dirty reset"/jmp 0x0000) while a specified pin is LOW.
-* Any time execution reaches the reset vector *including by direct jump*.
-
-#### Supplied as configurations
+* "Jumper" - Any time execution reaches the reset vector (by any reset, OR by a "dirty reset"/jmp 0x0000) while a specified pin is LOW.
+* "Always" - Any time execution reaches the reset vector *including by direct jump*.
 * Reset pin reset - even if other reset causes are present, with the same safeguard as described above.
-* Reset pin reset alone **with no provision for recovery if reset was disabled** short of hv programming.
-* Reset pin reset - whether or not other reset causes are also present. No safeguard.
 * Only on a Watchdog Reset (so if your app doesn't trigger the WDT timeout, it won't enter the bootloader, and I hope you didn't disable reset)
 
-All are built with fast exit if no USB, `START_WITHOUT_PULLUP` and `ENABLE_SAFE_OPTIMIZATIONS`, and all that depend on reset cause will clear MCUSR after reading it and copying it's contents to the `GPIOR0` register so that user code can access it, while the bootloader can clear the flags so that they do not get confused by them after the next reset.
+All are built with fast exit if no USB, `START_WITHOUT_PULLUP` and `ENABLE_SAFE_OPTIMIZATIONS` (except for the ones listed as permitting jump), and all that depend on reset cause will clear MCUSR after reading it and copying it's contents to the `GPIOR0` register so that user code can access it, while the bootloader can clear the flags so that they do not get confused by them after the next reset.
 
 #### Configuration Summary
+This means there are a total of 136 bootloader binaries, since 1 part comes with 2 resets, 2 parts come with 3, and one of those two has the 12 MHz and 12.8 MHz (because the Micronucleus documentation swears up and down that 12 MHz won't work on the internal oscillator - the 841 and 1634 have a much nicer internal oscillator, so they are more plausible). In about half of cases, either the "always" entry mode leaves one additional page of flash for user code, or the "jumper" mode takes up an extra page.
 
-| Part     | D+  | D-  | LED | Jumper | Clock Source   | Boot Clock | Sketch Clock | Calbyte | Board Name (if any)                | D+ on INT0? |
-|----------|-----|-----|-----|--------|----------------|------------|--------------|---------|------------------------------------|-------------|
-| t84      |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Store   | Doesn't seem to be in production?  | Sometimes   |
-| t841     |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Store   | Wattuino Nanite (D+ on PB1)        | Sometimes   |
-| t85      | PB4 | PB3 | PB1 | PB0    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz | Left    | Digispark and clones               | Yes         |
-| t88      | PD2 | PD1 | PD0 | PC7    | Ext. Clock     | 16.0 MHz   |       16 MHz | N/A     | MH-Tiny                            | Yes         |
-| t167,digi| PB3 | PB6 | PB1 | PA7    | Crystal        | 16.0 MJz   |       16 MHz | N/A     | Digispark Pro                      | Yes         |
-| t167,azd | PB3 | PB6 | PA6 | PA7    | Crystal        | 16.0 MHz   |       16 MHz | N/A     | Azduino USB 167                    | Yes         |
-| t861     | PB6 | PB4 | PB5 | PA3    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz | Keep    | Azduino USB 861                    | Yes         |
-| t1634    | PC5 | PC4 | PC2 | PA0    | USB Tuned Int  | 12.0 MHz   |    12, 8 MHz | Keep    | Azduino USB 1634                   | No          |
+| Part     | D+  | D-  | LED | Jumper | Clock Source   | Boot Clock | Sketch Clock | Calbyte | Flash | Notes                                | D+ on INT0? |
+|----------|-----|-----|-----|--------|----------------|------------|--------------|---------|-------|--------------------------------------|-------------|
+| t84@12   |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Store   |  6588 | 12 MHz is really pushing it w/int. * | Sometimes   |
+| t84@12.8 |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Left    |  6268 | 12.8 MHz may work better, but flash  | Sometimes   |
+| t841     |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Store   |  6524 | Wattuino Nanite (D+ on PB1)       ** | Sometimes   |
+| t85      | PB4 | PB3 | PB1 | PB0    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz | Left    |  6588 | Digispark and clones              ** | Yes         |
+| t88      | PD2 | PD1 | PD0 | PC7    | Ext. Clock     | 16.0 MHz   |       16 MHz | N/A     |  6588 | MH-Tiny                            * | Yes         |
+| t167,digi| PB3 | PB6 | PB1 | PA7    | Crystal        | 16.0 MJz   |       16 MHz | N/A     | 14844 | Digispark Pro                      * | Yes         |
+| t167,azd | PB3 | PB6 | PA6 | PA7    | Crystal        | 16.0 MHz   |       16 MHz | N/A     | 14844 | Azduino USB 167                    * | Yes         |
+| t87      | PB3 | PB6 | *** | PA7    | Crystal        | 16.0 MHz   |       16 MHz | N/A     |  6654 | Same LED pin options as '167         | Yes         |
+| t861     | PB6 | PB4 | PB5 | PA3    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz | Keep    |  6654 | Azduino USB 861                   ** | Yes         |
+| t1634    | PC5 | PC4 | PC2 | PA0    | USB Tuned Int  | 12.0 MHz   |    12, 8 MHz | Keep    | 14714 | Azduino USB 1634                     | No          |
+
+`*` - One page of flash (64 or 128b) less is available with the jumper entry mode option on these parts.
+`**` - One page of additional flash (64b) is available with the "always" entry mode option on these parts.
+
+Note that here a page refers to the units that flash is erased in. On the 841 and 1634, they made the "pages" 1/4th the size.... but they can only be erased in blocks of 4. And they turned around and claimed that was a feature, not a cost-cutting measure that is as far as I can tell is strictly worse.
 
 
 ### Pin configurations
@@ -51,17 +53,17 @@ Three parts have multiple different pin configurations: The ATtiny84, the 841, a
 
 In the case of the 167, it is merely cosmetic: the LED is on a different pin (required to make the routing work on a 0.425" wide board).
 
-The matter of the 84 and 841 is more complicated... All of the products that have been described use two of three pins for USB, and the LED is almost always used on the the third of those three pins; these are the pins of PORTB, PB0 through PB2. (PORTB on these parts is rather strange to begin with, as the on the chip are arranged in the order PA0 - PA7, PB2, PB3 (reset), PB1, PB0). PB0 and PB1 are the crystal pins (neither of these parts use a crystal for VUSB - they crank up the internal to 12 MHz). It is observed that the D+ pin is almost always on INT0 (even though the VUSB implementation in micronucleus uses PCINTs, typically). This is likely because when accessed from the sketch, the interrupt response time matters greatly, and INT0 is the highest priority interrupt - and also because you want to use an INTn interrupt, rather than occupying a whole port of PCINTs for the VUSB. Inexplicably, INT0 was moved from PB2 to PB1 on the 841 (meaning the 841 can't use INT0 if clocked from a crystal either). That explains why D+ pn PB2 and D- on PB1 has been used at times for the tiny84, and the pinout with D+ on PB1 as used on the Wattuino. The fact that there also exists one with D+ on PB0 and D- on PB1 is harder to explain. Mercifully, the other three permutations of pins on PORTB have not been used in production micronucleus 84/841 boards.
+The matter of the 84 and 841 is more complicated... All of the products that have been described to me  use two of three pins for USB, and the LED is almost always used on the the third of those three pins; these are the pins of PORTB, PB0 through PB2. (PORTB on these parts is rather strange to begin with, as the on the chip are arranged in the order PA0 - PA7, PB2, PB3 (reset), PB1, PB0). PB0 and PB1 are the crystal pins (neither of these parts use a crystal for VUSB - they crank up the internal to 12 MHz). It is observed that the D+ pin is almost always on INT0 (even though the VUSB implementation in micronucleus uses PCINTs, typically). This is likely because when accessed from the sketch, the interrupt response time matters greatly, and INT0 is the highest priority interrupt - and also because you want to use an INTn interrupt, rather than occupying a whole port of PCINTs for the VUSB - though in the case of the 14-pin parts, by using the pins of PORTB for USB, the PORTA PCINTs (PCINT0) would still be free. Inexplicably, INT0 was moved from PB2 on the t84 to PB1 on the 841 (meaning the 841 can't use INT0 if clocked from a crystal, either). That explains why D+ pn PB2 and D- on PB1 has been used at times for the tiny84, and the pinout with D+ on PB1 as used on the Bitboss (why the Wattuino did it the other way around is harder to explain) - I suppose we're lucky that the other three possible combinations of those pins haven't been used in production boards too...
 
 #### Jumper option
-The pin used for the jumper entry mode was only established for the 8-pin parts, for the others, where we offer it it was chosen arbitrarily, with an eye towards selecting a pin that was not of critical importance and which was preferably located next to a ground pin.
+The pin used for the jumper entry mode was only established for the 8-pin parts, for the others, it was chosen more or less arbitrarily, with an eye towards selecting a pin that was not of critical importance and which was preferably located next to a ground pin.
 
 ### Clock Speeds
-Micronucleus is built with a specific clock speed in mind; only a few are supported by the codebase, and generally the fastest that is an option is used: 12 MHz, 12.8 MHz, 15 MHz, 16 MHz, 16.5 MHz or 20 MHz. The 12.8 and 16.5 configurations are only used with the internal oscillator - and this extra speed gives the bootloader some room to correct for the lower clock accuracy, though the 12.8 MHz speed generates large binaries. 16.5 is only possible on parts that can be clocked from an on-chip PLL (the ATtiny85 and ATtiny861 - though the internal oscillator on some (not all) ATtiny841 can reach those speeds as well - note that this is higher than the maximum spec for the chip, not just the internal oscillator!), and is within spec above 4.5v for those parts, while 12.8 MHz can be reached by the internal oscillator on other parts (although it is far outside spec for that). Where the internal oscillator is used, it is "tuned" to the needed frequency based on the USB clock.
+Micronucleus is built with a specific clock speed in mind; only a few are supported by the codebase, and generally the fastest that is an option is used: 12 MHz, 12.8 MHz, 15 MHz, 16 MHz, 16.5 MHz or 20 MHz. The 12.8 and 16.5 configurations are only used with the internal oscillator - and this extra speed gives the bootloader some room to correct for the lower clock accuracy, though the 12.8 MHz speed generates significantly larger binaries (by about 320 bytes). 16.5 is only available on parts that can be clocked from an on-chip PLL (the ATtiny85 and ATtiny861) and is within spec above 4.5v for those parts, while 12.8 MHz can be reached by the internal oscillator on other parts (although it is far outside spec for the internal oscillator). It is worth noting that the internal oscillator on some (not all) ATtiny841's could at very close to the maximum, probably do 16.5, however this would be out of spec not only for the internal oscillator, but for the chip in general, and we do not provide binaries for this. Where the internal oscillator is used, it is "tuned" to the needed frequency based on the USB clock.
 
-In the case of the ATtiny85, the internal oscillator is (by default) left at the 16.5 MHz setting so that USB will also work in the sketch. On the ATtiny84 and ATtiny841, this is not done; in the current version of ATTinyCore, USB cannot be used within the sketch on these parts. When running at 16.5 MHz, be aware that timing related code may be be less accurate - this has not been tested carefully, but I believe that millis() will be correct, but micros - and possibly delay - may not be)
+In the case of parts that run the bootloader at 16.5 or 12.8 MHz, the calibration needed for that is retained and te  the internal oscillator is (by default) left at the 16.5 MHz setting so that USB will also work in the sketch. On the ATtiny84 and ATtiny841, this is not done; in the current version of ATTinyCore, USB cannot be used within the sketch on these parts. When running at 16.5 MHz, be aware that timing related code may be be less accurate - this has not been tested carefully, but I believe that millis() will be correct, but micros - and possibly delay - may not be)
 
-In order to support low-power operation, ATTinyCore provides an option to prescale the system clock on all Micronucleus boards (as well as most others) - as soon as the sketch starts, the oscillator will bw prescaled to run at the specified frequency. On the ATtiny85, an option for 12 MHz operation is also provided - this will reset `OSCCAL` to the factory setting
+In order to support low-power operation, ATTinyCore provides an option to prescale the system clock on the more Micronucleus boards (as well as most others) - as soon as the sketch starts, the oscillator will bw prescaled to run at the specified frequency. On the ATtiny85, an option for 12 MHz operation is also provided - this will reset `OSCCAL` to the factory setting
 
 ### Disabling Reset
 Because a board running the Micronucleus bootloader can be reprogrammed without the use of the RESET pin, it is practical to use them with reset configured to act as an I/O pin. This is, obviously, of particular utility on the ATtiny85, where available pins are at a premium, but may be used on any part (except the ATtiny841, in the current version of this core). Because this requires changing the fuses, it can only be enabled with an ISP programmer. Once reset as been disabled, it can no longer be programmed via ISP. Only HVSP or parallel programming (depending on the part - each part supports one or the other, never both), wherein 12v is applied to the reset pin under specific conditions, can be used to unset this fuse or to unbrick a part where reset is disabled and the bootloader is no longer functioning. Note that the bootloader can still be upgraded over USB - including to a version that only runs upon external reset!
@@ -73,15 +75,16 @@ This is used to install Micronucleus on a device without a different version alr
 Micronucleus provides an "upgrade" function - by uploading a program which contains a copy of the updated binary, erases the existing one, and writes a new one in it's place, the bootloader can be replaced even if reset has been disabled. Even if it hasn't been, it's a lot more convenient. This method seems to be reliable - the big danger would be uploading a bootloader version that only enters on reset, after disabling reset. It is planned that any bootloader version that disables reset
 
 ### Micronucleus and MCUSR (reset cause)
-In order to make the entry modes work correctly - regardless of sketch behavior - Micronucleus must reset MCUSR prior to exiting for all entry conditions that depend in any way on whether or what kind of reset occurred. It stashes the value of MCUSR in the GPIOR0 register - in the unlikely event that your sketch needs to know the reset cause, check GPIOR0, not MCUSR. This is currently done on the supplied bootloader for the ATtiny84, 85, and 88 parts; in a future release, it will be done for all parts. To ensure your sketch gets the correct reset cause whether or not the bootloader is clearing MCUSR, this code is optimal:
+In order to make the entry modes work correctly - regardless of sketch behavior - Micronucleus must reset MCUSR prior to exiting for all entry conditions that depend in any way on whether or what kind of reset occurred. It stashes the value of MCUSR in the GPIOR0 register - in the unlikely event that your sketch needs to know the reset cause, the most efficient wat to do this is shown below.
 
 ```
-uint8_t resetcause = GPIOR0;
-GPIOR0 = 0;
-if(!resetcause) { //if this isn't 0 at start of setup, bootloader must have set it.
-  resetcause = MCUSR;
-  MCUSR=0;
+uint8_t resetcause = GPIOR0;  // in reg, GPIOR0
+GPIOR0 = 0;                   // out GPIOR0, __zero_reg__
+if(resetcause != 0) {         // cpse reg, __zero_reg__
+  resetcause = MCUSR;         // in reg, MCUSR
 }
+MCUSR=0;                      // out MCUSR, __zero_reg__
+// 10 bytes, 5 words. Putting MCUSR = 0 inside the conditional is unnecessary, and costs an extra instruction or two.
 ```
 If both GPIOR0 and MCUSR are 0 at the start of setup, and you use code like that shown above in your setup, that means that MCUSR has been cleared since the last reset and not stored to GPIOR. This likely happened because code execution ended up back at 0x0000 either intentionally or unintentionally (it commonly is the end result when the stack is corrupted leading to code attempting to 'return' to a bogus address - this is frequently what causes the chip to get into a bad state from which it needs a manual reset to fix, since no reset cycle occurs, so the peripheral registers are not in the expected state at startup after the "dirty reset". People also sometimes use that as a method of software reset (not recommended, because it doesn't actually reset the current state. ))
 
