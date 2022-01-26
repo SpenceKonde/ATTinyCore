@@ -19,7 +19,7 @@ Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |    8, 12, 12.8 |
 External Crystal      |   All Standard |   All Standard |   All Standard |
 External Clock        |   All Standard |   All Standard |   All Standard |
 
-Tiny flash, a poor featureset, and a relatively high price tag relegate the x313 to the realm of "desperation" processors. Or one would think it would - except they remain surprisingly popular despite having been obsolete for ages. We do not recommend use of these parts if you can avoid it. The 2313-not-A is a strictly worse version of the 2313. Definitely avoid those.
+Tiny flash, a poor featureset, and a relatively high price tag relegate the x313 to the realm of "desperation" processors. Or one would think it would - except they remain surprisingly popular despite having been obsolete for ages. We do not recommend use of these parts if you can avoid it. The 2313-not-A is a strictly worse version of the 2313, sold for a significant premium. Definitely avoid those.
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.

@@ -42,7 +42,11 @@
 #define PIN_PB7           (15) /* RESET */
 
 #ifndef LED_BUILTIN
-  #define LED_BUILTIN     (PIN_PB6)
+  #if USING_BOOTLOADER == 0x08:
+    #define LED_BUILTIN   (PIN_PB5)
+  #else
+    #define LED_BUILTIN   (PIN_PB6)
+  #endif
 #endif
 
 /* PIN_An is the digital pin with analog channel An on it. */

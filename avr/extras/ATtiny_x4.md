@@ -54,6 +54,8 @@ Example of a "guard" against wrong pin mapping:
 #endif
 ```
 
+All pin mapping options assume that PB2 has the LED (bootloaders will blink that pin, and LED_BUILTIN is defined as PIN_PB2), unless it's a micronucleus configuration with D+ on PB2, in which case it will instead use PB0.
+
 ### Tone Support
 Tone() uses Timer1. For best results, use PA6 and PA5, as this will use the hardware output compare to generate the square wave instead of using interrupts.
 

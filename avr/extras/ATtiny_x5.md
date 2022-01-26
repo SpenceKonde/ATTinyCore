@@ -30,7 +30,8 @@ This core includes an Optiboot bootloader for the ATtiny85/45, operating using s
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched unless a slower clock speed is selected. These lower clock speeds are not compatible with USB libraries. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on pin 3, D+ is on pin 4.
 
-**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader upon power-on only. This will be made an option in future versions**
+### LED_BUILTIN is on PB1
+Both optiboot and micronucleus will try to blink it in addition to user code that references LED_BUILTIN.
 
 ## Features
 

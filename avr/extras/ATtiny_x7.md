@@ -55,6 +55,8 @@ The pin mapping for the Digispark Pro is very, very strange. Note that on the An
 
 The legacy pin mapping is even stranger - and also really really bad. It is as if someone tried to make a pin mapping that precluded any sort of simplification of the math, anywhere - and they were largely successful. It's the only place where I had to use a lookup table to convert between analog and digital pin numbers....
 
+LED_BUILTIN is on PB0 on the legacy option, PB1 on digispark, and PA6 on the new pinout.
+
 ### Flexible PWM support
 The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
 

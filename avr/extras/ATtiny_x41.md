@@ -36,9 +36,9 @@ Any of these parts can be programmed by use of any ISP programmer. If using a ve
 This core includes an Optiboot bootloader for the ATtiny841/441, operating on the hardware UART0 (Serial) port at 115200 baud for 12 MHz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the booloader).
 
 ### Micronucleus VUSB Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny841, allowing sketches to be uploaded directly over USB. The board definition runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table, or cranked up to 16 MHz for the adventurous. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz while the bootloader is running, but is set back down before running the sketch. D- is on PIN_PB0, D+ is on PIN_PB1.
+This core includes a Micronucleus bootloader that supports the ATtiny841, allowing sketches to be uploaded directly over USB. The board definition runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table, or cranked up to 16 MHz for the adventurous. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz while the bootloader is running, but is set back down before running the sketch.
 
-**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader on external reset only (hence it cannot be used with the reset pin set as GPIO), like the Nanite841. This will be made an option in a future release, as will higher clock frequencies, including ones high enough for USB libraries**
+Three USB pin mapping options are provided, with D+ on PB0, PB1 or PB2, with D- on either PB0 or PB1. These correspond to hardware seen in the wild.
 
 ## Features
 
@@ -61,6 +61,8 @@ Example of a "guard" against wrong pin mapping:
 #error "Sketch was written for clockwise pin mapping!"
 #endif
 ```
+
+All pin mapping options assume that PB2 has the LED (bootloaders will blink that pin, and LED_BUILTIN is defined as PIN_PB2), unless it's a micronucleus configuration with D+ on PB2, in which case it will instead use PB0.
 
 ### Tone support
 The standard Tone() function is supported on these parts. For best results, use PA5 (pin 5 on either pinout) or PA6 (pin 4 on counterclockwise, pin 6 on clockwise), as this will use hardware output compare to generate the square wave, instead of interrupts.
