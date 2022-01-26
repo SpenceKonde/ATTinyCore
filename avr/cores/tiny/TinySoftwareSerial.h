@@ -86,15 +86,15 @@
     struct soft_ring_buffer
     {
       volatile unsigned char buffer[SERIAL_BUFFER_SIZE];
-      volatile int head;
-      volatile int tail;
+      volatile uint8_t head; // Making these uint8_t's saves FIFTY BYTES of flash! ISR code-size amplification in action...
+      volatile uint8_t tail;
     };
   #endif
   extern "C"{
     void uartDelay() __attribute__ ((naked, used)); //used attribute needed to prevent LTO from throwing it out.
     #ifndef SOFT_TX_ONLY
-      uint8_t getch();
-      void store_char(unsigned char c, soft_ring_buffer *buffer);
+      //uint8_t getch();
+      //void store_char(unsigned char c, soft_ring_buffer *buffer);
     #endif
   }
   class TinySoftwareSerial : public Stream
