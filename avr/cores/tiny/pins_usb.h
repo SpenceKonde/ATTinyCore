@@ -24,7 +24,7 @@
     * really able to hit 16 MHz if you crank it to the max. Can't wait!
     */
   #define USB_CFG_IOPORTNAME      B
-  #if defined(USB_ONEMINUS)
+  #if defined(USB_ZEROPLUS)
     #define USB_CFG_DMINUS_BIT    1
     #define USB_CFG_DPLUS_BIT     0
   #elif defined(USB_TWOPLUS)

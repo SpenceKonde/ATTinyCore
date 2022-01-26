@@ -68,7 +68,7 @@ menu.bootentry=Bootloader Entry Conditions (only set on bootload)
 menu.bootloaderuart=Bootloader UART (only set on bootload)
 
 # Specific to Micronucleus:
-menu.USBpins=Micronucleus USB Pins (set on bootload, must match hardware)
+menu.usbpins=Micronucleus USB Pins (set on bootload, must match hardware)
 menu.burnmode=Burn Bootloader Method
 menu.resetpin=Reset Pin (Only set on bootload via ISP)
 
