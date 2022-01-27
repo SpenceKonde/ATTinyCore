@@ -214,8 +214,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 /* Analog Reference bit masks */
 #define DEFAULT          ADC_REF(0x00)
 #define INTERNAL1V1      ADC_REF(0x01)
-#define INTERNAL           INTERNAL1V1
-
+#define INTERNAL           INTERNAL1V1 /* deprecated */
 /* Special Analog Channels */
 #define ADC_GROUND        ADC_CH(0x1C)
 #define ADC_INTERNAL1V1   ADC_CH(0x1D)
@@ -249,14 +248,18 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 /* Software I2C Master */
   #define SDA PIN_PA4
   #define SCL PIN_PA5
-  #define SDA_PIN 4
-  #define SDA_PORT PORTA
-  #define SCL_PIN 5
-  #define SCL_PORT PORTA
+  #define BIT_SDA 4
+  #define PORT_SDA PORTA
+  #define BIT_SCL 5
+  #define PORT_SCL PORTA
 #else
 /* Hardware I2C Slave with or without Software I2C Master */
   #define SCL  PIN_PD3
   #define SDA  PIN_PD0
+  #define BIT_SDA 0
+  #define PORT_SDA PORTD
+  #define BIT_SCL 3
+  #define PORT_SCL PORTD
 #endif
 
 /* Hardware SPI */
@@ -273,11 +276,11 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 /*---------------------------------------------------------------------------
  * ATMEL/Microchip ATtiny828 ATTinyCore Standard Pin Mapping
  *
- *         INT0    RESET
- *             16*   26   24   14
- *          17    27   25   15
- *             PC0  PD2  PD0  PB6
- *          PC1  PD3  PD1   PB7
+ *            INT0    RESET
+ *               16*   26   24   14
+ *            17    27   25   15
+ *               PC0  PD2  PD0  PB6
+ *            PC1  PD3  PD1   PB7
  *    INT1     _________________
  * 18 RX  PC2 | *               | PB5   13
  * 19 TX  PC3 |                 | PB4   12
@@ -287,10 +290,10 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * 21 *   PC5 |                 | PB1    9
  * 22 *   PC6 |                 | AVCC
  * 23     PC7 |_________________| PB0    8
- *           PA0  PA2  PA4  PA6
+ *            PA0  PA2  PA4  PA6
  *              PA1  PA3  PA5  PA7
- *            0     2    4    6
- *               1     3    5    7
+ *             0    2    4    6
+ *               1    3    5    7
  *
  * * indicates PWM pin
  * ADC input on all pins.

@@ -175,8 +175,7 @@ static const uint8_t A11 = ADC_CH(11);
 #define DEFAULT          ADC_REF(0x00) /* VCC used as analog reference, AREF pin may be used for other purposes. */
 #define EXTERNAL         ADC_REF(0x01) /* External voltage applied to AREF pin. */
 #define INTERNAL1V1      ADC_REF(0x02) /* Internal 1.1V voltage reference, AREF must not have external voltage applied. */
-#define INTERNAL           INTERNAL1V1
-
+#define INTERNAL           INTERNAL1V1 /* deprecated */
 /* Special Analog Channels */
 #define ADC_GROUND        ADC_CH(0x0C)
 #define ADC_INTERNAL1V1   ADC_CH(0x0D)
@@ -200,7 +199,7 @@ static const uint8_t A11 = ADC_CH(11);
  * USI pins are. These are used in Arduino.h to generate MISO/MOSI/SCK for SPI
  * (this is for master mode, as there isn't support for SPI Slave in stock
  * SPI.h) and master mode is almost always what people want. A USI SPI slave
- * library should use the PIN_USI_role defines. The MISO/MOSI/SCK defines are
+ * library should use the USI_role defines. The MISO/MOSI/SCK defines are
  * required for compatibility anyway.
  * Also, be aware that the MISO and MOSI markings on the pinout diagram in the
  * datasheet are for ISP programming, where the chip is the slave. The pinout
@@ -209,44 +208,43 @@ static const uint8_t A11 = ADC_CH(11);
  * there to be an SS pin defined, and will throw errors if there isn't one.
  * Since we provide an SPI.h that mimics the interface of the standard one
  * we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines
- * are in Arduino.h and refer back to these macros (PIN_USI_* )
+ * are in Arduino.h and refer back to these macros (USI_* )
  *---------------------------------------------------------------------------*/
 
 
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define SS              PIN_PC2
-#define PIN_USI_DI      PIN_PB1
-#define PIN_USI_DO      PIN_PB2
-#define PIN_USI_SCK     PIN_PC1
+#define USI_DI                PIN_PB1
+#define USI_DO                PIN_PB2
+#define USI_SCK               PIN_PC1
+#define SS                    PIN_PC2
 
-#define USI_DATA_DDR       DDRB
-#define USI_DATA_PORT     PORTB
-#define USI_DATA_PIN       PINB
-#define USI_DATA_PUE       PUEB
+/* USI pins as ports and bits */
+#define USI_DDR               DDRB
+#define USI_PORT              PORTB
+#define USI_PIN               PINB
+#define USI_PUE               PUEB
+#define USI_CLOCK_DDR         DDRC
+#define USI_CLOCK_PORT        PORTC
+#define USI_CLOCK_PIN         PINC
+#define USI_CLOCK_PUE         PUEC
+#define USI_CLOCK_BIT         PINC1
+#define USI_DO_BIT            PINB2
+#define USI_DI_BIT            PINB1
 
-#define USI_CLOCK_DDR      DDRC
-#define USI_CLOCK_PORT    PORTC
-#define USI_CLOCK_PIN      PINC
-#define USI_CLOCK_PUE      PUEC
-
-#define USI_CLOCK_BIT     PINC1
-#define USI_DO_BIT        PINB2
-#define USI_DI_BIT        PINB1
-
-#define USI_START_VECTOR USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
 
 /* Two hardware serial ports */
-#define PIN_HWSERIAL0_TX         PIN_PB0
-#define PIN_HWSERIAL0_RX         PIN_PA7
+#define PIN_HWSERIAL0_TX      PIN_PB0
+#define PIN_HWSERIAL0_RX      PIN_PA7
 
-#define PIN_HWSERIAL1_TX         PIN_PB1
-#define PIN_HWSERIAL1_RX         PIN_PB2
+#define PIN_HWSERIAL1_TX      PIN_PB1
+#define PIN_HWSERIAL1_RX      PIN_PB2
 
 
 #ifdef ARDUINO_MAIN

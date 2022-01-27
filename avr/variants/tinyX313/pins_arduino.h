@@ -150,7 +150,7 @@
  * USI pins are. These are used in Arduino.h to generate MISO/MOSI/SCK for SPI
  * (this is for master mode, as there isn't support for SPI Slave in stock
  * SPI.h) and master mode is almost always what people want. A USI SPI slave
- * library should use the PIN_USI_role defines. The MISO/MOSI/SCK defines are
+ * library should use the USI_role defines. The MISO/MOSI/SCK defines are
  * required for compatibility anyway.
  * Also, be aware that the MISO and MOSI markings on the pinout diagram in the
  * datasheet are for ISP programming, where the chip is the slave. The pinout
@@ -159,20 +159,20 @@
  * there to be an SS pin defined, and will throw errors if there isn't one.
  * Since we provide an SPI.h that mimics the interface of the standard one
  * we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines
- * are in Arduino.h and refer back to these macros (PIN_USI_* )
+ * are in Arduino.h and refer back to these macros (USI_* )
  *---------------------------------------------------------------------------*/
 
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_DI            PIN_PB5
-#define PIN_USI_DO            PIN_PB6
-#define PIN_USI_SCK           PIN_PB7
+#define USI_DI                PIN_PB5
+#define USI_DO                PIN_PB6
+#define USI_SCK               PIN_PB7
 #define SS                    PIN_PB1
 
-#define USI_DATA_DDR          DDRB
-#define USI_DATA_PORT         PORTB
-#define USI_DATA_PIN          PINB
+#define USI_DDR               DDRB
+#define USI_PORT              PORTB
+#define USI_PIN               PINB
 
 #define USI_CLOCK_BIT         PINB7
 #define USI_DO_BIT            PINB6

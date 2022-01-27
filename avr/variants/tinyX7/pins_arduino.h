@@ -157,12 +157,10 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
 /* Timer 0 - 8-bit timer async support and only 1 PWM channel */
 #define TIMER0_TYPICAL              (0)
-#define PIN_TIMER_OC0A              (PIN_PA2) /* core default - TOCC3 */
+#define PIN_TIMER_OC0A              (PIN_PA2)
 
 /* Timer 1 - 16-bit timer with PWM with automatic remapping with analogWrite to any pin on PORTB*/
-#define TIMER1_TYPICAL              (1)
-#define PIN_TIMER_OC1A              (PIN_PA6) /* core default - TOCC2*/
-#define PIN_TIMER_OC1B              (PIN_PA3) /* core default - */
+#define TIMER1_TYPICAL              (0)
 #define PIN_TIMER_T1                (PIN_PA5)
 #define PIN_TIMER_ICP1              (PIN_PA4)
 
@@ -190,7 +188,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define DEFAULT           ADC_REF(0x00)
 #define EXTERNAL          ADC_REF(0x08) /* Apply external reference voltage to AREF pin */
 #define INTERNAL1V1       ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL            INTERNAL1V1
+#define INTERNAL            INTERNAL1V1 /* deprecated */
 #define INTERNAL2V56      ADC_REF(0x03) /* Not connected to AREF; AREF may be used for other purposes */
 #define INTERNAL1V1_XREF  ADC_REF(0x06) /* Interna1 1.1V reference is output on AREF, and may be used by other devices */
 #define INTERNAL2V56_XREF ADC_REF(0x07) /* Interna1 2.56V reference is output on AREF, and may be used by other devices */
@@ -241,14 +239,14 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define SS                    PIN_PA6
 
 /* USI */
-#define PIN_USI_DI            PIN_PB0
-#define PIN_USI_DO            PIN_PB1
-#define PIN_USI_SCK           PIN_PB2
+#define USI_DI                PIN_PB0
+#define USI_DO                PIN_PB1
+#define USI_SCK               PIN_PB2
 
-#define USI_DATA_DDR          DDRB
-#define USI_DATA_PORT         PORTB
-#define USI_DATA_PIN          PINB
-
+/* USI pins as ports and bits */
+#define USI_DDR               DDRB
+#define USI_PORT              PORTB
+#define USI_PIN               PINB
 #define USI_CLOCK_BIT         PINB2
 #define USI_DO_BIT            PINB1
 #define USI_DI_BIT            PINB0
@@ -262,7 +260,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 /* One hardware LIN port, which is a UART with a ton of wacky features */
 #define PIN_HWSERIAL0_TX      PIN_PA1
 #define PIN_HWSERIAL0_RX      PIN_PA0
-#define HWSERIAL0_IS_LIN
+#define HWSERIAL0_IS_LIN      1
 
 #ifdef ARDUINO_MAIN
 

@@ -58,15 +58,15 @@ void USI_TWI_Master_Speed(uint8_t fm) {
 ---------------------------------------------------------------*/
 void USI_TWI_Master_Initialise(void)
 {
-  #ifdef USI_DATA_PUE
-  USI_DATA_PUE |=(1 << USI_DI_BIT);
-  USI_CLOCK_PUE |=(1 << USI_CLOCK_BIT);
+  #ifdef USI_PUE
+  USI_PUE         |= (1 << USI_DI_BIT);
+  USI_CLOCK_PUE   |= (1 << USI_CLOCK_BIT);
   #endif
-  USI_DATA_PORT |= (1 << USI_DI_BIT);     // Enable pullup on SDA, to set high as released state.
-  USI_CLOCK_PORT |= (1 << USI_CLOCK_BIT); // Enable pullup on SCL, to set high as released state.
+  USI_PORT        |= (1 << USI_DI_BIT);     // Enable pullup on SDA, to set high as released state.
+  USI_CLOCK_PORT  |= (1 << USI_CLOCK_BIT); // Enable pullup on SCL, to set high as released state.
 
-  USI_CLOCK_DDR |= (1 << USI_CLOCK_BIT);  // Enable SCL as output.
-  USI_DATA_DDR |= (1 << USI_DI_BIT);      // Enable SDA as output.
+  USI_CLOCK_DDR   |= (1 << USI_CLOCK_BIT);  // Enable SCL as output.
+  USI_DDR         |= (1 << USI_DI_BIT);      // Enable SDA as output.
 
   USIDR = 0xFF;                                           // Preload dataregister with "released level" data.
   USICR = (0 << USISIE) | (0 << USIOIE) |                 // Disable Interrupts.
@@ -157,12 +157,12 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
   if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM;         // Delay for T4TWI if TWI_FAST_MODE
   else DELAY_T2TWI;                                 // Delay for T2TWI if TWI_STANDARD_MODE
                                                     /* Generate Start Condition */
-  USI_DATA_PORT &= ~(1 << USI_DI_BIT);              // Force SDA LOW.
+  USI_PORT &= ~(1 << USI_DI_BIT);              // Force SDA LOW.
 
   if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T4TWI;
 
   USI_CLOCK_PORT &= ~(1 << USI_CLOCK_BIT);          // Pull SCL LOW.
-  USI_DATA_PORT |= (1 << USI_DI_BIT);               // Release SDA.
+  USI_PORT |= (1 << USI_DI_BIT);               // Release SDA.
 #ifdef SIGNAL_VERIFY
   if (!(USISR & (1 << USISIF))) {
     USI_TWI_state.errorState = USI_TWI_MISSING_START_CON;
@@ -179,7 +179,7 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
       USIDR = *(msg++);                         // Setup data.
       USI_TWI_Master_Transfer(tempUSISR_8bit);  // Send 8 bits on bus.
                                                 /* Clock and verify (N)ACK from slave */
-      USI_DATA_DDR &= ~(1 << USI_DI_BIT);       // Enable SDA as input.
+      USI_DDR &= ~(1 << USI_DI_BIT);            // Enable SDA as input.
       if (USI_TWI_Master_Transfer(tempUSISR_1bit) & (1 << TWI_NACK_BIT)) {
         if (USI_TWI_state.addressMode) {
           USI_TWI_state.errorState = USI_TWI_NO_ACK_ON_ADDRESS;
@@ -190,7 +190,7 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
       }
       USI_TWI_state.addressMode = FALSE; // Only perform address transmission once.
     } else {                /* Else masterRead cycle - Read a data byte */
-      USI_DATA_DDR &= ~(1 << USI_DI_BIT);           // Enable SDA as input.
+      USI_DDR &= ~(1 << USI_DI_BIT);           // Enable SDA as input.
       *(msg++) = USI_TWI_Master_Transfer(tempUSISR_8bit);
                             /* Prepare to generate ACK (or NACK) */
       if (msgSize == 1) {   // If transmission of last byte was performed.
@@ -224,7 +224,7 @@ unsigned char USI_TWI_Master_Transfer(unsigned char temp)
   do {
     if (USI_TWI_MASTER_SPEED) DELAY_T2TWI_FM; else DELAY_T2TWI;
     USICR = temp;                                        // Generate positive SCL edge.
-    while (!(PIN_USI_CL & (1 << USI_CLOCK_BIT)));        // Wait for SCL to go high.
+    while (!(USI_CLOCK_PIN & (1 << USI_CLOCK_BIT)));        // Wait for SCL to go high.
     if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T4TWI;
     USICR = temp;                                        // Generate negative SCL edge.
   } while (!(USISR & (1 << USIOIF)));                    // Check for transfer complete.
@@ -232,7 +232,7 @@ unsigned char USI_TWI_Master_Transfer(unsigned char temp)
   if (USI_TWI_MASTER_SPEED) DELAY_T2TWI_FM; else DELAY_T2TWI;
   temp  = USIDR;                                         // Read out data.
   USIDR = 0xFF;                                          // Release SDA.
-  USI_DATA_DDR |= (1 << USI_DI_BIT);                     // Enable SDA as output.
+  USI_DDR |= (1 << USI_DI_BIT);                          // Enable SDA as output.
 
   return temp; // Return the data from the USIDR
 }
@@ -243,11 +243,11 @@ unsigned char USI_TWI_Master_Transfer(unsigned char temp)
 ---------------------------------------------------------------*/
 unsigned char USI_TWI_Master_Stop(void)
 {
-  USI_DATA_PORT &= ~(1 << USI_DI_BIT);            // Pull SDA low.
+  USI_PORT &= ~(1 << USI_DI_BIT);            // Pull SDA low.
   USI_CLOCK_PORT |= (1 << USI_CLOCK_BIT);         // Release SCL.
-  while (!(PIN_USI_CL & (1 << USI_CLOCK_BIT)));   // Wait for SCL to go high.
+  while (!(USI_CLOCK_PIN & (1 << USI_CLOCK_BIT)));   // Wait for SCL to go high.
   if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T4TWI;
-  USI_DATA_PORT |= (1 << USI_DI_BIT);             // Release SDA.
+  USI_PORT |= (1 << USI_DI_BIT);             // Release SDA.
   if (USI_TWI_MASTER_SPEED) DELAY_T2TWI_FM; else DELAY_T2TWI;
 
 #ifdef SIGNAL_VERIFY

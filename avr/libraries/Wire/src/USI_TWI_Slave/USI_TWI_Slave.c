@@ -67,10 +67,10 @@ void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress)
   USI_TWI_On_Slave_Transmit = 0;
   USI_TWI_On_Slave_Receive = 0;
 
-  PORT_USI_CL |= (1 << USI_CLOCK_BIT);    // Set SCL high
-  PORT_USI |= (1 << USI_DI_BIT);          // Set SDA high
-  USI_CLOCK_DDR |= (1 << USI_CLOCK_BIT);  // Set SCL as output
-  USI_DATA_DDR &= ~(1 << USI_DI_BIT);     // Set SDA as input
+  USI_CLOCK_PORT  |= (1 << USI_CLOCK_BIT);    // Set SCL high
+  USI_PORT        |= (1 << USI_DI_BIT);          // Set SDA high
+  USI_CLOCK_DDR   |= (1 << USI_CLOCK_BIT);  // Set SCL as output
+  USI_DDR         &= ~(1 << USI_DI_BIT);     // Set SDA as input
   USICR = (1 << USISIE) | (0 << USIOIE) | // Enable Start Condition Interrupt. Disable Overflow Interrupt.
           (1 << USIWM1) | (0 << USIWM0) | // Set USI in Two-wire mode. No USI Counter overflow prior
                                           // to first Start Condition (potential failure)
@@ -83,7 +83,7 @@ void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress)
 void USI_TWI_Slave_Disable()
 {
   USI_CLOCK_DDR &= ~(1 << USI_CLOCK_BIT);  // Set SCL as input
-  USI_DATA_DDR &= ~(1 << USI_DI_BIT);      // Set SDA as input
+  USI_DDR       &= ~(1 << USI_DI_BIT);      // Set SDA as input
   USICR = 0x00;                            // Disable USI
   USISR = 0xF0;                            // Clear all flags and reset overflow counter
 }
@@ -165,8 +165,8 @@ ISR(USI_START_VECTOR)
   }
 
   USI_TWI_Overflow_State = USI_SLAVE_CHECK_ADDRESS;
-  USI_DATA_DDR &= ~(1 << USI_DI_BIT); // Set SDA as input
-  while ((tmpPin = (USI_CLOCK_PIN & (1 << USI_CLOCK_BIT))) && ((USI_DATA_PIN & (1 << USI_DI_BIT)) == 0));
+  USI_DDR &= ~(1 << USI_DI_BIT);            // Set SDA as input
+  while ((tmpPin = (USI_CLOCK_PIN & (1 << USI_CLOCK_BIT))) && ((USI_PIN & (1 << USI_DI_BIT)) == 0));
                 // Wait for SCL to go low to ensure the "Start Condition" has completed.
                 // If a Stop condition arises then leave the interrupt to prevent waiting forever.
   if (tmpPin) {                             // Stop Condition (waiting for next Start Condition)

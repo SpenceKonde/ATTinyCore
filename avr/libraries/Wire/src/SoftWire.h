@@ -106,8 +106,7 @@ public:
     return trans;
   }
 
-  uint8_t requestFrom(uint8_t address, uint8_t quantity,
-          uint32_t iaddress, uint8_t isize, uint8_t sendStop) {
+  uint8_t requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop) {
     uint8_t localerror = 0;
     if (isize > 0) {
       // send internal address; this mode allows sending a repeated start to access

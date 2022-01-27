@@ -172,8 +172,7 @@ static const uint8_t A7 = ADC_CH(7);
 /*  Analog reference bit masks. */
 #define DEFAULT               ADC_REF(1)
 #define INTERNAL1V1           ADC_REF(0)
-#define INTERNAL              INTERNAL1V1
-
+#define INTERNAL              INTERNAL1V1 /* deprecated */
 /* Special Analog Channels */
 #define ADC_TEMPERATURE       ADC_CH(0x08)
 #define ADC_INTERNAL1V1       ADC_CH(0x0E)

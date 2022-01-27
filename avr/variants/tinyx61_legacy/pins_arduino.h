@@ -312,29 +312,29 @@ static const uint8_t A10 = ADC_CH(10);
  * libraries acting as master often expect there to be an SS pin defined, and will throw errors
  * if there isn't one. Since we provide an SPI.h that mimics the interface of the standard one
  * we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines are in Arduino.h and
- * refer back to these macros (PIN_USI_* )
+ * refer back to these macros (USI_* )
  *---------------------------------------------------------------------------*/
 
 #define USE_SOFTWARE_SPI  (1)
 
 /* USI */
-#define PIN_USI_DI        (PIN_PB0)
-#define PIN_USI_DO        (PIN_PB1)
-#define PIN_USI_SCK       (PIN_PB2)
-#define SS                (PIN_PB3)
+#define USI_DI                PIN_PB0
+#define USI_DO                PIN_PB1
+#define USI_SCK               PIN_PB2
+#define SS                    PIN_PB3
 
-#define USI_DATA_DDR      (DDRB)
-#define USI_DATA_PORT     (PORTB)
-#define USI_DATA_PIN      (PINB)
+#define USI_DDR               DDRB
+#define USI_PORT              PORTB
+#define USI_PIN               PINB
 
-#define USI_CLOCK_BIT     (1 << 2)
-#define USI_DO_BIT        (1 << 1)
-#define USI_DI_BIT        (1 << 0)
+#define USI_CLOCK_BIT         PINB2
+#define USI_DO_BIT            PINB1
+#define USI_DI_BIT            PINB0
 
-#define USI_START_VECTOR    USI_START_vect
-#define USI_OVERFLOW_VECTOR USI_OVF_vect
+#define USI_START_VECTOR      USI_START_vect
+#define USI_OVERFLOW_VECTOR   USI_OVF_vect
 #ifndef USI_START_COND_INT
-  #define USI_START_COND_INT USISIF
+  #define USI_START_COND_INT  USISIF
 #endif
 
 #ifdef ARDUINO_MAIN

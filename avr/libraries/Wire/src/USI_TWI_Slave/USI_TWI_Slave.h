@@ -26,6 +26,7 @@
  ****************************************************************************/
 //********** Prototypes **********//
 #include <avr/io.h>
+#include <Arduino.h>
 #ifndef TWDR
 void          USI_TWI_Slave_Initialise(unsigned char);
 void          USI_TWI_Slave_Disable();
@@ -84,7 +85,7 @@ extern uint8_t TWI_Buffer[];
 #define SET_USI_TO_SEND_ACK()                                                            \
   {                                                                                      \
     USIDR = 0;                         /* Prepare ACK                 */                 \
-    USI_DATA_DDR |= (1 << USI_DI_BIT); /* Set SDA as output           */                 \
+    USI_DDR |= (1 << USI_DI_BIT); /* Set SDA as output           */                 \
     USISR = (0 << USI_START_COND_INT) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC)      \
             |                  /* Clear all flags, except Start Cond  */                 \
             (0x0E << USICNT0); /* set USI counter to shift 1 bit.     */                 \
@@ -92,7 +93,7 @@ extern uint8_t TWI_Buffer[];
 
 #define SET_USI_TO_SEND_NACK()                                                           \
   {                                                                                      \
-    USI_DATA_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input, NACK is SDA high */         \
+    USI_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input, NACK is SDA high */         \
     USISR = (0 << USI_START_COND_INT) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC)      \
             |                  /* Clear all flags, except Start Cond  */                 \
             (0x0E << USICNT0); /* set USI counter to shift 1 bit.     */                 \
@@ -100,7 +101,7 @@ extern uint8_t TWI_Buffer[];
 
 #define SET_USI_TO_READ_ACK()                                                            \
   {                                                                                      \
-    USI_DATA_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input */                           \
+    USI_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input */                           \
     USIDR = 0;                          /* Prepare ACK      */                           \
     USISR = (0 << USI_START_COND_INT) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC)      \
             |                  /* Clear all flags, except Start Cond  */                 \
@@ -109,7 +110,7 @@ extern uint8_t TWI_Buffer[];
 
 #define SET_USI_TO_TWI_START_CONDITION_MODE()                                            \
   {                                                                                      \
-    USI_DATA_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input */                           \
+    USI_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input */                           \
     USICR = (1 << USISIE) | (0 << USIOIE) | /* Enable Start Condition Interrupt. Disable Overflow Interrupt.*/     \
             (1 << USIWM1) | (0 << USIWM0) | /* Set USI in Two-wire mode. No USI Counter overflow hold.      */     \
             (1 << USICS1) | (0 << USICS0) | (0 << USICLK)                                \
@@ -122,7 +123,7 @@ extern uint8_t TWI_Buffer[];
 
 #define SET_USI_TO_SEND_DATA()                                                           \
   {                                                                                      \
-    USI_DATA_DDR |= (1 << USI_DI_BIT); /* Set SDA as output                  */          \
+    USI_DDR |= (1 << USI_DI_BIT); /* Set SDA as output                  */          \
     USISR = (0 << USI_START_COND_INT) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC)      \
             |                 /* Clear all flags, except Start Cond */                   \
             (0x0 << USICNT0); /* set USI to shift out 8 bits        */                   \
@@ -130,7 +131,7 @@ extern uint8_t TWI_Buffer[];
 
 #define SET_USI_TO_READ_DATA()                                                           \
   {                                                                                      \
-    USI_DATA_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input                   */         \
+    USI_DDR &= ~(1 << USI_DI_BIT); /* Set SDA as input                   */         \
     USISR = (0 << USI_START_COND_INT) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC)      \
             |                 /* Clear all flags, except Start Cond */                   \
             (0x0 << USICNT0); /* set USI to shift out 8 bits        */                   \

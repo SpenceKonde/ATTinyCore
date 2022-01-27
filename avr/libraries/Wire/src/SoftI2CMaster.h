@@ -177,10 +177,10 @@ uint8_t __attribute__ ((noinline)) i2c_read(bool last) __attribute__ ((used));
 #define I2C_WRITE   0
 
 // map the IO register back into the IO address space
-#define SDA_DDR         (_SFR_IO_ADDR(SDA_PORT) - 1)
-#define SCL_DDR         (_SFR_IO_ADDR(SCL_PORT) - 1)
-#define SDA_OUT         _SFR_IO_ADDR(SDA_PORT)
-#define SCL_OUT         _SFR_IO_ADDR(SCL_PORT)
+#define SDA_DDR   (_SFR_IO_ADDR(SDA_PORT) - 1)
+#define SCL_DDR   (_SFR_IO_ADDR(SCL_PORT) - 1)
+#define SDA_OUT    _SFR_IO_ADDR(SDA_PORT)
+#define SCL_OUT    _SFR_IO_ADDR(SCL_PORT)
 #define SDA_IN    (_SFR_IO_ADDR(SDA_PORT) - 2)
 #define SCL_IN    (_SFR_IO_ADDR(SCL_PORT) - 2)
 

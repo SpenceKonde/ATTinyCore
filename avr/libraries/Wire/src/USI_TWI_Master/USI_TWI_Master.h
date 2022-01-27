@@ -30,6 +30,7 @@
 ****************************************************************************/
 
 #include <avr/io.h>
+#include <Arduino.h>
 #ifndef TWDR
 #include <util/delay_basic.h>
 

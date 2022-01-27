@@ -151,8 +151,7 @@ static const uint8_t A3 = ADC_CH(3);
 /* Analog reference bit masks.*/
 #define DEFAULT               ADC_REF(0)
 #define INTERNAL1V1           ADC_REF(1)
-#define INTERNAL              INTERNAL1V1
-
+#define INTERNAL              INTERNAL1V1 /* deprecated */
 /* Special Analog Channels */
 #define ADC_GROUND            ADC_CH(0x04)
 #define ADC_INTERNAL1V1       ADC_CH(0x05)
@@ -183,21 +182,20 @@ static const uint8_t A3 = ADC_CH(3);
  * libraries acting as master often expect there to be an SS pin defined, and will throw errors
  * if there isn't one. Since we provide an SPI.h that mimics the interface of the standard one
  * we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines are in Arduino.h and
- * refer back to these macros (PIN_USI_* )
+ * refer back to these macros (USI_* )
  *---------------------------------------------------------------------------*/
 
 #define USE_SOFTWARE_SPI      1
 
 /* USI */
-#define PIN_USI_DI            PIN_PB4
-#define PIN_USI_DO            PIN_PB5
-#define PIN_USI_SCK           PIN_PB6
+#define USI_DI                PIN_PB4
+#define USI_DO                PIN_PB5
+#define USI_SCK               PIN_PB6
 #define SS                    PIN_PB7
 
-#define USI_DATA_DDR          DDRB
-#define USI_DATA_PORT         PORTB
-#define USI_DATA_PIN          PINB
-
+#define USI_DDR               DDRB
+#define USI_PORT              PORTB
+#define USI_PIN               PINB
 #define USI_CLOCK_BIT         PINB6
 #define USI_DO_BIT            PINB5
 #define USI_DI_BIT            PINB4

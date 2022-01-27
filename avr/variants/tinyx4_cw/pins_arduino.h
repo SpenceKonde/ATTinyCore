@@ -164,8 +164,7 @@ static const uint8_t A7 = ADC_CH(7);
 #define DEFAULT          ADC_REF(0x00)
 #define EXTERNAL         ADC_REF(0x01)
 #define INTERNAL1V1      ADC_REF(0x02)
-#define INTERNAL           INTERNAL1V1
-
+#define INTERNAL           INTERNAL1V1 /* deprecated */
 /* Special Analog Channels */
 #define ADC_GROUND        ADC_CH(0x20)
 #define ADC_INTERNAL1V1   ADC_CH(0x21)
@@ -243,7 +242,7 @@ static const uint8_t A7 = ADC_CH(7);
  * USI pins are. These are used in Arduino.h to generate MISO/MOSI/SCK for SPI
  * (this is for master mode, as there isn't support for SPI Slave in stock
  * SPI.h) and master mode is almost always what people want. A USI SPI slave
- * library should use the PIN_USI_role defines. The MISO/MOSI/SCK defines are
+ * library should use the USI_role defines. The MISO/MOSI/SCK defines are
  * required for compatibility anyway.
  * Also, be aware that the MISO and MOSI markings on the pinout diagram in the
  * datasheet are for ISP programming, where the chip is the slave. The pinout
@@ -252,20 +251,20 @@ static const uint8_t A7 = ADC_CH(7);
  * there to be an SS pin defined, and will throw errors if there isn't one.
  * Since we provide an SPI.h that mimics the interface of the standard one
  * we also provide a dummy SS pin macro. MISO/MOSI/SCK, SDA, SCL #defines
- * are in Arduino.h and refer back to these macros (PIN_USI_* )
+ * are in Arduino.h and refer back to these macros (USI_* )
  *---------------------------------------------------------------------------*/
 
 #define USE_SOFTWARE_SPI 1
 
 /* USI */
-#define PIN_USI_DI            PIN_PA6
-#define PIN_USI_DO            PIN_PA5
-#define PIN_USI_SCK           PIN_PA4
+#define USI_DI                PIN_PA6
+#define USI_DO                PIN_PA5
+#define USI_SCK               PIN_PA4
 #define SS                    PIN_PA3
 
-#define USI_DATA_DDR          DDRA
-#define USI_DATA_PORT         PORTA
-#define USI_DATA_PIN          PINA
+#define USI_DDR               DDRA
+#define USI_PORT              PORTA
+#define USI_PIN               PINA
 
 #define USI_CLOCK_BIT         PINA4
 #define USI_DO_BIT            PINA5

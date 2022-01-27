@@ -96,7 +96,7 @@
 #endif
 
 
-#if F_CPU < 1000000L
+#if (F_CPU < 1000000L)
   //Prevent a divide by 0 is
   #warning "Clocks per microsecond < 1. To prevent divide by 0, it is rounded up to 1."
   #define clockCyclesPerMicrosecond() 1UL
@@ -284,21 +284,25 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 // the data lines. We also use the pin definitions to generate SPI and TWI pin mappings.
 
 #ifndef USI_CLOCK_DDR
-  #define USI_CLOCK_DDR   USI_DATA_DDR
-  #define USI_CLOCK_PORT  USI_DATA_PORT
+  #define USI_CLOCK_DDR   USI_DDR
+  #define USI_CLOCK_PORT  USI_PORT
+  #define USI_CLOCK_PIN   USI_PIN
+#endif
+#if defined(USI_PUE) && !defined(USI_CLOCK_PUE)
+  #define USI_CLOCK_PUE   USI_PUE
 #endif
 
 // If these are defined by pins_arduino, then it's not a USI-based part
 
 #ifndef SCK
-  #define MOSI  PIN_USI_DO
-  #define MISO  PIN_USI_DI
-  #define SCK   PIN_USI_SCK
+  #define MOSI  USI_DO
+  #define MISO  USI_DI
+  #define SCK   USI_SCK
 #endif
 
 #ifndef SCL
-  #define SDA   PIN_USI_DI
-  #define SCL   PIN_USI_SCK
+  #define SDA   USI_DI
+  #define SCL   USI_SCK
 #endif
 
 
