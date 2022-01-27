@@ -275,7 +275,7 @@ intclocks = [[[".menu.clock.internal_8m=8 MHz (internal)", ".menu.clock.internal
              ".menu.clock.internal_2m.build.f_cpu=2000000L", ".menu.clock.internal_2m.build.speed=2m",
              ".menu.clock.internal_2m.build.clocksource=0x10",".menu.clock.internal.2m.bootloader.f_cpu=1000000L"], getspeed(".menu.clock.internal_2m.upload.speed=","2")]]
 pllclocks = [[[".menu.clock.pll_16m=16 MHz (PLL)", ".menu.clock.pll_16m.bootloader.low_fuses=0xF1",
-             ".menu.clock.pll_16m.build.f_cpu=16000000L", ".menu.clock.pll_16m.build.f_cpu=16m",
+             ".menu.clock.pll_16m.build.f_cpu=16000000L", ".menu.clock.pll_16m.build.speed=16m",
              ".menu.clock.pll_16m.build.clocksource=6"], getspeed(".menu.clock.pll_16m.upload.speed=","16")],
              [[".menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)", ".menu.clock.pll_16m5.bootloader.low_fuses=0xF1",
              ".menu.clock.pll_16m5.build.f_cpu=16500000L", ".menu.clock.pll_16m5.build.speed=16m5",
@@ -1103,7 +1103,7 @@ boards = {
     "fancybod":True,
     "rstdisbl":True,
     "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tiny1634_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-    "USBPins":[".menu.usbpins.standard=Standard: PC4: D-, PC5: D+, PC2: LED",".menu.usbpins.standard.bootloader.usbpinset=",".menu.usbpins.standard.bootloader.usbpinsetname="],
+    "USBPins":[".menu.usbpins.standard=Standard: PC4: D-, PC5: D+, PC2: LED",".menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PC2",".menu.usbpins.standard.bootloader.usbpinsetname="],
     "softser":False,
     "fancysoftser":False,
     "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
@@ -1144,7 +1144,7 @@ for x in boards:
         printProp(x,".build.wiremodeabr=")
         printProp(x,".build.wiremode=")
     if not "pinmap" in boards[x]:
-        printProp(x,".build.pinsetabr=")
+        printProp(x,".build.pinmapabr=")
     if boards[x]["bootloader"] == "Micronucleus":
         printProp(x,".build.bootloader=-DUSING_BOOTLOADER=0x08")
         printProp(x,".build.bootloaderabr=micr")
@@ -1164,6 +1164,15 @@ for x in boards:
             printProp(x,".build.bootloader=")
             printProp(x,".build.bootloaderabr=")
             printProp(x,".bootloader.flashstring=")
+    printLit("\n#########################")
+    printLit("# Optimization menu     #")
+    printLit("#########################")
+    printProp(x,".menu.optimization.size=-Os (size, recommended)")
+    printProp(x,".menu.optimization.othree=-O3 (speed)")
+    printProp(x,".menu.optimization.debug=-Og (for advanced debugging)")
+    printProp(x,".menu.optimization.size.build.optimize=-Os")
+    printProp(x,".menu.optimization.othree.build.optimize=-O3")
+    printProp(x,".menu.optimization.debug.build.optimize=-Og")
     if boards[x]["chipmenu"]:
         printLit("\n#########################")
         printLit("# Microcontroller menu  #")

@@ -72,6 +72,8 @@ menu.usbpins=Micronucleus USB Pins (set on bootload, must match hardware)
 menu.burnmode=Burn Bootloader Method
 menu.resetpin=Reset Pin (Only set on bootload via ISP)
 
+# All parts, at the bottom
+menu.optimization="Compiler optimization flags"
 #______________________________________________________________________________#
 #                                                                              #
 #      ####    ###    ###   ####   ####       #   #  ###  #   # ####  ###      #

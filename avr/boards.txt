@@ -72,6 +72,8 @@ menu.usbpins=Micronucleus USB Pins (set on bootload, must match hardware)
 menu.burnmode=Burn Bootloader Method
 menu.resetpin=Reset Pin (Only set on bootload via ISP)
 
+# All parts, at the bottom
+menu.optimization="Compiler optimization flags"
 #______________________________________________________________________________#
 #                                                                              #
 #      ####    ###    ###   ####   ####       #   #  ###  #   # ####  ###      #
@@ -149,6 +151,16 @@ attinyx4.bootloader.tool=avrdude
 attinyx4.build.bootloader=
 attinyx4.build.bootloaderabr=
 attinyx4.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx4.menu.optimization.size=-Os (size, recommended)
+attinyx4.menu.optimization.othree=-O3 (speed)
+attinyx4.menu.optimization.debug=-Og (for advanced debugging)
+attinyx4.menu.optimization.size.build.optimize=-Os
+attinyx4.menu.optimization.othree.build.optimize=-O3
+attinyx4.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -376,12 +388,22 @@ attinyx5.build.softserabr=
 attinyx5.build.softser=
 attinyx5.build.wiremodeabr=
 attinyx5.build.wiremode=
-attinyx5.build.pinsetabr=
+attinyx5.build.pinmapabr=
 attinyx5.upload.tool=avrdude
 attinyx5.bootloader.tool=avrdude
 attinyx5.build.bootloader=
 attinyx5.build.bootloaderabr=
 attinyx5.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx5.menu.optimization.size=-Os (size, recommended)
+attinyx5.menu.optimization.othree=-O3 (speed)
+attinyx5.menu.optimization.debug=-Og (for advanced debugging)
+attinyx5.menu.optimization.size.build.optimize=-Os
+attinyx5.menu.optimization.othree.build.optimize=-O3
+attinyx5.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -427,7 +449,7 @@ attinyx5.menu.clock.internal.2m.bootloader.f_cpu=1000000L
 attinyx5.menu.clock.pll_16m=16 MHz (PLL)
 attinyx5.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attinyx5.menu.clock.pll_16m.build.f_cpu=16000000L
-attinyx5.menu.clock.pll_16m.build.f_cpu=16m
+attinyx5.menu.clock.pll_16m.build.speed=16m
 attinyx5.menu.clock.pll_16m.build.clocksource=6
 attinyx5.menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)
 attinyx5.menu.clock.pll_16m5.bootloader.low_fuses=0xF1
@@ -617,6 +639,16 @@ attinyx8.build.bootloaderabr=
 attinyx8.bootloader.flashstring=
 
 #########################
+# Optimization menu     #
+#########################
+attinyx8.menu.optimization.size=-Os (size, recommended)
+attinyx8.menu.optimization.othree=-O3 (speed)
+attinyx8.menu.optimization.debug=-Og (for advanced debugging)
+attinyx8.menu.optimization.size.build.optimize=-Os
+attinyx8.menu.optimization.othree.build.optimize=-O3
+attinyx8.menu.optimization.debug.build.optimize=-Og
+
+#########################
 # Microcontroller menu  #
 #########################
 attinyx8.menu.chip.88=ATtiny88
@@ -793,6 +825,16 @@ attinyx7.bootloader.tool=avrdude
 attinyx7.build.bootloader=
 attinyx7.build.bootloaderabr=
 attinyx7.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx7.menu.optimization.size=-Os (size, recommended)
+attinyx7.menu.optimization.othree=-O3 (speed)
+attinyx7.menu.optimization.debug=-Og (for advanced debugging)
+attinyx7.menu.optimization.size.build.optimize=-Os
+attinyx7.menu.optimization.othree.build.optimize=-O3
+attinyx7.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -1009,12 +1051,22 @@ attiny26.build.softserabr=
 attiny26.build.softser=
 attiny26.build.wiremodeabr=
 attiny26.build.wiremode=
-attiny26.build.pinsetabr=
+attiny26.build.pinmapabr=
 attiny26.upload.tool=avrdude
 attiny26.bootloader.tool=avrdude
 attiny26.build.bootloader=
 attiny26.build.bootloaderabr=
 attiny26.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attiny26.menu.optimization.size=-Os (size, recommended)
+attiny26.menu.optimization.othree=-O3 (speed)
+attiny26.menu.optimization.debug=-Og (for advanced debugging)
+attiny26.menu.optimization.size.build.optimize=-Os
+attiny26.menu.optimization.othree.build.optimize=-O3
+attiny26.menu.optimization.debug.build.optimize=-Og
 attiny26.build.mcu=attiny26
 
 #########################
@@ -1045,7 +1097,7 @@ attiny26.menu.clock.internal.2m.bootloader.f_cpu=1000000L
 attiny26.menu.clock.pll_16m=16 MHz (PLL)
 attiny26.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attiny26.menu.clock.pll_16m.build.f_cpu=16000000L
-attiny26.menu.clock.pll_16m.build.f_cpu=16m
+attiny26.menu.clock.pll_16m.build.speed=16m
 attiny26.menu.clock.pll_16m.build.clocksource=6
 attiny26.menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)
 attiny26.menu.clock.pll_16m5.bootloader.low_fuses=0xF1
@@ -1230,6 +1282,16 @@ attinyx61.build.bootloaderabr=
 attinyx61.bootloader.flashstring=
 
 #########################
+# Optimization menu     #
+#########################
+attinyx61.menu.optimization.size=-Os (size, recommended)
+attinyx61.menu.optimization.othree=-O3 (speed)
+attinyx61.menu.optimization.debug=-Og (for advanced debugging)
+attinyx61.menu.optimization.size.build.optimize=-Os
+attinyx61.menu.optimization.othree.build.optimize=-O3
+attinyx61.menu.optimization.debug.build.optimize=-Og
+
+#########################
 # Microcontroller menu  #
 #########################
 attinyx61.menu.chip.861=ATtiny861
@@ -1273,7 +1335,7 @@ attinyx61.menu.clock.internal.2m.bootloader.f_cpu=1000000L
 attinyx61.menu.clock.pll_16m=16 MHz (PLL)
 attinyx61.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attinyx61.menu.clock.pll_16m.build.f_cpu=16000000L
-attinyx61.menu.clock.pll_16m.build.f_cpu=16m
+attinyx61.menu.clock.pll_16m.build.speed=16m
 attinyx61.menu.clock.pll_16m.build.clocksource=6
 attinyx61.menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)
 attinyx61.menu.clock.pll_16m5.bootloader.low_fuses=0xF1
@@ -1474,6 +1536,16 @@ attinyx41.bootloader.tool=avrdude
 attinyx41.build.bootloader=
 attinyx41.build.bootloaderabr=
 attinyx41.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx41.menu.optimization.size=-Os (size, recommended)
+attinyx41.menu.optimization.othree=-O3 (speed)
+attinyx41.menu.optimization.debug=-Og (for advanced debugging)
+attinyx41.menu.optimization.size.build.optimize=-Os
+attinyx41.menu.optimization.othree.build.optimize=-O3
+attinyx41.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -1724,12 +1796,22 @@ attiny828.build.usbpinset=
 attiny828.build.tuneorcal=
 attiny828.build.softserabr=
 attiny828.build.softser=
-attiny828.build.pinsetabr=
+attiny828.build.pinmapabr=
 attiny828.upload.tool=avrdude
 attiny828.bootloader.tool=avrdude
 attiny828.build.bootloader=
 attiny828.build.bootloaderabr=
 attiny828.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attiny828.menu.optimization.size=-Os (size, recommended)
+attiny828.menu.optimization.othree=-O3 (speed)
+attiny828.menu.optimization.debug=-Og (for advanced debugging)
+attiny828.menu.optimization.size.build.optimize=-Os
+attiny828.menu.optimization.othree.build.optimize=-O3
+attiny828.menu.optimization.debug.build.optimize=-Og
 attiny828.build.mcu=attiny828
 
 #########################
@@ -1908,6 +1990,16 @@ attiny1634.bootloader.tool=avrdude
 attiny1634.build.bootloader=
 attiny1634.build.bootloaderabr=
 attiny1634.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attiny1634.menu.optimization.size=-Os (size, recommended)
+attiny1634.menu.optimization.othree=-O3 (speed)
+attiny1634.menu.optimization.debug=-Og (for advanced debugging)
+attiny1634.menu.optimization.size.build.optimize=-Os
+attiny1634.menu.optimization.othree.build.optimize=-O3
+attiny1634.menu.optimization.debug.build.optimize=-Og
 attiny1634.build.mcu=attiny1634
 
 #########################
@@ -2128,12 +2220,22 @@ attinyx313.build.softserabr=
 attinyx313.build.softser=
 attinyx313.build.wiremodeabr=
 attinyx313.build.wiremode=
-attinyx313.build.pinsetabr=
+attinyx313.build.pinmapabr=
 attinyx313.upload.tool=avrdude
 attinyx313.bootloader.tool=avrdude
 attinyx313.build.bootloader=
 attinyx313.build.bootloaderabr=
 attinyx313.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx313.menu.optimization.size=-Os (size, recommended)
+attinyx313.menu.optimization.othree=-O3 (speed)
+attinyx313.menu.optimization.debug=-Og (for advanced debugging)
+attinyx313.menu.optimization.size.build.optimize=-Os
+attinyx313.menu.optimization.othree.build.optimize=-O3
+attinyx313.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -2340,12 +2442,22 @@ attiny43u.build.softserabr=
 attiny43u.build.softser=
 attiny43u.build.wiremodeabr=
 attiny43u.build.wiremode=
-attiny43u.build.pinsetabr=
+attiny43u.build.pinmapabr=
 attiny43u.upload.tool=avrdude
 attiny43u.bootloader.tool=avrdude
 attiny43u.build.bootloader=
 attiny43u.build.bootloaderabr=
 attiny43u.bootloader.flashstring=
+
+#########################
+# Optimization menu     #
+#########################
+attiny43u.menu.optimization.size=-Os (size, recommended)
+attiny43u.menu.optimization.othree=-O3 (speed)
+attiny43u.menu.optimization.debug=-Og (for advanced debugging)
+attiny43u.menu.optimization.size.build.optimize=-Os
+attiny43u.menu.optimization.othree.build.optimize=-O3
+attiny43u.menu.optimization.debug.build.optimize=-Og
 attiny43u.build.mcu=attiny43u
 
 #########################
@@ -2572,6 +2684,16 @@ attinyx4opti.build.bootloaderabr=opti
 attinyx4opti.bootloader.speed={build.f_cpu}
 attinyx4opti.upload.protocol=arduino
 attinyx4opti.bootloader.uart=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx4opti.menu.optimization.size=-Os (size, recommended)
+attinyx4opti.menu.optimization.othree=-O3 (speed)
+attinyx4opti.menu.optimization.debug=-Og (for advanced debugging)
+attinyx4opti.menu.optimization.size.build.optimize=-Os
+attinyx4opti.menu.optimization.othree.build.optimize=-O3
+attinyx4opti.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -2806,7 +2928,7 @@ attinyx5opti.build.softserabr=
 attinyx5opti.build.softser=
 attinyx5opti.build.wiremodeabr=
 attinyx5opti.build.wiremode=
-attinyx5opti.build.pinsetabr=
+attinyx5opti.build.pinmapabr=
 attinyx5opti.upload.tool=avrdude
 attinyx5opti.bootloader.tool=avrdude
 attinyx5opti.bootloader.flashstring=-Uflash:w:{bootloader.file}:i
@@ -2815,6 +2937,16 @@ attinyx5opti.build.bootloaderabr=opti
 attinyx5opti.bootloader.speed={build.f_cpu}
 attinyx5opti.upload.protocol=arduino
 attinyx5opti.bootloader.uart=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx5opti.menu.optimization.size=-Os (size, recommended)
+attinyx5opti.menu.optimization.othree=-O3 (speed)
+attinyx5opti.menu.optimization.debug=-Og (for advanced debugging)
+attinyx5opti.menu.optimization.size.build.optimize=-Os
+attinyx5opti.menu.optimization.othree.build.optimize=-O3
+attinyx5opti.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -2860,7 +2992,7 @@ attinyx5opti.menu.clock.internal_2m.upload.speed=4800
 attinyx5opti.menu.clock.pll_16m=16 MHz (PLL)
 attinyx5opti.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attinyx5opti.menu.clock.pll_16m.build.f_cpu=16000000L
-attinyx5opti.menu.clock.pll_16m.build.f_cpu=16m
+attinyx5opti.menu.clock.pll_16m.build.speed=16m
 attinyx5opti.menu.clock.pll_16m.build.clocksource=6
 attinyx5opti.menu.clock.pll_16m.upload.speed=57600
 attinyx5opti.menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)
@@ -3062,6 +3194,16 @@ attinyx8opti.upload.protocol=arduino
 attinyx8opti.bootloader.uart=
 
 #########################
+# Optimization menu     #
+#########################
+attinyx8opti.menu.optimization.size=-Os (size, recommended)
+attinyx8opti.menu.optimization.othree=-O3 (speed)
+attinyx8opti.menu.optimization.debug=-Og (for advanced debugging)
+attinyx8opti.menu.optimization.size.build.optimize=-Os
+attinyx8opti.menu.optimization.othree.build.optimize=-O3
+attinyx8opti.menu.optimization.debug.build.optimize=-Og
+
+#########################
 # Microcontroller menu  #
 #########################
 attinyx8opti.menu.chip.88=ATtiny88
@@ -3252,6 +3394,16 @@ attinyx7opti.build.bootloaderabr=opti
 attinyx7opti.bootloader.speed={build.f_cpu}
 attinyx7opti.upload.protocol=arduino
 attinyx7opti.bootloader.uart=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx7opti.menu.optimization.size=-Os (size, recommended)
+attinyx7opti.menu.optimization.othree=-O3 (speed)
+attinyx7opti.menu.optimization.debug=-Og (for advanced debugging)
+attinyx7opti.menu.optimization.size.build.optimize=-Os
+attinyx7opti.menu.optimization.othree.build.optimize=-O3
+attinyx7opti.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -3489,6 +3641,16 @@ attinyx61opti.upload.protocol=arduino
 attinyx61opti.bootloader.uart=
 
 #########################
+# Optimization menu     #
+#########################
+attinyx61opti.menu.optimization.size=-Os (size, recommended)
+attinyx61opti.menu.optimization.othree=-O3 (speed)
+attinyx61opti.menu.optimization.debug=-Og (for advanced debugging)
+attinyx61opti.menu.optimization.size.build.optimize=-Os
+attinyx61opti.menu.optimization.othree.build.optimize=-O3
+attinyx61opti.menu.optimization.debug.build.optimize=-Og
+
+#########################
 # Microcontroller menu  #
 #########################
 attinyx61opti.menu.chip.861=ATtiny861
@@ -3532,7 +3694,7 @@ attinyx61opti.menu.clock.internal_2m.upload.speed=9600
 attinyx61opti.menu.clock.pll_16m=16 MHz (PLL)
 attinyx61opti.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attinyx61opti.menu.clock.pll_16m.build.f_cpu=16000000L
-attinyx61opti.menu.clock.pll_16m.build.f_cpu=16m
+attinyx61opti.menu.clock.pll_16m.build.speed=16m
 attinyx61opti.menu.clock.pll_16m.build.clocksource=6
 attinyx61opti.menu.clock.pll_16m.upload.speed=76800
 attinyx61opti.menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)
@@ -3745,6 +3907,16 @@ attinyx41opti.build.bootloaderabr=opti
 attinyx41opti.bootloader.speed={build.f_cpu}
 attinyx41opti.upload.protocol=arduino
 attinyx41opti.bootloader.uart=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx41opti.menu.optimization.size=-Os (size, recommended)
+attinyx41opti.menu.optimization.othree=-O3 (speed)
+attinyx41opti.menu.optimization.debug=-Og (for advanced debugging)
+attinyx41opti.menu.optimization.size.build.optimize=-Os
+attinyx41opti.menu.optimization.othree.build.optimize=-O3
+attinyx41opti.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -4018,7 +4190,7 @@ attiny828opti.build.usbpinset=
 attiny828opti.build.tuneorcal=
 attiny828opti.build.softserabr=
 attiny828opti.build.softser=
-attiny828opti.build.pinsetabr=
+attiny828opti.build.pinmapabr=
 attiny828opti.upload.tool=avrdude
 attiny828opti.bootloader.tool=avrdude
 attiny828opti.bootloader.flashstring=-Uflash:w:{bootloader.file}:i
@@ -4027,6 +4199,16 @@ attiny828opti.build.bootloaderabr=opti
 attiny828opti.bootloader.speed={build.f_cpu}
 attiny828opti.upload.protocol=arduino
 attiny828opti.bootloader.uart=
+
+#########################
+# Optimization menu     #
+#########################
+attiny828opti.menu.optimization.size=-Os (size, recommended)
+attiny828opti.menu.optimization.othree=-O3 (speed)
+attiny828opti.menu.optimization.debug=-Og (for advanced debugging)
+attiny828opti.menu.optimization.size.build.optimize=-Os
+attiny828opti.menu.optimization.othree.build.optimize=-O3
+attiny828opti.menu.optimization.debug.build.optimize=-Og
 attiny828opti.build.mcu=attiny828
 
 #########################
@@ -4226,6 +4408,16 @@ attiny1634opti.build.bootloaderabr=opti
 attiny1634opti.bootloader.speed={build.f_cpu}
 attiny1634opti.upload.protocol=arduino
 attiny1634opti.bootloader.uart=
+
+#########################
+# Optimization menu     #
+#########################
+attiny1634opti.menu.optimization.size=-Os (size, recommended)
+attiny1634opti.menu.optimization.othree=-O3 (speed)
+attiny1634opti.menu.optimization.debug=-Og (for advanced debugging)
+attiny1634opti.menu.optimization.size.build.optimize=-Os
+attiny1634opti.menu.optimization.othree.build.optimize=-O3
+attiny1634opti.menu.optimization.debug.build.optimize=-Og
 attiny1634opti.build.mcu=attiny1634
 
 #########################
@@ -4492,6 +4684,16 @@ attiny84mi12.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny84mi12.build.bootloaderabr=micr
 attiny84mi12.upload.tool=micronucleus
 attiny84mi12.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny84mi12.menu.optimization.size=-Os (size, recommended)
+attiny84mi12.menu.optimization.othree=-O3 (speed)
+attiny84mi12.menu.optimization.debug=-Og (for advanced debugging)
+attiny84mi12.menu.optimization.size.build.optimize=-Os
+attiny84mi12.menu.optimization.othree.build.optimize=-O3
+attiny84mi12.menu.optimization.debug.build.optimize=-Og
 attiny84mi12.build.mcu=attiny84
 
 #########################
@@ -4624,6 +4826,16 @@ attiny84micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny84micr.build.bootloaderabr=micr
 attiny84micr.upload.tool=micronucleus
 attiny84micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny84micr.menu.optimization.size=-Os (size, recommended)
+attiny84micr.menu.optimization.othree=-O3 (speed)
+attiny84micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny84micr.menu.optimization.size.build.optimize=-Os
+attiny84micr.menu.optimization.othree.build.optimize=-O3
+attiny84micr.menu.optimization.debug.build.optimize=-Og
 attiny84micr.build.mcu=attiny84
 
 #########################
@@ -4751,11 +4963,21 @@ attiny85micr.build.softserabr=
 attiny85micr.build.softser=
 attiny85micr.build.wiremodeabr=
 attiny85micr.build.wiremode=
-attiny85micr.build.pinsetabr=
+attiny85micr.build.pinmapabr=
 attiny85micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny85micr.build.bootloaderabr=micr
 attiny85micr.upload.tool=micronucleus
 attiny85micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny85micr.menu.optimization.size=-Os (size, recommended)
+attiny85micr.menu.optimization.othree=-O3 (speed)
+attiny85micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny85micr.menu.optimization.size.build.optimize=-Os
+attiny85micr.menu.optimization.othree.build.optimize=-O3
+attiny85micr.menu.optimization.debug.build.optimize=-Og
 attiny85micr.build.mcu=attiny85
 
 #########################
@@ -4892,6 +5114,16 @@ attiny88micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny88micr.build.bootloaderabr=micr
 attiny88micr.upload.tool=micronucleus
 attiny88micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny88micr.menu.optimization.size=-Os (size, recommended)
+attiny88micr.menu.optimization.othree=-O3 (speed)
+attiny88micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny88micr.menu.optimization.size.build.optimize=-Os
+attiny88micr.menu.optimization.othree.build.optimize=-O3
+attiny88micr.menu.optimization.debug.build.optimize=-Og
 attiny88micr.build.mcu=attiny88
 
 #########################
@@ -5031,6 +5263,16 @@ attinyx7micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attinyx7micr.build.bootloaderabr=micr
 attinyx7micr.upload.tool=micronucleus
 attinyx7micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attinyx7micr.menu.optimization.size=-Os (size, recommended)
+attinyx7micr.menu.optimization.othree=-O3 (speed)
+attinyx7micr.menu.optimization.debug=-Og (for advanced debugging)
+attinyx7micr.menu.optimization.size.build.optimize=-Os
+attinyx7micr.menu.optimization.othree.build.optimize=-O3
+attinyx7micr.menu.optimization.debug.build.optimize=-Og
 
 #########################
 # Microcontroller menu  #
@@ -5179,6 +5421,16 @@ attiny861micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny861micr.build.bootloaderabr=micr
 attiny861micr.upload.tool=micronucleus
 attiny861micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny861micr.menu.optimization.size=-Os (size, recommended)
+attiny861micr.menu.optimization.othree=-O3 (speed)
+attiny861micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny861micr.menu.optimization.size.build.optimize=-Os
+attiny861micr.menu.optimization.othree.build.optimize=-O3
+attiny861micr.menu.optimization.debug.build.optimize=-Og
 attiny861micr.build.mcu=attiny861
 
 #########################
@@ -5328,6 +5580,16 @@ attiny841micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny841micr.build.bootloaderabr=micr
 attiny841micr.upload.tool=micronucleus
 attiny841micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny841micr.menu.optimization.size=-Os (size, recommended)
+attiny841micr.menu.optimization.othree=-O3 (speed)
+attiny841micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny841micr.menu.optimization.size.build.optimize=-Os
+attiny841micr.menu.optimization.othree.build.optimize=-O3
+attiny841micr.menu.optimization.debug.build.optimize=-Og
 attiny841micr.build.mcu=attiny841
 
 #########################
@@ -5480,6 +5742,16 @@ attiny1634micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny1634micr.build.bootloaderabr=micr
 attiny1634micr.upload.tool=micronucleus
 attiny1634micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny1634micr.menu.optimization.size=-Os (size, recommended)
+attiny1634micr.menu.optimization.othree=-O3 (speed)
+attiny1634micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny1634micr.menu.optimization.size.build.optimize=-Os
+attiny1634micr.menu.optimization.othree.build.optimize=-O3
+attiny1634micr.menu.optimization.debug.build.optimize=-Og
 attiny1634micr.build.mcu=attiny1634
 
 #########################
@@ -5563,7 +5835,7 @@ attiny1634micr.menu.bootentry.jumper.bootloader.entrymode=jumper
 # Pins used for USB            #
 ################################
 attiny1634micr.menu.usbpins.standard=Standard: PC4: D-, PC5: D+, PC2: LED
-attiny1634micr.menu.usbpins.standard.bootloader.usbpinset=
+attiny1634micr.menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PC2
 attiny1634micr.menu.usbpins.standard.bootloader.usbpinsetname=
 attiny1634micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
 attiny1634micr.menu.resetpin.reset.bootloader.rstbit=1

@@ -30,12 +30,12 @@ compiler.warning_flags.all=-Wall -Wextra
 # Default "compiler.path" is correct, change only if you want to overidde the initial value
 compiler.path={runtime.tools.avr-gcc.path}/bin/
 compiler.c.cmd=avr-gcc
-compiler.c.flags=-c -g -Os {compiler.warning_flags} -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mrelax -Werror=implicit-function-declaration -Wundef
+compiler.c.flags=-c -g {build.optimize} {compiler.warning_flags} -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mrelax -Werror=implicit-function-declaration -Wundef
 compiler.c.elf.flags={compiler.warning_flags} -Os -g -flto -fuse-linker-plugin -Wl,--gc-sections -mrelax
 compiler.c.elf.cmd=avr-gcc
 compiler.S.flags=-c -g -x assembler-with-cpp -flto -MMD
 compiler.cpp.cmd=avr-g++
-compiler.cpp.flags=-c -g -Os {compiler.warning_flags} -std=c++17 -fpermissive -Wno-sized-deallocation -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -Wno-error=narrowing -MMD -flto -mrelax
+compiler.cpp.flags=-c -g {build.optimize} {compiler.warning_flags} -std=gnu++17 -fpermissive -Wno-sized-deallocation -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -Wno-error=narrowing -MMD -flto -mrelax
 compiler.ar.cmd=avr-gcc-ar
 compiler.ar.flags=rcs
 compiler.objcopy.cmd=avr-objcopy
@@ -66,13 +66,13 @@ compiler.elf2hex.extra_flags=
 ####################
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.c.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile c++ files
 recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.cpp.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile S files
-recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines}{compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mmcu={build.mcu} {build.optiondefines} -DARDUINO={runtime.ide.version} {build.versiondefines} {compiler.S.extra_flags} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Preprocessor
 preproc.includes.flags=-w -x c++ -M -MG -MP
@@ -125,11 +125,11 @@ recipe.hooks.objcopy.postobjcopy.2.pattern.linux=bash -c "{compiler.path}{compil
 recipe.hooks.objcopy.postobjcopy.2.pattern.macosx=bash -c "{compiler.path}{compiler.nm.cmd} {compiler.nm.flags}  {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.map"
 
 ## This is the name that memory maps, assembly listings and hex files will be output as
-build.extraassetname={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinsetabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}
+build.extraassetname={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinmapabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}
 
 ## Save hex
 recipe.output.tmp_file={build.project_name}.hex
-recipe.output.save_file={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinsetabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}.hex
+recipe.output.save_file={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinmapabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}.hex
 
 ## Save lst
 recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.lst" "{sketch_path}\{build.extraassetname}.lst"
@@ -141,6 +141,10 @@ recipe.hooks.savehex.presavehex.2.pattern.windows=cmd /C copy "{build.path}\{bui
 recipe.hooks.savehex.presavehex.2.pattern.linux=cp "{build.path}/{build.project_name}.map" "{sketch_path}/{build.extraassetname}.map"
 recipe.hooks.savehex.presavehex.2.pattern.macosx=cp "{build.path}/{build.project_name}.map" "{sketch_path}/{build.extraassetname}.map"
 
+## Save elf
+recipe.hooks.savehex.presavehex.3.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.elf" "{sketch_path}\{build.extraassetname}.elf"
+recipe.hooks.savehex.presavehex.3.pattern.linux=cp "{build.path}/{build.project_name}.elf" "{sketch_path}/{build.extraassetname}.elf"
+recipe.hooks.savehex.presavehex.3.pattern.macosx=cp "{build.path}/{build.project_name}.elf" "{sketch_path}/{build.extraassetname}.elf"
 
 
 #########################################
