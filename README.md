@@ -3,19 +3,27 @@ Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2
 ## State of ATTinyCore
 Development of ATTinyCore is proceeding in the v2.0.0-dev branch. 
 
-**PLEASE DO NOT SUBMIT PR's AGAINST the "MASTER" BRANCH!
+**PLEASE DO NOT SUBMIT PR's AGAINST the "MASTER" BRANCH
 YOUR CHANGES WILL BE LOST UPON THE NEXT RELEASE IF YOU DO
 NEW CHANGES NEED TO GO INTO v2.0.0-dev**  (which will be my next project after DxCore 1.3.7 release this week)
 
-It's not usable presently due to incomplete work, but that is what all future releases will be made from. Notably, I belive the variant pins_arduino.h files are complete, showcasing both the range of new information available to the core and user code for all parts, and the new, consisitent formatting. 
+## We desperately need testing help here
+**THE 2.0.0-dev branch IS NOW READY FOR PUBLIC TESTING VIA MANUAL INSTALLATION**
+It i **CRITICAL** that we get as much testing done as possible because **BASICALLY NOTHING HAS BEEN TESTED**, and virtually no files are without major fundamnental changes! 
 
-ATtiny26 support looks like it may be coming after all....
+*There are 272 different versions of micronucleus built (and part of the 2.0.0-dev branch now), and optiboot will dwarf that number!*
+0 of those have been teted. Obviously we are leaning *very* heavily on automation of configuration generation for this release. 
 
+Half of the tinyNeoPixel speeds have had the assembly routines modified in major ways (there's no more stupid menu for the port), but they are untested. I have a TON of irons in the fire right now, and I am trying to get this out and stop delaying it and delaying it. 
+
+If you find problems with 2.0.0-dev (you can just create a "hardware" folder in your sketchbook and sync the repo to that location to nanually install - no need to do anything wacky like on my other cores), create an issue, start a discusion, or hell even just email me with info, just get the information to me somehow.
+
+Thank you users!
 
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
 Let's use that, not gitter.
 
-### Current **strongly** recommended IDE version: 1.8.13
+### Current **strongly** recommended IDE version: 1.8.13 or later. 
 Users of 1.6.x versions should use caution with any board manager packages as the handling of dependency versions, at least under 1.6.9, appears to be severely broken, such that installing one packages can break others. For example, DxCore won't work if ATYTinyCore is installed on 1.6.9! - both cores correctly specify their requirements, but the IDE does not use the correct versions of the toochain. It is likely that similar bugs involving other tools also manifest here. Use 1.8.13 or similar recent version if at all possible; if you are unwilling or unable to update your main Arduino IDE version, a "portable" installation is recommended - the separate copy of IDE *with portable installation* should ensure that what you do in that version does not effect the other version - if you can't use 1.8.13, a portable 1.6.9 version will achieve the same thing, only without the other fixes and improvements that went into the IDE since then.
 
 
