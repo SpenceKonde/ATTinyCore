@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include "BasicMacros.h"
 
 #include <avr/pgmspace.h>
 #include <avr/io.h>
@@ -20,76 +21,12 @@
   #define ATTINYCORE "2.x.x+ unknown"
 #endif
 
-#ifndef _NOPNOP
-  #define _NOPNOP() do { __asm__ volatile ("rjmp .+0"); } while (0)
-#endif
-
-
-#define HIGH 0x1
-#define LOW  0x0
-
-#define INPUT 0x0
-#define OUTPUT 0x1
-#define INPUT_PULLUP 0x2
-
-
-#define PI          3.1415926535897932384626433832795
-#define HALF_PI     1.5707963267948966192313216916398
-#define TWO_PI      6.283185307179586476925286766559
-#define DEG_TO_RAD  0.017453292519943295769236907684886
-#define RAD_TO_DEG 57.295779513082320876798154814105
-
-#define min(a,b)      ({ \
-    typeof (a) _a = (a); \
-    typeof (b) _b = (b); \
-    _a < _b ? _a : _b; })
-
-#define max(a,b)      ({ \
-    typeof (a) _a = (a); \
-    typeof (b) _b = (b); \
-    _a > _b ? _a : _b; })
-
-#ifndef constrain
-  #define constrain(x,low,high)   ({ \
-    typeof (x) _x = (x);             \
-    typeof (low) _l = (l);           \
-    typeof (high) _h = (h);          \
-  _x < _l ? _l : _x > _h ? _h :_x;})
-#endif
-
-#ifndef radians
-  #define radians(deg) ((deg)*DEG_TO_RAD)
-#endif
-
-#ifndef degrees
-  #define degrees(rad) ((rad)*RAD_TO_DEG)
-#endif
-
-#ifndef sq
-  #define sq(x)        ({ typeof (x) _x = (x); _x * _x; })
-#endif
-
-#ifndef round
-  #define round(x)     ({ typeof (x) _x = (x);  _x >= 0 ? (long)x + 0.5 : (long)x - 0.5 ;})
-#endif
-
-#define SERIAL  0x0
-#define DISPLAY 0x1
-
-#define LSBFIRST  0
-#define MSBFIRST  1
-
-#define CHANGE    1
-#define FALLING   2
-#define RISING    3
 
 #define ADC_ERROR_NO_ADC          -32768
 #define ADC_ERROR_DISABLED        -32767 /* ADC_ERROR_NO_ADC + 1 */
 #define ADC_ERROR_BUSY            -32766 /* ADC_ERROR_NO_ADC + 2 */
 #define ADC_ERROR_NOT_A_CHANNEL   -32765 /* ADC_ERROR_NO_ADC + 3 */
 #define ADC_ERROR_SINGLE_END_IPR  -32764 /* ADC_ERROR_NO_ADC + 4 */
-
-#define NOT_AN_INTERRUPT -1
 
 #ifndef USING_BOOTLOADER
   #define USING_BOOTLOADER 0
@@ -109,23 +46,10 @@
 //#define clockCyclesToMicroseconds(a) (((a) * 1000L) / (F_CPU / 1000L))
 //#define microsecondsToClockCycles(a) (((a) * (F_CPU / 1000L)) / 1000L)
 
-#define clockCyclesToMicroseconds(a) ((a) / clockCyclesPerMicrosecond())
-#define microsecondsToClockCycles(a) ((a) * clockCyclesPerMicrosecond())
 
-#define lowByte(w) ((uint8_t) ((w) & 0xff))
-#define highByte(w) ((uint8_t) ((w) >> 8))
-
-#define bitRead(value, bit) (((value) >> (bit)) & 0x01)
-#define bitSet(value, bit) ((value) |= (1UL << (bit)))
-#define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
-#define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
-
-#define interrupts() sei()
-#define noInterrupts() cli()
 
 typedef unsigned int word;
 
-#define bit(b) (1UL << (b))
 
 typedef uint8_t boolean;
 typedef uint8_t byte;
@@ -137,9 +61,23 @@ int main() __attribute__((weak));
 
 void pinMode(uint8_t pinNumber, uint8_t mode);
 void digitalWrite(uint8_t pinNumber, uint8_t val);
-void digitalWriteFast(uint8_t pinNumber, uint8_t val);
 int8_t digitalRead(uint8_t pinNumber);
+/* Copy of the ones on the modern AVR cores I maintain */
+void openDrain(uint8_t pin, uint8_t mode);
+
+/*
+I CANNOT get these to compile as always inline and I cannot for the life of me figure out why I can't here and can on DxCore and megaTinyCore!
+
+void openDrainFast(uint8_t pin, uint8_t mode);
 int8_t digitalReadFast(uint8_t pinNumber);
+void pinModeFast(uint8_t pinNumber, uint8_t mode);
+void digitalWriteFast(uint8_t pinNumber, uint8_t val);
+#if defined(PUEA)
+  void digitalWriteFaster(uint8_t pinNumber, uint8_t val);
+  //Ignores the pullup register. Helps as great deal on the 841. Makes less difference to 1634 and 828 which have PUE regs in the low IO space.
+#endif
+*/
+
 int analogRead(uint8_t pinNumber);
 #ifdef SLEEP_MODE_ADC
   int analogRead_NR(uint8_t pin);
@@ -212,7 +150,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define portInputRegister(P)    ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_input_PGM, (P))))
 #define portModeRegister(P)     ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
 #if defined(PUEA)
-  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_mode_PGM, (P))))
+  #define portPullupRegister(P) ((volatile uint8_t *)(uint16_t)(const_array_or_pgm_(pgm_read_byte, port_to_pullup_PGM, (P))))
 #endif
 
 #define NOT_A_PIN     255
@@ -268,14 +206,14 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   channel. Implementing this was faster than making
   an actual "decision" */
 #if defined(OC1AX)
-  #define TIM1AU (0x08)
-  #define TIM1AV (0x09)
-  #define TIM1AW (0x0A)
-  #define TIM1AX (0x0B)
-  #define TIM1BU (0x0C)
-  #define TIM1BV (0x0D)
-  #define TIM1BW (0x0E)
-  #define TIM1BX (0x0F)
+  #define TIM1AU (0x18 | 3)
+  #define TIM1AV (0x28 | 3)
+  #define TIM1AW (0x48 | 3)
+  #define TIM1AX (0x88 | 3)
+  #define TIM1BU (0x14 | 4)
+  #define TIM1BV (0x24 | 4)
+  #define TIM1BW (0x44 | 4)
+  #define TIM1BX (0x84 | 4)
 #endif
 #include "pins_arduino.h"
 
@@ -400,7 +338,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   uint16_t makeWord(byte h, byte l);
 
   #define word(...) makeWord(__VA_ARGS__)
-
   unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
   unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
 
@@ -417,8 +354,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 /* SIGRD is missing from some of the IO headers, where it should be defined as 5 for most parts.
  * It is sometimes omitted entirely and sometimes named SIGRD. It works the same no matter what
- * so it's unfortunate that they did that... I have not the faintest idea why they did.
- * this is one of the ways we work around that  */
+ * so it's unfortunate that they did named it so inconsistently.   */
 #ifndef SIGRD
   #ifndef RSIG
     #define SIGRD 5
