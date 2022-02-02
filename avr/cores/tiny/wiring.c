@@ -982,7 +982,8 @@ void initToneTimer(void)
       TCCR1D = (1 << WGM10) | (0 << WGM11);
       TCCR1B = (ToneTimer_Prescale_Index << CS10);
     #elif (TIMER_TO_USE_FOR_TONE == 1 ) && defined(__AVR_ATtinyX7__)
-      TCCR1A = (1 << COM1A1)|(1 << COM1B1)|(1 << WGM10);
+      /* Like the 841/441/828 we turn on the output compare, and analogWrite() only twiddles the enable bits */
+      TCCR1A = (1 << COM1A1)  |(1 << COM1B1) | (1 << WGM10);
       TCCR1B = (ToneTimer_Prescale_Index << CS10);
     #elif (TIMER_TO_USE_FOR_TONE == 1) // x4, x8, x313,
       // Use the Tone Timer for phase correct PWM

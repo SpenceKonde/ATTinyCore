@@ -53,15 +53,13 @@ static uint8_t tone_pin = 255;
 static unsigned long freq=0;
 
 
-void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
-{
+void tone( uint8_t _pin, unsigned long frequency, unsigned long duration ) {
   if(_pin==tone_pin && freq==frequency&&duration==0) {
     return;
   }
   freq=frequency;
 
-  if ( tone_pin == 255 )
-  {
+  if ( tone_pin == 255 ) {
     /* Set the timer to power-up conditions so we start from a known state */
     // Ensure the timer is in the same state as power-up
 #if (TIMER_TO_USE_FOR_TONE == 0)
@@ -204,8 +202,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 
 #else
 #if (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E)
-    if ( (digitalPinToTimer(_pin) == TIMER1A) || (digitalPinToTimer(_pin) == TIMER1B)  || (digitalPinToTimer(_pin) == TIMER1D) )
-    {
+    if ( (digitalPinToTimer(_pin) == TIMER1A) || (digitalPinToTimer(_pin) == TIMER1B)  || (digitalPinToTimer(_pin) == TIMER1D) ) {
 #elif (TIMER_TO_USE_FOR_TONE == 1)
   #ifdef __AVR_ATtinyX5__
     if ( _pin==1 || _pin==4 )
@@ -214,8 +211,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   #endif
     {
 #elif (TIMER_TO_USE_FOR_TONE == 0)
-    if ( (digitalPinToTimer(_pin) == TIMER0A) || (digitalPinToTimer(_pin) == TIMER0B) )
-    {
+    if ( (digitalPinToTimer(_pin) == TIMER0A) || (digitalPinToTimer(_pin) == TIMER0B) ) {
 #else
   if (0)
   { //unsupported, so only use software.
@@ -229,16 +225,14 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 #endif
 #if defined(COM0A1)
     //Just in case there are now pwm pins on timer0 (ATTiny861)
-      if (timer == TIMER0A)
-      {
+      if (timer == TIMER0A) {
         /* Compare Output Mode = Toggle OC0A on Compare Match. */
     cbi(TCCR0A,COM0A1);
     sbi(TCCR0A,COM0A0);
       }
       else
 #endif
-    if (timer == TIMER1A)
-      {
+    if (timer == TIMER1A) {
         /* Compare Output Mode = Toggle OC1A on Compare Match. */
 #if defined(TCCR1)
     cbi(TCCR1,COM1A1);
@@ -253,8 +247,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
       }
 #if defined(COM0B1)
     //Just in case there are <2 pwm pins on timer0 (ATTiny861)
-      else if (timer == TIMER0B)
-      {
+      else if (timer == TIMER0B) {
         /* Compare Output Mode = Toggle OC0B on Compare Match. */
     cbi(TCCR0A,COM0B1);
     sbi(TCCR0A,COM0B0);
@@ -318,8 +311,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     tone_pin = _pin;
   }
 
-  if ( tone_pin == _pin )
-  {
+  if ( tone_pin == _pin ) {
     /* Stop the clock while we make changes, then set the counter to zero to reduce ticks and scratches. */
 
     // Millis timer is always processor clock divided by MillisTimer_Prescale_Value (64)
@@ -337,8 +329,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
     TCNT1 = 0;
 #endif
 
-    if ( frequency > 0 )
-    {
+    if ( frequency > 0 ) {
       /* Determine which prescaler to use */
       /* Set the Output Compare Register (rounding up) */
 
@@ -354,20 +345,16 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   #endif
   #if defined(TCCR1E)
       uint8_t prescalarbits = 0b0001;
-      if (ocr > 256)
-      {
+      if (ocr > 256) {
         ocr >>= 3; //divide by 8
         prescalarbits = 0b0100;  // ck/8
-        if (ocr > 256)
-        {
+        if (ocr > 256) {
           ocr >>= 3; //divide by a further 8
           prescalarbits = 0b0111; //ck/64
-          if (ocr > 256)
-          {
+          if (ocr > 256) {
             ocr >>= 2; //divide by a further 4
             prescalarbits = 0b1001; //ck/256
-            if (ocr > 256)
-            {
+            if (ocr > 256) {
               // can't do any better than /1024
               ocr >>= 2; //divide by a further 4
               prescalarbits = 0b1011; //ck/1024
@@ -386,8 +373,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
        OCR1C=ocr-1;
     #else
         uint8_t prescalarbits = 0b001;
-       if (ocr > 0xffff)
-        {
+       if (ocr > 0xffff) {
          ocr /= 64;
           prescalarbits = 0b011;
         }
@@ -405,20 +391,16 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 #elif TIMER_TO_USE_FOR_TONE == 0
       uint32_t ocr = F_CPU / frequency / 2;
       uint8_t prescalarbits = 0b001;  // ck/1
-      if (ocr > 256)
-      {
+      if (ocr > 256) {
         ocr >>= 3; //divide by 8
         prescalarbits = 0b010;  // ck/8
-        if (ocr > 256)
-        {
+        if (ocr > 256) {
           ocr >>= 3; //divide by a further 8
           prescalarbits = 0b011; //ck/64
-          if (ocr > 256)
-          {
+          if (ocr > 256) {
             ocr >>= 2; //divide by a further 4
             prescalarbits = 0b100; //ck/256
-            if (ocr > 256)
-            {
+            if (ocr > 256) {
               // can't do any better than /1024
               ocr >>= 2; //divide by a further 4
               prescalarbits = 0b101; //ck/1024
@@ -432,8 +414,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 #endif
 
       /* Does the caller want a specific duration? */
-      if ( duration > 0 )
-      {
+      if ( duration > 0 ) {
         /* Determine how many times the value toggles */
         tone_timer_toggle_count = (2 * frequency * duration) / 1000;
         /* Output Compare A Match Interrupt Enable */
@@ -474,8 +455,7 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
   #endif
         }
 #elif (TIMER_TO_USE_FOR_TONE == 0)
-        if ( (digitalPinToTimer(_pin) != TIMER0A) && (digitalPinToTimer(_pin) != TIMER0B) )
-        {
+        if ( (digitalPinToTimer(_pin) != TIMER0A) && (digitalPinToTimer(_pin) != TIMER0B) ) {
             /* Output Compare A Match Interrupt Enable (software control)*/
   #if defined (TIMSK)
             TIMSK |= (1<<OCIE0A);
@@ -535,11 +515,9 @@ void tone( uint8_t _pin, unsigned long frequency, unsigned long duration )
 }
 
 
-void noTone( uint8_t _pin )
-{
+void noTone( uint8_t _pin ) {
   if ( (tone_pin != 255)
-        && ((tone_pin == _pin) || (_pin == 255)) )
-  {
+        && ((tone_pin == _pin) || (_pin == 255)) ) {
     // Turn off all interrupts
     #if (TIMER_TO_USE_FOR_TONE == 1)
       #if defined (TIMSK)
@@ -567,8 +545,7 @@ void noTone( uint8_t _pin )
     // Reinitialize the timers
     initToneTimer();
     // Set the output low
-    if ( tone_timer_pin_register != NULL )
-    {
+    if ( tone_timer_pin_register != NULL ) {
       *tone_timer_pin_register &= ~(tone_timer_pin_mask);
     }
     tone_pin = 255;
@@ -584,14 +561,11 @@ void noTone( uint8_t _pin )
   #error Tone timer Overflow vector not defined!
 #endif
 {
-  if ( tone_timer_toggle_count != 0 )
-  {
-    if ( tone_timer_toggle_count > 0 )
-    {
+  if ( tone_timer_toggle_count != 0 ) {
+    if ( tone_timer_toggle_count > 0 ) {
       --tone_timer_toggle_count;
 
-      if ( tone_timer_toggle_count == 0 )
-      {
+      if ( tone_timer_toggle_count == 0 ) {
         // Shutdown the hardware
         noTone( 255 );
 

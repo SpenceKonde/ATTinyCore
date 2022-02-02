@@ -30,8 +30,7 @@
 // Public Methods //////////////////////////////////////////////////////////////
 
 /* default implementation: may be overridden */
-size_t Print::write(const uint8_t *buffer, size_t size)
-{
+size_t Print::write(const uint8_t *buffer, size_t size) {
   size_t n = 0;
   while (size--) {
     n += write(*buffer++);
@@ -39,8 +38,7 @@ size_t Print::write(const uint8_t *buffer, size_t size)
   return n;
 }
 
-size_t Print::print(const String &s)
-{
+size_t Print::print(const String &s) {
   size_t n = 0;
   for (uint16_t i = 0; i < s.length(); i++) {
     n += write(s[i]);
@@ -48,33 +46,27 @@ size_t Print::print(const String &s)
   return n;
 }
 
-size_t Print::print(const char str[])
-{
+size_t Print::print(const char str[]) {
   return write(str);
 }
 
-size_t Print::print(char c)
-{
+size_t Print::print(char c) {
   return write(c);
 }
 
-size_t Print::print(unsigned char b, int base)
-{
+size_t Print::print(unsigned char b, int base) {
   return print((unsigned long) b, base);
 }
 
-size_t Print::print(int n, int base)
-{
+size_t Print::print(int n, int base) {
   return print((long) n, base);
 }
 
-size_t Print::print(unsigned int n, int base)
-{
+size_t Print::print(unsigned int n, int base) {
   return print((unsigned long) n, base);
 }
 
-size_t Print::print(long n, int base)
-{
+size_t Print::print(long n, int base) {
   if (base == 0) {
     return write(n);
   } else if (base == 10) {
@@ -89,25 +81,21 @@ size_t Print::print(long n, int base)
   }
 }
 
-size_t Print::print(unsigned long n, int base)
-{
+size_t Print::print(unsigned long n, int base) {
   if (base == 0) return write(n);
   else return printNumber(n, base);
 }
 
-size_t Print::print(double n, int digits)
-{
+size_t Print::print(double n, int digits) {
   return printFloat(n, digits);
 }
 
-size_t Print::print( fstr_t* s )
-{
+size_t Print::print( fstr_t* s ) {
   size_t n = 0;
   char ch;
 
   ch = pgm_read_byte( s );
-  while ( ch != 0 )
-  {
+  while ( ch != 0 ) {
     write( ch );
     ++s;
     ++n;
@@ -116,98 +104,84 @@ size_t Print::print( fstr_t* s )
   return( n );
 }
 
-size_t Print::println(void)
-{
+size_t Print::println(void) {
   size_t n = print('\r');
   n += print('\n');
   return n;
 }
 
-size_t Print::println(const String &s)
-{
+size_t Print::println(const String &s) {
   size_t n = print(s);
   n += println();
   return n;
 }
 
-size_t Print::println(const char c[])
-{
+size_t Print::println(const char c[]) {
   size_t n = print(c);
   n += println();
   return n;
 }
 
-size_t Print::println(char c)
-{
+size_t Print::println(char c) {
   size_t n = print(c);
   n += println();
   return n;
 }
 
-size_t Print::println(unsigned char b, int base)
-{
+size_t Print::println(unsigned char b, int base) {
   size_t n = print(b, base);
   n += println();
   return n;
 }
 
-size_t Print::println(int num, int base)
-{
+size_t Print::println(int num, int base) {
   size_t n = print(num, base);
   n += println();
   return n;
 }
 
-size_t Print::println(unsigned int num, int base)
-{
+size_t Print::println(unsigned int num, int base) {
   size_t n = print(num, base);
   n += println();
   return n;
 }
 
-size_t Print::println(long num, int base)
-{
+size_t Print::println(long num, int base) {
   size_t n = print(num, base);
   n += println();
   return n;
 }
 
-size_t Print::println(long long num, int base)
-{
+size_t Print::println(long long num, int base) {
   size_t n = print(num, base);
   n += println();
   return n;
 }
 
-size_t Print::println(unsigned long num, int base)
-{
+size_t Print::println(unsigned long num, int base) {
   size_t n = print(num, base);
   n += println();
   return n;
 }
 
-size_t Print::println(double num, int digits)
-{
+size_t Print::println(double num, int digits) {
   size_t n = print(num, digits);
   n += println();
   return n;
 }
 
-size_t Print::println( fstr_t* s )
-{
+size_t Print::println( fstr_t* s ) {
   size_t n = print( s );
   n += println();
   return( n );
 }
 
-static int16_t printf_putchar(char c, FILE *fp)
-{
+static int16_t printf_putchar(char c, FILE *fp) {
   ((class Print *)(fdev_get_udata(fp)))->write((uint8_t)c);
   return 0;
 }
 
-int16_t Print::printf(const char *ifsh, ...)
-{
+int16_t Print::printf(const char *ifsh, ...) {
   FILE f;
   va_list ap;
 
@@ -219,8 +193,7 @@ int16_t Print::printf(const char *ifsh, ...)
 
 #ifdef FLASHSTRING_SUPPORT
 
-size_t Print::print(const __FlashStringHelper *ifsh)
-{
+size_t Print::print(const __FlashStringHelper *ifsh) {
   PGM_P p = reinterpret_cast<PGM_P>(ifsh);
   size_t n = 0;
   while (1) {
@@ -232,15 +205,13 @@ size_t Print::print(const __FlashStringHelper *ifsh)
   return n;
 }
 
-size_t Print::println(const __FlashStringHelper *ifsh)
-{
+size_t Print::println(const __FlashStringHelper *ifsh) {
   size_t n = print(ifsh);
   n += println();
   return n;
 }
 
-int16_t Print::printf(const __FlashStringHelper *ifsh, ...)
-{
+int16_t Print::printf(const __FlashStringHelper *ifsh, ...) {
   FILE f;
   va_list ap;
 
@@ -273,13 +244,11 @@ size_t Print::printNumber(unsigned long n, uint8_t base) {
   return write(str);
 }
 
-size_t Print::printFloat(double number, uint8_t digits)
-{
+size_t Print::printFloat(double number, uint8_t digits) {
   size_t n = 0;
 
   // Handle negative numbers
-  if (number < 0.0)
-  {
+  if (number < 0.0) {
      n += print('-');
      number = -number;
   }
@@ -302,8 +271,7 @@ size_t Print::printFloat(double number, uint8_t digits)
   }
 
   // Extract digits from the remainder one at a time
-  while (digits-- > 0)
-  {
+  while (digits-- > 0) {
     remainder *= 10.0;
     int toPrint = int(remainder);
     n += print(toPrint);
