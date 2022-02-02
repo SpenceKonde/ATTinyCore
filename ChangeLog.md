@@ -30,25 +30,30 @@ Any changes listed at the top, without a version number above thenm, have not be
   * Add option to disable RX. TX is automatically disabled if you don't reference Serial.
   * Tighten up the assembly by making use of SBIC, and make sure it waits until the start of the first stop bit always but never longer than necessary.
   * Improve overall efficiency of initialization (it was guilty of SBI/CBI macro abuse)
+  * As of 2/2/22 it now appears to work.
 * Todo: Further platform.txt enhancements.
-* Todo: Adapt digitalI/O functions to use PUE registers if appropriate.
+* Adapt digitalI/O functions to use PUE registers if appropriate.
 * PWM on third channel on x61
 * Micronucleus
   * Design hardware for testing with.
   * Add pins to pins_usb.
   * Implement new entry condition options.
   * Create template bootloaderconfiguration with pins_usb content integrated
-  * Todo: Create configurations for each combination of board and entry condition:
+  * Create configurations for each combination of board and entry condition:
     * Both pin options for 84, 841
     * Both LED options for 87, 167
     * 861, 85, 88, 1634
 * Boards.txt refactor.
   * Make most boards compile Bare Minimum example.
   * Add support for external clock on all parts.
-  * Add support for 2 and 4 MHz from internal on all parts. This is done by dividing the 8 MHz clock. **THE BOOTLOADER RUNS AT 1 MHz - I am NOT going to build a million versions of Optiboot**
+  * Add support for 2 and 4 MHz from internal on all parts. This is done by dividing the 8 MHz clock. **THE BOOTLOADER RUNS AT 1 MHz IN THIS CASE - I am NOT going to build a million versions of Optiboot** Unfortunately it's looking like I will need to build a still ridiculous amount of them.
   * boards.txt shallt not be manually edited, it is created with create_boards_txt.py. The file size is untenable to maintain by hand!
 * Attend to platform.txt and boards.txt UI constistancy issues from email
-* Deal with missing data from header files for some parts. SIGRD/RSIG, and PCMSK on 4313 which should have been PCMSK0 (#564)
+* Deal with missing data from header files for some parts:
+  * SIGRD/RSIG,
+  * and PCMSK on 4313 which should have been PCMSK0 (#564)
+  * TIM/TIMER
+* Remove bloat from hardware serial due to CBI/SBI abuse; in multiple place the CBI or SBI macro was used in 4 lines back to back... but what they passed to it was a `_BV(member_variable)`. The calculation of the leftshifted value cannot be done ahead of time (classes kneecap the optimizer). That saved around 100 bytes. Saved over a hundred more for the 841, 441, and 1634 by doing the split file trick.
 * Todo: Optiboot
   * Adjust optiboot upload speeds, they were not chosen well previously (sorry, this does mean burn bootloader may be required - that's why it's 2.0.0 not 1.x.x; they will work better, and in some cases, upload more quickly too - particularly where there is no hardware USART.
   * Fix issue with ATtiny48 binaries not writing (something is clearly wrong with the size checking, they should *not* have built like that. (#575))
@@ -58,6 +63,8 @@ Any changes listed at the top, without a version number above thenm, have not be
   * Reorder the entries in descending order of usefulness.
   * Add support for FTDI sync bitbang with those chinese adapters with the ISP headers
 * ATTinyCore.h now does more than just act as a placeholder.
+* Switch to gnu++17 standard instead of gnu++11.
+* Fix macros like constrain, min, max, etc so they do not do unexpected things when given arguments with sideffects
 
 
 ## 1.5.0
