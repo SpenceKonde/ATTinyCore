@@ -102,14 +102,15 @@ attinyx7opti.name=ATtiny167/87 w/Optiboot serial bootloader
 attinyx8opti.name=ATtiny88/48 w/Optiboot serial bootloader
 attiny1634opti.name=ATtiny1634 w/Optiboot serial bootloader
 attiny828opti.name=ATtiny828 w/Optiboot serial bootloader
+attiny85micr.name=ATtiny85 w/Micronucleus (Digispark)
+attiny167micr.name=ATtiny167 w/Micronucleus (Digispark Pro)
+attiny88micr.name=ATtiny88 w/Micronucleus (MH-Tiny/MHET)
+attiny841micr.name=ATtiny841 w/Micronucleus (Nanite, Bitboss, etc)
+attiny87micr.name=ATtiny87 w/Micronucleus
+attiny861micr.name=ATtiny861 w/Micronucleus  (Azduino USB 861)
+attiny1634micr.name=ATtiny1634 w/Micronucleus (Azduino USB 1634)
 attiny84mi12.name=ATtiny84 w/Micronucleus (12 MHz - pushing bounds on USB functioning)
 attiny84micr.name=ATtiny84 w/Micronucleus (12.8 MHz, bootloader takes more flash)
-attiny841micr.name=ATtiny841 w/Micronucleus (Nanite, Bitboss, etc)
-attiny85micr.name=ATtiny85 w/Micronucleus (Digispark)
-attiny861micr.name=ATtiny861 w/Micronucleus  (Azduino USB 861)
-attinyx7micr.name=ATtiny167/87 w/Micronucleus (Digispark Pro)
-attiny88micr.name=ATtiny88 w/Micronucleus (MH-Tiny and similar)
-attiny1634micr.name=ATtiny1634 w/Micronucleus (Azduino USB 1634)
 
 
 ################################################################################
@@ -1068,6 +1069,8 @@ attiny26.menu.optimization.size.build.optimize=-Os
 attiny26.menu.optimization.othree.build.optimize=-O3
 attiny26.menu.optimization.debug.build.optimize=-Og
 attiny26.build.mcu=attiny26
+attiny26.upload.maximum_size=2048
+attiny26.upload.maximum_data_size=128
 
 #########################
 # Clocking menu options #
@@ -1526,6 +1529,7 @@ attinyx41.build.variant=tinyx41_cw
 attinyx41.build.export_merged_output=false
 attinyx41.bootloader.extended_fuses=0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{bootloader.bodact_bits}0
 attinyx41.bootloader.high_fuses=0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}
+attinyx41.bootloader.ulp_bits=111
 attinyx41.bootloader.rstbit=1
 attinyx41.build.usbpinset=
 attinyx41.build.tuneorcal=
@@ -1660,10 +1664,36 @@ attinyx41.menu.clock.internal_8m_tuned_high.bootloader.low_fuses=0xE2
 attinyx41.menu.clock.internal_8m_tuned_high.build.f_cpu=8000000L
 attinyx41.menu.clock.internal_8m_tuned_high.build.speed=8m
 attinyx41.menu.clock.internal_8m_tuned_high.build.clocksource=0
-attinyx41.menu.clock.internal_128k=128 kHz (internal WDT)
+attinyx41.menu.clock.internal_512k=512 kHz (internal ULP)
+attinyx41.menu.clock.internal_512k.bootloader.low_fuses=0xE4
+attinyx41.menu.clock.internal_512k.bootloader.ulp_bits=011
+attinyx41.menu.clock.internal_512k.build.f_cpu=512000L
+attinyx41.menu.clock.internal_512k.build.speed=512k
+attinyx41.menu.clock.internal_512k.build.clocksource=4
+attinyx41.menu.clock.internal_256k=256 kHz (internal ULP)
+attinyx41.menu.clock.internal_256k.bootloader.low_fuses=0xE4
+attinyx41.menu.clock.internal_256k.bootloader.ulp_bits=100
+attinyx41.menu.clock.internal_256k.build.f_cpu=256000L
+attinyx41.menu.clock.internal_256k.build.speed=256k
+attinyx41.menu.clock.internal_256k.build.clocksource=4
+attinyx41.menu.clock.internal_128k=128 kHz (internal ULP)
+attinyx41.menu.clock.internal_128k.bootloader.low_fuses=0xE4
+attinyx41.menu.clock.internal_128k.bootloader.ulp_bits=101
 attinyx41.menu.clock.internal_128k.build.f_cpu=128000L
 attinyx41.menu.clock.internal_128k.build.speed=128k
-attinyx41.menu.clock.internal_128k.build.clocksource=3
+attinyx41.menu.clock.internal_128k.build.clocksource=4
+attinyx41.menu.clock.internal_64k=64 kHz (internal ULP)
+attinyx41.menu.clock.internal_64k.bootloader.low_fuses=0xE4
+attinyx41.menu.clock.internal_64k.bootloader.ulp_bits=110
+attinyx41.menu.clock.internal_64k.build.f_cpu=64000L
+attinyx41.menu.clock.internal_64k.build.speed=64k
+attinyx41.menu.clock.internal_64k.build.clocksource=4
+attinyx41.menu.clock.internal_32k=32 kHz (internal ULP)
+attinyx41.menu.clock.internal_32k.bootloader.low_fuses=0xE4
+attinyx41.menu.clock.internal_32k.bootloader.ulp_bits=111
+attinyx41.menu.clock.internal_32k.build.f_cpu=32000L
+attinyx41.menu.clock.internal_32k.build.speed=32k
+attinyx41.menu.clock.internal_32k.build.clocksource=4
 attinyx41.menu.clock.extclk_16m=16 MHz (external clock)
 attinyx41.menu.clock.extclk_16m.bootloader.low_fuses=0xE0
 attinyx41.menu.clock.extclk_16m.build.f_cpu=16000000UL
@@ -1737,6 +1767,7 @@ attinyx41.menu.eesave.disable.bootloader.eesave_bit=1
 #########################
 attinyx41.menu.wiremode.master=Master Only
 attinyx41.menu.wiremode.master.build.wiremode=-DWIRE_MASTER_ONLY
+attinyx41.menu.wiremode.master.build.wiremodeabr=
 attinyx41.menu.wiremode.slave=Slave Only
 attinyx41.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attinyx41.menu.wiremode.slave.build.wiremodeabr=wS
@@ -1813,6 +1844,8 @@ attiny828.menu.optimization.size.build.optimize=-Os
 attiny828.menu.optimization.othree.build.optimize=-O3
 attiny828.menu.optimization.debug.build.optimize=-Og
 attiny828.build.mcu=attiny828
+attiny828.upload.maximum_size=8192
+attiny828.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -1924,6 +1957,7 @@ attiny828.menu.eesave.disable.bootloader.eesave_bit=1
 #########################
 attiny828.menu.wiremode.master=Master Only
 attiny828.menu.wiremode.master.build.wiremode=-DWIRE_MASTER_ONLY
+attiny828.menu.wiremode.master.build.wiremodeabr=
 attiny828.menu.wiremode.slave=Slave Only
 attiny828.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attiny828.menu.wiremode.slave.build.wiremodeabr=wS
@@ -2001,6 +2035,8 @@ attiny1634.menu.optimization.size.build.optimize=-Os
 attiny1634.menu.optimization.othree.build.optimize=-O3
 attiny1634.menu.optimization.debug.build.optimize=-Og
 attiny1634.build.mcu=attiny1634
+attiny1634.upload.maximum_size=16384
+attiny1634.upload.maximum_data_size=1024
 
 #########################
 # Clocking menu options #
@@ -2459,6 +2495,8 @@ attiny43u.menu.optimization.size.build.optimize=-Os
 attiny43u.menu.optimization.othree.build.optimize=-O3
 attiny43u.menu.optimization.debug.build.optimize=-Og
 attiny43u.build.mcu=attiny43u
+attiny43u.upload.maximum_size=4096
+attiny43u.upload.maximum_data_size=256
 
 #########################
 # Clocking menu options #
@@ -4115,6 +4153,7 @@ attinyx41opti.menu.pinmap.ccw.build.pinmapabr=.ccw
 #########################
 attinyx41opti.menu.wiremode.master=Master Only
 attinyx41opti.menu.wiremode.master.build.wiremode=-DWIRE_MASTER_ONLY
+attinyx41opti.menu.wiremode.master.build.wiremodeabr=
 attinyx41opti.menu.wiremode.slave=Slave Only
 attinyx41opti.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attinyx41opti.menu.wiremode.slave.build.wiremodeabr=wS
@@ -4210,6 +4249,8 @@ attiny828opti.menu.optimization.size.build.optimize=-Os
 attiny828opti.menu.optimization.othree.build.optimize=-O3
 attiny828opti.menu.optimization.debug.build.optimize=-Og
 attiny828opti.build.mcu=attiny828
+attiny828opti.upload.maximum_size=7680
+attiny828opti.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -4331,6 +4372,7 @@ attiny828opti.menu.clock.extclk_7372k.upload.speed=76800
 #########################
 attiny828opti.menu.wiremode.master=Master Only
 attiny828opti.menu.wiremode.master.build.wiremode=-DWIRE_MASTER_ONLY
+attiny828opti.menu.wiremode.master.build.wiremodeabr=
 attiny828opti.menu.wiremode.slave=Slave Only
 attiny828opti.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attiny828opti.menu.wiremode.slave.build.wiremodeabr=wS
@@ -4419,6 +4461,8 @@ attiny1634opti.menu.optimization.size.build.optimize=-Os
 attiny1634opti.menu.optimization.othree.build.optimize=-O3
 attiny1634opti.menu.optimization.debug.build.optimize=-Og
 attiny1634opti.build.mcu=attiny1634
+attiny1634opti.upload.maximum_size=15744
+attiny1634opti.upload.maximum_data_size=1024
 
 #########################
 # Clocking menu options #
@@ -4683,6 +4727,7 @@ attiny84mi12.build.wiremode=
 attiny84mi12.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny84mi12.build.bootloaderabr=micr
 attiny84mi12.upload.tool=micronucleus
+attiny84mi12.upload.protocol=usb
 attiny84mi12.bootloader.devpostfix=
 
 #########################
@@ -4695,6 +4740,8 @@ attiny84mi12.menu.optimization.size.build.optimize=-Os
 attiny84mi12.menu.optimization.othree.build.optimize=-O3
 attiny84mi12.menu.optimization.debug.build.optimize=-Og
 attiny84mi12.build.mcu=attiny84
+attiny84mi12.upload.maximum_size=6588
+attiny84mi12.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -4825,6 +4872,7 @@ attiny84micr.build.wiremode=
 attiny84micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny84micr.build.bootloaderabr=micr
 attiny84micr.upload.tool=micronucleus
+attiny84micr.upload.protocol=usb
 attiny84micr.bootloader.devpostfix=
 
 #########################
@@ -4837,6 +4885,8 @@ attiny84micr.menu.optimization.size.build.optimize=-Os
 attiny84micr.menu.optimization.othree.build.optimize=-O3
 attiny84micr.menu.optimization.debug.build.optimize=-Og
 attiny84micr.build.mcu=attiny84
+attiny84micr.upload.maximum_size=6268
+attiny84micr.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -4967,6 +5017,7 @@ attiny85micr.build.pinmapabr=
 attiny85micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny85micr.build.bootloaderabr=micr
 attiny85micr.upload.tool=micronucleus
+attiny85micr.upload.protocol=usb
 attiny85micr.bootloader.devpostfix=
 
 #########################
@@ -4979,6 +5030,8 @@ attiny85micr.menu.optimization.size.build.optimize=-Os
 attiny85micr.menu.optimization.othree.build.optimize=-O3
 attiny85micr.menu.optimization.debug.build.optimize=-Og
 attiny85micr.build.mcu=attiny85
+attiny85micr.upload.maximum_size=6524
+attiny85micr.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -5113,6 +5166,7 @@ attiny88micr.build.wiremode=
 attiny88micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny88micr.build.bootloaderabr=micr
 attiny88micr.upload.tool=micronucleus
+attiny88micr.upload.protocol=usb
 attiny88micr.bootloader.devpostfix=
 
 #########################
@@ -5125,6 +5179,8 @@ attiny88micr.menu.optimization.size.build.optimize=-Os
 attiny88micr.menu.optimization.othree.build.optimize=-O3
 attiny88micr.menu.optimization.debug.build.optimize=-Og
 attiny88micr.build.mcu=attiny88
+attiny88micr.upload.maximum_size=6782
+attiny88micr.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -5238,162 +5294,307 @@ attiny88micr.menu.burnmode.install.bootloader.tool=avrdude
 attiny88micr.menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.file}:i
 
 #*******************************************************************************
-#   ###  #####                      #####         #   #  ###  ####
-#  #   #   #    #  #                   #          #   # #     #   #
-#  #####   #   ###    ###  #  # # #   #       # # #   #  ###  ####
-#  #   #   #    #  #  #  # #  #  #    #       # # #   #     # #   #
-#  #   #   #    #  #  #  #  ### # #   #        #   ###  ####  ####
+#   ###  #####                    #    #  #####         #   #  ###  ####
+#  #   #   #    #  #             ##   #       #         #   # #     #   #
+#  #####   #   ###    ###  #  #   #  ####    #      # # #   #  ###  ####
+#  #   #   #    #  #  #  # #  #   #  #   #  #       # # #   #     # #   #
+#  #   #   #    #  #  #  #  ###  ###  ###  #         #   ###  ####  ####
 #_____________________________#_______________________________________________________
                            ###
 
-attinyx7micr.build.board=AVR_ATTINYX7
-attinyx7micr.build.core=tiny
-attinyx7micr.build.variant=tinyx7_digi
-attinyx7micr.build.export_merged_output=false
-attinyx7micr.bootloader.extended_fuses=0xFE
-attinyx7micr.bootloader.high_fuses=0b{bootloader.rstbit}1011{bootloader.bod_bits}
-attinyx7micr.bootloader.rstbit=1
-attinyx7micr.build.usbpinset=
-attinyx7micr.build.tuneorcal=
-attinyx7micr.build.softserabr=
-attinyx7micr.build.softser=
-attinyx7micr.build.wiremodeabr=
-attinyx7micr.build.wiremode=
-attinyx7micr.build.bootloader=-DUSING_BOOTLOADER=0x08
-attinyx7micr.build.bootloaderabr=micr
-attinyx7micr.upload.tool=micronucleus
-attinyx7micr.bootloader.devpostfix=
+attiny167micr.build.board=AVR_ATTINY167
+attiny167micr.build.core=tiny
+attiny167micr.build.variant=tinyx7_digi
+attiny167micr.build.export_merged_output=false
+attiny167micr.bootloader.extended_fuses=0xFE
+attiny167micr.bootloader.high_fuses=0b{bootloader.rstbit}1011{bootloader.bod_bits}
+attiny167micr.bootloader.rstbit=1
+attiny167micr.build.usbpinset=
+attiny167micr.build.tuneorcal=
+attiny167micr.build.softserabr=
+attiny167micr.build.softser=
+attiny167micr.build.wiremodeabr=
+attiny167micr.build.wiremode=
+attiny167micr.build.bootloader=-DUSING_BOOTLOADER=0x08
+attiny167micr.build.bootloaderabr=micr
+attiny167micr.upload.tool=micronucleus
+attiny167micr.upload.protocol=usb
+attiny167micr.bootloader.devpostfix=
 
 #########################
 # Optimization menu     #
 #########################
-attinyx7micr.menu.optimization.size=-Os (size, recommended)
-attinyx7micr.menu.optimization.othree=-O3 (speed)
-attinyx7micr.menu.optimization.debug=-Og (for advanced debugging)
-attinyx7micr.menu.optimization.size.build.optimize=-Os
-attinyx7micr.menu.optimization.othree.build.optimize=-O3
-attinyx7micr.menu.optimization.debug.build.optimize=-Og
-
-#########################
-# Microcontroller menu  #
-#########################
-attinyx7micr.menu.chip.167=ATtiny167
-attinyx7micr.menu.chip.167.build.mcu=attiny167
-attinyx7micr.menu.chip.167.upload.maximum_size={upload.entrymaxsize}
-attinyx7micr.menu.chip.87=ATtiny87
-attinyx7micr.menu.chip.87.build.mcu=attiny87
-attinyx7micr.menu.chip.87.upload.maximum_size=6654
+attiny167micr.menu.optimization.size=-Os (size, recommended)
+attiny167micr.menu.optimization.othree=-O3 (speed)
+attiny167micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny167micr.menu.optimization.size.build.optimize=-Os
+attiny167micr.menu.optimization.othree.build.optimize=-O3
+attiny167micr.menu.optimization.debug.build.optimize=-Og
+attiny167micr.build.mcu=attiny167
+attiny167micr.upload.maximum_size=14844
+attiny167micr.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
 #########################
-attinyx7micr.menu.clock.crystal_16m=16 MHz (external crystal)
-attinyx7micr.menu.clock.crystal_16m.bootloader.low_fuses=0xF0
-attinyx7micr.menu.clock.crystal_16m.build.f_cpu=16000000UL
-attinyx7micr.menu.clock.crystal_16m.build.speed=16
-attinyx7micr.menu.clock.crystal_16m.build.clocksource=1
-attinyx7micr.menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)
-attinyx7micr.menu.clock.crystal_8m.bootloader.low_fuses=0xF0
-attinyx7micr.menu.clock.crystal_8m.build.f_cpu=8000000UL
-attinyx7micr.menu.clock.crystal_8m.build.speed=8
-attinyx7micr.menu.clock.crystal_8m.build.clocksource=0x11
-attinyx7micr.menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)
-attinyx7micr.menu.clock.crystal_4m.bootloader.low_fuses=0xF0
-attinyx7micr.menu.clock.crystal_4m.build.f_cpu=4000000UL
-attinyx7micr.menu.clock.crystal_4m.build.speed=4
-attinyx7micr.menu.clock.crystal_4m.build.clocksource=0x11
-attinyx7micr.menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)
-attinyx7micr.menu.clock.crystal_2m.bootloader.low_fuses=0xF0
-attinyx7micr.menu.clock.crystal_2m.build.f_cpu=2000000UL
-attinyx7micr.menu.clock.crystal_2m.build.speed=2
-attinyx7micr.menu.clock.crystal_2m.build.clocksource=0x11
-attinyx7micr.menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)
-attinyx7micr.menu.clock.crystal_1m.bootloader.low_fuses=0xF0
-attinyx7micr.menu.clock.crystal_1m.build.f_cpu=1000000UL
-attinyx7micr.menu.clock.crystal_1m.build.speed=1
-attinyx7micr.menu.clock.crystal_1m.build.clocksource=0x11
+attiny167micr.menu.clock.crystal_16m=16 MHz (external crystal)
+attiny167micr.menu.clock.crystal_16m.bootloader.low_fuses=0xF0
+attiny167micr.menu.clock.crystal_16m.build.f_cpu=16000000UL
+attiny167micr.menu.clock.crystal_16m.build.speed=16
+attiny167micr.menu.clock.crystal_16m.build.clocksource=1
+attiny167micr.menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)
+attiny167micr.menu.clock.crystal_8m.bootloader.low_fuses=0xF0
+attiny167micr.menu.clock.crystal_8m.build.f_cpu=8000000UL
+attiny167micr.menu.clock.crystal_8m.build.speed=8
+attiny167micr.menu.clock.crystal_8m.build.clocksource=0x11
+attiny167micr.menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)
+attiny167micr.menu.clock.crystal_4m.bootloader.low_fuses=0xF0
+attiny167micr.menu.clock.crystal_4m.build.f_cpu=4000000UL
+attiny167micr.menu.clock.crystal_4m.build.speed=4
+attiny167micr.menu.clock.crystal_4m.build.clocksource=0x11
+attiny167micr.menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)
+attiny167micr.menu.clock.crystal_2m.bootloader.low_fuses=0xF0
+attiny167micr.menu.clock.crystal_2m.build.f_cpu=2000000UL
+attiny167micr.menu.clock.crystal_2m.build.speed=2
+attiny167micr.menu.clock.crystal_2m.build.clocksource=0x11
+attiny167micr.menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)
+attiny167micr.menu.clock.crystal_1m.bootloader.low_fuses=0xF0
+attiny167micr.menu.clock.crystal_1m.build.f_cpu=1000000UL
+attiny167micr.menu.clock.crystal_1m.build.speed=1
+attiny167micr.menu.clock.crystal_1m.build.clocksource=0x11
 
 #########################
 # Pin Mapping menu      #
 #########################
-attinyx7micr.menu.pinmap.digi=Digispark Pro
-attinyx7micr.menu.pinmap.standard=Standard/Azduino
-attinyx7micr.menu.pinmap.standard.build.variant=tinyx7
-attinyx7micr.menu.pinmap.digi.build.variant=tinyx7_digi
-attinyx7micr.menu.pinmap.legacy=Legacy
-attinyx7micr.menu.pinmap.legacy.build.variant=tinyx7_legacy
-attinyx7micr.menu.pinmap.default.build.pinmapabr=
-attinyx7micr.menu.pinmap.digi.build.pinmapabr=.digi
-attinyx7micr.menu.pinmap.legacy.build.pinmapabr=.old
+attiny167micr.menu.pinmap.digi=Digispark Pro
+attiny167micr.menu.pinmap.standard=Standard/Azduino
+attiny167micr.menu.pinmap.standard.build.variant=tinyx7
+attiny167micr.menu.pinmap.digi.build.variant=tinyx7_digi
+attiny167micr.menu.pinmap.legacy=Legacy
+attiny167micr.menu.pinmap.legacy.build.variant=tinyx7_legacy
+attiny167micr.menu.pinmap.default.build.pinmapabr=
+attiny167micr.menu.pinmap.digi.build.pinmapabr=.digi
+attiny167micr.menu.pinmap.legacy.build.pinmapabr=.old
 
 #########################
 # BrownOut Detect menu  #
 #########################
-attinyx7micr.menu.bod.disable=B.O.D. Disabled (saves power)
-attinyx7micr.menu.bod.disable.bootloader.bod_bits=111
-attinyx7micr.menu.bod.1v8=B.O.D. Enabled (1.8v)
-attinyx7micr.menu.bod.1v8.bootloader.bod_bits=110
-attinyx7micr.menu.bod.2v7=B.O.D. Enabled (2.7v)
-attinyx7micr.menu.bod.2v7.bootloader.bod_bits=101
-attinyx7micr.menu.bod.4v3=B.O.D. Enabled (4.3v)
-attinyx7micr.menu.bod.4v3.bootloader.bod_bits=100
+attiny167micr.menu.bod.disable=B.O.D. Disabled (saves power)
+attiny167micr.menu.bod.disable.bootloader.bod_bits=111
+attiny167micr.menu.bod.1v8=B.O.D. Enabled (1.8v)
+attiny167micr.menu.bod.1v8.bootloader.bod_bits=110
+attiny167micr.menu.bod.2v7=B.O.D. Enabled (2.7v)
+attiny167micr.menu.bod.2v7.bootloader.bod_bits=101
+attiny167micr.menu.bod.4v3=B.O.D. Enabled (4.3v)
+attiny167micr.menu.bod.4v3.bootloader.bod_bits=100
 
 #########################
 # millis/micros menu    #
 #########################
-attinyx7micr.menu.millis.enabled=Enabled
-attinyx7micr.menu.millis.enabled.build.millis=
-attinyx7micr.menu.millis.enabled.build.millisabr=
-attinyx7micr.menu.millis.disabled=Disabled (saves flash)
-attinyx7micr.menu.millis.disabled.build.millis=-DDISABLEMILLIS
-attinyx7micr.menu.millis.disabled.build.millisabr=mNONE
+attiny167micr.menu.millis.enabled=Enabled
+attiny167micr.menu.millis.enabled.build.millis=
+attiny167micr.menu.millis.enabled.build.millisabr=
+attiny167micr.menu.millis.disabled=Disabled (saves flash)
+attiny167micr.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny167micr.menu.millis.disabled.build.millisabr=mNONE
 
 #########################
 # Boot Entrymode menu   #
 #########################
-attinyx7micr.menu.bootentry.extrf_porf=External Reset and Power On Reset
-attinyx7micr.menu.bootentry.extrf_porf.bootloader.entrymode=extrf_porf
-attinyx7micr.menu.bootentry.extrf_safe=External Reset, or if reset pin disabled and HIGH
-attinyx7micr.menu.bootentry.extrf_safe.bootloader.entrymode=extrf_safe
-attinyx7micr.menu.bootentry.extrfonly_safe=External Reset only, or if reset pin disabled and HIGH
-attinyx7micr.menu.bootentry.extrfonly_safe.bootloader.entrymode=extrfonly_safe
-attinyx7micr.menu.bootentry.wdrf=Watchdog Reset only
-attinyx7micr.menu.bootentry.wdrf.bootloader.entrymode=wdrf
-attinyx7micr.menu.bootentry.porf=Power On Reset only
-attinyx7micr.menu.bootentry.porf.bootloader.entrymode=porf
-attinyx7micr.menu.bootentry.anyreset=Any reset (but not jump from app)
-attinyx7micr.menu.bootentry.anyreset.bootloader.entrymode=anyreset
-attinyx7micr.menu.bootentry.always=Always (permits jump from app)
-attinyx7micr.menu.bootentry.always.bootloader.entrymode=always
-attinyx7micr.menu.bootentry.jumper=Jumper (see documentation) (permits jump from app)
-attinyx7micr.menu.bootentry.jumper.bootloader.entrymode=jumper
-attinyx7micr.upload.entrymaxsize=14844
-attinyx7micr.menu.bootentry.jumper.upload.entrymaxsize=14716
+attiny167micr.menu.bootentry.extrf_porf=External Reset and Power On Reset
+attiny167micr.menu.bootentry.extrf_porf.bootloader.entrymode=extrf_porf
+attiny167micr.menu.bootentry.extrf_safe=External Reset, or if reset pin disabled and HIGH
+attiny167micr.menu.bootentry.extrf_safe.bootloader.entrymode=extrf_safe
+attiny167micr.menu.bootentry.extrfonly_safe=External Reset only, or if reset pin disabled and HIGH
+attiny167micr.menu.bootentry.extrfonly_safe.bootloader.entrymode=extrfonly_safe
+attiny167micr.menu.bootentry.wdrf=Watchdog Reset only
+attiny167micr.menu.bootentry.wdrf.bootloader.entrymode=wdrf
+attiny167micr.menu.bootentry.porf=Power On Reset only
+attiny167micr.menu.bootentry.porf.bootloader.entrymode=porf
+attiny167micr.menu.bootentry.anyreset=Any reset (but not jump from app)
+attiny167micr.menu.bootentry.anyreset.bootloader.entrymode=anyreset
+attiny167micr.menu.bootentry.always=Always (permits jump from app)
+attiny167micr.menu.bootentry.always.bootloader.entrymode=always
+attiny167micr.menu.bootentry.jumper=Jumper (see documentation) (permits jump from app)
+attiny167micr.menu.bootentry.jumper.bootloader.entrymode=jumper
+attiny167micr.menu.bootentry.jumper.upload.upload.maximum_size=14716
 
 ################################
 # Pins used for USB            #
 ################################
-attinyx7micr.menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED
-attinyx7micr.menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED
-attinyx7micr.menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1
-attinyx7micr.menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6
-attinyx7micr.menu.usbpins.digispark.bootloader.usbpinsetname=pb1led
-attinyx7micr.menu.usbpins.azduino.bootloader.usbpinsetname=pa6led
-attinyx7micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
-attinyx7micr.menu.resetpin.reset.bootloader.rstbit=1
-attinyx7micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
-attinyx7micr.menu.resetpin.gpio.bootloader.rstbit=0
+attiny167micr.menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED
+attiny167micr.menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED
+attiny167micr.menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1
+attiny167micr.menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6
+attiny167micr.menu.usbpins.digispark.bootloader.usbpinsetname=pb1led
+attiny167micr.menu.usbpins.azduino.bootloader.usbpinsetname=pa6led
+attiny167micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
+attiny167micr.menu.resetpin.reset.bootloader.rstbit=1
+attiny167micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
+attiny167micr.menu.resetpin.gpio.bootloader.rstbit=0
 
 ################################
 # Upgrade vs ISP install menu  #
 ################################
-attinyx7micr.menu.burnmode.upgrade=Upgrade (via USB)
-attinyx7micr.menu.burnmode.upgrade.bootloader.file=micronucleus/hex/upgrade-attinyx7micr{bootloader.devpostfix}{bootloader.usbpinsetname}_{bootloader.entrymode}.hex
-attinyx7micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
-attinyx7micr.menu.burnmode.install=Fresh Install (via ISP)
-attinyx7micr.menu.burnmode.install.bootloader.file=micronucleus/hex/attinyx7micr{bootloader.devpostfix}{bootloader.usbpinsetname}_{bootloader.entrymode}.hex
-attinyx7micr.menu.burnmode.install.bootloader.tool=avrdude
-attinyx7micr.menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.file}:i
+attiny167micr.menu.burnmode.upgrade=Upgrade (via USB)
+attiny167micr.menu.burnmode.upgrade.bootloader.file=micronucleus/hex/upgrade-attiny167micr{bootloader.devpostfix}{bootloader.usbpinsetname}_{bootloader.entrymode}.hex
+attiny167micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
+attiny167micr.menu.burnmode.install=Fresh Install (via ISP)
+attiny167micr.menu.burnmode.install.bootloader.file=micronucleus/hex/attiny167micr{bootloader.devpostfix}{bootloader.usbpinsetname}_{bootloader.entrymode}.hex
+attiny167micr.menu.burnmode.install.bootloader.tool=avrdude
+attiny167micr.menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.file}:i
+
+#*******************************************************************************
+#   ###  #####                   ### #####         #   #  ###  ####
+#  #   #   #    #  #            #   #    #         #   # #     #   #
+#  #####   #   ###    ###  #  #  ###    #      # # #   #  ###  ####
+#  #   #   #    #  #  #  # #  # #   #  #       # # #   #     # #   #
+#  #   #   #    #  #  #  #  ###  ###  #         #   ###  ####  ####
+#_____________________________#_______________________________________________________
+                           ###
+
+attiny87micr.build.board=AVR_ATTINY87
+attiny87micr.build.core=tiny
+attiny87micr.build.variant=tinyx7_digi
+attiny87micr.build.export_merged_output=false
+attiny87micr.bootloader.extended_fuses=0xFE
+attiny87micr.bootloader.high_fuses=0b{bootloader.rstbit}1011{bootloader.bod_bits}
+attiny87micr.bootloader.rstbit=1
+attiny87micr.build.usbpinset=
+attiny87micr.build.tuneorcal=
+attiny87micr.build.softserabr=
+attiny87micr.build.softser=
+attiny87micr.build.wiremodeabr=
+attiny87micr.build.wiremode=
+attiny87micr.build.bootloader=-DUSING_BOOTLOADER=0x08
+attiny87micr.build.bootloaderabr=micr
+attiny87micr.upload.tool=micronucleus
+attiny87micr.upload.protocol=usb
+attiny87micr.bootloader.devpostfix=
+
+#########################
+# Optimization menu     #
+#########################
+attiny87micr.menu.optimization.size=-Os (size, recommended)
+attiny87micr.menu.optimization.othree=-O3 (speed)
+attiny87micr.menu.optimization.debug=-Og (for advanced debugging)
+attiny87micr.menu.optimization.size.build.optimize=-Os
+attiny87micr.menu.optimization.othree.build.optimize=-O3
+attiny87micr.menu.optimization.debug.build.optimize=-Og
+attiny87micr.build.mcu=attiny87
+attiny87micr.upload.maximum_size=6780
+attiny87micr.upload.maximum_data_size=512
+
+#########################
+# Clocking menu options #
+#########################
+attiny87micr.menu.clock.crystal_16m=16 MHz (external crystal)
+attiny87micr.menu.clock.crystal_16m.bootloader.low_fuses=0xF0
+attiny87micr.menu.clock.crystal_16m.build.f_cpu=16000000UL
+attiny87micr.menu.clock.crystal_16m.build.speed=16
+attiny87micr.menu.clock.crystal_16m.build.clocksource=1
+attiny87micr.menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)
+attiny87micr.menu.clock.crystal_8m.bootloader.low_fuses=0xF0
+attiny87micr.menu.clock.crystal_8m.build.f_cpu=8000000UL
+attiny87micr.menu.clock.crystal_8m.build.speed=8
+attiny87micr.menu.clock.crystal_8m.build.clocksource=0x11
+attiny87micr.menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)
+attiny87micr.menu.clock.crystal_4m.bootloader.low_fuses=0xF0
+attiny87micr.menu.clock.crystal_4m.build.f_cpu=4000000UL
+attiny87micr.menu.clock.crystal_4m.build.speed=4
+attiny87micr.menu.clock.crystal_4m.build.clocksource=0x11
+attiny87micr.menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)
+attiny87micr.menu.clock.crystal_2m.bootloader.low_fuses=0xF0
+attiny87micr.menu.clock.crystal_2m.build.f_cpu=2000000UL
+attiny87micr.menu.clock.crystal_2m.build.speed=2
+attiny87micr.menu.clock.crystal_2m.build.clocksource=0x11
+attiny87micr.menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)
+attiny87micr.menu.clock.crystal_1m.bootloader.low_fuses=0xF0
+attiny87micr.menu.clock.crystal_1m.build.f_cpu=1000000UL
+attiny87micr.menu.clock.crystal_1m.build.speed=1
+attiny87micr.menu.clock.crystal_1m.build.clocksource=0x11
+
+#########################
+# Pin Mapping menu      #
+#########################
+attiny87micr.menu.pinmap.digi=Digispark Pro
+attiny87micr.menu.pinmap.standard=Standard/Azduino
+attiny87micr.menu.pinmap.standard.build.variant=tinyx7
+attiny87micr.menu.pinmap.digi.build.variant=tinyx7_digi
+attiny87micr.menu.pinmap.legacy=Legacy
+attiny87micr.menu.pinmap.legacy.build.variant=tinyx7_legacy
+attiny87micr.menu.pinmap.default.build.pinmapabr=
+attiny87micr.menu.pinmap.digi.build.pinmapabr=.digi
+attiny87micr.menu.pinmap.legacy.build.pinmapabr=.old
+
+#########################
+# BrownOut Detect menu  #
+#########################
+attiny87micr.menu.bod.disable=B.O.D. Disabled (saves power)
+attiny87micr.menu.bod.disable.bootloader.bod_bits=111
+attiny87micr.menu.bod.1v8=B.O.D. Enabled (1.8v)
+attiny87micr.menu.bod.1v8.bootloader.bod_bits=110
+attiny87micr.menu.bod.2v7=B.O.D. Enabled (2.7v)
+attiny87micr.menu.bod.2v7.bootloader.bod_bits=101
+attiny87micr.menu.bod.4v3=B.O.D. Enabled (4.3v)
+attiny87micr.menu.bod.4v3.bootloader.bod_bits=100
+
+#########################
+# millis/micros menu    #
+#########################
+attiny87micr.menu.millis.enabled=Enabled
+attiny87micr.menu.millis.enabled.build.millis=
+attiny87micr.menu.millis.enabled.build.millisabr=
+attiny87micr.menu.millis.disabled=Disabled (saves flash)
+attiny87micr.menu.millis.disabled.build.millis=-DDISABLEMILLIS
+attiny87micr.menu.millis.disabled.build.millisabr=mNONE
+
+#########################
+# Boot Entrymode menu   #
+#########################
+attiny87micr.menu.bootentry.extrf_porf=External Reset and Power On Reset
+attiny87micr.menu.bootentry.extrf_porf.bootloader.entrymode=extrf_porf
+attiny87micr.menu.bootentry.extrf_safe=External Reset, or if reset pin disabled and HIGH
+attiny87micr.menu.bootentry.extrf_safe.bootloader.entrymode=extrf_safe
+attiny87micr.menu.bootentry.extrfonly_safe=External Reset only, or if reset pin disabled and HIGH
+attiny87micr.menu.bootentry.extrfonly_safe.bootloader.entrymode=extrfonly_safe
+attiny87micr.menu.bootentry.wdrf=Watchdog Reset only
+attiny87micr.menu.bootentry.wdrf.bootloader.entrymode=wdrf
+attiny87micr.menu.bootentry.porf=Power On Reset only
+attiny87micr.menu.bootentry.porf.bootloader.entrymode=porf
+attiny87micr.menu.bootentry.anyreset=Any reset (but not jump from app)
+attiny87micr.menu.bootentry.anyreset.bootloader.entrymode=anyreset
+attiny87micr.menu.bootentry.always=Always (permits jump from app)
+attiny87micr.menu.bootentry.always.bootloader.entrymode=always
+attiny87micr.menu.bootentry.jumper=Jumper (see documentation) (permits jump from app)
+attiny87micr.menu.bootentry.jumper.bootloader.entrymode=jumper
+attiny87micr.menu.bootentry.jumper.upload.maximum_size=6716
+
+################################
+# Pins used for USB            #
+################################
+attiny87micr.menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED
+attiny87micr.menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED
+attiny87micr.menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1
+attiny87micr.menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6
+attiny87micr.menu.usbpins.digispark.bootloader.usbpinsetname=pb1led
+attiny87micr.menu.usbpins.azduino.bootloader.usbpinsetname=pa6led
+attiny87micr.menu.usbpins.azduino.upload.maximum_size=6652
+attiny87micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
+attiny87micr.menu.resetpin.reset.bootloader.rstbit=1
+attiny87micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
+attiny87micr.menu.resetpin.gpio.bootloader.rstbit=0
+
+################################
+# Upgrade vs ISP install menu  #
+################################
+attiny87micr.menu.burnmode.upgrade=Upgrade (via USB)
+attiny87micr.menu.burnmode.upgrade.bootloader.file=micronucleus/hex/upgrade-attiny87micr{bootloader.devpostfix}{bootloader.usbpinsetname}_{bootloader.entrymode}.hex
+attiny87micr.menu.burnmode.upgrade.bootloader.tool=micronucleus
+attiny87micr.menu.burnmode.install=Fresh Install (via ISP)
+attiny87micr.menu.burnmode.install.bootloader.file=micronucleus/hex/attiny87micr{bootloader.devpostfix}{bootloader.usbpinsetname}_{bootloader.entrymode}.hex
+attiny87micr.menu.burnmode.install.bootloader.tool=avrdude
+attiny87micr.menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.file}:i
 
 #*******************************************************************************
 #   ###  #####                        #    ##          #   #  ###  ####
@@ -5420,6 +5621,7 @@ attiny861micr.build.wiremode=
 attiny861micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny861micr.build.bootloaderabr=micr
 attiny861micr.upload.tool=micronucleus
+attiny861micr.upload.protocol=usb
 attiny861micr.bootloader.devpostfix=
 
 #########################
@@ -5432,6 +5634,8 @@ attiny861micr.menu.optimization.size.build.optimize=-Os
 attiny861micr.menu.optimization.othree.build.optimize=-O3
 attiny861micr.menu.optimization.debug.build.optimize=-Og
 attiny861micr.build.mcu=attiny861
+attiny861micr.upload.maximum_size=6524
+attiny861micr.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -5532,14 +5736,17 @@ attiny861micr.menu.bootentry.always=Always (permits jump from app)
 attiny861micr.menu.bootentry.always.bootloader.entrymode=always
 attiny861micr.menu.bootentry.jumper=Jumper (see documentation) (permits jump from app)
 attiny861micr.menu.bootentry.jumper.bootloader.entrymode=jumper
-attiny861micr.menu.bootentry.always.upload.maximum_size=6588
 
 ################################
 # Pins used for USB            #
 ################################
-attiny861micr.menu.usbpins.standard=Standard - PB4: D-, PB6: D+, PB5: LED
-attiny861micr.menu.usbpins.standard.bootloader.usbpinset=
+attiny861micr.menu.usbpins.standard=Standard - PB4: D-, PB6: D+, PA5: LED
+attiny861micr.menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB4 -DLED_BUILTIN2=PIN_PA4
 attiny861micr.menu.usbpins.standard.bootloader.usbpinsetname=
+attiny861micr.menu.usbpins.prototype=Prototype - PA4: D+, PA5: D-, PB6: LED
+attiny861micr.menu.usbpins.prototype.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB6
+attiny861micr.menu.usbpins.prototype.bootloader.usbpinsetname=_proto
+attiny861micr.menu.usbpins.prototype.upload.maximum_size=6460
 attiny861micr.menu.resetpin.reset=Reset pin. Further ISP programming possible
 attiny861micr.menu.resetpin.reset.bootloader.rstbit=1
 attiny861micr.menu.resetpin.gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!
@@ -5579,6 +5786,7 @@ attiny841micr.build.softser=
 attiny841micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny841micr.build.bootloaderabr=micr
 attiny841micr.upload.tool=micronucleus
+attiny841micr.upload.protocol=usb
 attiny841micr.bootloader.devpostfix=
 
 #########################
@@ -5591,6 +5799,8 @@ attiny841micr.menu.optimization.size.build.optimize=-Os
 attiny841micr.menu.optimization.othree.build.optimize=-O3
 attiny841micr.menu.optimization.debug.build.optimize=-Og
 attiny841micr.build.mcu=attiny841
+attiny841micr.upload.maximum_size=6524
+attiny841micr.upload.maximum_data_size=512
 
 #########################
 # Clocking menu options #
@@ -5628,6 +5838,7 @@ attiny841micr.menu.pinmap.ccw.build.pinmapabr=.ccw
 #########################
 attiny841micr.menu.wiremode.master=Master Only
 attiny841micr.menu.wiremode.master.build.wiremode=-DWIRE_MASTER_ONLY
+attiny841micr.menu.wiremode.master.build.wiremodeabr=
 attiny841micr.menu.wiremode.slave=Slave Only
 attiny841micr.menu.wiremode.slave.build.wiremode=-DWIRE_SLAVE_ONLY
 attiny841micr.menu.wiremode.slave.build.wiremodeabr=wS
@@ -5741,6 +5952,7 @@ attiny1634micr.build.wiremode=
 attiny1634micr.build.bootloader=-DUSING_BOOTLOADER=0x08
 attiny1634micr.build.bootloaderabr=micr
 attiny1634micr.upload.tool=micronucleus
+attiny1634micr.upload.protocol=usb
 attiny1634micr.bootloader.devpostfix=
 
 #########################
@@ -5753,6 +5965,8 @@ attiny1634micr.menu.optimization.size.build.optimize=-Os
 attiny1634micr.menu.optimization.othree.build.optimize=-O3
 attiny1634micr.menu.optimization.debug.build.optimize=-Og
 attiny1634micr.build.mcu=attiny1634
+attiny1634micr.upload.maximum_size=14720
+attiny1634micr.upload.maximum_data_size=1024
 
 #########################
 # Clocking menu options #
