@@ -40,19 +40,28 @@
 #define PIN_PB3  (11)
 #define PIN_PB4  (12)
 #define PIN_PB5  (13)
+//      PIN_PB6 is the CLKI pin, which is not available on the MH-Tiny
+//      becayuse they use an external 16 MHz clock.
 #define PIN_PB7  (14)
-#define PIN_PA0  (15)
-#define PIN_PA1  (16)
-#define PIN_PA2  (17)
-#define PIN_PA3  (18)
-#define PIN_PC0  (19)
-#define PIN_PC1  (20)
-#define PIN_PC2  (21)
+#define PIN_PA2  (15) /* Wait what? There's a reason            */
+#define PIN_PA3  (16) /* PA0 and PA1 have ADC, and they         */
+#define PIN_PA0  (17) /* wanted to keep the ADC pins together   */
+#define PIN_PA1  (18) /* but also keep the ports together, so   */
+#define PIN_PC0  (19) /* they didn't want to put PORTA after    */
+#define PIN_PC1  (20) /* the first 6 PORTC pins, since PC7      */
+#define PIN_PC2  (21) /* would then be on the other side of it  */
 #define PIN_PC3  (22)
 #define PIN_PC4  (23)
 #define PIN_PC5  (24)
 #define PIN_PC7  (25)
-#define PIN_PC6  (26)
+#define PIN_PC6  (26) /* PC6 is reset; convention is to number reset last. */
+
+/* The t88 removed a Vcc/Gnd pair and the dedicated AREF pin, as compaared to
+ * the mega x8-series, and made the last two ADC channels into real pins
+ * on a new port. The pins that replaced the Vcc/Gnd pair joined those two
+ * in the newly created half-size PORTA, while the AREF pin became the
+ * final bit of PORTC.
+ */
 
 #ifndef LED_BUILTIN
   #define LED_BUILTIN (PIN_PD0)
@@ -88,21 +97,21 @@ static const uint8_t A7 = ADC_CH(7);
  *---------------------------------------------------------------------------*/
 
 #define digitalPinToPCICR(p)        (&PCICR)
-#define digitalPinToPCICRbit(p)     ( ((p) <= 7) ? PCIE2 : ( ((p) <= 14) ? PCIE0 : ( ((p) <= 18) ? PCIE3 : PCIE1 ) ) )
-#define digitalPinToPCMSK(p)        ( ((p) <= 7) ? (&PCMSK2) : ( ((p) <= 14) ? (&PCMSK0) : ( ((p) <= 18) ? (&PCMSK3) : (&PCMSK1) ) ) )
-#define digitalPinToPCMSKbit(p)     ( ((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : (((p) == 14) ? 7 : (((p) <= 16) ? ((p) - 14) : (((p) <= 18) ? ((p) - 17) : (((p) == 25) ? 7 : ((p) - 19) ) ) ) ) ) )
+/*                                  PORTD:                    PORTB (PB6 is osc, skipped in pin #'s         PORTA - numbered PA2, PA3, PA0, PA1 see above note      PORTC   */
+#define digitalPinToPCICRbit(p)     (((p) <= 7) ? PCIE2     : (((p) <= 14) ? PCIE0                        : (((p) <= 18) ? PCIE3                                  : PCIE1)))
+#define digitalPinToPCMSK(p)        (((p) <= 7) ? (&PCMSK2) : (((p) <= 14) ? (&PCMSK0)                    : (((p) <= 18) ? (&PCMSK3)                              : (&PCMSK1))))
+#define digitalPinToPCMSKbit(p)     (((p) <= 7) ? (p)       : (((p) <= 13) ? ((p) - 8) : (((p) == 14) ? 7 : (((p) <= 16) ? ((p) - 14) : (((p) <= 18) ? ((p) - 17) : (((p) == 25) ? 7 : ((p) - 19)))))))
 
-#define digitalPinToInterrupt(p)    ((p) == 2 ? 0 : ((p)==3?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)    ((p) == 2 ? 0 : ((p) == 3 ? 1: NOT_AN_INTERRUPT))
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p) < 8) ? (((p) < 6) ? (p) + 11 :(p) + 19 ): -1)
-#define digitalPinToAnalogInput(p)  ((p) < 25 ? (((p) > 18) ? ((p) - 19) : (((p) > 16) ? ((p) - 11) : -1)) : -1)
+#define analogInputToDigitalPin(p)  (((p) < 8) ? (((p) < 6) ? (p) + 11 :(p) + 19 ): NOT_A_PIN)
+#define digitalPinToAnalogInput(p)  ((p) < 25 ? (((p) > 18) ? ((p) - 19) : (((p) > 16) ? ((p) - 11) : NOT_A_PIN)) : NOT_A_PIN)
 /* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) == 9 || (p) == 10)
 
 #define PINMAPPING_MHTINY
 
-/*---------------------------------------------------------------------------
 /*---------------------------------------------------------------------------
  * Core Configuration where these are not the defaults
  *---------------------------------------------------------------------------*/
@@ -152,7 +161,7 @@ static const uint8_t A7 = ADC_CH(7);
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_T0                (PIN_PD4)
 
-/* Timer 1 - 16-bit timer with PWM */s
+/* Timer 1 - 16-bit timer with PWM */
 #define TIMER1_TYPICAL              (1)
 #define PIN_TIMER_OC1A              (PIN_PB1)
 #define PIN_TIMER_OC1B              (PIN_PB2)
