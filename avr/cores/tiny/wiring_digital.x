@@ -62,90 +62,18 @@ void pinMode(uint8_t pin, uint8_t mode) {
   }
 }
 
-inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
-  check_constant_pin(pin);
-  if (!__builtin_constant_p(mode))
-    badArg("pinModeFast requires the mode to be compiletime known");
-  if (pin > 127) {
-    pin = analogInputToDigitalPin((pin & 127));
-  }
-  if (!check_valid_digital_pin(pin)) {
-    return;
-  }
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
-
-  volatile uint8_t *reg, *out;
-  reg = portModeRegister(port);
-
-#if defined(PUEA)
-  out = portPullupRegister(port);
-#else
-  out = portOutputRegister(port);
-#endif
-
-  if (mode == INPUT) {
-    uint8_t oldSREG = SREG;
-    cli();
-    *reg &= ~mask;
-    *out &= ~mask;
-    SREG = oldSREG;
-  } else if (mode == INPUT_PULLUP) {
-    uint8_t oldSREG = SREG;
-    cli();
-    *reg &= ~mask;
-    *out |= mask;
-    SREG = oldSREG;
-  } else {
-    uint8_t oldSREG = SREG;
-    cli();
-    *reg |= mask;
-    SREG = oldSREG;
-  }
-}
-
-
-inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
-  check_constant_pin(pin);
-  if (!__builtin_constant_p(mode))
-    badArg("openDrainFast requires the mode to be compiletime known");
-  if (pin > 127) {
-    pin = analogInputToDigitalPin((pin & 127));
-  }
-  if (!check_valid_digital_pin(pin)) {
-    return;
-  }
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
-
-  volatile uint8_t *reg, *out;
-  reg = portModeRegister(port);
-  out = portOutputRegister(port);
-  if (mode == FLOATING) {
-    *out &= ~mask;
-    *reg &= ~mask;
-  } else if (mode == LOW) {
-    *out |= mask;
-    *reg &= ~mask;
-  }
-}
-
-
 void turnOffPWM(uint8_t timer) {
   #if defined(TOCPMCOE)
     // No need to change the timer, just flip the bit in TOCPMCOE
     if (timer) {                          //          All PWM on thes parts is controlled like this (unlike the x7)
       uint8_t bitmask = timer & 0xF0;     // mov andi Copy the portion that contains the bitmask;
-      if (!(timer & 0x08)) {              // sbrs     0x08 is set for the higher 4 bits, so we want to swap only if it's not set
+      if (!(timer & 0x80)) {              // sbrs     0x08 is set for the higher 4 bits, so we want to swap only if it's not set
         _SWAP(bitmask);                   // swp
       }
       TOCPMCOE &= ~bitmask;               // com, sts
-      timer &= 0x07;
     }
-  #else
 
+  #else
     #if defined(TCCR0A) && defined(COM0A1)
       if( timer == TIMER0A) {
         TCCR0A &= ~(1 << COM0A1);
@@ -159,12 +87,12 @@ void turnOffPWM(uint8_t timer) {
       } else
     #endif
     #ifdef __AVR_ATtinyX7__
-      if (timer & 0xF1) { // It's one of the flex pins on timer1
       // Timer1 on x7                   // Likely implementation:
       uint8_t bitmask = timer & 0xF0;   // mov, andi
-      if (!(timer & 0x04)){           // sbrs
-        _SWAP(bitmask);               // swp
-      }
+      if (bitmask) {                    // likely breq .+10 to jump over this stuff if the result is 0
+        if (!(timer & 0x04)){           // sbrs
+          _SWAP(bitmask);               // swp
+        }
         TCCR1D &= (~bitmask);           // com, sts
       }
       // Using the swp instruction results in MUCH better code. The old way had a variable shift, which gets implemented as a tiny loop.
@@ -228,19 +156,28 @@ void digitalWrite(uint8_t pin, uint8_t val) {
 
   out = portOutputRegister(port);
   #if defined(PUEA)
-    volatile uint8_t *pue;
+    volatile uint8_t *pue, *mode;
     pue = portPullupRegister(port);
+    mode = out+1;
+  #endif
+  #if defined(PUEA)
     if (val == LOW) {
       uint8_t oldSREG = SREG;
       cli();
-      *pue &= ~mask;
-      *out &= ~mask;
+      if (*mode & mask) {
+        *out &= ~mask;
+      } else {
+        *pue &= ~mask;
+      }
       SREG = oldSREG;
     } else {
       uint8_t oldSREG = SREG;
       cli();
-      *pue |= mask;
-      *out |= mask;
+      if (*mode & mask) {
+        *out |= ~mask;
+      } else {
+        *pue |= ~mask;
+      }
       SREG = oldSREG;
     }
   #else
@@ -258,60 +195,7 @@ void digitalWrite(uint8_t pin, uint8_t val) {
   #endif
 }
 
-void openDrain(uint8_t pin, uint8_t val) {
-  if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
-  check_valid_digital_pin(pin);
-  uint8_t timer = digitalPinToTimer(pin);
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  volatile uint8_t *out;
-
-  if (port == NOT_A_PIN) return;
-
-  // If the pin that support PWM output, we need to turn it off
-  // before doing a digital write.
-  if (timer != NOT_ON_TIMER) turnOffPWM(timer);
-
-  out = portOutputRegister(port);
-  if (val == LOW) {
-    uint8_t oldSREG = SREG;
-    cli();
-    *out &= ~mask;
-    SREG = oldSREG;
-  } else {
-    uint8_t oldSREG = SREG;
-    cli();
-    *out |= mask;
-    SREG = oldSREG;
-  }
-}
-
-#if defined(__AVR_ATtinyX41__)
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
-    // "Pullup enable? Never heard if it"
-    // writes the output register without touching the PUE register. Avail. on 841 and 441 only because that's the only place that the
-    check_constant_pin(pin);
-    if (pin > 127) {
-      pin = analogInputToDigitalPin((pin & 127));
-    }
-    if (!check_valid_digital_pin(pin)) {
-      // check_valid_digital_pin returns 0 if the pin is explicitly NOT_A_PIN, 1 if it is a pin, and errors with badArg if it's not a pin.
-      return;
-    }
-    uint8_t mask = digitalPinToBitMask(pin);
-    uint8_t port = digitalPinToPort(pin);
-    volatile uint8_t *out;
-    if (port == NOT_A_PIN) return;
-    out = portOutputRegister(port);
-    if (val == LOW) {                  // 2 instruction
-      *out &= ~mask;                   // 1/1 atomic
-    } else {                           //
-      *out |= mask;                    // 1/1
-    }
-  }
-#endif
-
-inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
+inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val, __attribute__((unused))uint8_t ignorepullups) {
   check_constant_pin(pin);
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
@@ -320,56 +204,61 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
     // check_valid_digital_pin returns 0 if the pin is explicitly NOT_A_PIN, 1 if it is a pin, and errors with badArg if it's not a pin.
     return;
   }
+  #if defined(PUEA)
+    if (!__builtin_constant_p(ignorepullups)) {
+      badArg("it must be known at compiletime whether to ignore the pullup state in a fast digital write on the 841, 441, 828, and 1634.");
+    }
+  #endif
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out;
   if (port == NOT_A_PIN) return;
   out = portOutputRegister(port);
-  #if defined(__AVR_ATtinyX41__)      //Uniquely bad
-    volatile uint8_t *pue, *mode;     //
-    pue = portPullupRegister(port);   //
-    mode = out+1;
-    if (val == LOW) {                 // 2 instructions
-
-      if (*mode & mask) {
-        *out &= ~mask;                // 1/1 atomic
-      } else {                        // 1/1 +1
-        uint8_t oldSREG = SREG;       // 1/1
-        cli();                        // 1/1
-        *pue &= ~mask;                // 3/5 in 5
-        SREG = oldSREG;               // 1/1
+  #if defined(PUEA)
+    if (ignorepullups) {
+      volatile uint8_t *pue, *mode;
+      pue = portPullupRegister(port);
+      mode = out+1;
+      if (val == LOW) {
+        uint8_t oldSREG = SREG;
+        cli();
+        if (*mode & mask) {
+          *out &= ~mask;
+        } else {
+          *pue &= ~mask;
+        }
+        SREG = oldSREG;
+      } else {
+        uint8_t oldSREG = SREG;
+        cli();
+        if (*mode & mask) {
+          *out |= ~mask;
+        } else {
+          *pue |= ~mask;
+        }
+        SREG = oldSREG;
       }
-    } else {                          // total subtotal 8/10 in 5/9
-      if (*mode & mask) {             // 1/1
-        *out &= ~mask;                // 1/1
-      } else {                        // 1/1 in 2
-        uint8_t oldSREG = SREG;       // 1/1
-        cli();                        // 1/1
-        *pue &= ~mask;                // 3/5 in 5
-        SREG = oldSREG;               // 1/1
-      }                               // 17 instruction, 21 word, and and execution time of 8-12 clocks?
-                                      // A whole new definition of fast (now it means "slow") - who wants to inline that!?
-    }
-  #elif defined(PUEA)
+    } else {
+  #endif
     if (val == LOW) {
-      *pue &= ~mask;                  // 1/1
-      *out &= ~mask;                  // 1/1
-    } else {                          // 1/1
-      *pue &= ~mask;                  // 1/1
-      *out &= ~mask;                  // 1/1
+      uint8_t oldSREG = SREG;
+      cli();
+      *out &= ~mask;
+      SREG = oldSREG;
+    } else {
+      uint8_t oldSREG = SREG;
+      cli();
+      *out |= mask;
+      SREG = oldSREG;
     }
-      // constant pin -> constant out register.
-      // constant val -> constant mask. Combined with above means we will get CBI/SBI (only one bit at a time will be set in the mask
-  }   // and we know which one
-  #else                               // total 13 and 13 and execution time of ~8 eitherway
-    if (val == LOW) {
-      *out &= ~mask;                  // 1/1
-    } else {                          // 1/1
-      *out &= ~mask;                  // 1/1
-    }   // and we know which one at compile time, so
+  #if defined(PUEA)
+    }
   #endif
 }
 
+
+#ifdef PUEA
+#endif
 
 
 int8_t digitalRead(uint8_t pin)

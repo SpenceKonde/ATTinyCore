@@ -352,6 +352,13 @@ const uint8_t PROGMEM port_to_output_PGM[] =
   (uint8_t)(uint16_t)&PORTB,
 };
 
+const uint8_t PROGMEM port_to_pullup_PGM[] =
+{
+  NOT_A_PORT,
+  (uint8_t)(uint16_t)&PUEA,
+  (uint8_t)(uint16_t)&PUEB,
+};
+
 const uint8_t PROGMEM port_to_input_PGM[] =
 {
   NOT_A_PORT,

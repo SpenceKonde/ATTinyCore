@@ -352,9 +352,11 @@ void analogWrite(uint8_t pin, int val) {
   } else {
     uint8_t timer = digitalPinToTimer(pin);
     #if defined(TOCPMCOE)
-      if (timer != 0) {
-        uint8_t oechan = (timer & 0x08) ? 0xF0 & timer : timer >> 4;
-        // oechan
+      if (timer) {
+        uint8_t bitmask = timer & 0xF0;
+        if (timer & 0x08) {
+          _SWAP(bitmask);
+        }
         timer &= 0x07;
         switch (timer) {
           case TIMER0A:
@@ -383,8 +385,8 @@ void analogWrite(uint8_t pin, int val) {
             break;
         }
         // In any event we can now switch OE for that pin.
-        TOCPMCOE |= oechan;
-      } else // has to end with this, from if (timer != 0) and it matches up with a block around testing if val > 128 to decide what to write the pin.
+        TOCPMCOE |= bitmask;
+      } else // has to end with this, from if (timer)
     #else //Non-TOCPMCOE implementation
       // Timer0 has a output compare channel A (most parts)
       #if defined(TCCR0A) && defined(COM0A1)
@@ -422,15 +424,19 @@ void analogWrite(uint8_t pin, int val) {
       #endif
       // Handle the Timer1 flexible PWM on the x7
       #if !defined(TCCR1E) && defined(TCCR1D)
-        if (timer & 0x08) {
-          //Timer 1
-          TCCR1A |= (1 << COM1B1) | (1 << COM1A1);
+        if (timer & 0xF0) { // x7 timer will be either 0x01 (Timer0A) or will be 0x_3 or 0x_4 with the
+          // high nybble containing bitmask for the enable pins.
+          // Timer 1 - we enable the COM1xn bits in init() so all we need to do is set OCR1x
+          // timer & 0xF0 gives the bitmask, and if it is to be swapped, swap it,
+
+          uint8_t bitmask = 0xF0 & timer;
           if (timer & 0x04) {
             OCR1B = val;
           } else {
             OCR1A = val;
+            _SWAP(bitmask); // Timer1A controls the low half of bits in the TCCR1D register.
           }
-          TCCR1D |= (1 << (timer & 0x07));
+          TCCR1D |= bitmask;
         } else
       #endif
       // ATtiny x61
