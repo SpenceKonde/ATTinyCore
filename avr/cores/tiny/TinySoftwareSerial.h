@@ -89,6 +89,9 @@
       volatile uint8_t head; // Making these uint8_t's saves FIFTY BYTES of flash! ISR code-size amplification in action...
       volatile uint8_t tail;
     };
+  #else
+    #define SOFTSERIAL_TXBIT ANALOG_COMP_AIN0_BIT
+
   #endif
   extern "C"{
     void uartDelay() __attribute__ ((naked, used)); //used attribute needed to prevent LTO from throwing it out.
@@ -102,10 +105,16 @@
     public: //should be private but needed by extern "C" {} functions.
     uint8_t _txmask;
     uint8_t _txunmask;
-    soft_ring_buffer *_rx_buffer;
+    #if !defined(SOFT_TX_ONLY)
+      soft_ring_buffer *_rx_buffer;
+    #endif
     uint8_t _delayCount;
     public:
-      TinySoftwareSerial(soft_ring_buffer *rx_buffer);
+      #if !defined(SOFT_TX_ONLY)
+        TinySoftwareSerial(soft_ring_buffer *rx_buffer);
+      #else
+        TinySoftwareSerial(uint8_t txbitmask);
+      #endif
       void begin(long);
       void setTxBit(uint8_t);
       void end();
