@@ -47,7 +47,7 @@ Example of a "guard" against wrong pin mapping:
 #endif
 ```
 
-Both of these options assume that an LED is connected to PB6 - unless it is using Micronucleus, which expects the LED on PB5 instead.
+Both of these options assume that an LED is connected to PB6 - except for non-prototype Micronucleus boards, which expect it on PA4 instead.
 
 ### PLL Clock
 The ATtiny x61-family parts have an on-chip PLL. This is clocked off the internal oscillator and nominally runs at 64 MHz when enabled. It is possible to clock the chip off 1/4th of the PLL clock speed, providing a 16MHz clock option without a crystal (this has the same accuracy problems as the internal oscillator driving it). Alternately, or in addition to using it to derive the system clock, Timer1 can be clocked off the PLL. See below. For use with USB libraries, a 16.5 MHz clock option is available; with the Micronucleus bootloader, a tuned value calculated from the USB clock is used, and this is the default clock option, otherwise, a heuristic is used to determine the tuning to get 16.5 MHz if the chip has not been "tuned" with a tuning sketch. .

@@ -29,18 +29,19 @@ All are built with fast exit if no USB, `START_WITHOUT_PULLUP` and `ENABLE_SAFE_
 #### Configuration Summary
 This means there are a total of 136 bootloader binaries, since 1 part comes with 2 resets, 2 parts come with 3, and one of those two has the 12 MHz and 12.8 MHz (because the Micronucleus documentation swears up and down that 12 MHz won't work on the internal oscillator - the 841 and 1634 have a much nicer internal oscillator, so they are more plausible). In about half of cases, either the "always" entry mode leaves one additional page of flash for user code, or the "jumper" mode takes up an extra page.
 
-| Part     | D+  | D-  | LED | Jumper | Clock Source   | Boot Clock | Sketch Clock | Calbyte | Flash | Notes                                | D+ on INT0? |
-|----------|-----|-----|-----|--------|----------------|------------|--------------|---------|-------|--------------------------------------|-------------|
-| t84@12   |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Store   |  6588 | 12 MHz is really pushing it w/int. * | Sometimes   |
-| t84@12.8 |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Left    |  6268 | 12.8 MHz may work better, but flash  | Sometimes   |
-| t841     |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz| Store   |  6524 | Wattuino Nanite (D+ on PB1)       ** | Sometimes   |
-| t85      | PB4 | PB3 | PB1 | PB0    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz | Left    |  6588 | Digispark and clones              ** | Yes         |
-| t88      | PD2 | PD1 | PD0 | PC7    | Ext. Clock     | 16.0 MHz   |       16 MHz | N/A     |  6588 | MH-Tiny                            * | Yes         |
-| t167,digi| PB3 | PB6 | PB1 | PA7    | Crystal        | 16.0 MJz   |       16 MHz | N/A     | 14844 | Digispark Pro                      * | Yes         |
-| t167,azd | PB3 | PB6 | PA6 | PA7    | Crystal        | 16.0 MHz   |       16 MHz | N/A     | 14844 | Azduino USB 167                    * | Yes         |
-| t87      | PB3 | PB6 | *** | PA7    | Crystal        | 16.0 MHz   |       16 MHz | N/A     |  6654 | Same LED pin options as '167         | Yes         |
-| t861     | PB6 | PB4 | PB5 | PA3    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz | Keep    |  6654 | Azduino USB 861                   ** | Yes         |
-| t1634    | PC5 | PC4 | PC2 | PA0    | USB Tuned Int  | 12.0 MHz   |    12, 8 MHz | Keep    | 14714 | Azduino USB 1634                     | No          |
+| Part     | D+  | D-  | LED | Jumper | Clock Source   | Boot Clock | Sketch Clock  | Calbyte | Flash | Notes                                | D+ on INT0? |
+|----------|-----|-----|-----|--------|----------------|------------|---------------|---------|-------|--------------------------------------|-------------|
+| t84@12   |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz | Store   |  6588 | 12 MHz is really pushing it w/int. * | Sometimes   |
+| t84@12.8 |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12.8 MHz   | 12.8 MHz,8 MHz| Keep    |  6268 | 12.8 MHz may work better, but flash  | Sometimes   |
+| t841     |PB0-2|PB0-1|PB2/0| PA0    | USB Tuned int. | 12 MHz     | 12 MHz, 8 MHz | Store   |  6524 | Wattuino Nanite (D+ on PB1)       ** | Sometimes   |
+| t85      | PB4 | PB3 | PB1 | PB0    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz  | Keep    |  6588 | Digispark and clones              ** | Yes         |
+| t88      | PD2 | PD1 | PD0 | PC7    | Ext. Clock     | 16.0 MHz   |       16 MHz  | N/A     |  6588 | MH-Tiny                            * | Yes         |
+| t167,digi| PB3 | PB6 | PB1 | PA7    | Crystal        | 16.0 MJz   |       16 MHz  | N/A     | 14844 | Digispark Pro                      * | Yes         |
+| t167,azd | PB3 | PB6 | PA6 | PA7    | Crystal        | 16.0 MHz   |       16 MHz  | N/A     | 14844 | Azduino USB 167                    * | Yes         |
+| t87      | PB3 | PB6 | *** | PA7    | Crystal        | 16.0 MHz   |       16 MHz  | N/A     |  6654 | Same LED pin options as '167         | Yes         |
+| t861     | PA4 | PA5 | PB6 | PA3    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz  | Keep    |  6654 | USB861 prototype                  ** | No          |
+| t861     | PB6 | PB4 | PB5 | PA3    | USB Tuned PLL  | 16.5 MHz   | 16.5, 16 MHz  | Keep    |  6654 | Azduino USB 861                   ** | Yes         |
+| t1634    | PC5 | PC4 | PC2 | PA0    | USB Tuned Int  | 12.0 MHz   |    12, 8 MHz  | Keep    | 14714 | Azduino USB 1634                     | No          |
 
 `*` - One page of flash (64 or 128b) less is available with the jumper entry mode option on these parts.
 `**` - One page of additional flash (64b) is available with the "always" entry mode option on these parts.
