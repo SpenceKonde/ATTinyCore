@@ -202,3 +202,13 @@ attiny167: $(PROGRAM)_attiny167.hex
 ifndef PRODUCTION
 attiny167: $(PROGRAM)_attiny167.lst
 endif
+
+attiny87: TARGET = attiny87
+attiny87: MCU_TARGET = attiny87
+attiny87: AVR_FREQ ?= 8000000L
+attiny87: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION'
+attiny87: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny87: $(PROGRAM)_attiny87.hex
+ifndef PRODUCTION
+attiny87: $(PROGRAM)_attiny87.lst
+endif

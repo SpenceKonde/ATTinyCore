@@ -196,8 +196,23 @@
 /**********************************************************/
 /* Edit History:                                          */
 /*                                                        */
-/* Mar 2020 Spence Konde for ATTinyCore                   */
+/* Feb 2022 Spence Konde for ATTinyCore                   */
 /*           github.com/SpenceKonde                       */
+/* 58.1 Add support for REMAP=1 on t841, 441              */
+/*      Add support for TXPIN, RXPIN, and while I'm at it */
+/*      general specification of the PORT too.            */
+/*      No checking is performed that the registers given */
+/*      for soft uart are on the same port.               */
+/*      Remove default software serial pins for parts with*/
+/*      hardware serial. Error if software serial is      */
+/*      requested but all parameters not provided.        */
+/*      Parts that do have a default need only specify the*/
+/*      TX and RX bits as TXPIN and RXPIN.                */
+/*      Remove conditional compilation for megaAVR parts  */
+/*      There are alread enough unholy things done to this*/
+/*      version that it shouldn't compile for any ATmega  */
+/*      so why imply that it would?                       */
+/*      Adust most indentation to match all of my cores   */
 /* 58.0 Pull in RS485 support by Vladimir Dronnikov       */
 /*      ( github.com/dvv ) as used in                     */
 /*      github.com/SodaqMoja/optiboot                     */
@@ -357,15 +372,20 @@ typedef union {
 
 /* set the UART baud rate defaults */
 #ifndef BAUD_RATE
-#if F_CPU >= 8000000L
-#define BAUD_RATE   115200L // Highest rate Avrdude win32 will support
-#elif F_CPU >= 1000000L
-#define BAUD_RATE   9600L   // 19200 also supported, but with significant error
-#elif F_CPU >= 128000L
-#define BAUD_RATE   4800L   // Good for 128kHz internal RC
-#else
-#define BAUD_RATE 1200L     // Good even at 32768Hz
-#endif
+  #if F_CPU >= 8000000L
+    // This is a shitty default, because it has 2% error. In the same direction
+    // that the 841 and 1634's clocks skew at VCC > 4.0V.
+    // 76800 is dead-on and a better choice
+    #define BAUD_RATE   115200L // Highest rate Avrdude win32 will support
+  #elif F_CPU >= 1000000L
+    #define BAUD_RATE   9600L   // 19200 also supported, but with significant error
+    // 19200 is a bad speed anyway because it matches (and uses same protocol as)
+    // arduino as ISP, and the resulting behavior will flummox almost everyone.
+  #elif F_CPU >= 128000L
+    #define BAUD_RATE   4800L   // Good for 128kHz internal RC
+  #else
+    #define BAUD_RATE 1200L     // Good even at 32768Hz
+  #endif
 #endif
 
 #ifndef UART
@@ -373,39 +393,39 @@ typedef union {
 #endif
 
 #ifndef SOFT_UART
-#ifdef SINGLESPEED
-/* Single speed option */
-#define BAUD_SETTING (( (F_CPU + BAUD_RATE * 8L) / ((BAUD_RATE * 16L))) - 1 )
-#define BAUD_ACTUAL (F_CPU/(16 * ((BAUD_SETTING)+1)))
-#else
-/* Normal U2X usage */
-#define BAUD_SETTING (( (F_CPU + BAUD_RATE * 4L) / ((BAUD_RATE * 8L))) - 1 )
-#define BAUD_ACTUAL (F_CPU/(8 * ((BAUD_SETTING)+1)))
-#endif
-#if BAUD_ACTUAL <= BAUD_RATE
-  #define BAUD_ERROR (( 100*(BAUD_RATE - BAUD_ACTUAL) ) / BAUD_RATE)
-  #if BAUD_ERROR >= 5
-    #error BAUD_RATE off by greater than -5%
-  #elif BAUD_ERROR >= 2  && !defined(PRODUCTION)
-    #warning BAUD_RATE off by greater than -2%
+  #ifdef SINGLESPEED
+    /* Single speed option */
+    #define BAUD_SETTING (( (F_CPU + BAUD_RATE * 8L) / ((BAUD_RATE * 16L))) - 1 )
+    #define BAUD_ACTUAL (F_CPU/(16 * ((BAUD_SETTING)+1)))
+  #else
+    /* Normal U2X usage */
+    #define BAUD_SETTING (( (F_CPU + BAUD_RATE * 4L) / ((BAUD_RATE * 8L))) - 1 )
+    #define BAUD_ACTUAL (F_CPU/(8 * ((BAUD_SETTING)+1)))
   #endif
-#else
-  #define BAUD_ERROR (( 100*(BAUD_ACTUAL - BAUD_RATE) ) / BAUD_RATE)
-  #if BAUD_ERROR >= 5
-    #error BAUD_RATE off by greater than 5%
-  #elif BAUD_ERROR >= 2  && !defined(PRODUCTION)
-    #warning BAUD_RATE off by greater than 2%
+  #if BAUD_ACTUAL <= BAUD_RATE
+    #define BAUD_ERROR (( 100*(BAUD_RATE - BAUD_ACTUAL) ) / BAUD_RATE)
+    #if BAUD_ERROR >= 5
+      #error BAUD_RATE off by greater than -5%
+    #elif BAUD_ERROR >= 2  && !defined(PRODUCTION)
+      #warning BAUD_RATE off by greater than -2%
+    #endif
+  #else
+    #define BAUD_ERROR (( 100*(BAUD_ACTUAL - BAUD_RATE) ) / BAUD_RATE)
+    #if BAUD_ERROR >= 5
+      #error BAUD_RATE off by greater than 5%
+    #elif BAUD_ERROR >= 2  && !defined(PRODUCTION)
+      #warning BAUD_RATE off by greater than 2%
+    #endif
   #endif
-#endif
 
-#if BAUD_SETTING > 250
-#error Unachievable baud rate (too slow) BAUD_RATE
-#endif // baud rate slow check
-#if (BAUD_SETTING - 1) < 3
-#if BAUD_ERROR != 0 // permit high bitrates (ie 1Mbps@16MHz) if error is zero
-#error Unachievable baud rate (too fast) BAUD_RATE
-#endif
-#endif // baud rate fast check
+  #if BAUD_SETTING > 255
+      #error Unachievable baud rate (too slow) BAUD_RATE
+  #endif // baud rate slow check
+  #if (BAUD_SETTING - 1) < 3
+    #if BAUD_ERROR != 0 // permit high bitrates (ie 1Mbps@16MHz) if error is zero
+      #error Unachievable baud rate (too fast) BAUD_RATE
+    #endif
+  #endif // baud rate fast check
 #endif // SOFT_UART
 
 /* Watchdog settings */
@@ -417,47 +437,33 @@ typedef union {
 #define WATCHDOG_250MS  (_BV(WDP2) | _BV(WDE))
 #define WATCHDOG_500MS  (_BV(WDP2) | _BV(WDP0) | _BV(WDE))
 #define WATCHDOG_1S     (_BV(WDP2) | _BV(WDP1) | _BV(WDE))
-#define WATCHDOG_2S     (_BV(WDP2) | _BV(WDP1) | _BV(WDP0) | _BV(WDE))
-#ifndef __AVR_ATmega8__
+#define WATCHDOG_2S     (_BV(WDP2) | _BV(WDP1) | _BV(WDP0) | _BV(WDE))\
 #define WATCHDOG_4S     (_BV(WDP3) | _BV(WDE))
 #define WATCHDOG_8S     (_BV(WDP3) | _BV(WDP0) | _BV(WDE))
-#endif
 
 #ifdef TIMEOUT
-#if TIMEOUT==1
-#define WDTPERIOD WATCHDOG_1S
-#elif TIMEOUT==2
-#define WDTPERIOD WATCHDOG_2S
-#elif TIMEOUT==4
-#define WDTPERIOD WATCHDOG_4S
-#elif TIMEOUT==8
-#define WDTPERIOD WATCHDOG_8S
-#elif TIMEOUT==5 //half second
-#define WDTPERIOD WATCHDOG_500MS
-#elif TIMEOUT==25 //quarter second
-#define WDTPERIOD WATCHDOG_250MS
-#elif TIMEOUT==12 //eighth second
-#define WDTPERIOD WATCHDOG_125MS
+  #if TIMEOUT==1
+    #define WDTPERIOD WATCHDOG_1S
+  #elif TIMEOUT==2
+    #define WDTPERIOD WATCHDOG_2S
+  #elif TIMEOUT==4
+    #define WDTPERIOD WATCHDOG_4S
+  #elif TIMEOUT==8
+    #define WDTPERIOD WATCHDOG_8S
+  #elif TIMEOUT==5 //half second
+    #define WDTPERIOD WATCHDOG_500MS
+  #elif TIMEOUT==25 //quarter second
+    #define WDTPERIOD WATCHDOG_250MS
+  #elif TIMEOUT==12 //eighth second
+    #define WDTPERIOD WATCHDOG_125MS
+  #else
+    #error "TIMEOUT specified but invalid"
+  #endif
 #else
-#error "TIMEOUT specified but invalid"
-#endif
-#else
-#define WDTPERIOD WATCHDOG_1S
+  #define WDTPERIOD WATCHDOG_1S
 #endif
 
-/*
- * These parts use different name, this macro improves readability
- */
-
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega8535__) ||    \
-    defined(__AVR_ATmega16__)   || defined(__AVR_ATmega162__) ||    \
-    defined (__AVR_ATmega128__)
-#define MCUSTATUSREG MCUCSR
-#else
 #define MCUSTATUSREG MCUSR
-#endif
-
-
 
 
 /*
@@ -465,7 +471,7 @@ typedef union {
  * some code space on parts with smaller pagesize by using a smaller int.
  */
 #if SPM_PAGESIZE > 255
-typedef uint16_t pagelen_t ;
+typedef uint16_t pagelen_t;
 #define GETLENGTH(len) len = getch()<<8; len |= getch()
 #else
 typedef uint8_t pagelen_t;
@@ -490,7 +496,7 @@ void __attribute__((noinline)) watchdogConfig(uint8_t x);
 
 static void getNch(uint8_t);
 #if LED_START_FLASHES > 0
-static inline void flash_led(uint8_t);
+  static inline void flash_led(uint8_t);
 #endif
 static inline void watchdogReset();
 static inline void writebuffer(int8_t memtype, addr16_t mybuff,
@@ -499,7 +505,7 @@ static inline void read_mem(uint8_t memtype,
                 addr16_t, pagelen_t len);
 
 #ifdef SOFT_UART
-void uartDelay() __attribute__ ((naked));
+  void uartDelay() __attribute__ ((naked));
 #endif
 
 /*
@@ -508,15 +514,8 @@ void uartDelay() __attribute__ ((naked));
  * Note that RAMSTART (for optiboot) need not be exactly at the start of RAM.
  */
 #if !defined(RAMSTART)  // newer versions of gcc avr-libc define RAMSTART
-#define RAMSTART 0x100
-#if defined (__AVR_ATmega644P__)
-// correct for a bug in avr-libc
-#undef SIGNATURE_2
-#define SIGNATURE_2 0x0A
-#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#undef RAMSTART
-#define RAMSTART (0x200)
-#endif
+  #define RAMSTART 0x100
+  /* Snip: Removed compensation for megaAVRs that set this wrong */
 #endif
 
 /* C zero initialises all global variables. However, that requires */
@@ -526,52 +525,52 @@ static addr16_t buff = {(uint8_t *)(RAMSTART)};
 
 /* Virtual boot partition support */
 #ifdef VIRTUAL_BOOT_PARTITION
-#define rstVect0_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+4))
-#define rstVect1_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+5))
-#define saveVect0_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+6))
-#define saveVect1_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+7))
-// Vector to save original reset jump:
-//   SPM Ready is least probably used, so it's default
-//   if not, use old way WDT_vect_num,
-//   or simply set custom save_vect_num in Makefile using vector name
-//   or even raw number.
-#if !defined (save_vect_num)
-#if defined (SPM_RDY_vect_num)
-#define save_vect_num (SPM_RDY_vect_num)
-#elif defined (SPM_READY_vect_num)
-#define save_vect_num (SPM_READY_vect_num)
-#elif defined (EE_RDY_vect_num)
-#define save_vect_num (EE_RDY_vect_num)
-#elif defined (EE_READY_vect_num)
-#define save_vect_num (EE_READY_vect_num)
-#elif defined (WDT_vect_num)
-#define save_vect_num (WDT_vect_num)
-#else
-#error "Can't find SPM or WDT interrupt vector for this CPU"
-#endif
-#endif //save_vect_num
-// check if it's on the same page (code assumes that)
+  #define rstVect0_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+4))
+  #define rstVect1_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+5))
+  #define saveVect0_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+6))
+  #define saveVect1_sav (*(uint8_t*)(RAMSTART+SPM_PAGESIZE*2+7))
+  // Vector to save original reset jump:
+  //   SPM Ready is least probably used, so it's default
+  //   if not, use old way WDT_vect_num,
+  //   or simply set custom save_vect_num in Makefile using vector name
+  //   or even raw number.
+  #if !defined (save_vect_num)
+    #if defined (SPM_RDY_vect_num)
+      #define save_vect_num (SPM_RDY_vect_num)
+    #elif defined (SPM_READY_vect_num)
+      #define save_vect_num (SPM_READY_vect_num)
+    #elif defined (EE_RDY_vect_num)
+      #define save_vect_num (EE_RDY_vect_num)
+    #elif defined (EE_READY_vect_num)
+      #define save_vect_num (EE_READY_vect_num)
+    #elif defined (WDT_vect_num)
+      #define save_vect_num (WDT_vect_num)
+    #else
+      #error "Can't find SPM or WDT interrupt vector for this CPU"
+    #endif
+  #endif //save_vect_num
+  // check if it's on the same page (code assumes that)
 
-#if FLASHEND > 8192
-// AVRs with more than 8k of flash have 4-byte vectors, and use jmp.
-//  We save only 16 bits of address, so devices with more than 128KB
-//  may behave wrong for upper part of address space.
-#define rstVect0 2
-#define rstVect1 3
-#define saveVect0 (save_vect_num*4+2)
-#define saveVect1 (save_vect_num*4+3)
-#define appstart_vec (save_vect_num*2)
-#else
-// AVRs with up to 8k of flash have 2-byte vectors, and use rjmp.
+  #if FLASHEND > 8192
+    // AVRs with more than 8k of flash have 4-byte vectors, and use jmp.
+    //  We save only 16 bits of address, so devices with more than 128KB
+    //  may behave wrong for upper part of address space.
+    #define rstVect0 2
+    #define rstVect1 3
+    #define saveVect0 (save_vect_num*4+2)
+    #define saveVect1 (save_vect_num*4+3)
+    #define appstart_vec (save_vect_num*2)
+  #else
+    // AVRs with up to 8k of flash have 2-byte vectors, and use rjmp.
 
-#define rstVect0 0
-#define rstVect1 1
-#define saveVect0 (save_vect_num*2)
-#define saveVect1 (save_vect_num*2+1)
-#define appstart_vec (save_vect_num)
-#endif
+    #define rstVect0 0
+    #define rstVect1 1
+    #define saveVect0 (save_vect_num*2)
+    #define saveVect1 (save_vect_num*2+1)
+    #define appstart_vec (save_vect_num)
+  #endif
 #else
-#define appstart_vec (0)
+  #define appstart_vec (0)
 #endif // VIRTUAL_BOOT_PARTITION
 
 
@@ -615,13 +614,6 @@ int main(void) {
   // If not, uncomment the following instructions:
   // cli();
   asm volatile ("clr __zero_reg__");
-
-#if defined(__AVR_ATmega8__) || defined(__AVR_ATmega8515__) ||        \
-    defined(__AVR_ATmega8535__) || defined (__AVR_ATmega16__) ||     \
-    defined (__AVR_ATmega32__) || defined (__AVR_ATmega64__)  ||    \
-    defined (__AVR_ATmega128__) || defined (__AVR_ATmega162__)
-  SP=RAMEND;  // This is done by hardware reset
-#endif
 
   /*
    * Protect as much from MCUSR as possible for application
@@ -689,8 +681,8 @@ int main(void) {
         MCUSTATUSREG &= ~(_BV(WDRF));
       }
 #else // START_APP_ON_EXTR but neither  NO_START_APP_ON_WDR and NO_START_APP_ON_POR
-#warning "Bootloader can only start via app request because "
-#warning "START_APP_ON_EXTR is defined and NO_START_APP_ON_POR isn't"
+  #warning "Bootloader can only start via app request because "
+  #warning "START_APP_ON_EXTR is defined and NO_START_APP_ON_POR isn't"
     if (1) { //makes the braces line up - always start the app
 #endif
       /*
@@ -738,46 +730,40 @@ int main(void) {
 #endif
 #if LED_START_FLASHES > 0
   // Set up Timer 1 for timeout counter
-#if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__)
-  TCCR1B = 0x0E; //div 8196 - we could divide by less since it's a 10-bit counter, but why?
-#elif defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
-  TCCR1 = 0x0E; //div 8196 - it's an 8-bit timer.
-#elif defined(__AVR_ATtiny43__)
-  #error "LED flash for Tiny43 not yet supported"
-#else
-  TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
-#endif
+  #if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__)
+    TCCR1B = 0x0E; //div 8192 - we could divide by less since it's a 10-bit counter, but why?
+  #elif defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
+    TCCR1 = 0x0E; //div 8192 - it's an 8-bit timer.
+  #elif defined(__AVR_ATtiny43__)
+    #error "LED flash for Tiny43 not yet supported"
+  #else
+    TCCR1B = _BV(CS12) | _BV(CS10); // div 1024
+  #endif
 #endif
 
 
 #ifndef SOFT_UART
-  #if defined(__AVR_ATmega8__) || defined (__AVR_ATmega8515__) ||    \
-      defined (__AVR_ATmega8535__) || defined (__AVR_ATmega16__) ||    \
-      defined (__AVR_ATmega32__)
-  #ifndef SINGLESPEED
-  UCSRA = _BV(U2X); //Double speed mode USART
-  #endif //singlespeed
-  UCSRB = _BV(RXEN) | _BV(TXEN);  // enable Rx & Tx
-  UCSRC = _BV(URSEL) | _BV(UCSZ1) | _BV(UCSZ0);  // config USART; 8N1
-  UBRRL = (uint8_t)BAUD_SETTING;
-  #else // mega8/etc
-    #ifdef LIN_UART
+  #ifdef LIN_UART
   //DDRB|=3;
-  LINCR = (1 << LSWRES);
-  //LINBRRL = (((F_CPU * 10L / 32L / BAUD_RATE) + 5L) / 10L) - 1;
-  LINBRRL=(uint8_t)BAUD_SETTING;
-  LINBTR = (1 << LDISR) | (8 << LBT0);
-  LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
-  LINDAT=0;
-    #else
-      #ifndef SINGLESPEED
-  UART_SRA = _BV(U2X0); //Double speed mode USART0
-      #endif
-  UART_SRB = _BV(RXEN0) | _BV(TXEN0);
-  UART_SRC = _BV(UCSZ00) | _BV(UCSZ01);
-  UART_SRL = (uint8_t)BAUD_SETTING;
-    #endif // LIN_UART
-  #endif // mega8/etc
+    LINCR = (1 << LSWRES);
+    //LINBRRL = (((F_CPU * 10L / 32L / BAUD_RATE) + 5L) / 10L) - 1;
+    LINBRRL=(uint8_t)BAUD_SETTING;
+    LINBTR = (1 << LDISR) | (8 << LBT0);
+    LINCR = _BV(LENA) | _BV(LCMD2) | _BV(LCMD1) | _BV(LCMD0);
+    LINDAT=0;
+  #else
+    #ifndef SINGLESPEED
+      UART_SRA = _BV(U2X0); //Double speed mode USART0
+    #endif
+    #if defined(REMAP_UART) && defined(REMAP)
+      REMAP = REMAP_UART;
+    #elif defined(REMAP_UART)
+      #error "REMAP_UART defined, but this part cannot remap it's UART!"
+    #endif
+    UART_SRB = _BV(RXEN0) | _BV(TXEN0);
+    UART_SRC = _BV(UCSZ00) | _BV(UCSZ01);
+    UART_SRL = (uint8_t)BAUD_SETTING;
+  #endif // LIN_UART
 #endif // soft_uart
 
 #ifdef RS485
@@ -848,7 +834,7 @@ int main(void) {
       // LOAD ADDRESS
       address.bytes[0] = getch();
       address.bytes[1] = getch();
-#ifdef RAMPZ
+    #ifdef RAMPZ
       // Transfer top bit to LSB in RAMPZ
       if (address.bytes[1] & 0x80) {
         RAMPZ |= 0x01;
@@ -856,31 +842,30 @@ int main(void) {
       else {
         RAMPZ &= 0xFE;
       }
-#endif
+    #endif
       address.word *= 2; // Convert from word address to byte address
       verifySpace();
     }
     else if(ch == STK_UNIVERSAL) {
-#ifdef RAMPZ
+      #ifdef RAMPZ
       // LOAD_EXTENDED_ADDRESS is needed in STK_UNIVERSAL for addressing more than 128kB
-      if ( AVR_OP_LOAD_EXT_ADDR == getch() ) {
-        // get address
-        getch();  // get '0'
-        RAMPZ = (RAMPZ & 0x01) | ((getch() << 1) & 0xff);  // get address and put it in RAMPZ
-        getNch(1); // get last '0'
-        // response
+        if (AVR_OP_LOAD_EXT_ADDR == getch()) {
+          // get address
+          getch();  // get '0'
+          RAMPZ = (RAMPZ & 0x01) | ((getch() << 1) & 0xff);  // get address and put it in RAMPZ
+          getNch(1); // get last '0'
+          // response
+          putch(0x00);
+        } else {
+          // everything else is ignored
+          getNch(3);
+          putch(0x00);
+        }
+      #else
+        // UNIVERSAL command is ignored
+        getNch(4);
         putch(0x00);
-      }
-      else {
-        // everything else is ignored
-        getNch(3);
-        putch(0x00);
-      }
-#else
-      // UNIVERSAL command is ignored
-      getNch(4);
-      putch(0x00);
-#endif
+      #endif
     }
     /* Write memory, length is big endian and is in bytes */
     else if(ch == STK_PROG_PAGE) {
@@ -902,79 +887,77 @@ int main(void) {
       verifySpace();
 
 #ifdef VIRTUAL_BOOT_PARTITION
-#if FLASHEND > 8192
-/*
- * AVR with 4-byte ISR Vectors and "jmp"
- * WARNING: this works only up to 128KB flash!
- */
-#if FLASHEND > (128*1024)
-#error "Can't use VIRTUAL_BOOT_PARTITION with more than 128k of Flash"
-#endif
+  #if FLASHEND > 8192
+    /*
+     * AVR with 4-byte ISR Vectors and "jmp"
+     * WARNING: this works only up to 128KB flash!
+     */
+    #if FLASHEND > (128*1024)
+      #error "Can't use VIRTUAL_BOOT_PARTITION with more than 128k of Flash"
+    #endif
       if (address.word == 0) {
-    // This is the reset vector page. We need to live-patch the
-    // code so the bootloader runs first.
-    //
-    // Save jmp targets (for "Verify")
-    rstVect0_sav = buff.bptr[rstVect0];
-    rstVect1_sav = buff.bptr[rstVect1];
+        // This is the reset vector page. We need to live-patch the
+        // code so the bootloader runs first.
+        //
+        // Save jmp targets (for "Verify")
+        rstVect0_sav = buff.bptr[rstVect0];
+        rstVect1_sav = buff.bptr[rstVect1];
 
 
         // Add jump to bootloader at RESET vector
         // WARNING: this works as long as 'main' is in first section
         buff.bptr[rstVect0] = ((uint16_t)main) & 0xFF;
         buff.bptr[rstVect1] = ((uint16_t)main) >> 8;
-#if (save_vect_num>SPM_PAGESIZE/4)
-    } else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))) { //allow for any vector
-        saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
-        saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
+    #if (save_vect_num>SPM_PAGESIZE/4)
+      } else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))) { //allow for any vector
+          saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
+          saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))];
 
-        // Move RESET jmp target to 'save' vector
-        buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))] = rstVect0_sav;
-        buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))] = rstVect1_sav;
-    }
-#else
+          // Move RESET jmp target to 'save' vector
+          buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))] = rstVect0_sav;
+          buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/4)))] = rstVect1_sav;
+      }
+    #else
         saveVect0_sav = buff.bptr[saveVect0];
         saveVect1_sav = buff.bptr[saveVect1];
 
         // Move RESET jmp target to 'save' vector
         buff.bptr[saveVect0] = rstVect0_sav;
         buff.bptr[saveVect1] = rstVect1_sav;
-    }
-#endif
-
-#else
-/*
- * AVR with 2-byte ISR Vectors and rjmp
- */
-      if (address.word == rstVect0) {
-        // This is the reset vector page. We need to live-patch
-        // the code so the bootloader runs first.
-        //
-        // Move RESET vector to 'save' vector
-    // Save jmp targets (for "Verify")
-    rstVect0_sav = buff.bptr[rstVect0];
-    rstVect1_sav = buff.bptr[rstVect1];
-    addr16_t vect;
-    vect.word = ((uint16_t)main);
-    buff.bptr[0] = vect.bytes[0]; // rjmp to start of bootloader
-    buff.bptr[1] = vect.bytes[1] | 0xC0;  // make an "rjmp"
-#if (save_vect_num > SPM_PAGESIZE/2)
-} else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))) { //allow for any vector
-    // Instruction is a relative jump (rjmp), so recalculate.
-    // an RJMP instruction is 0b1100xxxx xxxxxxxx, so we should be able to
-    // do math on the offsets without masking it off first.
-    addr16_t vect;
-    vect.bytes[0] = rstVect0_sav;
-    vect.bytes[1] = rstVect1_sav;
-    saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
-    saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
-    vect.word = (vect.word-save_vect_num); //subtract 'save' interrupt position
-        // Move RESET jmp target to 'save' vector
-        buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = vect.bytes[0];
-        buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
       }
-#else
-
+    #endif
+  #else
+  /*
+   * AVR with 2-byte ISR Vectors and rjmp
+   */
+    if (address.word == rstVect0) {
+      // This is the reset vector page. We need to live-patch
+      // the code so the bootloader runs first.
+      //
+      // Move RESET vector to 'save' vector
+      // Save jmp targets (for "Verify")
+      rstVect0_sav = buff.bptr[rstVect0];
+      rstVect1_sav = buff.bptr[rstVect1];
+      addr16_t vect;
+      vect.word = ((uint16_t)main);
+      buff.bptr[0] = vect.bytes[0]; // rjmp to start of bootloader
+      buff.bptr[1] = vect.bytes[1] | 0xC0;  // make an "rjmp"
+    #if (save_vect_num > SPM_PAGESIZE/2)
+        } else if (address.word == (SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))) { //allow for any vector
+          // Instruction is a relative jump (rjmp), so recalculate.
+          // an RJMP instruction is 0b1100xxxx xxxxxxxx, so we should be able to
+          // do math on the offsets without masking it off first.
+          addr16_t vect;
+          vect.bytes[0] = rstVect0_sav;
+          vect.bytes[1] = rstVect1_sav;
+          saveVect0_sav = buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
+          saveVect1_sav = buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))];
+          vect.word = (vect.word-save_vect_num); //subtract 'save' interrupt position
+          // Move RESET jmp target to 'save' vector
+          buff.bptr[saveVect0-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = vect.bytes[0];
+          buff.bptr[saveVect1-(SPM_PAGESIZE*(save_vect_num/(SPM_PAGESIZE/2)))] = (vect.bytes[1] & 0x0F)| 0xC0;  // make an "rjmp"
+        }
+    #else
         saveVect0_sav = buff.bptr[saveVect0];
         saveVect1_sav = buff.bptr[saveVect1];
         vect.bytes[0] = rstVect0_sav;
@@ -987,11 +970,8 @@ int main(void) {
         vect.word = ((uint16_t)main); // (main) is always <= 0x0FFF; no masking needed.
         buff.bptr[0] = vect.bytes[0]; // rjmp 0x1c00 instruction
       }
-
-#endif
-
-
-#endif // FLASHEND
+    #endif
+  #endif // FLASHEND
 #endif // VBP
 
       writebuffer(desttype, buff, address, savelength);
@@ -1071,9 +1051,9 @@ void putch(char ch) {
 #ifdef RS485
   // put transceiver to output mode
   #ifdef RS485_INVERT
-  RS485_PORT &= ~_BV(RS485);
+    RS485_PORT &= ~_BV(RS485);
   #else
-  RS485_PORT |= _BV(RS485);
+    RS485_PORT |= _BV(RS485);
   #endif
 #endif
   __asm__ __volatile__ (
@@ -1102,9 +1082,9 @@ void putch(char ch) {
 #ifdef RS485
   // put transceiver to input mode
   #ifdef RS485_INVERT
-  RS485_PORT |= _BV(RS485);
+    RS485_PORT |= _BV(RS485);
   #else
-  RS485_PORT &= ~_BV(RS485);
+    RS485_PORT &= ~_BV(RS485);
   #endif
 #endif
 #endif
@@ -1113,103 +1093,88 @@ void putch(char ch) {
 uint8_t getch(void) {
   uint8_t ch;
 
-#ifdef LED_DATA_FLASH
-#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||    \
-    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||    \
-    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||    \
-    defined(__AVR_ATmega64__)   || defined(__AVR_ATmega128__)
-  LED_PORT ^= _BV(LED);
-#else
-  LED_PIN |= _BV(LED);
-#endif
-#endif
+  #ifdef LED_DATA_FLASH
+    LED_PIN |= _BV(LED);
+  #endif
 
-#ifdef SOFT_UART
-    watchdogReset();
-  __asm__ __volatile__ (
-    "1: sbic  %[uartPin],%[uartBit]\n"  // Wait for start edge
-    "   rjmp  1b\n"
-    "   rcall uartDelay\n"          // Get to middle of start bit
-    "2: rcall uartDelay\n"              // Wait 1 bit period
-    "   rcall uartDelay\n"              // Wait 1 bit period
-    "   clc\n"
-    "   sbic  %[uartPin],%[uartBit]\n"
-    "   sec\n"
-    "   dec   %[bitCnt]\n"
-    "   breq  3f\n"
-    "   ror   %[ch]\n"
-    "   rjmp  2b\n"
-    "3:\n"
-    :
-      [ch] "=r" (ch)
-    :
-      [bitCnt] "d" (9),
-      [uartPin] "I" (_SFR_IO_ADDR(UART_PIN)),
-      [uartBit] "I" (UART_RX_BIT)
-    :
-      "r25"
-);
-#else
-#ifndef LIN_UART
-  while(!(UART_SRA & _BV(RXC0)))  {  /* Spin */ }
-  if (!(UART_SRA & _BV(FE0))) {
-#else
-  while(!(LINSIR & _BV(LRXOK)))  {  /* Spin */ }
-  if (!(LINSIR & _BV(LFERR))) {
-#endif
-      /*
-       * A Framing Error indicates (probably) that something is talking
-       * to us at the wrong bit rate.  Assume that this is because it
-       * expects to be talking to the application, and DON'T reset the
-       * watchdog.  This should cause the bootloader to abort and run
-       * the application "soon", if it keeps happening.  (Note that we
-       * don't care that an invalid char is returned...)
-       */
-    watchdogReset();
-  }
+  #ifdef SOFT_UART
+      watchdogReset();
+    __asm__ __volatile__ (
+      "1: sbic  %[uartPin],%[uartBit]\n"  // Wait for start edge
+      "   rjmp  1b\n"
+      "   rcall uartDelay\n"          // Get to middle of start bit
+      "2: rcall uartDelay\n"              // Wait 1 bit period
+      "   rcall uartDelay\n"              // Wait 1 bit period
+      "   clc\n"
+      "   sbic  %[uartPin],%[uartBit]\n"
+      "   sec\n"
+      "   dec   %[bitCnt]\n"
+      "   breq  3f\n"
+      "   ror   %[ch]\n"
+      "   rjmp  2b\n"
+      "3:\n"
+      :
+        [ch] "=r" (ch)
+      :
+        [bitCnt] "d" (9),
+        [uartPin] "I" (_SFR_IO_ADDR(UART_PIN)),
+        [uartBit] "I" (UART_RX_BIT)
+      :
+        "r25"
+  );
+  #else
+    #ifndef LIN_UART
+      while(!(UART_SRA & _BV(RXC0)))  {  /* Spin */ }
+      if (!(UART_SRA & _BV(FE0))) {
+    #else
+      while(!(LINSIR & _BV(LRXOK)))  {  /* Spin */ }
+      if (!(LINSIR & _BV(LFERR))) {
+    #endif
+        /*
+         * A Framing Error indicates (probably) that something is talking
+         * to us at the wrong bit rate.  Assume that this is because it
+         * expects to be talking to the application, and DON'T reset the
+         * watchdog.  This should cause the bootloader to abort and run
+         * the application "soon", if it keeps happening.  (Note that we
+         * don't care that an invalid char is returned...)
+         */
+      watchdogReset();
+    }
 
-  ch = UART_UDR;
-#endif
+    ch = UART_UDR;
+    #endif
 
-#ifdef LED_DATA_FLASH
-#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||    \
-    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||    \
-    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||    \
-    defined(__AVR_ATmega64__)   || defined(__AVR_ATmega128__)
-  LED_PORT ^= _BV(LED);
-#else
-  LED_PIN |= _BV(LED);
-#endif
-#endif
-
+  #ifdef LED_DATA_FLASH
+    LED_PIN |= _BV(LED);
+  #endif
   return ch;
 }
 
 #ifdef SOFT_UART
-// AVR305 equation: #define UART_B_VALUE (((F_CPU/BAUD_RATE)-23)/6)
-// Adding 3 to numerator simulates nearest rounding for more accurate baud rates
-#define UART_B_VALUE (((F_CPU/BAUD_RATE)-20)/6)
-#if UART_B_VALUE > 255
-#error Baud rate too slow for soft UART
-#endif
+  // AVR305 equation: #define UART_B_VALUE (((F_CPU/BAUD_RATE)-23)/6)
+  // Adding 3 to numerator simulates nearest rounding for more accurate baud rates
+  #define UART_B_VALUE (((F_CPU/BAUD_RATE)-20)/6)
+  #if UART_B_VALUE > 255
+    #error Baud rate too slow for soft UART
+  #endif
 
-#if UART_B_VALUE < 6
-// (this value is a "guess" at when loop/call overhead might become too
-//  significant for the soft uart to work.  It tests OK with the popular
-//  "ATtinycore" chips that need SOFT_UART, at the usual clock/baud combos.)
-#error Baud rate too high for soft UART
-#endif
+  #if UART_B_VALUE < 6
+  // (this value is a "guess" at when loop/call overhead might become too
+  //  significant for the soft uart to work.  It tests OK with the popular
+  //  "ATtinycore" chips that need SOFT_UART, at the usual clock/baud combos.)
+    #error Baud rate too high for soft UART
+  #endif
 
 
-void uartDelay() {
-  __asm__ __volatile__ (
-    "ldi r25,%[count]\n"
-    "1:dec r25\n"
-    "brne 1b\n"
-    "ret\n"
-    ::[count] "M" (UART_B_VALUE)
-  );
-}
+  void uartDelay() {
+    __asm__ __volatile__ (
+      "ldi r25,%[count]\n"
+      "1:dec r25\n"
+      "brne 1b\n"
+      "ret\n"
+      ::[count] "M" (UART_B_VALUE)
+    );
+  }
 #endif
 
 void getNch(uint8_t count) {
@@ -1231,43 +1196,36 @@ void flash_led(uint8_t count) {
   //LED_PIN |= _BV(LED);
   do {
     #if defined(__AVR_ATtiny261__)||defined(__AVR_ATtiny461__)||defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny25__)||defined(__AVR_ATtiny45__)||defined(__AVR_ATtiny85__)
-        TCNT1 = 0xFF&(-(F_CPU/(8192L*16)));
+        TCNT1 = 0xFF&((uint8_t)(-(F_CPU/(8192L*16))));
         TIFR = _BV(TOV1);
         while(!(TIFR & _BV(TOV1)));
     #elif defined(__AVR_ATtiny43__)
         #error "LED flash for Tiny43 not yet supported"
     #else
-        TCNT1 = -(F_CPU/(1024*16));
+        TCNT1 = (uint16_t)(-(F_CPU/(1024*16)));
         TIFR1 = _BV(TOV1);
         while(!(TIFR1 & _BV(TOV1)));
     #endif
-#if defined(__AVR_ATmega8__)    || defined(__AVR_ATmega8515__) ||    \
-    defined(__AVR_ATmega8535__) || defined(__AVR_ATmega16__)   ||    \
-    defined(__AVR_ATmega162__)  || defined(__AVR_ATmega32__)   ||    \
-    defined(__AVR_ATmega64__)   || defined(__AVR_ATmega128__)
-    LED_PORT ^= _BV(LED);
-#else
     LED_PIN |= _BV(LED);
-#endif
     watchdogReset();
-#ifndef SOFT_UART
+  #ifndef SOFT_UART
     /*
      * While in theory, the STK500 initial commands would be buffered
      *  by the UART hardware, avrdude sends several attempts in rather
      *  quick succession, some of which will be lost and cause us to
      *  get out of sync.  So if we see any data; stop blinking.
      */
-#ifndef LIN_UART
+  #ifndef LIN_UART
     if (UART_SRA & _BV(RXC0))
-#else
+  #else
     if (LINSIR & _BV(LRXOK))
-#endif
+  #endif
     break;
-#else
-// This doesn't seem to work?
-//    if ((UART_PIN & (1<<UART_RX_BIT)) == 0)
-//    break;  // detect start bit on soft uart too.
-#endif
+  #else
+  // This doesn't seem to work?
+  //    if ((UART_PIN & (1<<UART_RX_BIT)) == 0)
+  //    break;  // detect start bit on soft uart too.
+  #endif
   } while (--count);
 }
 #endif

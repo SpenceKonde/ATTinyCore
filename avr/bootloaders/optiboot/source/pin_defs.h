@@ -11,31 +11,6 @@
  * See optiboot.c for details.
  */
 
-/*------------------------------------------------------------------------ */
-#if    defined(__AVR_ATmega168__)   \
-    || defined(__AVR_ATmega168P__)  \
-    || defined(__AVR_ATmega328__)   \
-    || defined(__AVR_ATmega328P__)  \
-    || defined(__AVR_ATmega88)      \
-    || defined(__AVR_ATmega8__)     \
-    || defined(__AVR_ATmega88__)
-/*------------------------------------------------------------------------ */
-
-/* Onboard LED is connected to pin PB5 in Arduino NG, Diecimila, and Duemilanove
- */
-#if !defined(LED)
-#define LED B5
-#endif
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTD
-#define UART_PIN    PIND
-#define UART_DDR    DDRD
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
 
 /*
  * Handle devices with up to 4 uarts (eg m1280.)  Rather inelegantly.
@@ -43,673 +18,354 @@
  * differently.
  */
 #ifndef SOFT_UART
-#if UART == 0
-#if defined(UDR0)
-# define UART_SRA UCSR0A
-# define UART_SRB UCSR0B
-# define UART_SRC UCSR0C
-# define UART_SRL UBRR0L
-# define UART_UDR UDR0
-#elif defined(UDR)
-# define UART_SRA UCSRA
-# define UART_SRB UCSRB
-# define UART_SRC UCSRC
-# define UART_SRL UBRRL
-# define UART_UDR UDR
-#elif defined(LINDAT)
-# define LIN_UART 1
-# define UART_SRA UCSRA
-# define UART_SRB UCSRB
-# define UART_SRC UCSRC
-# define UART_SRL UBRRL
-# define UART_UDR LINDAT
-#else
-# error UART == 0, but no UART0 on device
-#endif
-#elif UART == 1
-#if !defined(UDR1)
-#error UART == 1, but no UART1 on device
-#endif
-# define UART_SRA UCSR1A
-# define UART_SRB UCSR1B
-# define UART_SRC UCSR1C
-# define UART_SRL UBRR1L
-# define UART_UDR UDR1
-#elif UART == 2
-#if !defined(UDR2)
-#error UART == 2, but no UART2 on device
-#endif
-# define UART_SRA UCSR2A
-# define UART_SRB UCSR2B
-# define UART_SRC UCSR2C
-# define UART_SRL UBRR2L
-# define UART_UDR UDR2
-#elif UART == 3
-#if !defined(UDR3)
-#error UART == 3, but no UART3 on device
-#endif
-# define UART_SRA UCSR3A
-# define UART_SRB UCSR3B
-# define UART_SRC UCSR3C
-# define UART_SRL UBRR3L
-# define UART_UDR UDR3
-#endif
-#endif //end #ifndef SOFT_UART
-
-#if    defined(__AVR_ATmega8__)     \
-    || defined (__AVR_ATmega32__)   \
-    || defined (__AVR_ATmega16__)
-  //Name conversion R.Wiersma
-  #define UCSR0A    UCSRA
-  #define UDR0      UDR
-  #define UDRE0     UDRE
-  #define RXC0      RXC
-  #define FE0           FE
-  #define TIFR1     TIFR
-  #define WDTCSR    WDTCR
-#endif
-
-#if    defined (__AVR_ATmega32__)   \
-    || defined (__AVR_ATmega16__)
-  #define WDCE      WDTOE
-#endif
-
-
-/*------------------------------------------------------------------------ */
-/* Sanguino support (and other 40pin DIP cpus) */
-/*------------------------------------------------------------------------ */
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega8515__) || defined(__AVR_ATmega162__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B0
-#endif
-
-/* Fix register names */
-#if defined(__AVR_ATmega8515__)
-#define UCSR0A  UCSRA
-#define UDR0    UDR
-#define UDRE0   UDRE
-#define RXC0    RXC
-#define FE0     FE
-#endif
-#define TIFR1   TIFR
-#define WDTCSR  WDTCR
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTD
-#define UART_PIN    PIND
-#define UART_DDR    DDRD
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-#if    defined(__AVR_ATmega8535__)      \
-    || defined(__AVR_ATmega16__)        \
-    || defined(__AVR_ATmega32__)        \
-    || defined(__AVR_ATmega164A__)      \
-    || defined(__AVR_ATmega164P__)      \
-    || defined(__AVR_ATmega324A__)      \
-    || defined(__AVR_ATmega324P__)      \
-    || defined(__AVR_ATmega324PA__)     \
-    || defined(__AVR_ATmega644__)       \
-    || defined(__AVR_ATmega644P__)      \
-    || defined(__AVR_ATmega1284__)      \
-    || defined(__AVR_ATmega1284P__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B0
-#endif
-
-#if     defined(__AVR_ATmega8535__) \
-    ||  defined(__AVR_ATmega16__)   \
-    ||  defined(__AVR_ATmega32__)
-/* Fix register names */
-#define UCSR0A  UCSRA
-#define UDR0    UDR
-#define UDRE0   UDRE
-#define RXC0    RXC
-#define FE0     FE
-#define TIFR1   TIFR
-#define WDTCSR  WDTCR
-#endif
-#if defined(__AVR_ATmega16__) || defined(__AVR_ATmega32__)
-#define WDCE        WDTOE
-#endif
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTD
-#define UART_PIN    PIND
-#define UART_DDR    DDRD
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega324PB__)
-/*------------------------------------------------------------------------ */
-
-#if !defined(LED)
-#define LED         B0
-#endif
-
-/* Fix missing register names */
-#define MPCM0   MPCM
-#define U2X0    U2X
-#define UPE0    UPE
-#define DOR0    DOR
-#define FE0     FE
-#define UDRE0   UDRE
-#define TXC0    TXC
-#define RXC0    RXC
-
-#define TXB80   TXB8
-#define RXB80   RXB8
-#define UCSZ02  UCSZ2
-#define TXEN0   TXEN
-#define RXEN0   RXEN
-#define UDRIE0  UDRIE
-#define TXCIE0  TXCIE
-#define RXCIE0  RXCIE
-
-#define UCPOL0  UCPOL
-#define UCSZ00  UCSZ0
-#define UCSZ01  UCSZ1
-#define USBS0   USBS
-#define UPM00   UPM0
-#define UPM01   UPM1
-#define UMSEL00 UMSEL0
-#define UMSEL01 UMSEL1
-
-#define MPCM1   MPCM
-#define U2X1    U2X
-#define UPE1    UPE
-#define DOR1    DOR
-#define FE1     FE
-#define UDRE1   UDRE
-#define TXC1    TXC
-#define RXC1    RXC
-
-#define TXB81   TXB8
-#define RXB81   RXB8
-#define UCSZ12  UCSZ2
-#define TXEN1   TXEN
-#define RXEN1   RXEN
-#define UDRIE1  UDRIE
-#define TXCIE1  TXCIE
-#define RXCIE1  RXCIE
-
-#define UCPOL1  UCPOL
-#define UCSZ10  UCSZ0
-#define UCSZ11  UCSZ1
-#define USBS1   USBS
-#define UPM10   UPM0
-#define UPM11   UPM1
-#define UMSEL10 UMSEL0
-#define UMSEL11 UMSEL1
-
-#define MPCM2   MPCM
-#define U2X2    U2X
-#define UPE2    UPE
-#define DOR2    DOR
-#define FE2     FE
-#define UDRE2   UDRE
-#define TXC2    TXC
-#define RXC2    RXC
-
-#define TXB82   TXB8
-#define RXB82   RXB8
-#define UCSZ22  UCSZ2
-#define TXEN2   TXEN
-#define RXEN2   RXEN
-#define UDRIE2  UDRIE
-#define TXCIE2  TXCIE
-#define RXCIE2  RXCIE
-
-#define UCPOL2  UCPOL
-#define UCSZ20  UCSZ0
-#define UCSZ21  UCSZ1
-#define USBS2   USBS
-#define UPM20   UPM0
-#define UPM21   UPM1
-#define UMSEL20 UMSEL0
-#define UMSEL21 UMSEL1
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTD
-#define UART_PIN    PIND
-#define UART_DDR    DDRD
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-#define TIFR1 TIFR
-#define WDTCSR WDTCR
-//#define MCUSR MCUCSR
-//#define SPMCR SPMCSR
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-/*------------------------------------------------------------------------ */
-/* Mega support */
-#if    defined(__AVR_ATmega640__)   \
-    || defined(__AVR_ATmega1280__)  \
-    || defined(__AVR_ATmega2560__)
-/*------------------------------------------------------------------------ */
-/* Onboard LED is connected to pin PB7 on Arduino Mega */
-#if !defined(LED)
-#define LED         B7
-#endif
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega1281__) || defined(__AVR_ATmega2561__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega169__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-/* Fix register names */
-#define UCSR0A UCSRA
-#define UCSR0B UCSRB
-#define UCSR0C UCSRC
-#define UBRR0L UBRRL
-#define UDR0 UDR
-#define UDRE0 UDRE
-#define RXC0 RXC
-#define FE0 FE
-#define WDTCSR WDTCR
-#define U2X0 U2X
-#define RXEN0 RXEN
-#define TXEN0 TXEN
-#define UCSZ00 UCSZ0
-#define UCSZ01 UCSZ1
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega169P__) || defined(__AVR_ATmega329__) || defined(__AVR_ATmega329P__) \
-|| defined(__AVR_ATmega3290__) || defined(__AVR_ATmega3290P__) || defined(__AVR_ATmega649__) \
-|| defined(__AVR_ATmega649P__) || defined(__AVR_ATmega6490__) || defined(__AVR_ATmega6490P__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-/* Fix register names */
-#define WDTCSR WDTCR
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega1281__) || defined(__AVR_ATmega2561__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega169__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-/* Fix register names */
-#define UCSR0A UCSRA
-#define UCSR0B UCSRB
-#define UCSR0C UCSRC
-#define UBRR0L UBRRL
-#define UDR0 UDR
-#define UDRE0 UDRE
-#define RXC0 RXC
-#define FE0 FE
-#define WDTCSR WDTCR
-#define U2X0 U2X
-#define RXEN0 RXEN
-#define TXEN0 TXEN
-#define UCSZ00 UCSZ0
-#define UCSZ01 UCSZ1
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
-#endif
-
-/*------------------------------------------------------------------------ */
-#if defined(__AVR_ATmega169P__) || defined(__AVR_ATmega329__) || defined(__AVR_ATmega329P__) \
-|| defined(__AVR_ATmega3290__) || defined(__AVR_ATmega3290P__) || defined(__AVR_ATmega649__) \
-|| defined(__AVR_ATmega649P__) || defined(__AVR_ATmega6490__) || defined(__AVR_ATmega6490P__)
-/*------------------------------------------------------------------------ */
-#if !defined(LED)
-#define LED         B5
-#endif
-
-/* Fix register names */
-#define WDTCSR WDTCR
-
-/* Ports for soft UART */
-#ifdef SOFT_UART
-#define UART_PORT   PORTE
-#define UART_PIN    PINE
-#define UART_DDR    DDRE
-#define UART_TX_BIT 1
-#define UART_RX_BIT 0
-#endif
+  #if UART == 0
+    #if defined(UDR0)
+      # define UART_SRA UCSR0A
+      # define UART_SRB UCSR0B
+      # define UART_SRC UCSR0C
+      # define UART_SRL UBRR0L
+      # define UART_UDR UDR0
+    #elif defined(UDR)
+      # define UART_SRA UCSRA
+      # define UART_SRB UCSRB
+      # define UART_SRC UCSRC
+      # define UART_SRL UBRRL
+      # define UART_UDR UDR
+    #elif defined(LINDAT)
+      # define LIN_UART 1
+      # define UART_SRA UCSRA
+      # define UART_SRB UCSRB
+      # define UART_SRC UCSRC
+      # define UART_SRL UBRRL
+      # define UART_UDR LINDAT
+    #else
+      #error UART == 0, but no UART0 on device
+    #endif
+  #elif UART == 1
+    #if !defined(UDR1)
+      #error UART == 1, but no UART1 on device
+    #endif
+    # define UART_SRA UCSR1A
+    # define UART_SRB UCSR1B
+    # define UART_SRC UCSR1C
+    # define UART_SRL UBRR1L
+    # define UART_UDR UDR1
+  #endif //end #ifndef SOFT_UART
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny1634__)
 /*------------------------------------------------------------------------ */
-/* LED is on C0 */
-#if !defined(LED)
-#define LED     C0
-#endif
-#define TIFR1 TIFR
+  /* LED is on C0 */
+  #if !defined(LED)
+    #define LED     C0
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 2
-#define UART_RX_BIT 3
-#endif
+  #define TIFR1 TIFR
+
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN) && defined(TXPIN) && defined(RXPIN))
+      #error "Software Serial requested but pins not specified, and no default pins because has hardware serial."
+    #endif
+  #endif
 #endif
 
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny841__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED     B2
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #if defined(REMAP_UART) && REMAP_UART == 1
+      #define LED     A2
+    #else
+      #define LED     B2
+    #endif
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 2
-#define UART_RX_BIT 3
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN) && defined(TXPIN) && defined(RXPIN))
+      #error "Software Serial requested but pins not specified, and no default pins because has hardware serial."
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny441__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B2
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #if defined(REMAP_UART) && REMAP_UART == 1
+      #define LED     A2
+    #else
+      #define LED     B2
+    #endif
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 2
-#define UART_RX_BIT 3
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN) && defined(TXPIN) && defined(RXPIN))
+      #error "Software Serial requested but pins not specified, and no default pins because has hardware serial."
+    #endif
+  #endif
 #endif
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny84__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B2
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED   B2
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 1
-#define UART_RX_BIT 2
-#endif
+
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN))
+      #define UART_PORT   PORTA
+      #define UART_PIN    PINA
+      #define UART_DDR    DDRA
+    #endif
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 1
+      #define UART_RX_BIT 2
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny44__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B2
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED   B2
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 1
-#define UART_RX_BIT 2
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN))
+      #define UART_PORT   PORTA
+      #define UART_PIN    PINA
+      #define UART_DDR    DDRA
+    #endif
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 1
+      #define UART_RX_BIT 2
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny85__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B2
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED   B2
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTB
-#define UART_PIN    PINB
-#define UART_DDR    DDRB
-#define UART_TX_BIT 0
-#define UART_RX_BIT 1
-#endif
+  #ifdef SOFT_UART
+    #define UART_PORT   PORTB
+    #define UART_PIN    PINB
+    #define UART_DDR    DDRB
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 0
+      #define UART_RX_BIT 1
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny45__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B2
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED   B2
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTB
-#define UART_PIN    PINB
-#define UART_DDR    DDRB
-#define UART_TX_BIT 0
-#define UART_RX_BIT 1
-#endif
+  #ifdef SOFT_UART
+    #define UART_PORT   PORTB
+    #define UART_PIN    PINB
+    #define UART_DDR    DDRB
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 0
+      #define UART_RX_BIT 1
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny861__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B3
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED   B3
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 6
-#define UART_RX_BIT 7
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN))
+      #define UART_PORT   PORTA
+      #define UART_PIN    PINA
+      #define UART_DDR    DDRA
+    #endif
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 6
+      #define UART_RX_BIT 7
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny461__)
 /*------------------------------------------------------------------------ */
 /* LED is on B2 */
-#if !defined(LED)
-#define LED   B3
-#endif
+  #if !defined(LED)
+    #define LED   B3
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 6
-#define UART_RX_BIT 7
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN))
+      #define UART_PORT   PORTA
+      #define UART_PIN    PINA
+      #define UART_DDR    DDRA
+    #endif
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 6
+      #define UART_RX_BIT 7
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny88__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B5
-#endif
+  /* LED is on PB5 (arduino pin 13, to match the 328p boards?) */
+  #if !defined(LED)
+    #define LED   B5
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTD
-#define UART_PIN    PIND
-#define UART_DDR    DDRD
-#define UART_TX_BIT 6
-#define UART_RX_BIT 7
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN))
+      #define UART_PORT   PORTD
+      #define UART_PIN    PIND
+      #define UART_DDR    DDRD
+    #endif
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 6
+      #define UART_RX_BIT 7
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny48__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED   B5
-#endif
+/* LED is on B5 */
+  #if !defined(LED)
+    #define LED   B5
+  #endif
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTD
-#define UART_PIN    PIND
-#define UART_DDR    DDRD
-#define UART_TX_BIT 6
-#define UART_RX_BIT 7
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN))
+      #define UART_PORT   PORTD
+      #define UART_PIN    PIND
+      #define UART_DDR    DDRD
+    #endif
+    #if defined(TXPIN) && defined(RXPIN)
+      #define UART_TX_BIT TXPIN
+      #define UART_RX_BIT RXPIN
+    #elif defined(TXPIN) || defined(RXPIN)
+      #error "If custom pins are used for soft UART, both pins must be specified, not just one or the other."
+    #else
+      #define UART_TX_BIT 6
+      #define UART_RX_BIT 7
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny167__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED     A3
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED     A6
+  #endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN) && defined(TXPIN) && defined(RXPIN))
+      #error "Software Serial requested but pins not specified, and no default pins because has hardware LIN serial."
+    #endif
+  #endif
 #endif
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny87__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED     A3
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+  #define LED     A6
+  #endif
+
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN) && defined(TXPIN) && defined(RXPIN))
+      #error "Software Serial requested but pins not specified, and no default pins because has hardware LIN serial."
+    #endif
+  #endif
 #endif
 
 
 /*------------------------------------------------------------------------ */
 #if defined(__AVR_ATtiny828__)
 /*------------------------------------------------------------------------ */
-/* LED is on B2 */
-#if !defined(LED)
-#define LED     B0
-#endif
+  /* LED is on B2 */
+  #if !defined(LED)
+    #define LED     B0
+  #endif
 
-#define UDRE0 UDRE
-#define FE0 FE
-#define RXC0 RXC
-#define UCSZ00 UCSZ0
-#define UCSZ01 UCSZ1
-#define TXEN0 TXEN
-#define RXEN0 RXEN
-#define U2X0 U2X
+  #define UDRE0 UDRE
+  #define FE0 FE
+  #define RXC0 RXC
+  #define UCSZ00 UCSZ0
+  #define UCSZ01 UCSZ1
+  #define TXEN0 TXEN
+  #define RXEN0 RXEN
+  #define U2X0 U2X
 
 
-#ifdef SOFT_UART
-#define UART_PORT   PORTA
-#define UART_PIN    PINA
-#define UART_DDR    DDRA
-#define UART_TX_BIT 2
-#define UART_RX_BIT 3
-#endif
+  #ifdef SOFT_UART
+    #if !(defined(UART_PORT) && defined(UART_DDR) && defined(UART_PIN) && defined(TXPIN) && defined(RXPIN))
+      #error "Software Serial requested but pins not specified, and no default pins because has hardware serial."
+    #endif
+  #endif
 #endif
 
 /*
@@ -735,6 +391,7 @@
 //   (and indicate the error by redefining LED)
 #if !defined(PORTA)
 #if LED >= A0 && LED <= A7
+#warning "LED set for PORTA, this part has no PORTA. Omitting LED"
 #undef LED
 #define LED -1
 #endif
@@ -750,6 +407,7 @@
 #define B7 0x207
 #if !defined(PORTB)
 #if LED >= B0 && LED <= B7
+#warning "LED set for PORTB, this part has no PORTB. Omitting LED"
 #undef LED
 #define LED -1
 #endif
@@ -765,6 +423,7 @@
 #define C7 0x307
 #if !(defined(PORTC))
 #if LED >= C0 && LED <= C7
+#warning "LED set for PORTC, this part has no PORTC. Omitting LED"
 #undef LED
 #define LED -1
 #endif
@@ -780,111 +439,7 @@
 #define D7 0x407
 #if !(defined(PORTD))
 #if LED >= D0 && LED <= D7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define E0 0x500
-#define E1 0x501
-#define E2 0x502
-#define E3 0x503
-#define E4 0x504
-#define E5 0x505
-#define E6 0x506
-#define E7 0x507
-#if !(defined(PORTE))
-#if LED >= E0 && LED <= E7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define F0 0x600
-#define F1 0x601
-#define F2 0x602
-#define F3 0x603
-#define F4 0x604
-#define F5 0x605
-#define F6 0x606
-#define F7 0x607
-#if !(defined(PORTF))
-#if LED >= F0 && LED <= F7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define G0 0x700
-#define G1 0x701
-#define G2 0x702
-#define G3 0x703
-#define G4 0x704
-#define G5 0x705
-#define G6 0x706
-#define G7 0x707
-#if !defined(PORTG)
-#if LED >= G0 && LED <= G7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define H0 0x800
-#define H1 0x801
-#define H2 0x802
-#define H3 0x803
-#define H4 0x804
-#define H5 0x805
-#define H6 0x806
-#define H7 0x807
-#if !(defined(PORTH))
-#if LED >= H0 && LED <= H7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define J0 0xA00
-#define J1 0xA01
-#define J2 0xA02
-#define J3 0xA03
-#define J4 0xA04
-#define J5 0xA05
-#define J6 0xA06
-#define J7 0xA07
-#if !(defined(PORTJ))
-#if LED >= J0 && LED <= J7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define K0 0xB00
-#define K1 0xB01
-#define K2 0xB02
-#define K3 0xB03
-#define K4 0xB04
-#define K5 0xB05
-#define K6 0xB06
-#define K7 0xB07
-#if !(defined(PORTK))
-#if LED >= K0 && LED <= K7
-#undef LED
-#define LED -1
-#endif
-#endif
-
-#define L0 0xC00
-#define L1 0xC01
-#define L2 0xC02
-#define L3 0xC03
-#define L4 0xC04
-#define L5 0xC05
-#define L6 0xC06
-#define L7 0xC07
-#if !(defined(PORTL))
-#if LED >= L0 && LED <= L7
+#warning "LED set for PORTD, this part has no PORTD. Omitting LED"
 #undef LED
 #define LED -1
 #endif
@@ -1066,405 +621,6 @@
 #define LED_PIN     PIND
 #define LED     PIND7
 
-#elif LED == E0
-#define LED_NAME "E0"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE0
-#elif LED == E1
-#define LED_NAME "E1"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE1
-#elif LED == E2
-#define LED_NAME "E2"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE2
-#elif LED == E3
-#define LED_NAME "E3"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE3
-#elif LED == E4
-#define LED_NAME "E4"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE4
-#elif LED == E5
-#define LED_NAME "E5"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE5
-#elif LED == E6
-#define LED_NAME "E6"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE6
-#elif LED == E7
-#define LED_NAME "E7"
-#undef LED
-#define LED_DDR     DDRE
-#define LED_PORT    PORTE
-#define LED_PIN     PINE
-#define LED     PINE7
-
-#elif LED == F0
-#define LED_NAME "F0"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF0
-#elif LED == F1
-#define LED_NAME "F1"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF1
-#elif LED == F2
-#define LED_NAME "F2"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF2
-#elif LED == F3
-#define LED_NAME "F3"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF3
-#elif LED == F4
-#define LED_NAME "F4"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF4
-#elif LED == F5
-#define LED_NAME "F5"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF5
-#elif LED == F6
-#define LED_NAME "F6"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF6
-#elif LED == F7
-#define LED_NAME "F7"
-#undef LED
-#define LED_DDR     DDRF
-#define LED_PORT    PORTF
-#define LED_PIN     PINF
-#define LED     PINF7
-
-#elif LED == G0
-#define LED_NAME "G0"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING0
-#elif LED == G1
-#define LED_NAME "G1"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING1
-#elif LED == G2
-#define LED_NAME "G2"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING2
-#elif LED == G3
-#define LED_NAME "G3"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING3
-#elif LED == G4
-#define LED_NAME "G4"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING4
-#elif LED == G5
-#define LED_NAME "G5"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING5
-#elif LED == G6
-#define LED_NAME "G6"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING6
-#elif LED == G7
-#define LED_NAME "G7"
-#undef LED
-#define LED_DDR     DDRG
-#define LED_PORT    PORTG
-#define LED_PIN     PING
-#define LED     PING7
-
-#elif LED == H0
-#define LED_NAME "H0"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH0
-#elif LED == H1
-#define LED_NAME "H1"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH1
-#elif LED == H2
-#define LED_NAME "H2"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH2
-#elif LED == H3
-#define LED_NAME "H3"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH3
-#elif LED == H4
-#define LED_NAME "H4"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH4
-#elif LED == H5
-#define LED_NAME "H5"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH5
-#elif LED == H6
-#define LED_NAME "H6"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH6
-#elif LED == H7
-#define LED_NAME "H7"
-#undef LED
-#define LED_DDR     DDRH
-#define LED_PORT    PORTH
-#define LED_PIN     PINH
-#define LED     PINH7
-
-#elif LED == J0
-#define LED_NAME "J0"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ0
-#elif LED == J1
-#define LED_NAME "J1"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ1
-#elif LED == J2
-#define LED_NAME "J2"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ2
-#elif LED == J3
-#define LED_NAME "J3"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ3
-#elif LED == J4
-#define LED_NAME "J4"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ4
-#elif LED == J5
-#define LED_NAME "J5"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ5
-#elif LED == J6
-#define LED_NAME "J6"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ6
-#elif LED == J7
-#define LED_NAME "J7"
-#undef LED
-#define LED_DDR     DDRJ
-#define LED_PORT    PORTJ
-#define LED_PIN     PINJ
-#define LED     PINJ7
-
-#elif LED == K0
-#define LED_NAME "K0"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK0
-#elif LED == K1
-#define LED_NAME "K1"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK1
-#elif LED == K2
-#define LED_NAME "K2"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK2
-#elif LED == K3
-#define LED_NAME "K3"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK3
-#elif LED == K4
-#define LED_NAME "K4"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK4
-#elif LED == K5
-#define LED_NAME "K5"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK5
-#elif LED == K6
-#define LED_NAME "K6"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK6
-#elif LED == K7
-#define LED_NAME "K7"
-#undef LED
-#define LED_DDR     DDRK
-#define LED_PORT    PORTK
-#define LED_PIN     PINK
-#define LED     PINK7
-
-#elif LED == L0
-#define LED_NAME "L0"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL0
-#elif LED == L1
-#define LED_NAME "L1"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL1
-#elif LED == L2
-#define LED_NAME "L2"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL2
-#elif LED == L3
-#define LED_NAME "L3"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL3
-#elif LED == L4
-#define LED_NAME "L4"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL4
-#elif LED == L5
-#define LED_NAME "L5"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL5
-#elif LED == L6
-#define LED_NAME "L6"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL6
-#elif LED == L7
-#define LED_NAME "L7"
-#undef LED
-#define LED_DDR     DDRL
-#define LED_PORT    PORTL
-#define LED_PIN     PINL
-#define LED     PINL7
-
 #elif LED == A0
 #define LED_NAME "A0"
 #undef LED
@@ -1570,62 +726,6 @@
 #define D5_INV (PIN_INVERTED + D5)
 #define D6_INV (PIN_INVERTED + D6)
 #define D7_INV (PIN_INVERTED + D7)
-#define E0_INV (PIN_INVERTED + E0)
-#define E1_INV (PIN_INVERTED + E1)
-#define E2_INV (PIN_INVERTED + E2)
-#define E3_INV (PIN_INVERTED + E3)
-#define E4_INV (PIN_INVERTED + E4)
-#define E5_INV (PIN_INVERTED + E5)
-#define E6_INV (PIN_INVERTED + E6)
-#define E7_INV (PIN_INVERTED + E7)
-#define F0_INV (PIN_INVERTED + F0)
-#define F1_INV (PIN_INVERTED + F1)
-#define F2_INV (PIN_INVERTED + F2)
-#define F3_INV (PIN_INVERTED + F3)
-#define F4_INV (PIN_INVERTED + F4)
-#define F5_INV (PIN_INVERTED + F5)
-#define F6_INV (PIN_INVERTED + F6)
-#define F7_INV (PIN_INVERTED + F7)
-#define G0_INV (PIN_INVERTED + G0)
-#define G1_INV (PIN_INVERTED + G1)
-#define G2_INV (PIN_INVERTED + G2)
-#define G3_INV (PIN_INVERTED + G3)
-#define G4_INV (PIN_INVERTED + G4)
-#define G5_INV (PIN_INVERTED + G5)
-#define G6_INV (PIN_INVERTED + G6)
-#define G7_INV (PIN_INVERTED + G7)
-#define H0_INV (PIN_INVERTED + H0)
-#define H1_INV (PIN_INVERTED + H1)
-#define H2_INV (PIN_INVERTED + H2)
-#define H3_INV (PIN_INVERTED + H3)
-#define H4_INV (PIN_INVERTED + H4)
-#define H5_INV (PIN_INVERTED + H5)
-#define H6_INV (PIN_INVERTED + H6)
-#define H7_INV (PIN_INVERTED + H7)
-#define J0_INV (PIN_INVERTED + J0)
-#define J1_INV (PIN_INVERTED + J1)
-#define J2_INV (PIN_INVERTED + J2)
-#define J3_INV (PIN_INVERTED + J3)
-#define J4_INV (PIN_INVERTED + J4)
-#define J5_INV (PIN_INVERTED + J5)
-#define J6_INV (PIN_INVERTED + J6)
-#define J7_INV (PIN_INVERTED + J7)
-#define K0_INV (PIN_INVERTED + K0)
-#define K1_INV (PIN_INVERTED + K1)
-#define K2_INV (PIN_INVERTED + K2)
-#define K3_INV (PIN_INVERTED + K3)
-#define K4_INV (PIN_INVERTED + K4)
-#define K5_INV (PIN_INVERTED + K5)
-#define K6_INV (PIN_INVERTED + K6)
-#define K7_INV (PIN_INVERTED + K7)
-#define L0_INV (PIN_INVERTED + L0)
-#define L1_INV (PIN_INVERTED + L1)
-#define L2_INV (PIN_INVERTED + L2)
-#define L3_INV (PIN_INVERTED + L3)
-#define L4_INV (PIN_INVERTED + L4)
-#define L5_INV (PIN_INVERTED + L5)
-#define L6_INV (PIN_INVERTED + L6)
-#define L7_INV (PIN_INVERTED + L7)
 
 #if RS485 == B0
 #undef RS485
@@ -1773,349 +873,6 @@
 #define RS485_PORT    PORTD
 #define RS485_PIN     PIND
 #define RS485         PIND7
-
-#elif RS485 == E0
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE0
-#elif RS485 == E1
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE1
-#elif RS485 == E2
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE2
-#elif RS485 == E3
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE3
-#elif RS485 == E4
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE4
-#elif RS485 == E5
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE5
-#elif RS485 == E6
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE6
-#elif RS485 == E7
-#undef RS485
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE7
-
-#elif RS485 == F0
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF0
-#elif RS485 == F1
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF1
-#elif RS485 == F2
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF2
-#elif RS485 == F3
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF3
-#elif RS485 == F4
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF4
-#elif RS485 == F5
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF5
-#elif RS485 == F6
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF6
-#elif RS485 == F7
-#undef RS485
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF7
-
-#elif RS485 == G0
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING0
-#elif RS485 == G1
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING1
-#elif RS485 == G2
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING2
-#elif RS485 == G3
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING3
-#elif RS485 == G4
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING4
-#elif RS485 == G5
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING5
-#elif RS485 == G6
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING6
-#elif RS485 == G7
-#undef RS485
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING7
-
-#elif RS485 == H0
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH0
-#elif RS485 == H1
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH1
-#elif RS485 == H2
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH2
-#elif RS485 == H3
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH3
-#elif RS485 == H4
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH4
-#elif RS485 == H5
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH5
-#elif RS485 == H6
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH6
-#elif RS485 == H7
-#undef RS485
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH7
-
-#elif RS485 == J0
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ0
-#elif RS485 == J1
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ1
-#elif RS485 == J2
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ2
-#elif RS485 == J3
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ3
-#elif RS485 == J4
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ4
-#elif RS485 == J5
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ5
-#elif RS485 == J6
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ6
-#elif RS485 == J7
-#undef RS485
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ7
-
-#elif RS485 == K0
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK0
-#elif RS485 == K1
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK1
-#elif RS485 == K2
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK2
-#elif RS485 == K3
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK3
-#elif RS485 == K4
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK4
-#elif RS485 == K5
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK5
-#elif RS485 == K6
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK6
-#elif RS485 == K7
-#undef RS485
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK7
-
-#elif RS485 == L0
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL0
-#elif RS485 == L1
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL1
-#elif RS485 == L2
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL2
-#elif RS485 == L3
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL3
-#elif RS485 == L4
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL4
-#elif RS485 == L5
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL5
-#elif RS485 == L6
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL6
-#elif RS485 == L7
-#undef RS485
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL7
 
 #elif RS485 == A0
 #undef RS485
@@ -2335,405 +1092,6 @@
 #define RS485_PORT    PORTD
 #define RS485_PIN     PIND
 #define RS485         PIND7
-
-#elif RS485 == E0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE0
-#elif RS485 == E1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE1
-#elif RS485 == E2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE2
-#elif RS485 == E3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE3
-#elif RS485 == E4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE4
-#elif RS485 == E5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE5
-#elif RS485 == E6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE6
-#elif RS485 == E7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRE
-#define RS485_PORT    PORTE
-#define RS485_PIN     PINE
-#define RS485         PINE7
-
-#elif RS485 == F0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF0
-#elif RS485 == F1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF1
-#elif RS485 == F2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF2
-#elif RS485 == F3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF3
-#elif RS485 == F4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF4
-#elif RS485 == F5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF5
-#elif RS485 == F6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF6
-#elif RS485 == F7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRF
-#define RS485_PORT    PORTF
-#define RS485_PIN     PINF
-#define RS485         PINF7
-
-#elif RS485 == G0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING0
-#elif RS485 == G1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING1
-#elif RS485 == G2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING2
-#elif RS485 == G3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING3
-#elif RS485 == G4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING4
-#elif RS485 == G5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING5
-#elif RS485 == G6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING6
-#elif RS485 == G7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRG
-#define RS485_PORT    PORTG
-#define RS485_PIN     PING
-#define RS485         PING7
-
-#elif RS485 == H0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH0
-#elif RS485 == H1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH1
-#elif RS485 == H2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH2
-#elif RS485 == H3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH3
-#elif RS485 == H4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH4
-#elif RS485 == H5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH5
-#elif RS485 == H6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH6
-#elif RS485 == H7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRH
-#define RS485_PORT    PORTH
-#define RS485_PIN     PINH
-#define RS485         PINH7
-
-#elif RS485 == J0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ0
-#elif RS485 == J1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ1
-#elif RS485 == J2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ2
-#elif RS485 == J3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ3
-#elif RS485 == J4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ4
-#elif RS485 == J5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ5
-#elif RS485 == J6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ6
-#elif RS485 == J7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRJ
-#define RS485_PORT    PORTJ
-#define RS485_PIN     PINJ
-#define RS485         PINJ7
-
-#elif RS485 == K0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK0
-#elif RS485 == K1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK1
-#elif RS485 == K2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK2
-#elif RS485 == K3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK3
-#elif RS485 == K4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK4
-#elif RS485 == K5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK5
-#elif RS485 == K6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK6
-#elif RS485 == K7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRK
-#define RS485_PORT    PORTK
-#define RS485_PIN     PINK
-#define RS485         PINK7
-
-#elif RS485 == L0_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL0
-#elif RS485 == L1_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL1
-#elif RS485 == L2_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL2
-#elif RS485 == L3_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL3
-#elif RS485 == L4_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL4
-#elif RS485 == L5_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL5
-#elif RS485 == L6_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL6
-#elif RS485 == L7_INV
-#undef RS485
-#define RS485_INVERT
-#define RS485_DDR     DDRL
-#define RS485_PORT    PORTL
-#define RS485_PIN     PINL
-#define RS485         PINL7
 
 #elif RS485 == A0_INV
 #undef RS485

@@ -333,10 +333,10 @@ pllclocks = [[[".menu.clock.pll_16m=16 MHz (PLL)", ".menu.clock.pll_16m.bootload
        ".menu.clock.pll_16m5.build.clocksource=6",".menu.clock.pll_16m5.bootloader.f_cpu=16000000UL"], getspeed(".menu.clock.pll_16m5.upload.speed=","16")]]
 tunedclocks = [[[".menu.clock.internal_12m=12 MHz (internal, tuned)", ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
        ".menu.clock.internal_12m.build.f_cpu=12000000UL", ".menu.clock.internal_12m.build.speed=12m",
-       ".menu.clock.internal_12m.build.clocksource=0","menu.clock.internal12m8.bootloader.f_cpu=8000000"], getspeed(".menu.clock.internal_12m.upload.speed=","8")],
+       ".menu.clock.internal_12m.build.clocksource=0",".menu.clock.internal_12m.bootloader.f_cpu=8000000"], getspeed(".menu.clock.internal_12m.upload.speed=","8")],
        [[".menu.clock.internal_12m8=12.8 MHz (internal, tuned)", ".menu.clock.internal_12m8.bootloader.low_fuses=0xE2",
        ".menu.clock.internal_12m8.build.f_cpu=12800000L", ".menu.clock.internal_12m8.build.speed=12m",
-       ".menu.clock.internal_12m8.build.clocksource=0", "menu.clock.internal12m8.bootloader.f_cpu=8000000"], getspeed(".menu.clock.internal_12m8.upload.speed=","8")],
+       ".menu.clock.internal_12m8.build.clocksource=0", ".menu.clock.internal_12m8.bootloader.f_cpu=8000000"], getspeed(".menu.clock.internal_12m8.upload.speed=","8")],
        ]
 tune8stdclk = [[[".menu.clock.internal_8m_tuned=8 MHz (internal, tuned)", ".menu.clock.internal_8m_tuned.bootloader.low_fuses=0xE2",
        ".menu.clock.internal_8m_tuned.build.f_cpu=8000000UL", ".menu.clock.internal_8m_tuned.build.speed=8m",
@@ -551,7 +551,14 @@ boards = {
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
-    "softser":False,
+    "remap":[
+      ".menu.remap.default=USI on PB0-PB2",
+      ".menu.remap.alternate=USI on PA0-PA2",
+      ".menu.remap.default.build.remap=",
+      ".menu.remap.alternate.build.remap-=DREMAPUSI",
+      ".menu.remap.default.build.remapabr=",
+      ".menu.remap.alternate.build.remapabr=rU"],
+    "softser":True,
     "fancysoftser":True,
     "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
     "efuse":"0xFE",
@@ -577,6 +584,19 @@ boards = {
       ".menu.pinmap.ccw.build.variant=tinyx41_legacy",
       ".menu.pinmap.default.build.pinmapabr=.cw",
       ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "remap":[
+      ".menu.remap.defaultboth=UART0: TX PA1, RX PA2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7",
+      ".menu.remap.defaultuart=UART0: TX PA1, RX PA2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2",
+      ".menu.remap.defaultspi=UART0: TX PA7, RX PB2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7",
+      ".menu.remap.altboth=UART0: TX PA7, RX PB2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2",
+      ".menu.remap.defaultboth.build.remap=",
+      ".menu.remap.defaultuart.build.remap=-DREMAP=2",
+      ".menu.remap.defaultspi.build.remap=-DREMAP=1",
+      ".menu.remap.altboth.build.remap=-DREMAP=3",
+      ".menu.remap.defaultboth.build.remapabr=",
+      ".menu.remap.defaultuart.build.remapabr=rS",
+      ".menu.remap.defaultspi.build.remapabr=rU",
+      ".menu.remap.altboth.build.remapabr=rB"],
     "softser":False,
     "fancysoftser":False,
     "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
@@ -794,7 +814,14 @@ boards = {
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
-    "softser":False,
+    "remap":[
+      ".menu.remap.default=USI on PB0-PB2",
+      ".menu.remap.alternate=USI on PA0-PA2",
+      ".menu.remap.default.build.remap=",
+      ".menu.remap.alternate.build.remap-=DREMAPUSI",
+      ".menu.remap.default.build.remapabr=",
+      ".menu.remap.alternate.build.remapabr=rU"],
+    "softser":True,
     "fancysoftser":True,
     "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
     "efuse":"0xFE",
@@ -814,16 +841,32 @@ boards = {
     "fancybod":True,
     "wiremodes":True,
     "twouart":True,
+    "uartremap":True,
     "pinmap":[
       ".menu.pinmap.default=Standard (clockwise)",
       ".menu.pinmap.ccw=Legacy (counterclockwise)",
       ".menu.pinmap.ccw.build.variant=tinyx41_legacy",
       ".menu.pinmap.default.build.pinmapabr=.cw",
       ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "remap":[
+      ".menu.remap.defaultboth=UART0: TX PA1, RX PA2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7",
+      ".menu.remap.defaultuart=UART0: TX PA1, RX PA2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2",
+      ".menu.remap.defaultspi=UART0: TX PA7, RX PB2 SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7",
+      ".menu.remap.altboth=UART0: TX PA7, RX PB2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2",
+      ".menu.remap.defaultboth.build.remap=",
+      ".menu.remap.defaultuart.build.remap=-DREMAP=2",
+      ".menu.remap.defaultspi.build.remap=-DREMAP=1",
+      ".menu.remap.altboth.build.remap=-DREMAP=3",
+      ".menu.remap.defaultboth.build.remapabr=",
+      ".menu.remap.defaultuart.build.remapabr=rS",
+      ".menu.remap.defaultspi.build.remapabr=rU",
+      ".menu.remap.altboth.build.remapabr=rB"],
     "optipins":[
-      ".menu.bootloaderuart.uart0=Serial 0 (TX: PB0, RX: PA7, LED: PC0)",
-      ".menu.bootloaderuart.uart1=Serial 1 (TX: PB0, RX: PA7, LED: PC0)",
+      ".menu.bootloaderuart.uart0=Serial 0 (TX: PA1, RX: PA2, LED: PB2)",
+      ".menu.bootloaderuart.uartr=Serial 0 alt (TX: PA7, RX: PB2, LED: PA2)",
+      ".menu.bootloaderuart.uart1=Serial 1 (TX: PA4, RX: PA5, LED: PB2)",
       ".menu.bootloaderuart.uart0.bootloader.uart=",
+      ".menu.bootloaderuart.uartr.bootloader.uart=_serR",
       ".menu.bootloaderuart.uart1.bootloader.uart=_ser1"],
     "softser":False,
     "fancysoftser":False,
@@ -873,7 +916,7 @@ boards = {
       ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
     "optipins":[
       ".menu.bootloaderuart.uart0=Serial 0 (TX: PB0, RX: PA7, LED: PC0)",
-      ".menu.bootloaderuart.uart1=Serial 1 (TX: PB0, RX: PA7, LED: PC0)",
+      ".menu.bootloaderuart.uart1=Serial 1 (TX: PB2, RX: PB1, LED: PC0)",
       ".menu.bootloaderuart.uart0.bootloader.uart=",
       ".menu.bootloaderuart.uart1.bootloader.uart=_ser1"],
     "softser":False,
@@ -1281,6 +1324,13 @@ boards = {
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "remap":[
+      ".menu.remap.default=USI on PB0-PB2",
+      ".menu.remap.alternate=USI on PA0-PA2",
+      ".menu.remap.default.build.remap=",
+      ".menu.remap.alternate.build.remap=-DREMAPUSI",
+      ".menu.remap.default.build.remapabr=",
+      ".menu.remap.alternate.build.remapabr=rU"],
     "USBPins":[
       ".menu.usbpins.standard=Standard - PB4: D-, PB6: D+, PA5: LED",
       ".menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB4 -DLED_BUILTIN2=PIN_PA4",
@@ -1336,6 +1386,19 @@ boards = {
       ".menu.pinmap.ccw.build.variant=tinyx41_legacy",
       ".menu.pinmap.default.build.pinmapabr=.cw",
       ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "remap":[
+      ".menu.remap.defaultboth=UART0: TX PA1, RX PA2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7",
+      ".menu.remap.defaultuart=UART0: TX PA1, RX PA2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2",
+      ".menu.remap.defaultspi=UART0: TX PA7, RX PB2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7",
+      ".menu.remap.altboth=UART0: TX PA7, RX PB2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2",
+      ".menu.remap.defaultboth.build.remap=",
+      ".menu.remap.defaultuart.build.remap=-DREMAP=2",
+      ".menu.remap.defaultspi.build.remap=-DREMAP=1",
+      ".menu.remap.altboth.build.remap=-DREMAP=3",
+      ".menu.remap.defaultboth.build.remapabr=",
+      ".menu.remap.defaultuart.build.remapabr=rS",
+      ".menu.remap.defaultspi.build.remapabr=rU",
+      ".menu.remap.altboth.build.remapabr=rB"],
     "USBPins":[
       ".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED (Bitboss)",
       ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED (Wattuino)",
@@ -1409,19 +1472,21 @@ def printmake(string):
   print(string,file = makefile)
 
 clocklist={}
+opticlocklist={}
 baudlist={}
 def printProp(board,string):
   print(board+string)
   print(board+string,file = f1)
+  mboot=re.search("build\\.f_cpu=(\\d+UL)",string)
+  if mboot:
+    clocklist[board].append(mboot.expand("\\1"))
   mboot=re.search("bootloader\\.f_cpu=(\\d+UL)",string)
-  if not mboot:
-    mboot=re.search("build\\.f_cpu=(\\d+UL)",string)
-    if mboot:
-      clocklist[board].append(mboot.expand("\\1"))
-  else:
-    clocklist[board][-1]=mboot.expand("\\1")
+  if mboot:
+      opticlocklist[board].append(mboot.expand("\\1"))
   n=re.search("upload\\.speed=(\\d+)",string)
   if n:
+    if len(clocklist[board]) > len(opticlocklist[board]):
+      opticlocklist[board].append(clocklist[board][-1])
     baudlist[board].append(n.expand("\\1"))
 def printLit(string):
   print(string)
@@ -1443,6 +1508,7 @@ for x in boards:
     printLit(titles[x])
     printLit("")
   clocklist[x]=[]
+  opticlocklist[x]=[]
   baudlist[x]=[]
   if boards[x]["bootloader"]:
     printProp(x,".build.board=AVR_"+x[:-4].upper())
@@ -1465,6 +1531,9 @@ for x in boards:
     printProp(x,".build.wiremode=")
   if not "pinmap" in boards[x]:
     printProp(x,".build.pinmapabr=")
+  if not "remap" in boards[x]:
+    printProp(x,".build.remap=")
+    printProp(x,".build.remapabr=")
   if boards[x]["bootloader"] == "Micronucleus":
     printProp(x,".build.bootloader=-DUSING_BOOTLOADER=0x08")
     printProp(x,".build.bootloaderabr=micr")
@@ -1635,20 +1704,22 @@ for x in boards:
     printSubMenuHeader("Wire Modes menu    ")
     for y in wiremodesmenu:
       printProp(x,".menu.wiremode."+y)
-  if boards[x]["softser"] or boards[x]["fancysoftser"]:
-    printSubMenuHeader("Software Serial menu ")
+  if "remap" in boards[x]:
+      for y in boards[x]["remap"]:
+        printProp(x,y)
   if boards[x]["softser"]:
-    printProp(x,".menu.softserial.enable=RX on P"+boards[x]["ssport"]+boards[x]["ssrx"]+", TX on P"+boards[x]["ssport"]+" (default P"+boards[x]["ssport"]+boards[x]["sstx"]+")")
-    for y in softsermenu:
-      printProp(x,y)
-  if boards[x]["fancysoftser"]:
-    if boards[x]["bootloader"] == "Optiboot":
-      for y in softsermenu_861:
-        printProp(x, ".menu.softserial."+y)
+    printSubMenuHeader("Software Serial menu ")
+    if boards[x]["fancysoftser"]:
+      if boards[x]["bootloader"] == "Optiboot":
+        for y in softsermenu_861:
+          printProp(x, ".menu.softserial861."+y)
+      else:
+        for y in softsermenu_861[:-4]:
+          printProp(x, ".menu.softserial."+y)
     else:
-      for y in softsermenu_861[:-4]:
-        printProp(x, ".menu.softserial861."+y)
-
+      printProp(x,".menu.softserial.enable=RX on P"+boards[x]["ssport"]+boards[x]["ssrx"]+", TX on P"+boards[x]["ssport"]+" (default P"+boards[x]["ssport"]+boards[x]["sstx"]+")")
+      for y in softsermenu:
+        printProp(x,y)
   printSubMenuHeader("BrownOut Detect menu ")
   if boards[x]["fancybod"]:
     for y in fancybodmenu:
@@ -1703,6 +1774,7 @@ for x in boards:
     for y in chiplist[x[:-4]]:
       optibootbuilds[y]={}
       optibootbuilds_proto[y]={"clocks":clocklist[x]}
+      optibootbuilds_proto[y]["opticlocks"]=opticlocklist[x]
       optibootbuilds_proto[y]["baud"]=baudlist[x]
       if boards[x]["hasvoltdependance"]:
         optibootbuilds[y]["hasvoltdependance"]=True
@@ -1712,6 +1784,10 @@ for x in boards:
         optibootbuilds[y]["twouart"]=True
       else:
         optibootbuilds[y]["twouart"]=False
+      if "uartremap" in boards[x]:
+        optibootbuilds[y]["remap"]=True
+      else:
+        optibootbuilds[y]["remap"]=False
       if boards[x]["fancysoftser"]:
         optibootbuilds[y]["fancysoftser"]=True
       else:
@@ -1719,12 +1795,11 @@ for x in boards:
       optibootbuilds[y]["clocks"]=[];
       optibootbuilds[y]["baud"]=[];
       for z in range(len(optibootbuilds_proto[y]["clocks"])):
-        if optibootbuilds_proto[y]["clocks"][z] in optibootbuilds[y]["clocks"]:
+        if optibootbuilds_proto[y]["opticlocks"][z] in optibootbuilds[y]["clocks"]:
           continue
-        optibootbuilds[y]["clocks"].append(optibootbuilds_proto[y]["clocks"][z])
+        optibootbuilds[y]["clocks"].append(optibootbuilds_proto[y]["opticlocks"][z])
         optibootbuilds[y]["baud"].append(optibootbuilds_proto[y]["baud"][z])
 
-print(optibootbuilds)
 listofbuilds=[]
 fhead = open("MakefileHead.txt")
 fheadtext=fhead.read()
@@ -1732,7 +1807,10 @@ f2 = open("Makefile.tiny","w")
 print(fheadtext,file=f2)
 for x in optibootbuilds:
   if optibootbuilds[x]["twouart"]:
-    optlist={"":"","_ser1":"UART=1"}
+    if optibootbuilds[x]["remap"]:
+      optlist={"":"","_serR":"REMAP=1","_ser1":"UART=1"}
+    else:
+      optlist={"":"","_ser1":"UART=1"}
   elif optibootbuilds[x]["fancysoftser"]:
     optlist={"_rx7tx6":"TXPIN=6 RXPIN=7","_rx6tx7":"TXPIN=7 RXPIN=6","_rx5tx6":"TXPIN=6 RXPIN=5"}
   else:
@@ -1744,13 +1822,13 @@ for x in optibootbuilds:
       listofbuilds.append(x+"at"+z+t)
       listofbuilds.append(x+"at"+z+t+"_8sec")
       print(x+"at"+z+t+":\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+".hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+".lst\nendif\n\n",file=f2)
-      print(x+"at"+z+t+"_8sec:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" NO_START_APP_ON_POR=0 TIMEOUT=8 BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_8sec.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_8sec.lst\nendif\n\n",file=f2)
+      print(x+"at"+z+t+"_8sec:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" NO_START_APP_ON_POR=1 TIMEOUT=8 BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_8sec.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_8sec.lst\nendif\n\n",file=f2)
       if y<=1:
         if(optibootbuilds[x]["hasvoltdependance"]):
           listofbuilds.append(x+"at"+z+t+"_int")
           listofbuilds.append(x+"at"+z+t+"_int_8sec")
           print(x+"at"+z+t+"_int:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_int.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_int.lst\nendif\n\n",file=f2)
-          print(x+"at"+z+t+"_int_8sec:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" NO_START_APP_ON_POR=0 TIMEOUT=8 BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_8sec_int.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_8sec_int.lst\nendif\n\n",file=f2)
+          print(x+"at"+z+t+"_int_8sec:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" NO_START_APP_ON_POR=1 TIMEOUT=8 BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_8sec_int.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_8sec_int.lst\nendif\n\n",file=f2)
 f2.close();
 f3=open("makeall.tiny.bat","w")
 for x in listofbuilds:
