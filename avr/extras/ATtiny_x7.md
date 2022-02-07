@@ -6,24 +6,27 @@
 |-------------------------|----------------|----------------|----------------|----------------|----------------|----------------|
 | Bootloader (if any)     |                |       Optiboot |  Micronucleus  |                |       Optiboot |  Micronucleus  |
 | Uploading uses          |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter | USB (directly) |
-| Flash available user    |    16384 bytes |    15744 bytes |    14842 bytes |     8192 bytes |     7552 bytes | TBD   >=6650   |
+| Flash available user    |    16384 bytes |    15744 bytes |    14842 bytes |     8192 bytes |     7552 bytes |     6554 bytes |
 | RAM                     |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |
 | EEPROM                  |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |      512 bytes |
-| GPIO Pins               |             15 |             15 |             13 |             15 |             15 |             13 |
+| GPIO Pins               |             15 |             15 |          ** 13 |             15 |             15 |          ** 13 |
 | ADC Channels            |             11 |             11 |             11 |             11 |             11 |             11 |
 | PWM Channels            | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex | 1 fixed 2 flex |
+| Differential ADC        |    8x/20x gain |    8x/20x gain |    8x/20x gain |    8x/20x gain |    8x/20x gain |    8x/20x gain |
 | Interfaces              |       LIN/UART |       LIN/UART | vUSB, LIN/UART |       LIN/UART |       LIN/UART | vUSB, LIN/UART |
 | Interfaces (cont'd)     |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |       USI, SPI |
 | Clocking Options:       |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
 | Int. Oscillator         |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |
 | Int. WDT Oscillator     |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |  Not supported |
-| Internal, with tuning   |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |    8, 12, 12.8 |    8, 12, 12.8 |  Not supported |
+| Internal, with tuning   |          8, 12 |          8, 12 |  Not supported |          8, 12 |          8, 12 |  Not supported |
 | External Crystal        |   All Standard |   All Standard | **16**,8,4,2,1 |   All Standard |   All Standard | **16**,8,4,2,1 |
 | External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
 | Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
-| LED_BUILTIN             | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0* | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0* |
+| LED_BUILTIN             | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 |
+| Bootloader LED          |            n/a |            PA6 |     PB1 or PA6 |            n/a |            PA6 |     PB1 or PA6 |
 
 `*` - the bootloader will always use either PA6 or PB1 unless you build your own binaries. The legacy pinout that it was paired with is absolutely godawful, and nobody should ever use it!
+`**` - The bootloader will always run at this speed. The sketch may be set to run at a lower speed by prescaling this.
 
 ## Programming
 Any of these parts can be programmed by use of any supported ISP programmer. It is recommended to use Arduino 1.8.13 or later; earlier versions will show all programmers, instead of just the ones that will work with this core.
@@ -112,6 +115,29 @@ Though it's a far cry from what some of the classic tinyAVR parts have, the x7-s
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
 Note that while the text of this section of the datasheet is essentially copied verbatim between most of the classic tinyAVR parts, the ATtiny87/167 datasheet has a different set of "typical values"... and these are inconsistent with what the text is saying by a huge margin. However, it did not escape my notice that the same table also contains a typo in the notation (0c01B8 instead of 0x01B8), and that the inconsistencies are suspiciously close to what might happen if someone attempted to convert from decimal to hex recognizing that the third digit is 256s but not that second digit is 16's (230middle value is 300 on other sheets, 0x144 here. 300 - 256 = 44, so a 1 in the 256's and 44 in the tens and ones, high value 370 on other sheets, 0x1B8 here. Very close to 370 - 256 = 114 11 is B in hex so 0x1B4, though I can't account for the extra 4. The low value is harder to explain via math errors but if my bad-math theory above is correct, I have no confidence in his ability to add and subtract correctly either).
+
+### Tuning Constant Locations
+These are the recommended locations to store tuning constants. In the case of OSCCAL, they are what are checked during startup when a tuned configuration is selected. They are not otherwiseused by the core.
+
+ISP programming: Make sure to have EESAVE fuse set, stored in EEPROM
+
+Optiboot used: Saved between end of bootloader and end of flash.
+
+| Tuning Constant        | Location EEPROM | Location Flash |
+|------------------------|-----------------|----------------|
+| Temperature Offset     | E2END - 3       | FLASHEND - 5   |
+| Temperature Slope      | E2END - 2       | FLASHEND - 4   |
+| Tuned OSCCAL 12 MHz    | E2END - 1       | FLASHEND - 3   |
+| Tuned OSCCAL 8 MHz     | E2END           | FLASHEND - 2   |
+| Bootloader Signature 1 | Not Used        | FLASHEND - 1   |
+| Bootloader Signature 2 | Not Used        | FLASHEND       |
+
+Mironucleus used: Micronucleus boards are locked to the crystal, no oscilator calibration is possible.
+
+| Tuning Constant        | Location Flash |
+|------------------------|----------------|
+| Temperature Offset     | FLASHEND - 1   |
+| Temperature Slope      | FLASHEND       |
 
 ### Purchasing ATtiny167 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. Unfortunately this design is currently out of stock; a revised version in in the works.

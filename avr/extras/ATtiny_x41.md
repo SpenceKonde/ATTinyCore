@@ -229,10 +229,13 @@ PORTCR=(1<<BBMA)|(1<<BBMB); //BBMA controls PORTA, BBMB controls PORTB.
 The 841/441, owing to the incredible power of it's oscillator, can be run at many speeds from the internal oscillator with proper calibration. We support storage of 4 calibration values. The included tuner uses these 4 locations for OSCCAL tuning values. If tuning is enabled, the OSCCAL tuning locations are checked at startup if tuning is enabled.
 
 **ISP programming (no bootloader)**: EESAVE fuse set, stored in EEPROM
-**Bootloader used**: Saved between end of bootloader and end of flash. See File -> Examples -> Temperature and Voltage
+
+Optiboot used: Saved between end of bootloader and end of flash. See File -> Examples -> Temperature and Voltage
 
 | Tuning Constant         | Location EEPROM | Location Flash |
 |-------------------------|-----------------|----------------|
+| Temperature Offset      | E2END - 3       | FLASHEND - 7   |
+| Temperature Slope       | E2END - 4       | FLASHEND - 6   |
 | Tuned OSCCAL0 8 MHz/3V3 | E2END - 3       | FLASHEND - 5   |
 | Tuned OSCCAL0 8 MHz/5V  | E2END - 2       | FLASHEND - 4   |
 | Tuned OSCCAL0 12 MHz*   | E2END - 1       | FLASHEND - 3   |
@@ -240,7 +243,22 @@ The 841/441, owing to the incredible power of it's oscillator, can be run at man
 | Bootloader Signature 1  | Not Used        | FLASHEND - 1   |
 | Bootloader Signature 2  | Not Used        | FLASHEND       |
 
+Mironucleus used: Micronucleus boards store a tuning value to the application section, but a separate sketch could also use a different means of calibration and store a value in the flash. The recommended locationsare shown below.
+
+
+| Tuning Constant         |         Location Flash |
+|-------------------------|------------------------|
+| Tuned OSCCAL 12 MHz**   | BOOTLOADER_ADDRESS - 4 |
+| Temperature Offset      |           FLASHEND - 5 |
+| Temperature Slope       |           FLASHEND - 4 |
+| Tuned OSCCAL0 8 MHz/3V3 |           FLASHEND - 3 |
+| Tuned OSCCAL0 8 MHz/5V  |           FLASHEND - 2 |
+| Tuned OSCCAL0 12 MHz*   |           FLASHEND - 1 |
+| Tuned OSCCAL0 16 MHz*   |           FLASHEND     |
+
+
 `*` Calibration at aprx. 5v is assumed and implied
+`**` Calibrated at the USB voltage during programming
 
 
 ## Purchasing ATtiny841 Boards

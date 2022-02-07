@@ -104,6 +104,34 @@ The ADC on the x5-series can act as a differential ADC with selectable 1x or 20x
 ### Temperature Measurement
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
+### Tuning Constant Locations
+These are the recommended locations to store tuning constants. In the case of OSCCAL, they are what are checked during startup when a tuned configuration is selected. They are not otherwiseused by the core.
+
+ISP programming: Make sure to have EESAVE fuse set, stored in EEPROM
+
+Optiboot used: Saved between end of bootloader and end of flash.
+
+| Tuning Constant        | Location EEPROM | Location Flash |
+|------------------------|-----------------|----------------|
+| Temperature Offset     | E2END - 4       | FLASHEND - 7   |
+| Temperature Slope      | E2END - 3       | FLASHEND - 6   |
+| Unspecified            | N/A             | FLASHEND - 5   |
+| Tuned OSCCAL 12 MHz    | E2END   2       | FLASHEND - 4   |
+| Tuned OSCCAL 8.25 MHz  | E2END - 1       | FLASHEND - 3   |
+| Tuned OSCCAL 8 MHz     | E2END           | FLASHEND - 2   |
+| Bootloader Signature 1 | Not Used        | FLASHEND - 1   |
+| Bootloader Signature 2 | Not Used        | FLASHEND       |
+
+Mironucleus used: Micronucleus boards store a tuning value to the application section, but a separate sketch could also use a different means of calibration and store a value in the flash. The recommended locationsare shown below.
+
+| Tuning Constant        | Location Flash         |
+|------------------------|------------------------|
+| Tuned OSCCAL 8.25 MHz  | BOOTLOADER_ADDRESS - 4 |
+| Temperature Offset     | FLASHEND - 3           |
+| Temperature Slope      | FLASHEND - 2           |
+| Tuned OSCCAL 8.25 MHz  | FLASHEND - 1           |
+| Tuned OSCCAL 8 MHz     | FLASHEND               |
+
 ## Purchasing ATtiny85 Boards
 As the ATtiny85 is available in an easy-to-solder through-hole DIP package, a board can be easily made by just soldering the part into prototyping board.
 I (Spence Konde) sell a specialized prototyping board that combines an ISP header with prototyping space and outlines to fit common SMD parts.

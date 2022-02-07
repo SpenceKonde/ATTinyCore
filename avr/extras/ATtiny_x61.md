@@ -20,6 +20,7 @@ External Crystal      |     All Standard |     All Standard |    Not supported |
 External Clock        |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
 Int. WDT Oscillator   |          128 kHz |          128 kHz |          128 kHz |          128 kHz |          128 kHz |          128 kHz |
 Default Pin Mapping   |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |
+LED_BUILTIN           |              PB6 |              PB6 |       PB5 or PB6 |              PB6 |              PB6 |              PB6 |
 
 
 The 261/461/861 and 261a/461a/861a are functionally very similar; the latter replaced the former in 2009, and uses slightly less power. Actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
@@ -175,7 +176,38 @@ Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny2
 ### Temperature Measurement
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
-## Interrupt Vectors
+### Tuning Constant Locations
+These are the recommended locations to store tuning constants. In the case of OSCCAL, they are what are checked during startup when a tuned configuration is selected.
+
+ISP programming: Make sure to have EESAVE fuse set, stored in EEPROM
+
+Optiboot used: Saved between end of bootloader and end of flash.
+
+| Tuning Constant        | Location EEPROM | Location Flash |
+|------------------------|-----------------|----------------|
+| Temperature Offset     | E2END - 5       | FLASHEND - 7   |
+| Temperature Slope      | E2END - 4       | FLASHEND - 6   |
+| Unspecified            | E2END - 3       | FLASHEND - 5   |
+| Tuned OSCCAL 12 MHz    | E2END   2       | FLASHEND - 4   |
+| Tuned OSCCAL 8.25 MHz  | E2END - 1       | FLASHEND - 3   |
+| Tuned OSCCAL 8 MHz     | E2END           | FLASHEND - 2   |
+| Bootloader Signature 1 | Not Used        | FLASHEND - 1   |
+| Bootloader Signature 2 | Not Used        | FLASHEND       |
+
+Mironucleus used: Micronucleus boards store a tuning value to the application section, but a separate sketch could also use a different means of calibration and store a value in the flash. The recommended locationsare shown below.
+
+| Tuning Constant        | Location Flash         |
+|------------------------|------------------------|
+| Tuned OSCCAL 8.25 MHz  | BOOTLOADER_ADDRESS - 4 |
+| Temperature Offset     | FLASHEND - 3           |
+| Temperature Slope      | FLASHEND - 2           |
+| Tuned OSCCAL 8.25 MHz  | FLASHEND - 1           |
+| Tuned OSCCAL 8 MHz     | FLASHEND               |
+
+On the boards with the prototype pinout, there is less flash available. Specifically, with the WDRF entry condition, there is no room for the temperature cal values, and external reset has no room for any calibration values (thought External Reset Only takes up an extra page of flash, leaving less for the application, but plenty of space for calbiration values. The one in the application section is in all cases present.
+
+
+## Interrupt Vector Table
 This table lists all of the interrupt vectors available on the ATtiny x61-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
 
 **Note about PCINTs:** There's a `PCMSK0` and `PCMSK1` for port A and B respectively, like normal. There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs on each port, like normal. But both of them call the same PCINT vector when triggered: *there's ONLY ONE PCINT VECTOR!*
@@ -202,5 +234,5 @@ This table lists all of the interrupt vectors available on the ATtiny x61-family
 17 |  0x0011 | TIMER1_COMPD_vect    | Timer/Counter1 Compare Match D
 18 |  0x0012 | FAULT_PROTECTION_vect| Timer/Counter1 Fault Protection
 
-## 861 vs 861a - you said "almost" fully interchangible?
-Okay, there is one difference I'm aware of that makes them distinct: The older 861 design has the old, bifurcated calibration curve for the internal oscillator, that is, the speed jumps backwards as you increase the `OSCCAL` register from 127 to 128. The "bifurcated" oscillators are generally less accurate and less stable than ones like the one in the ATtiny861A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (since USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts, and non-A parts are now more expensive, and have been for some time (they would love for people to switch to the A's so they could stop producing the non-A's)
+## 861 vs 861a - the one apparently relevant difference
+There is one way in which the 861A is notably more usable than the 861. That is the fact that the A markedly better internal oscillator. If you look at the graphs of internal oscillator speed fs OSCCAL, you will notice that some parts have a discontinuity. The 861 does. The 861A does not. The bifiurcated oscillator cal curve comes with an older, inferior design, and those parts are less suited to running micronucleus and more likely to have random problems caused by clock inaccuracy compared to the ones with the non-bifurcated oscillator (not counting the 441/841/1634/828 which have a third type - the most stable of all, but with a sharp upturn in the F vs V curve above 4v - those don't directly compare.
