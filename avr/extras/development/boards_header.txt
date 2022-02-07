@@ -61,11 +61,18 @@ menu.bodpd=B.O.D. Mode (sleep) (Only set on bootload)
 # Specific to 828 and 841:
 menu.wiremode=Wire Modes
 
+# Specific to x41 and x61:
+menu.remap=Peripheral Pin Mapping
+
 # Only relevant for bootloader board definitions:
 menu.bootentry=Bootloader Entry Conditions (only set on bootload)
 
 # Specific to the 1634 and x41 with Optiboot:
 menu.bootloaderuart=Bootloader UART (only set on bootload)
+
+# Specific to the 861 with optiboot, replaces softserial
+menu.softserial861=Built-in softserial ("Serial") and Optiboot pins
+
 
 # Specific to Micronucleus:
 menu.usbpins=Micronucleus USB Pins (set on bootload, must match hardware)

@@ -296,28 +296,36 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define SCL                      PIN_PA6
 #define SDA                      PIN_PA4
 
-/* Hardware SPI */
-#define SCK                      PIN_PA4
-#define MISO                     PIN_PA5
-#define MOSI                     PIN_PA6
-#define SS                       PIN_PA7
 
-/* Remapped SPI port */
-#define MISO_PINSWAP             PIN_PA0
-#define MOSI_PINSWAP             PIN_PA1
-#define SS_PINSWAP               PIN_PA2
-#define SCK_PINSWAP              PIN_PA3
+/* Hardware SPI */
+#if defined(SET_REMAP) && SET_REMAP > 1
+  /* remapped pins */
+  #define MISO                     PIN_PA0
+  #define MOSI                     PIN_PA1
+  #define SS                       PIN_PA2
+  #define SCK                      PIN_PA3
+
+#else
+  /* default pins */
+  #define SCK                      PIN_PA4
+  #define MISO                     PIN_PA5
+  #define MOSI                     PIN_PA6
+  #define SS                       PIN_PA7
+#endif
 
 /* Two hardware serial ports */
-#define PIN_HWSERIAL0_TX         PIN_PA1
-#define PIN_HWSERIAL0_RX         PIN_PA2
-
+#if defined(SET_REMAP) && SET_REMAP & 1
+  /* alt pins */
+  #define PIN_HWSERIAL0_TX         PIN_PA7
+  #define PIN_HWSERIAL0_RX         PIN_PB2
+#else
+  /* default pins */
+  #define PIN_HWSERIAL0_TX         PIN_PA1
+  #define PIN_HWSERIAL0_RX         PIN_PA2
+#endif
 #define PIN_HWSERIAL1_TX         PIN_PA5
 #define PIN_HWSERIAL1_RX         PIN_PA4
 
-/* USART0 has alternate pin mapping option */
-#define PIN_HWSERIAL0_TX_PINSWAP PIN_PA7
-#define PIN_HWSERIAL0_RX_PINSWAP PIN_PB2
 
 #ifdef ARDUINO_MAIN
 #warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"

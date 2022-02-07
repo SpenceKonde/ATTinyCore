@@ -15,7 +15,7 @@ version={versionnum.major}.{versionnum.minor}.{versionnum.patch}{versionnum.post
 
 build.versiondefines=-DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_AVR -DATTINYCORE="{version}" -DATTINYCORE_MAJOR={versionnum.major}UL -DATTINYCORE_MINOR={versionnum.minor}UL -DATTINYCORE_PATCH={versionnum.patch}UL -DATTINYCORE_RELEASED={versionnum.released}
 
-build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} {build.millis} {build.tuneorcal} {build.wiremode} {build.bootloader} {build.usbpinset} {build.softser}
+build.optiondefines=-DF_CPU={build.f_cpu} -DCLOCK_SOURCE={build.clocksource} {build.millis} {build.tuneorcal} {build.wiremode} {build.bootloader} {build.usbpinset} {build.softser} {build.remap}
 
 #########################
 # AVR compile variables #
@@ -125,11 +125,11 @@ recipe.hooks.objcopy.postobjcopy.2.pattern.linux=bash -c "{compiler.path}{compil
 recipe.hooks.objcopy.postobjcopy.2.pattern.macosx=bash -c "{compiler.path}{compiler.nm.cmd} {compiler.nm.flags}  {build.path}/{build.project_name}.elf > {build.path}/{build.project_name}.map"
 
 ## This is the name that memory maps, assembly listings and hex files will be output as
-build.extraassetname={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinmapabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}
+build.extraassetname={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinmapabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}{build.remapabr}
 
 ## Save hex
 recipe.output.tmp_file={build.project_name}.hex
-recipe.output.save_file={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinmapabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}.hex
+recipe.output.save_file={build.project_name}.{build.mcu}{build.bootloaderabr}{build.pinmapabr}.{build.speed}c{build.clocksource}.{build.millisabr}{build.wiremodeabr}{build.softserabr}{build.remapabr}.hex
 
 ## Save lst
 recipe.hooks.savehex.presavehex.1.pattern.windows=cmd /C copy "{build.path}\{build.project_name}.lst" "{sketch_path}\{build.extraassetname}.lst"

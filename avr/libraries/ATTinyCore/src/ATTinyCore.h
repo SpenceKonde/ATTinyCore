@@ -291,3 +291,130 @@
     }
   }
 #endif
+
+/* a grab-bag of miscelaneous functionality */
+
+
+
+uint8_t enableHighSinkPort(uint8_t port, bool mode) {
+  #if defined(__AVR_ATtiny828__)
+    if (port == PC) {
+      PHDE = mode ? 0x04 : 0;
+      return 0;
+    } else {
+      return 1;
+    }
+  #else
+    badCall("Only the 828 has a whole port that can be set high-sink, though the 841/441 can set PA5 and PA7 high sink with enableHighSinkPin()");
+  #endif
+}
+
+uint8_t enableHighSinkPin(uint8_t pin, bool mode) {
+  #if defined(__AVR_ATtinyx41__)
+    if (pin == PIN_PA7 || pin == PIN_PA5) {
+      if (mode) {
+        PHDE |= (pin==PIN_PA7,2,1);
+      } else {
+        PHDE &= (pin==PIN_PA7,0xFD,0xFE);
+      }
+      return 0;
+    } else {
+      return 1;
+    }
+  #else
+    badCall("Only the 841 and 441 support this. The 828 can set PORTC high-sink with enableHighSinkPort()");
+  #endif
+}
+
+uint8_t enableISRC(bool mode) {
+// The T167 can connect PA3 toan internal current source. This is much more precice than the internal pullups, and does not vary over voltage changes like they do. It was proposed for LIN addressing and a variety of other uncommon tasks,
+  #if defined(__AVR_ATtinyx7__)
+    if (mode) {
+      AMICR |= 1;
+    } else {
+      AMICR &= 0xFE;
+    }
+  #else
+    badCall("The internal current source is only available on the t87 and t167");
+  #endif
+}
+
+void disableAllPullups(bool mode) {
+  #if defined(PUD)
+    if (mode){
+      MCUCR |= 1 << PUD;
+    } else {
+      MCUCR &= ~(1 << PUD);
+    }
+  #else
+    badCall("The global pullup disable feature is not available on this part");
+  #endif
+}
+
+uint8_t enableBBM(uint8_t port, uint8_t mode) {
+  #if defined(PORTCR) && defined(PUDB) //All parts have PORTB
+    #if defined(PORTA) && defined(PUDA)
+      if (port == PA) {
+        PORTCR |= 1 << PUDA;
+        return 0;
+      } else
+    #endif
+    #if defined(PORTB) && defined(PUDB)
+      if (PORT == PB) {
+        PORTCR |= 1 << PUDB;
+        return 0;
+      } else
+    #endif
+    #if defined(PORTC) && defined(PUDC)
+      if (PORT == PC) {
+        PORTCR |= 1 << PUDA;
+        return 0;
+      } else
+    #endif
+    #if defined(PORTD) && defined(PUDD)
+      if (PORT == PD) {
+        PORTCR |= 1 << PUDD;
+        return 0;
+      } else
+    #endif
+    {
+      return 1;
+    }
+  #else
+    badCall("This part does not support portwise pullup disabling");
+  #endif
+}
+
+uint8_t enableBBM(uint8_t port, uint8_t mode) {
+  #if defined(PORTCR)
+    #if defined(PORTA) && defined(BBMA)
+      if (port == PA) {
+        PORTCR |= 1 << BBMA;
+        return 0;
+      } else
+    #endif
+    #if defined(PORTB) && defined(BBMB)
+      if (PORT == PB) {
+        PORTCR |= 1 << BBMB;
+        return 0;
+      } else
+    #endif
+    #if defined(PORTC) && defined(BBMC)
+      if (PORT == PC) {
+        PORTCR |= 1 << BBMC;
+        return 0;
+      } else
+    #endif
+    #if defined(PORTD) && defined(BBMD)
+      if (PORT == PD) {
+        PORTCR |= 1 << BBMD;
+        return 0;
+      } else
+    #endif
+    {
+      return 1;
+    }
+  #else
+    badCall("This port does not support BBM mode.");
+  #endif
+}

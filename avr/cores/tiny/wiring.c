@@ -322,8 +322,7 @@ static void initToneTimerInternal(void);
 #endif
   }
 
-  uint32_t millis()
-  {
+  uint32_t millis() {
     uint32_t m;
     uint8_t oldSREG = SREG;
 
@@ -336,8 +335,7 @@ static void initToneTimerInternal(void);
     return m;
   }
 
-  uint32_t micros()
-  {
+  uint32_t micros() {
 #ifdef CORRECT_EXACT_MICROS
 
     #if (F_CPU == 24000000L || F_CPU == 12000000L || F_CPU == 6000000L || F_CPU == 20000000L || F_CPU == 10000000L || F_CPU == 18000000L)
@@ -503,8 +501,7 @@ static void initToneTimerInternal(void);
   }
   void yield(void) __attribute__((weak, alias("__empty")));
 
-  void delay(uint32_t ms)
-  {
+  void delay(uint32_t ms) {
     #if (F_CPU >= 1000000L)
     uint16_t start = (uint16_t)micros();
 
@@ -529,8 +526,7 @@ static void initToneTimerInternal(void);
   }
   void yield(void) __attribute__((weak, alias("__empty")));
 
-  void delay(uint32_t ms) // non-millis-timer-dependent delay()
-  {
+  void delay(uint32_t ms) { // non-millis-timer-dependent delay()
     while(ms--){
       yield();
       delayMicroseconds(1000);
@@ -539,6 +535,7 @@ static void initToneTimerInternal(void);
 #endif
 
 /* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
+/*
 void delayMicroseconds(uint16_t us)
 {
   #define _MORENOP_ "" // redefine to include NOPs depending on frequency
@@ -616,7 +613,7 @@ void delayMicroseconds(uint16_t us)
       // account for the time taken in the preceding and following commands.
       // we are burning 114 (116) cycles, remove 29 iterations: 29*4 = 116.
 
-      /* TODO: is this calculation correct.  Right now, we do
+         TODO: is this calculation correct.  Right now, we do
                 function call           6 (+ 2) cycles
                 wait at top             4
                 comparison false        3
@@ -627,7 +624,7 @@ void delayMicroseconds(uint16_t us)
                 subtraction             2
                 return                  4
                 total                   --> 114 (116) cycles
-       */
+
 
       // us dropped to no less than 32, so we can subtract 29
       us -= 29; // 2 cycles
@@ -828,10 +825,9 @@ void delayMicroseconds(uint16_t us)
   );
   // return = 4 cycles
 }
-
+*/
 // This clears up the timer settings, and then calls the tone timer initialization function (unless it's been disabled - but in this case, whatever called this isn't working anyway!
-void initToneTimer(void)
-{
+void initToneTimer(void) {
   // Ensure the timer is in the same state as power-up
   #if defined(__AVR_ATtiny43__)
     TIMSK1 = 0;
@@ -926,8 +922,7 @@ void initToneTimer(void)
 // initToneTimerInternal() - initialize the timer used for tone for PWM
 
 #if INITIALIZE_SECONDARY_TIMERS
-  static void initToneTimerInternal(void)
-  {
+  static void initToneTimerInternal(void) {
     /* This never worked right
     #if (defined(PLLTIMER1) || defined(LOWPLLTIMER1)) && !defined(PLLCSR)
       #error "Chip does not have PLL (only x5, x61 series do), which is selected (somehow) as timer1 clock source. If you have not modified the core, please report this to core maintainer."
@@ -1089,8 +1084,7 @@ void initToneTimer(void)
   #define LASTCAL E2END
 #endif
 
-uint8_t read_factory_calibration(void)
-{
+uint8_t read_factory_calibration(void) {
   #ifndef SIGRD
   uint8_t SIGRD = 5; // Yes, this variable is needed. boot.h is looking for SIGRD but the io.h calls it RSIG... (unlike where this is needed in the other half of this core, at least the io.h file mentions it... ). Since it's actually a macro, not a function call, this works...
   #endif
@@ -1449,10 +1443,14 @@ void init_clock() {
   #endif
 }
 
-void init()
-{
+void init() {
   init_clock(); // initialize the main system clock
-
+  #ifdef SET_REMAP
+    REMAP = SET_REMAP;
+  #endif
+  #ifdef SET_REMAPUSI
+    USIPP = 1
+  #endif
   /* Initialize Primary Timer */
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
     #if defined(WGM01) // if Timer0 has PWM

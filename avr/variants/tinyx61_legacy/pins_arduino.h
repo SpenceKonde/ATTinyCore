@@ -317,19 +317,35 @@ static const uint8_t A10 = ADC_CH(10);
 
 #define USE_SOFTWARE_SPI  (1)
 
+
 /* USI */
-#define USI_DI                PIN_PB0
-#define USI_DO                PIN_PB1
-#define USI_SCK               PIN_PB2
-#define SS                    PIN_PB3
+#ifndef SET_REMAPUSI
+  #define USI_DI                PIN_PB0
+  #define USI_DO                PIN_PB1
+  #define USI_SCK               PIN_PB2
+  #define SS                    PIN_PB3
 
-#define USI_DDR               DDRB
-#define USI_PORT              PORTB
-#define USI_PIN               PINB
+  #define USI_DDR               DDRB
+  #define USI_PORT              PORTB
+  #define USI_PIN               PINB
 
-#define USI_CLOCK_BIT         PINB2
-#define USI_DO_BIT            PINB1
-#define USI_DI_BIT            PINB0
+  #define USI_CLOCK_BIT         PINB2
+  #define USI_DO_BIT            PINB1
+  #define USI_DI_BIT            PINB0
+#else
+  #define USI_DI                PIN_PA0
+  #define USI_DO                PIN_PA1
+  #define USI_SCK               PIN_PA2
+  #define SS                    PIN_PA3
+
+  #define USI_DDR               DDRA
+  #define USI_PORT              PORTA
+  #define USI_PIN               PINA
+
+  #define USI_CLOCK_BIT         PINA2
+  #define USI_DO_BIT            PINA1
+  #define USI_DI_BIT            PINA0
+#endif
 
 #define USI_START_VECTOR      USI_START_vect
 #define USI_OVERFLOW_VECTOR   USI_OVF_vect
