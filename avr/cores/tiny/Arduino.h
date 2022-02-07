@@ -352,8 +352,63 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 #endif
 
-/* SIGRD is missing from some of the IO headers, where it should be defined as 5 for most parts.
- * It is sometimes omitted entirely and sometimes named SIGRD. It works the same no matter what
+/* SIGRD is missing from some of the IO headers, where it should
+ * be defined as 5 for most parts. It is sometimes omitted entirely
+ * and sometimes named RSIG. It is not present at all for some parts
+ * and it's unknown at this time whether that feature didn't exist
+ * and there was literally no way for the part to read it's own signature
+ * or if they just couldn't be bothered to document it. Because it is often
+ * missing from the headers for parts that do have it, we define it everywhere.
+
+These call it SIGRD:
+ATtiny167, ATtiny87
+
+These call it RSIG:
+ATtiny1634, ATtiny24*, ATtiny25, ATtiny4313, ATtiny44*, ATtiny441, ATtiny45, ATtiny828, ATtiny84*, ATtiny841, ATtiny85
+
+* datasheet doesnt mention it, and in fact lists just 5 valid combinations of of SPMCSR bits, that will have any effect
+...
+
+These don't list it, but the datasheet says they support it:
+ATtiny43U, ATtiny24A, ATtiny44A, ATtiny84A
+
+These don't list it in either place:
+ATtiny48, ATtiny88, All x61 family
+
+It really makes one wonder about the documentation folks (and this section is all copypasta). There's only one way to get the answer:
+
+#define SECTION_FUSE_LOCK 0x09
+#define SECTION_SIGROW 0x21
+
+uint8_t readSpecialSection(uint16_t addr, uint8_t section) { /
+  if((section == 0x21 || section == 0x09))
+  uint8_t result = (1 << section) | 1;
+  __asm__ __volatile__ (
+    "sts %[spmcsr], %[result]"  "\n\t"
+    "lpm %[result], Z"          "\n\t"
+  : [result] "+r" (result)
+  : [spmcsr] "i" (_SFR_MEM_ADDR(__SPM_REG)),
+    "z" (addr)
+  );
+  return result;
+}
+
+void setup() {
+  Serial.begin(9600);
+  for (uint16 i; i < 16; i++) {
+    uint8_t result = readSpecialSection(i, SECTION_FUSE_LOCK)
+    Serial.printHex(result);
+  }
+  for (uint16 i; i < 16; i++) {
+    uint8_t result = readSpecialSection(i, SECTION_FUSE_LOCK)
+    Serial.printHex(result);
+  }
+}
+void loop() {
+  ;
+}
+
+
  * so it's unfortunate that they did named it so inconsistently.   */
 #ifndef SIGRD
   #ifndef RSIG

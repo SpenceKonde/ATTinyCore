@@ -68,3 +68,24 @@ Unlike analogWrite, this expects a channel number (to simplify the implementatio
 Like analogWrite, passing 0 or 1023 will call digitalWrite and turn off the PWM, and passing any other number will turn on the PWM.
 
 Unlike analogWrite, this does not set the pin OUTPUT. It is your responsibility to do that prior to calling this if you want it to actually give you PWM.
+
+## Chip feature grab-bag
+These return 0 on success, 1 on failure, and throw an error if called on a part that doesn't have the feature at all.
+
+### uint8_t enableHighSinkPort(uint8_t port, bool mode)
+You can enable port C (`PC`) as a high sink port with this on the tiny828 only - it's no great shakes and the same absolute maximums apply, but for a given current, PORTC can drive lower than other pins, and even lower if you enable this.
+
+### uint8_t enableHighSinkPin(uint8_t pin, bool mode) {
+Same deal as above, but this works on PIN_PA5 and PIN_PA7 on the ATtiny841 and 441 only.
+
+### void enableISRC(bool mode)
+The tiny 87 and 167 have an internal current source (like a very accurate pullup) intended for LIN addressing but usable for many purposes. This will enable and disable it. The datasheet discourages one from leaving it on for an extended period of time. No return value, only the error if called from a part that doesn't have it, because there is no condition under which the current source is not available. The current source on the x7's is located on PA3.
+
+### void disableAllPullups(bool mode)
+Many parts have the option to disable all pullups on the chip, if they for some reason cause problems for your application (this would be very uncommon). This simple wrapper sets or clears the PullUpDisable bit.
+
+### void disablePortPullups(uint8_t port, bool mode)
+A small number of parts allow port-wise disabling of pullups. This sets and clears it those bits for you.  If either the global or the port PUD bit is set, the pullups are disabled.
+
+### uint8_t enableBBM(uint8_t port, bool mode)
+Some parts support "Break-Before-Make" switching, which inserts 1 system clock of tristate on a pin when the DDR register is changed. I think the point is so that you can turn one pin into an output and the other to an input with a single write to DDRx, even if any actual overlap would be problematic? I dunno, I've never heard of anyone using this. Returns 0 on success, 1 on failure (ie, the port didnt' exist or doesn't have a BBM bit), and errors if there's no port control register at all.
