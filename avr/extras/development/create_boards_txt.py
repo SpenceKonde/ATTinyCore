@@ -1,9 +1,12 @@
+import re
+
 clocktobaud = {
   "20": {
   "f_cpu":"20000000UL",
   "name":"20 MHz",
   "xl":False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"57600",
   },
   "16_5": {
@@ -11,6 +14,7 @@ clocktobaud = {
   "name":"16.5 MHz",
   "xl":False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"57600",
   },
   "16": {
@@ -18,6 +22,7 @@ clocktobaud = {
   "name":"16 MHz",
   "xl":False,
   "hard":"76800",
+  "lin":"115200",
   "soft":"57600",
   },
   "12_8": {
@@ -25,6 +30,7 @@ clocktobaud = {
   "name":"12.8 MHz",
   "xl":False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"57600",
   },
   "12": {
@@ -32,6 +38,7 @@ clocktobaud = {
   "name":"12 MHz",
   "xl"  :False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"57600",
   },
   "10": {
@@ -39,6 +46,7 @@ clocktobaud = {
   "name":"10 MHz",
   "xl"  :False,
   "hard":"57600",
+  "lin":"115200",
   "soft":"38400",
   },
   "8": {
@@ -46,6 +54,7 @@ clocktobaud = {
   "name":"8 MHz",
   "xl":False,
   "hard":"76800",
+  "lin":"115200",
   "soft":"28800",
   },
   "6": {
@@ -53,6 +62,7 @@ clocktobaud = {
   "name":"6 MHz",
   "xl":True,
   "hard":"57600",
+  "lin":"76800",
   "soft":"28800",
   },
   "4": {
@@ -61,7 +71,10 @@ clocktobaud = {
   "name":"4 MHz",
   "xl":True,
   "hard":"38400",
-  "soft":"19200",
+  "lin":"57600",
+  "soft":"14400",
+  "hardint":"9600",
+  "softint":"4800",
   },
   "2": {
   "f_cpu":"2000000UL",
@@ -69,13 +82,17 @@ clocktobaud = {
   "name":"2 MHz",
   "xl":True,
   "hard":"19200",
+  "lin":"19200",
   "soft":"9600",
+  "hardint":"9600",
+  "softint":"4800",
   },
   "1": {
   "f_cpu":"1000000UL",
   "name":"1 MHz",
   "xl"  :True,
   "hard":"9600",
+  "lin":"9600",
   "soft":"4800",
   },
   "7372k": {
@@ -83,6 +100,7 @@ clocktobaud = {
   "name":"7.372 MHz",
   "xl"  :True,
   "hard":"76800",
+  "lin":"76800",
   "soft":"28800",
   },
   "9216k": {
@@ -90,13 +108,23 @@ clocktobaud = {
   "name":"9.216 MHz",
   "xl"  :False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"38400",
+  },
+  "3686k": {
+  "f_cpu":"3686000UL",
+  "name":"3.686 MHz",
+  "xl"  :False,
+  "hard":"57600",
+  "lin":"57600",
+  "soft":"14400",
   },
   "11059k": {
   "f_cpu":"11059000UL",
   "name":"11.059 MHz",
   "xl":False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"38400",
   },
   "14746k": {
@@ -104,6 +132,7 @@ clocktobaud = {
   "name":"14.746 MHz",
   "xl":False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"57600",
   },
   "18432k": {
@@ -111,6 +140,7 @@ clocktobaud = {
   "name":"18.432 MHz",
   "xl":False,
   "hard":"115200",
+  "lin":"115200",
   "soft":"57600",
   }
 }
@@ -148,6 +178,7 @@ def getspeed(string,speed):
     t["intat1"] = False
   t["hard"] = string+clocktobaud[speed]["hard"]
   t["soft"] = string+clocktobaud[speed]["soft"]
+  t["lin"] = string+clocktobaud[speed]["lin"]
   return t
 
 boardnames = [
@@ -181,7 +212,7 @@ boardnames = [
   "attiny84micr.name=ATtiny84 w/Micronucleus (12.8 MHz, bootloader takes more flash)"]
 
 chipmenu = {
-  "attinyx4":"attinyx4.menu.chip.84=ATtiny84\nattinyx4.menu.chip.84.build.mcu=attiny84\nattinyx4.menu.chip.84.upload.maximum_size=8192\nattinyx4.menu.chip.84.upload.maximum_data_size=512\nattinyx4.menu.chip.44=ATtiny44\nattinyx4.menu.chip.44.build.mcu=attiny44\nattinyx4.menu.chip.44.upload.maximum_size=4096\nattinyx4.menu.chip.44.upload.maximum_data_size=256\nattinyx4.menu.chip.24=ATtiny24\nattinyx4.menu.chip.24.build.mcu=attiny24\nattinyx4.menu.chip.24.upload.maximum_size=2048\nattinyx4.menu.chip.24.upload.maximum_data_size=128",
+"attinyx4":["attiny84","attiny44"],
   "attinyx4opti":"attinyx4opti.menu.chip.84=ATtiny84\nattinyx4opti.menu.chip.84.build.mcu=attiny84\nattinyx4opti.menu.chip.84.upload.maximum_size=7552\nattinyx4opti.menu.chip.84.upload.maximum_data_size=512\nattinyx4opti.menu.chip.44=ATtiny44\nattinyx4opti.menu.chip.44.build.mcu=attiny44\nattinyx4opti.menu.chip.44.upload.maximum_size=3456\nattinyx4opti.menu.chip.44.upload.maximum_data_size=256",
   "attinyx4micr":"",
   "attinyx5":"attinyx5.menu.chip.85=ATtiny85\nattinyx5.menu.chip.85.build.mcu=attiny85\nattinyx5.menu.chip.85.upload.maximum_size=8192\nattinyx5.menu.chip.85.upload.maximum_data_size=512\nattinyx5.menu.chip.45=ATtiny45\nattinyx5.menu.chip.45.build.mcu=attiny45\nattinyx5.menu.chip.45.upload.maximum_size=4096\nattinyx5.menu.chip.45.upload.maximum_data_size=256\nattinyx5.menu.chip.25=ATtiny25\nattinyx5.menu.chip.25.build.mcu=attiny25\nattinyx5.menu.chip.25.upload.maximum_size=2048\nattinyx5.menu.chip.25.upload.maximum_data_size=128",
@@ -207,6 +238,19 @@ chipmenu = {
   "attiny828": "",
   "attiny828opti": ""
 }
+
+chiplist = {
+  "attinyx4":   ["attiny84","attiny44"],
+  "attinyx4":   ["attiny84","attiny44"],
+  "attinyx5":   ["attiny85","attiny45"],
+  "attinyx8":   ["attiny88","attiny48"],
+  "attinyx7":   ["attiny167","attiny87"],
+  "attinyx61":  ["attiny861","attiny461"],
+  "attinyx41":  ["attiny841","attiny441"],
+  "attiny1634": ["attiny1634"],
+  "attiny828":  ["attiny828"]
+}
+
 
 # Headers for sections:
 boards_no_loader="################################################################################\n#                                                                              #\n###                 ####    ###    ###   ####   ####    ###                  ###\n#####               #   #  #   #  #   #  #   #  #   #  #                   #####\n#######             ####   #   #  #####  ####   #   #   ###              #######\n#####               #   #  #   #  #   #  #  #   #   #      #               #####\n###                 ####    ###   #   #  #   #  ####    ###                  ###\n#______________________________________________________________________________#\n#                            Without Bootloaders                               #\n#           All supported parts can be used with an ISP programmer             #\n#______________________________________________________________________________#"
@@ -270,40 +314,40 @@ bootmodesmicr = [
   ".menu.bootentry.jumper=Jumper (see documentation) (permits jump from app)",".menu.bootentry.jumper.bootloader.entrymode=jumper"]
 
 intclocks = [[[".menu.clock.internal_8m=8 MHz (internal)", ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
-       ".menu.clock.internal_8m.build.f_cpu=8000000L", ".menu.clock.internal_8m.build.speed=8m",
+       ".menu.clock.internal_8m.build.f_cpu=8000000UL", ".menu.clock.internal_8m.build.speed=8m",
        ".menu.clock.internal_8m.build.clocksource=0"],getspeed(".menu.clock.internal_8m.upload.speed=","8")],
       [[".menu.clock.internal_1m=1 MHz (internal)", ".menu.clock.internal_1m.bootloader.low_fuses=0x62",
-       ".menu.clock.internal_1m.build.f_cpu=1000000L", ".menu.clock.internal_1m.build.speed=1m",
+       ".menu.clock.internal_1m.build.f_cpu=1000000UL", ".menu.clock.internal_1m.build.speed=1m",
        ".menu.clock.internal_1m.build.clocksource=0x10"], getspeed(".menu.clock.internal_1m.upload.speed=","1")],
       [[".menu.clock.internal_4m=4 MHz (internal)", ".menu.clock.internal_4m.bootloader.low_fuses=0x62",
-       ".menu.clock.internal_4m.build.f_cpu=4000000L", ".menu.clock.internal_4m.build.speed=4m",
-       ".menu.clock.internal_4m.build.clocksource=0x10",".menu.clock.internal.4m.bootloader.f_cpu=1000000L"], getspeed(".menu.clock.internal_4m.upload.speed=","4")],
+       ".menu.clock.internal_4m.build.f_cpu=4000000UL", ".menu.clock.internal_4m.build.speed=4m",
+       ".menu.clock.internal_4m.build.clocksource=0x10",".menu.clock.internal_4m.bootloader.f_cpu=1000000UL"], getspeed(".menu.clock.internal_4m.upload.speed=","4")],
       [[".menu.clock.internal_2m=2 MHz (internal)", ".menu.clock.internal_2m.bootloader.low_fuses=0x62",
-       ".menu.clock.internal_2m.build.f_cpu=2000000L", ".menu.clock.internal_2m.build.speed=2m",
-       ".menu.clock.internal_2m.build.clocksource=0x10",".menu.clock.internal.2m.bootloader.f_cpu=1000000L"], getspeed(".menu.clock.internal_2m.upload.speed=","2")]]
+       ".menu.clock.internal_2m.build.f_cpu=2000000UL", ".menu.clock.internal_2m.build.speed=2m",
+       ".menu.clock.internal_2m.build.clocksource=0x10",".menu.clock.internal_2m.bootloader.f_cpu=1000000UL"], getspeed(".menu.clock.internal_2m.upload.speed=","2")]]
 pllclocks = [[[".menu.clock.pll_16m=16 MHz (PLL)", ".menu.clock.pll_16m.bootloader.low_fuses=0xF1",
-       ".menu.clock.pll_16m.build.f_cpu=16000000L", ".menu.clock.pll_16m.build.speed=16m",
+       ".menu.clock.pll_16m.build.f_cpu=16000000UL", ".menu.clock.pll_16m.build.speed=16m",
        ".menu.clock.pll_16m.build.clocksource=6"], getspeed(".menu.clock.pll_16m.upload.speed=","16")],
        [[".menu.clock.pll_16m5=16.5 MHz (PLL, tweaked)", ".menu.clock.pll_16m5.bootloader.low_fuses=0xF1",
-       ".menu.clock.pll_16m5.build.f_cpu=16500000L", ".menu.clock.pll_16m5.build.speed=16m5",
-       ".menu.clock.pll_16m5.build.clocksource=6"], getspeed(".menu.clock.pll_16m5.upload.speed=","16_5")]]
+       ".menu.clock.pll_16m5.build.f_cpu=16500000UL", ".menu.clock.pll_16m5.build.speed=16m5",
+       ".menu.clock.pll_16m5.build.clocksource=6",".menu.clock.pll_16m5.bootloader.f_cpu=16000000UL"], getspeed(".menu.clock.pll_16m5.upload.speed=","16")]]
 tunedclocks = [[[".menu.clock.internal_12m=12 MHz (internal, tuned)", ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
-       ".menu.clock.internal_12m.build.f_cpu=12000000L", ".menu.clock.internal_12m.build.speed=12m",
-       ".menu.clock.internal_12m.build.clocksource=0"], getspeed(".menu.clock.internal_12m.upload.speed=","12")],
-       #[[".menu.clock.internal_12m8=12.8 MHz (internal, tuned)", ".menu.clock.internal_12m8.bootloader.low_fuses=0xE2",
-       #".menu.clock.internal_12m8.build.f_cpu=12800000L", ".menu.clock.internal_12m8.build.speed=12m",
-       #".menu.clock.internal_12m8.build.clocksource=0"], getspeed(".menu.clock.internal_12m8.upload.speed=","12_8")],
+       ".menu.clock.internal_12m.build.f_cpu=12000000UL", ".menu.clock.internal_12m.build.speed=12m",
+       ".menu.clock.internal_12m.build.clocksource=0","menu.clock.internal12m8.bootloader.f_cpu=8000000"], getspeed(".menu.clock.internal_12m.upload.speed=","8")],
+       [[".menu.clock.internal_12m8=12.8 MHz (internal, tuned)", ".menu.clock.internal_12m8.bootloader.low_fuses=0xE2",
+       ".menu.clock.internal_12m8.build.f_cpu=12800000L", ".menu.clock.internal_12m8.build.speed=12m",
+       ".menu.clock.internal_12m8.build.clocksource=0", "menu.clock.internal12m8.bootloader.f_cpu=8000000"], getspeed(".menu.clock.internal_12m8.upload.speed=","8")],
        ]
 tune8stdclk = [[[".menu.clock.internal_8m_tuned=8 MHz (internal, tuned)", ".menu.clock.internal_8m_tuned.bootloader.low_fuses=0xE2",
-       ".menu.clock.internal_8m_tuned.build.f_cpu=8000000L", ".menu.clock.internal_8m_tuned.build.speed=8m",
+       ".menu.clock.internal_8m_tuned.build.f_cpu=8000000UL", ".menu.clock.internal_8m_tuned.build.speed=8m",
        ".menu.clock.internal_8m_tuned.build.clocksource=0"], getspeed(".menu.clock.internal_8m_tuned.upload.speed=","8")],]
 tune8vdepclk = [[[".menu.clock.internal_8m_tuned=8 MHz (internal, tuned, < 4.0V)", ".menu.clock.internal_8m_tuned_low.bootloader.low_fuses=0xE2",
-       ".menu.clock.internal_8m_tuned_low.build.f_cpu=8000000L", ".menu.clock.internal_8m_tuned_low.build.speed=8m",
+       ".menu.clock.internal_8m_tuned_low.build.f_cpu=8000000UL", ".menu.clock.internal_8m_tuned_low.build.speed=8m",
        ".menu.clock.internal_8m_tuned_low.build.clocksource=0"], getspeed(".menu.clock.internal_8m_tuned_low.upload.speed=","8")],
        [[".menu.clock.internal_8m_tuned_high=8 MHz (internal, tuned, > 4.0V)", ".menu.clock.internal_8m_tuned_high.bootloader.low_fuses=0xE2",
-       ".menu.clock.internal_8m_tuned_high.build.f_cpu=8000000L", ".menu.clock.internal_8m_tuned_high.build.speed=8m",
+       ".menu.clock.internal_8m_tuned_high.build.f_cpu=8000000UL", ".menu.clock.internal_8m_tuned_high.build.speed=8m",
        ".menu.clock.internal_8m_tuned_high.build.clocksource=0"], getspeed(".menu.clock.internal_8m_tuned_high.upload.speed=","8")]]
-xtalclocks = ["16m", "8m", "20m", "12m", "6m", "18432k", "14746k", "11059k", "9216k", "7372k"]
+xtalclocks = ["16m", "8m", "20m", "12m", "6m", "18432k", "14746k", "11059k", "9216k", "7372k", "3686k"]
 
 wdtclocks = [".menu.clock.internal_128k=128 kHz (internal WDT)",".menu.clock.internal_128k.build.f_cpu=128000L",".menu.clock.internal_128k.build.speed=128k",
        ".menu.clock.internal_128k.build.clocksource=3"]
@@ -324,837 +368,1064 @@ ulpclocks = [".menu.clock.internal_512k=512 kHz (internal ULP)",".menu.clock.int
        ".menu.clock.internal_32k.bootloader.ulp_bits=111",".menu.clock.internal_32k.build.f_cpu=32000L",
        ".menu.clock.internal_32k.build.speed=32k",".menu.clock.internal_32k.build.clocksource=4"]
 
-
+titles={
+  "attinyx4":"\n#*******************************************************************************\n#   ###  #####                          #  #\n#  #   #   #    #  #                    #  #\n#  #####   #   ###    ###  #  #     # # ####\n#  #   #   #    #  #  #  # #  #      #     #\n#  #   #   #    #  #  #  #  ###     # #    #\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx5":"\n#*******************************************************************************\n#   ###  #####                          ####\n#  #   #   #    #  #                    #\n#  #####   #   ###    ###  #  #     # # ###\n#  #   #   #    #  #  #  # #  #      #     #\n#  #   #   #    #  #  #  #  ###     # # ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx8":"\n#*******************************************************************************\n#   ###  #####                           ###\n#  #   #   #    #  #                    #   #\n#  #####   #   ###    ###  #  #     # #  ###\n#  #   #   #    #  #  #  # #  #      #  #   #\n#  #   #   #    #  #  #  #  ###     # #  ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx7":"\n#*******************************************************************************\n#   ###  #####                          #####\n#  #   #   #    #  #                       #\n#  #####   #   ###    ###  #  #     # #   #\n#  #   #   #    #  #  #  # #  #      #    #\n#  #   #   #    #  #  #  #  ###     # #   #\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny26":"\n#*******************************************************************************\n#   ###  #####                       ##    #\n#  #   #   #    #  #                #  #  #\n#  #####   #   ###    ###  #  #       #  ####\n#  #   #   #    #  #  #  # #  #      #   #   #\n#  #   #   #    #  #  #  #  ###     ####  ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx61":"\n#*******************************************************************************\n#   ###  #####                            #     #\n#  #   #   #    #  #                     #     ##\n#  #####   #   ###    ###  #  #     # # ####    #\n#  #   #   #    #  #  #  # #  #      #  #   #   #\n#  #   #   #    #  #  #  #  ###     # #  ###   ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx41":"\n#*******************************************************************************\n#   ###  #####                          #  #   #\n#  #   #   #    #  #                    #  #  ##\n#  #####   #   ###    ###  #  #     # # ####   #\n#  #   #   #    #  #  #  # #  #      #     #   #\n#  #   #   #    #  #  #  #  ###     # #    #  ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny828":"\n#*******************************************************************************\n#   ###  #####                       ###   ##   ###\n#  #   #   #    #  #                #   # #  # #   #\n#  #####   #   ###    ###  #  #      ###    #   ###\n#  #   #   #    #  #  #  # #  #     #   #  #   #   #\n#  #   #   #    #  #  #  #  ###      ###  ####  ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny1634":"\n#*******************************************************************************\n#   ###  #####                       #    #   ###  #  #\n#  #   #   #    #  #                ##   #       # #  #\n#  #####   #   ###    ###  #  #      #  ####   ##  ####\n#  #   #   #    #  #  #  # #  #      #  #   #    #    #\n#  #   #   #    #  #  #  #  ###     ###  ###  ###     #\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx313":"\n#*******************************************************************************\n#   ###  #####                          ###    #  ###\n#  #   #   #    #  #                       #  ##     #\n#  #####   #   ###    ###  #  #     # #  ##    #   ##\n#  #   #   #    #  #  #  # #  #      #     #   #     #\n#  #   #   #    #  #  #  #  ###     # # ###   ### ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny43u":"\n#*******************************************************************************\n#   ###  #####                      #  # ###\n#  #   #   #    #  #                #  #    #\n#  #####   #   ###    ###  #  #     ####  ##\n#  #   #   #    #  #  #  # #  #        #    #\n#  #   #   #    #  #  #  #  ###        # ###\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attinyx4opti":"\n#*******************************************************************************\n#   ###  #####                          #  #      ###\n#  #   #   #    #  #                    #  #     #   #       #  #\n#  #####   #   ###    ###  #  #     # # ####     #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #     #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     # #    #      ###  ###   #  #\n#_____________________________#________________________#________________________\n                           ###                         #\n",
+  "attinyx5opti":"\n#*******************************************************************************\n#   ###  #####                          ####      ###\n#  #   #   #    #  #                    #        #   #       #  #\n#  #####   #   ###    ###  #  #     # # ###      #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #     #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     # # ###       ###  ###   #  #\n#_____________________________#________________________#________________________\n                           ###                         #\n",
+  "attinyx8opti":"\n#*******************************************************************************\n#   ###  #####                           ###       ###\n#  #   #   #    #  #                    #   #     #   #       #  #\n#  #####   #   ###    ###  #  #     # #  ###      #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #  #   #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     # #  ###       ###  ###   #  #\n#_____________________________#_________________________#_______________________\n                           ###                          #\n",
+  "attinyx7opti":"\n#*******************************************************************************\n#   ###  #####                          #####      ###\n#  #   #   #    #  #                       #      #   #       #  #\n#  #####   #   ###    ###  #  #     # #   #       #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #    #       #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     # #   #        ###  ###   #  #\n#_____________________________#_________________________#_______________________\n                           ###                          #\n",
+  "attinyx61opti":"\n#*******************************************************************************\n#   ###  #####                            #     #       ###\n#  #   #   #    #  #                     #     ##      #   #       #  #\n#  #####   #   ###    ###  #  #     # # ####    #      #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #  #   #   #      #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     # #  ###   ###      ###  ###   #  #\n#_____________________________#______________________________#__________________\n                           ###                               #\n",
+  "attinyx41opti":"\n#*******************************************************************************\n#   ###  #####                          #  #   #       ###\n#  #   #   #    #  #                    #  #  ##      #   #       #  #\n#  #####   #   ###    ###  #  #     # # ####   #      #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #     #   #      #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     # #    #  ###      ###  ###   #  #\n#_____________________________#_____________________________#___________________\n                           ###                              #\n",
+  "attiny828opti":"\n#*******************************************************************************\n#   ###  #####                       ###   ##   ###       ###\n#  #   #   #    #  #                #   # #  # #   #     #   #       #  #\n#  #####   #   ###    ###  #  #      ###    #   ###      #   # ###  ###\n#  #   #   #    #  #  #  # #  #     #   #  #   #   #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###      ###  ####  ###       ###  ###   #  #\n#_____________________________#________________________________#________________\n                           ###                                 #\n",
+  "attiny1634opti":"\n#*******************************************************************************\n#   ###  #####                       #    #   ###  #  #      ###\n#  #   #   #    #  #                ##   #       # #  #     #   #       #  #\n#  #####   #   ###    ###  #  #      #  ####   ##  ####     #   # ###  ###\n#  #   #   #    #  #  #  # #  #      #  #   #    #    #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###     ###  ###  ###     #      ###  ###   #  #\n#_____________________________#____________________________________#____________\n                           ###                                     #\n",
+  "attiny84mi12":"\n#*******************************************************************************\n#   ###  #####                          #  #         #   #  ###  ####\n#  #   #   #    #  #                    #  #         #   # #     #   #\n#  #####   #   ###    ###  #  #     # # ####     # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #     #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     # #    #      #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny84micr":"\n#*******************************************************************************\n#   ###  #####                          #  #         #   #  ###  ####\n#  #   #   #    #  #                    #  #         #   # #     #   #\n#  #####   #   ###    ###  #  #     # # ####     # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #     #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     # #    #      #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny85micr":"\n#*******************************************************************************\n#   ###  #####                          ####         #   #  ###  ####\n#  #   #   #    #  #                    #            #   # #     #   #\n#  #####   #   ###    ###  #  #     # # ###      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #     #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     # # ###       #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny88micr":"\n#*******************************************************************************\n#   ###  #####                           ###          #   #  ###  ####\n#  #   #   #    #  #                    #   #         #   # #     #   #\n#  #####   #   ###    ###  #  #     # #  ###      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #  #   #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     # #  ###       #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny167micr":"\n#*******************************************************************************\n#   ###  #####                       #    #  #####         #   #  ###  ####\n#  #   #   #    #  #                ##   #       #         #   # #     #   #\n#  #####   #   ###    ###  #  #      #  ####    #      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #  #   #  #       # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     ###  ###  #         #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny87micr":"\n#*******************************************************************************\n#   ###  #####                       ### #####         #   #  ###  ####\n#  #   #   #    #  #                #   #    #         #   # #     #   #\n#  #####   #   ###    ###  #  #      ###    #      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #     #   #  #       # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###      ###  #         #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny861micr":"\n#*******************************************************************************\n#   ###  #####                            #    ##          #   #  ###  ####\n#  #   #   #    #  #                     #    ###          #   # #     #   #\n#  #####   #   ###    ###  #  #     # # ####   ##      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #  #   #  ##      # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     # #  ###  ####      #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny841micr":"\n#*******************************************************************************\n#   ###  #####                          #  #   #          #   #  ###  ####\n#  #   #   #    #  #                    #  #  ##          #   # #     #   #\n#  #####   #   ###    ###  #  #     # # ####   #      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #     #   #      # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     # #    #  ###      #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n",
+  "attiny1634micr":"\n#*******************************************************************************\n#   ###  #####                       #    #   ###  #  #        #   #  ###  ####\n#  #   #   #    #  #                ##   #       # #  #        #   # #     #   #\n#  #####   #   ###    ###  #  #      #  ####   ##  ####    # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #      #  #   #    #    #    # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###     ###  ###  ###     #     #   ###  ####  ####\n#_____________________________#_________________________________________________\n                           ###\n"
+}
 
 
 boards = {
   "header1":{
-  "header":boards_no_loader
+    "header":boards_no_loader
   },
-  "attinyx4":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                          #  #\n#  #   #   #    #  #                    #  #\n#  #####   #   ###    ###  #  #     # # ####\n#  #   #   #    #  #  #  # #  #      #     #\n#  #   #   #    #  #  #  #  ###     # #    #\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx4_cw",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":True,
-  "wdtcode":"4",
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx4_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"A",
-  "ssrx":"2",
-  "sstx":"1",
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+  "attinyx4":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx4_cw",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":True,
+    "wdtcode":"4",
+    "fancybod":False,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx4_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"A",
+    "ssrx":"2",
+    "sstx":"1",
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx5":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                          ####\n#  #   #   #    #  #                    #\n#  #####   #   ###    ###  #  #     # # ###\n#  #   #   #    #  #  #  # #  #      #     #\n#  #   #   #    #  #  #  #  ###     # # ###\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":True,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx5",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":True,
-  "wdtcode":"4",
-  "fancybod":False,
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"B",
-  "ssrx":"1",
-  "sstx":"0",
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx5":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":True,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx5",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":True,
+    "wdtcode":"4",
+    "fancybod":False,
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"B",
+    "ssrx":"1",
+    "sstx":"0",
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx8":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                           ###\n#  #   #   #    #  #                    #   #\n#  #####   #   ###    ###  #  #     # #  ###\n#  #   #   #    #  #  #  # #  #      #  #   #\n#  #   #   #    #  #  #  #  ###     # #  ###\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx8",
-  "lfuse_ext":"0xE0",
-  "hasxtal":False,
-  "haswdt":True,
-  "wdtcode":"3",
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.mhet=MH-ET Tiny", ".menu.pinmap.mhet.build.variant=tinyx8_MH",".menu.pinmap.default.build.pinmapabr=", ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"D",
-  "ssrx":"7",
-  "sstx":"6",
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx8":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx8",
+    "lfuse_ext":"0xE0",
+    "hasxtal":False,
+    "haswdt":True,
+    "wdtcode":"3",
+    "fancybod":False,
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.mhet=MH-ET Tiny",
+      ".menu.pinmap.mhet.build.variant=tinyx8_MH",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"D",
+    "ssrx":"7",
+    "sstx":"6",
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx7":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                          #####\n#  #   #   #    #  #                       #\n#  #####   #   ###    ###  #  #     # #   #\n#  #   #   #    #  #  #  # #  #      #    #\n#  #   #   #    #  #  #  #  ###     # #   #\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx7",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":True,
-  "wdtcode":"3",
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.digi=Digispark Pro", ".menu.pinmap.digi.build.variant=tinyx7_digi", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx7_legacy",".menu.pinmap.default.build.pinmapabr=",".menu.pinmap.digi.build.pinmapabr=.digi", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "fancybod":False,
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx7":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx7",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":True,
+    "wdtcode":"3",
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.digi=Digispark Pro",
+      ".menu.pinmap.digi.build.variant=tinyx7_digi",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx7_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.digi.build.pinmapabr=.digi",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "fancybod":False,
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny26":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                       ##    #\n#  #   #   #    #  #                #  #  #\n#  #####   #   ###    ###  #  #       #  ####\n#  #   #   #    #  #  #  # #  #      #   #   #\n#  #   #   #    #  #  #  #  ###     ####  ###\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":False,
-  "flash":"2048",
-  "sram":"128",
-  "bootloader":"",
-  "haspll":True,
-  "hasvoltdependance":False,
-  "defaultvariant":"tiny26",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":False,
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"A",
-  "ssrx":"7",
-  "sstx":"6",
-  "hfuse":"0b{bootloader.rstbit}1110{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny26":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"2048",
+    "sram":"128",
+    "bootloader":"",
+    "haspll":True,
+    "hasvoltdependance":False,
+    "defaultvariant":"tiny26",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":False,
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"A",
+    "ssrx":"7",
+    "sstx":"6",
+    "hfuse":"0b{bootloader.rstbit}1110{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx61":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                            #    ##\n#  #   #   #    #  #                     #    ###\n#  #####   #   ###    ###  #  #     # # ####   ##\n#  #   #   #    #  #  #  # #  #      #  #   #  ##\n#  #   #   #    #  #  #  #  ###     # #  ###  ####\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":True,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx61",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":True,
-  "wdtcode":"3",
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx61_legacy",".menu.pinmap.default.build.pinmapabr=", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "softser":False,
-  "fancysoftser":True,
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx61":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":True,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx61",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":True,
+    "wdtcode":"3",
+    "fancybod":False,
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "softser":False,
+    "fancysoftser":True,
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx41":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                          #  #  ##\n#  #   #   #    #  #                    #  # ###\n#  #####   #   ###    ###  #  #     # # ####  ##\n#  #   #   #    #  #  #  # #  #      #     #  ##\n#  #   #   #    #  #  #  #  ###     # #    # ####\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":True,
-  "defaultvariant":"tinyx41_cw",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xEE",
-  "lfuse_xl":"0xED",
-  "hasulp":True,
-  "haswdt":False,
-  "fancybod":True,
-  "wiremodes":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx41_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
+    "attinyx41":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":True,
+    "defaultvariant":"tinyx41_cw",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xEE",
+    "lfuse_xl":"0xED",
+    "hasulp":True,
+    "haswdt":False,
+    "fancybod":True,
+    "wiremodes":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx41_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0b{bootloader.ulp_bits}{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
   },
-  "attiny828":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                       ###   ##   ###\n#  #   #   #    #  #                #   # #  # #   #\n#  #####   #   ###    ###  #  #      ###    #   ###\n#  #   #   #    #  #  #  # #  #     #   #  #   #   #\n#  #   #   #    #  #  #  #  ###      ###  ####  ###\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":False,
-  "flash":"8192",
-  "sram":"512",
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":True,
-  "defaultvariant":"tiny828",
-  "lfuse_ext":"0xEC",
-  "hasxtal":False,
-  "haswdt":False,
-  "fancybod":True,
-  "wiremodes":True,
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0b{bootloader.bodpd_bits}{bootloader.bodact_bits}1111",
+    "attiny828":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"8192",
+    "sram":"512",
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":True,
+    "defaultvariant":"tiny828",
+    "lfuse_ext":"0xEC",
+    "hasxtal":False,
+    "haswdt":False,
+    "fancybod":True,
+    "wiremodes":True,
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0b{bootloader.bodpd_bits}{bootloader.bodact_bits}1111",
   },
-  "attiny1634":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                       ##    #   ###  #  #\n#  #   #   #    #  #                ###   #       # #  #\n#  #####   #   ###    ###  #  #      ##  ####   ##  ####\n#  #   #   #    #  #  #  # #  #      ##  #   #    #    #\n#  #   #   #    #  #  #  #  ###     ####  ###  ###     #\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":False,
-  "flash":"16384",
-  "sram":"1024",
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":True,
-  "defaultvariant":"tiny1634_cw",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tiny1634_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
+    "attiny1634":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"16384",
+    "sram":"1024",
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":True,
+    "defaultvariant":"tiny1634_cw",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tiny1634_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
   },
-  "attinyx313":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                          ###   ##  ###\n#  #   #   #    #  #                       # ###     #\n#  #####   #   ###    ###  #  #     # #  ##   ##   ##\n#  #   #   #    #  #  #  # #  #      #     #  ##     #\n#  #   #   #    #  #  #  #  ###     # # ###  #### ###\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":True,
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx313",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":True,
-  "wdtcode":"6",
-  "fancybod":False,
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx313":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx313",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":True,
+    "wdtcode":"6",
+    "fancybod":False,
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny43u":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #  # ###\n#  #   #   #    #  #                #  #    #\n#  #####   #   ###    ###  #  #     ####  ##\n#  #   #   #    #  #  #  # #  #        #    #\n#  #   #   #    #  #  #  #  ###        # ###\n#_____________________________#_________________________________________________\n                           ###",
-  "chipmenu":False,
-  "flash":"4096",
-  "sram":"256",
-  "bootloader":"",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tiny43",
-  "hasxtal":False,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":True,
-  "wdtcode":"3",
-  "fancybod":False,
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"A",
-  "ssrx":"5",
-  "sstx":"4",
-  "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny43u":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"4096",
+    "sram":"256",
+    "bootloader":"",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tiny43",
+    "hasxtal":False,
+    "onlytunesto8":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":True,
+    "wdtcode":"3",
+    "fancybod":False,
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"A",
+    "ssrx":"5",
+    "sstx":"4",
+    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "header2":{
+    "header2":{
   "header":boards_optiboot
   },
-  "attinyx4opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #  #      ###\n#  #   #   #    #  #                #  #     #   #       #  #\n#  #####   #   ###    ###  #  # # # ####     #   # ###  ###\n#  #   #   #    #  #  #  # #  #  #     #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### # #    #      ###  ###   #  #\n#_____________________________#____________________#____________________________\n                           ###                     #",
-  "chipmenu":True,
-  "bootloader":"Optiboot",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx4_cw",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx4_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"A",
-  "ssrx":"2",
-  "sstx":"1",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx4opti":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"Optiboot",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx4_cw",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":False,
+    "pinmap":[
+     ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx4_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"A",
+    "ssrx":"2",
+    "sstx":"1",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx5opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      ####      ###\n#  #   #   #    #  #                #        #   #       #  #\n#  #####   #   ###    ###  #  # # # ###      #   # ###  ###\n#  #   #   #    #  #  #  # #  #  #     #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### # # ###       ###  ###   #  #\n#_____________________________#____________________#____________________________\n                           ###                     #",
-  "chipmenu":True,
-  "bootloader":"Optiboot",
-  "haspll":True,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx5",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":False,
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"B",
-  "ssrx":"1",
-  "sstx":"0",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx5opti":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"Optiboot",
+    "haspll":True,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx5",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":False,
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"B",
+    "ssrx":"1",
+    "sstx":"0",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx8opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                       ###       ###\n#  #   #   #    #  #                #   #     #   #       #  #\n#  #####   #   ###    ###  #  # # #  ###      #   # ###  ###\n#  #   #   #    #  #  #  # #  #  #  #   #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### # #  ###       ###  ###   #  #\n#_____________________________#_____________________#___________________________\n                           ###                      #",
-  "chipmenu":True,
-  "bootloader":"Optiboot",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx8",
-  "lfuse_ext":"0xE0",
-  "hasxtal":False,
-  "haswdt":False,
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.mhet=MH-ET Tiny", ".menu.pinmap.,mhet.build.variant=tinyx8_MH",".menu.pinmap.default.build.pinmapabr=", ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"D",
-  "ssrx":"7",
-  "sstx":"6",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx8opti":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"Optiboot",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx8",
+    "lfuse_ext":"0xE0",
+    "hasxtal":False,
+    "haswdt":False,
+    "fancybod":False,
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.mhet=MH-ET Tiny",
+      ".menu.pinmap.,mhet.build.variant=tinyx8_MH",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"D",
+    "ssrx":"7",
+    "sstx":"6",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx7opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #####      ###\n#  #   #   #    #  #                   #      #   #       #  #\n#  #####   #   ###    ###  #  # # #   #       #   # ###  ###\n#  #   #   #    #  #  #  # #  #  #    #       #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### # #   #        ###  ###   #  #\n#_____________________________#_____________________#___________________________\n                           ###                      #",
-  "chipmenu":True,
-  "bootloader":"Optiboot",
-  "haspll":False,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx7",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.digi=Digispark Pro", ".menu.pinmap.digi.build.variant=tinyx7_digi", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx7_legacy",".menu.pinmap.default.build.pinmapabr=",".menu.pinmap.digi.build.pinmapabr=.digi", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx7opti":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"Optiboot",
+    "haspll":False,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx7",
+    "hasxtal":True,
+    "haslin":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":False,
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.digi=Digispark Pro",
+      ".menu.pinmap.digi.build.variant=tinyx7_digi",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx7_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.digi.build.pinmapabr=.digi",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx61opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                        #    ##       ###\n#  #   #   #    #  #                 #    ###      #   #       #  #\n#  #####   #   ###    ###  #  # # # ####   ##      #   # ###  ###\n#  #   #   #    #  #  #  # #  #  #  #   #  ##      #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### # #  ###  ####      ###  ###   #  #\n#_____________________________#__________________________#______________________\n                           ###                           #",
-  "chipmenu":True,
-  "bootloader":"Optiboot",
-  "haspll":True,
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx61",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":False,
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx61_legacy",".menu.pinmap.default.build.pinmapabr=", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "softser":False,
-  "fancysoftser":True,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attinyx61opti":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"Optiboot",
+    "haspll":True,
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx61",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":False,
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "softser":False,
+    "fancysoftser":True,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attinyx41opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #  #  ##       ###\n#  #   #   #    #  #                #  # ###      #   #       #  #\n#  #####   #   ###    ###  #  # # # ####  ##      #   # ###  ###\n#  #   #   #    #  #  #  # #  #  #     #  ##      #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### # #    # ####      ###  ###   #  #\n#_____________________________#_________________________#_______________________\n                           ###                          #",
-  "chipmenu":True,
-  "bootloader":"Optiboot",
-  "haspll":False,
-  "hasvoltdependance":True,
-  "defaultvariant":"tinyx41_cw",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xEE",
-  "lfuse_xl":"0xED",
-  "haswdt":False,
-  "fancybod":True,
-  "wiremodes":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx41_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "optipins":[".menu.bootloaderuart.uart0=Serial 0 (TX: PB0, RX: PA7, LED: PC0)",".menu.bootloaderuart.uart1=Serial 1 (TX: PB0, RX: PA7, LED: PC0)",".menu.bootloaderuart.uart0.bootloader.uart=",".menu.bootloaderuart.uart1.bootloader.uart=_ser1"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
+    "attinyx41opti":{
+    "title":True,
+    "chipmenu":True,
+    "bootloader":"Optiboot",
+    "haspll":False,
+    "hasvoltdependance":True,
+    "defaultvariant":"tinyx41_cw",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xEE",
+    "lfuse_xl":"0xED",
+    "haswdt":False,
+    "fancybod":True,
+    "wiremodes":True,
+    "twouart":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx41_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "optipins":[
+      ".menu.bootloaderuart.uart0=Serial 0 (TX: PB0, RX: PA7, LED: PC0)",
+      ".menu.bootloaderuart.uart1=Serial 1 (TX: PB0, RX: PA7, LED: PC0)",
+      ".menu.bootloaderuart.uart0.bootloader.uart=",
+      ".menu.bootloaderuart.uart1.bootloader.uart=_ser1"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
   },
-  "attiny828opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                   ###   ##   ###       ###\n#  #   #   #    #  #            #   # #  # #   #     #   #       #  #\n#  #####   #   ###    ###  #  #  ###    #   ###      #   # ###  ###\n#  #   #   #    #  #  #  # #  # #   #  #   #   #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ###  ###  ####  ###       ###  ###   #  #\n#_____________________________#____________________________#____________________\n                           ###                             #",
-  "chipmenu":False,
-  "flash":"7680",
-  "sram":"512",
-  "bootloader":"Optiboot",
-  "haspll":False,
-  "hasvoltdependance":True,
-  "defaultvariant":"tiny828",
-  "lfuse_ext":"0xEC",
-  "hasxtal":False,
-  "haswdt":False,
-  "fancybod":True,
-  "wiremodes":True,
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0b{bootloader.bodpd_bits}{bootloader.bodact_bits}1100",
+    "attiny828opti":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"7680",
+    "sram":"512",
+    "bootloader":"Optiboot",
+    "haspll":False,
+    "hasvoltdependance":True,
+    "defaultvariant":"tiny828",
+    "lfuse_ext":"0xEC",
+    "hasxtal":False,
+    "haswdt":False,
+    "fancybod":True,
+    "wiremodes":True,
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0b{bootloader.bodpd_bits}{bootloader.bodact_bits}1100",
   },
-  "attiny1634opti":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                   ##    #   ###  #  #      ###\n#  #   #   #    #  #            ###   #       # #  #     #   #       #  #\n#  #####   #   ###    ###  #  #  ##  ####   ##  ####     #   # ###  ###\n#  #   #   #    #  #  #  # #  #  ##  #   #    #    #     #   # #  #  #  #\n#  #   #   #    #  #  #  #  ### ####  ###  ###     #      ###  ###   #  #\n#_____________________________#________________________________#________________\n                           ###                                 #",
-  "chipmenu":False,
-  "flash":"15744",
-  "sram":"1024",
-  "bootloader":"Optiboot",
-  "haspll":False,
-  "hasvoltdependance":True,
-  "defaultvariant":"tiny1634_cw",
-  "hasxtal":True,
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "haswdt":False,
-  "fancybod":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tiny1634_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "optipins":[".menu.bootloaderuart.uart0=Serial 0 (TX: PB0, RX: PA7, LED: PC0)",".menu.bootloaderuart.uart1=Serial 1 (TX: PB0, RX: PA7, LED: PC0)",".menu.bootloaderuart.uart0.bootloader.uart=",".menu.bootloaderuart.uart1.bootloader.uart=_ser1"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
+    "attiny1634opti":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"15744",
+    "sram":"1024",
+    "bootloader":"Optiboot",
+    "haspll":False,
+    "hasvoltdependance":True,
+    "defaultvariant":"tiny1634_cw",
+    "hasxtal":True,
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "haswdt":False,
+    "fancybod":True,
+    "twouart":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tiny1634_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "optipins":[
+      ".menu.bootloaderuart.uart0=Serial 0 (TX: PB0, RX: PA7, LED: PC0)",
+      ".menu.bootloaderuart.uart1=Serial 1 (TX: PB0, RX: PA7, LED: PC0)",
+      ".menu.bootloaderuart.uart0.bootloader.uart=",
+      ".menu.bootloaderuart.uart1.bootloader.uart=_ser1"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
   },
-  "header3":{
+    "header3":{
   "header":boards_micronucleus
   },
-  "attiny84mi12":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #  #         #   #  ###  ####\n#  #   #   #    #  #                #  #         #   # #     #   #\n#  #####   #   ###    ###  #  # # # ####     # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  #     #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### # #    #      #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny84",
-  "flash":"6588",
-  "entrymodesizes":[".menu.bootentry.jumper.upload.maximum_size=6524"],
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "clock":[
-    ".menu.clock.internal_8m=8 MHz",
-    ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_8m.build.f_cpu=8000000L",
-    ".menu.clock.internal_8m.build.speed=8m",
-    ".menu.clock.internal_8m.build.clocksource=0",
-    ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
-    ".menu.clock.internal_12m=12 MHz (tuned by bootloader)",
-    ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_12m.build.f_cpu=12000000L",
-    ".menu.clock.internal_12m.build.speed=12m",
-    ".menu.clock.internal_12m.build.clocksource=0",
-    ".menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120"],
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx4_cw",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":False,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx4_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "USBPins":[".menu.usbpins.pb2plus=PB0: LED, PB1: D-, PB2: D+",".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED", ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED", ".menu.usbpins.pb2plus.build.usbpinset=-DUSB_TWOPLUS -DLED_BUILTIN=PIN_PB0", ".menu.usbpins.pb1plus.build.usbpinset=-DUSB_ONEPLUS",".menu.usbpins.pb0plus.build.usbpinset=-DUSB_ZEROPLUS",".menu.usbpins.pb2plus.bootloader.usbpinsetname=_pb2plus",".menu.usbpins.pb1plus.bootloader.usbpinsetname=_pb1plus",".menu.usbpins.pb0plus.bootloader.usbpinsetname=_pb0plus"],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"A",
-  "ssrx":"2",
-  "sstx":"1",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny84mi12":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny84",
+    "flash":"6588",
+    "entrymodesizes":[
+      ".menu.bootentry.jumper.upload.maximum_size=6524"],
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".menu.clock.internal_8m=8 MHz",
+      ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_8m.build.f_cpu=8000000UL",
+      ".menu.clock.internal_8m.build.speed=8m",
+      ".menu.clock.internal_8m.build.clocksource=0",
+      ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
+      ".menu.clock.internal_12m=12 MHz (tuned by bootloader)",
+      ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_12m.build.f_cpu=12000000UL",
+      ".menu.clock.internal_12m.build.speed=12m",
+      ".menu.clock.internal_12m.build.clocksource=0",
+      ".menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120"],
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx4_cw",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":False,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx4_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "USBPins":[
+      ".menu.usbpins.pb2plus=PB0: LED, PB1: D-, PB2: D+",
+      ".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED",
+      ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED",
+      ".menu.usbpins.pb2plus.build.usbpinset=-DUSB_TWOPLUS -DLED_BUILTIN=PIN_PB0",
+      ".menu.usbpins.pb1plus.build.usbpinset=-DUSB_ONEPLUS",
+      ".menu.usbpins.pb0plus.build.usbpinset=-DUSB_ZEROPLUS",
+      ".menu.usbpins.pb2plus.bootloader.usbpinsetname=_pb2plus",
+      ".menu.usbpins.pb1plus.bootloader.usbpinsetname=_pb1plus",
+      ".menu.usbpins.pb0plus.bootloader.usbpinsetname=_pb0plus"],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"A",
+    "ssrx":"2",
+    "sstx":"1",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny84micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #  #         #   #  ###  ####\n#  #   #   #    #  #                #  #         #   # #     #   #\n#  #####   #   ###    ###  #  # # # ####     # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  #     #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### # #    #      #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny84_128",
-  "flash":"6268",
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "clock":[
-    ".menu.clock.internal_8m=8 MHz",
-    ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_8m.build.f_cpu=8000000L",
-    ".menu.clock.internal_8m.build.speed=8m",
-    ".menu.clock.internal_8m.build.clocksource=0",
-    ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
-    ".menu.clock.internal_12m8=12.8 MHz (tuned by bootloader)",
-    ".menu.clock.internal_12m8.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_12m8.build.f_cpu=12800000L",
-    ".menu.clock.internal_12m8.build.speed=12m8",
-    ".menu.clock.internal_12m8.build.clocksource=0",
-    ".menu.clock.internal_12m8.build.extra_flags=-DBOOT_TUNED128"],
-  "hasvoltdependance":False,
-  "defaultvariant":"tinyx4_cw",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":False,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx4_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "USBPins":[".menu.usbpins.pb2plus=PB0: LED, PB1: D-, PB2: D+",".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED", ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED", ".menu.usbpins.pb2plus.build.usbpinset=-DUSB_TWOPLUS -DLED_BUILTIN=PIN_PB0", ".menu.usbpins.pb1plus.build.usbpinset=-DUSB_ONEPLUS",".menu.usbpins.pb0plus.build.usbpinset=-DUSB_ZEROPLUS",".menu.usbpins.pb2plus.bootloader.usbpinsetname=_pb2plus",".menu.usbpins.pb1plus.bootloader.usbpinsetname=_pb1plus",".menu.usbpins.pb0plus.bootloader.usbpinsetname=_pb0plus"],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"A",
-  "ssrx":"2",
-  "sstx":"1",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny84micr":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny84_128",
+    "flash":"6268",
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".menu.clock.internal_8m=8 MHz",
+      ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_8m.build.f_cpu=8000000UL",
+      ".menu.clock.internal_8m.build.speed=8m",
+      ".menu.clock.internal_8m.build.clocksource=0",
+      ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
+      ".menu.clock.internal_12m8=12.8 MHz (tuned by bootloader)",
+      ".menu.clock.internal_12m8.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_12m8.build.f_cpu=12800000L",
+      ".menu.clock.internal_12m8.build.speed=12m8",
+      ".menu.clock.internal_12m8.build.clocksource=0",
+      ".menu.clock.internal_12m8.build.extra_flags=-DBOOT_TUNED128"],
+    "hasvoltdependance":False,
+    "defaultvariant":"tinyx4_cw",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":False,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx4_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "USBPins":[
+      ".menu.usbpins.pb2plus=PB0: LED, PB1: D-, PB2: D+",
+      ".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED",
+      ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED",
+      ".menu.usbpins.pb2plus.build.usbpinset=-DUSB_TWOPLUS -DLED_BUILTIN=PIN_PB0",
+      ".menu.usbpins.pb1plus.build.usbpinset=-DUSB_ONEPLUS",
+      ".menu.usbpins.pb0plus.build.usbpinset=-DUSB_ZEROPLUS",
+      ".menu.usbpins.pb2plus.bootloader.usbpinsetname=_pb2plus",
+      ".menu.usbpins.pb1plus.bootloader.usbpinsetname=_pb1plus",
+      ".menu.usbpins.pb0plus.bootloader.usbpinsetname=_pb0plus"],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"A",
+    "ssrx":"2",
+    "sstx":"1",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny85micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      ####         #   #  ###  ####\n#  #   #   #    #  #                #            #   # #     #   #\n#  #####   #   ###    ###  #  # # # ###      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  #     #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### # # ###       #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny85",
-  "flash":"6524",
-  "entrymodesizes":[".menu.bootentry.always.upload.maximum_size=6588"],
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "clock":[".build.extra_flags=-DBOOT_TUNED165",
-    ".menu.clock.pll_165m=16.5 MHz (internal tuned PLL)",
-    ".menu.clock.pll_165m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_165m.build.f_cpu=16500000UL",
-    ".menu.clock.pll_165m.build.speed=16m5",
-    ".menu.clock.pll_165m.build.clocksource=6",
-    ".menu.clock.pll_16m=16 MHz (internal PLL)",
-    ".menu.clock.pll_16m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_16m.build.f_cpu=16000000UL",
-    ".menu.clock.pll_16m.build.speed=16",
-    ".menu.clock.pll_16m.build.clocksource=6",
-    ".menu.clock.pll_8m=8 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_8m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_8m.build.f_cpu=8000000UL",
-    ".menu.clock.pll_8m.build.speed=8",
-    ".menu.clock.pll_8m.build.clocksource=0x16",
-    ".menu.clock.pll_4m=4 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_4m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_4m.build.f_cpu=4000000UL",
-    ".menu.clock.pll_4m.build.speed=4",
-    ".menu.clock.pll_4m.build.clocksource=0x16",
-    ".menu.clock.pll_2m=2 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_2m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_2m.build.f_cpu=2000000UL",
-    ".menu.clock.pll_2m.build.speed=2",
-    ".menu.clock.pll_2m.build.clocksource=0x16",
-    ".menu.clock.pll_1m=1 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_1m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_1m.build.f_cpu=1000000UL",
-    ".menu.clock.pll_1m.build.speed=1",
-    ".menu.clock.pll_1m.build.clocksource=0x16"],
-  "defaultvariant":"tinyx5",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":False,
-  "rstdisbl":True,
-  "USBPins":[".menu.usbpins.standard=Standard, PB3: D- PB4: D+ PB1: LED",".menu.usbpins.standard.bootloader.usbpinset=",".menu.usbpins.standard.bootloader.usbpinsetname="],
-  "softser":True,
-  "fancysoftser":False,
-  "ssport":"B",
-  "ssrx":"1",
-  "sstx":"0",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny85micr":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny85",
+    "flash":"6524",
+    "entrymodesizes":[
+      ".menu.bootentry.always.upload.maximum_size=6588"],
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".build.extra_flags=-DBOOT_TUNED165",
+      ".menu.clock.pll_165m=16.5 MHz (internal tuned PLL)",
+      ".menu.clock.pll_165m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_165m.build.f_cpu=16500000UL",
+      ".menu.clock.pll_165m.build.speed=16m5",
+      ".menu.clock.pll_165m.build.clocksource=6",
+      ".menu.clock.pll_16m=16 MHz (internal PLL)",
+      ".menu.clock.pll_16m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_16m.build.f_cpu=16000000UL",
+      ".menu.clock.pll_16m.build.speed=16",
+      ".menu.clock.pll_16m.build.clocksource=6",
+      ".menu.clock.pll_8m=8 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_8m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_8m.build.f_cpu=8000000UL",
+      ".menu.clock.pll_8m.build.speed=8",
+      ".menu.clock.pll_8m.build.clocksource=0x16",
+      ".menu.clock.pll_4m=4 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_4m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_4m.build.f_cpu=4000000UL",
+      ".menu.clock.pll_4m.build.speed=4",
+      ".menu.clock.pll_4m.build.clocksource=0x16",
+      ".menu.clock.pll_2m=2 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_2m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_2m.build.f_cpu=2000000UL",
+      ".menu.clock.pll_2m.build.speed=2",
+      ".menu.clock.pll_2m.build.clocksource=0x16",
+      ".menu.clock.pll_1m=1 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_1m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_1m.build.f_cpu=1000000UL",
+      ".menu.clock.pll_1m.build.speed=1",
+      ".menu.clock.pll_1m.build.clocksource=0x16"],
+    "defaultvariant":"tinyx5",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":False,
+    "rstdisbl":True,
+    "USBPins":[
+      ".menu.usbpins.standard=Standard, PB3: D- PB4: D+ PB1: LED",
+      ".menu.usbpins.standard.bootloader.usbpinset=",
+      ".menu.usbpins.standard.bootloader.usbpinsetname="],
+    "softser":True,
+    "fancysoftser":False,
+    "ssport":"B",
+    "ssrx":"1",
+    "sstx":"0",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny88micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                       ###          #   #  ###  ####\n#  #   #   #    #  #                #   #         #   # #     #   #\n#  #####   #   ###    ###  #  # # #  ###      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  #  #   #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### # #  ###       #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny88",
-  "flash":"6782",
-  "entrymodesizes":[".menu.bootentry.jumper.upload.maximum_size=6718"],
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "clock":[".menu.clock.extclk_16m=16 MHz (external clock)",
-    ".menu.clock.extclk_16m.bootloader.low_fuses=0xE0",
-    ".menu.clock.extclk_16m.build.f_cpu=16000000UL",
-    ".menu.clock.extclk_16m.build.speed=16",
-    ".menu.clock.extclk_16m.build.clocksource=2",
-    ".menu.clock.extclk_8m=8 MHz (prescaled 16 MHz external clock)",
-    ".menu.clock.extclk_8m.bootloader.low_fuses=0xE0",
-    ".menu.clock.extclk_8m.build.f_cpu=8000000UL",
-    ".menu.clock.extclk_8m.build.speed=8",
-    ".menu.clock.extclk_8m.build.clocksource=0x12",
-    ".menu.clock.extclk_4m=4 MHz (prescaled 16 MHz external clock)",
-    ".menu.clock.extclk_4m.bootloader.low_fuses=0xE0",
-    ".menu.clock.extclk_4m.build.f_cpu=4000000UL",
-    ".menu.clock.extclk_4m.build.speed=4",
-    ".menu.clock.extclk_4m.build.clocksource=0x12",
-    ".menu.clock.extclk_2m=2 MHz (prescaled 16 MHz external clock)",
-    ".menu.clock.extclk_2m.bootloader.low_fuses=0xE0",
-    ".menu.clock.extclk_2m.build.f_cpu=2000000UL",
-    ".menu.clock.extclk_2m.build.speed=2",
-    ".menu.clock.extclk_2m.build.clocksource=0x12",
-    ".menu.clock.extclk_1m=1 MHz (prescaled 16 MHz external clock)",
-    ".menu.clock.extclk_1m.bootloader.low_fuses=0xE0",
-    ".menu.clock.extclk_1m.build.f_cpu=1000000UL",
-    ".menu.clock.extclk_1m.build.speed=1",
-    ".menu.clock.extclk_1m.build.clocksource=0x12"],
-  "defaultvariant":"tinyx8_MH",
-  "fancybod":False,
-  "rstdisbl":True,
-  "pinmap":[ ".menu.pinmap.mhet=MH-Tiny",".menu.pinmap.default=Standard", ".menu.pinmap.mhet.build.variant=tinyx8_MH",".menu.pinmap.default.build.pinmapabr=", ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
-  "USBPins":[".menu.usbpins.standard=MH Tiny - PD1: D-, PD2: D+, PD0: LED", ".menu.usbpins.standard.bootloader.usbpinset=",".menu.usbpins.standard.bootloader.usbpinsetname="],
-  "softser":True,
-  "fancysoftser":False,
-  "lfuse_ext":"0xE0",
-  "ssport":"D",
-  "ssrx":"7",
-  "sstx":"6",
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny88micr":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny88",
+    "flash":"6782",
+    "entrymodesizes":[
+      ".menu.bootentry.jumper.upload.maximum_size=6718"],
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".menu.clock.extclk_16m=16 MHz (external clock)",
+      ".menu.clock.extclk_16m.bootloader.low_fuses=0xE0",
+      ".menu.clock.extclk_16m.build.f_cpu=16000000UL",
+      ".menu.clock.extclk_16m.build.speed=16",
+      ".menu.clock.extclk_16m.build.clocksource=2",
+      ".menu.clock.extclk_8m=8 MHz (prescaled 16 MHz external clock)",
+      ".menu.clock.extclk_8m.bootloader.low_fuses=0xE0",
+      ".menu.clock.extclk_8m.build.f_cpu=8000000UL",
+      ".menu.clock.extclk_8m.build.speed=8",
+      ".menu.clock.extclk_8m.build.clocksource=0x12",
+      ".menu.clock.extclk_4m=4 MHz (prescaled 16 MHz external clock)",
+      ".menu.clock.extclk_4m.bootloader.low_fuses=0xE0",
+      ".menu.clock.extclk_4m.build.f_cpu=4000000UL",
+      ".menu.clock.extclk_4m.build.speed=4",
+      ".menu.clock.extclk_4m.build.clocksource=0x12",
+      ".menu.clock.extclk_2m=2 MHz (prescaled 16 MHz external clock)",
+      ".menu.clock.extclk_2m.bootloader.low_fuses=0xE0",
+      ".menu.clock.extclk_2m.build.f_cpu=2000000UL",
+      ".menu.clock.extclk_2m.build.speed=2",
+      ".menu.clock.extclk_2m.build.clocksource=0x12",
+      ".menu.clock.extclk_1m=1 MHz (prescaled 16 MHz external clock)",
+      ".menu.clock.extclk_1m.bootloader.low_fuses=0xE0",
+      ".menu.clock.extclk_1m.build.f_cpu=1000000UL",
+      ".menu.clock.extclk_1m.build.speed=1",
+      ".menu.clock.extclk_1m.build.clocksource=0x12"],
+    "defaultvariant":"tinyx8_MH",
+    "fancybod":False,
+    "rstdisbl":True,
+    "pinmap":[ ".menu.pinmap.mhet=MH-Tiny",
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.mhet.build.variant=tinyx8_MH",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
+    "USBPins":[
+      ".menu.usbpins.standard=MH Tiny - PD1: D-, PD2: D+, PD0: LED",
+      ".menu.usbpins.standard.bootloader.usbpinset=",
+      ".menu.usbpins.standard.bootloader.usbpinsetname="],
+    "softser":True,
+    "fancysoftser":False,
+    "lfuse_ext":"0xE0",
+    "ssport":"D",
+    "ssrx":"7",
+    "sstx":"6",
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny167micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                    #    #  #####         #   #  ###  ####\n#  #   #   #    #  #             ##   #       #         #   # #     #   #\n#  #####   #   ###    ###  #  #   #  ####    #      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #   #  #   #  #       # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###  ###  ###  #         #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny167",
-  "flash":"14844",
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "entrymodesizes":[".menu.bootentry.jumper.upload.upload.maximum_size=14716"],
-  "clock":[".menu.clock.crystal_16m=16 MHz (external crystal)",
-    ".menu.clock.crystal_16m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_16m.build.f_cpu=16000000UL",
-    ".menu.clock.crystal_16m.build.speed=16",
-    ".menu.clock.crystal_16m.build.clocksource=1",
-    ".menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_8m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_8m.build.f_cpu=8000000UL",
-    ".menu.clock.crystal_8m.build.speed=8",
-    ".menu.clock.crystal_8m.build.clocksource=0x11",
-    ".menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_4m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_4m.build.f_cpu=4000000UL",
-    ".menu.clock.crystal_4m.build.speed=4",
-    ".menu.clock.crystal_4m.build.clocksource=0x11",
-    ".menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_2m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_2m.build.f_cpu=2000000UL",
-    ".menu.clock.crystal_2m.build.speed=2",
-    ".menu.clock.crystal_2m.build.clocksource=0x11",
-    ".menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_1m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_1m.build.f_cpu=1000000UL",
-    ".menu.clock.crystal_1m.build.speed=1",
-    ".menu.clock.crystal_1m.build.clocksource=0x11"],
-  "defaultvariant":"tinyx7_digi",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":False,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.digi=Digispark Pro", ".menu.pinmap.standard=Standard/Azduino", ".menu.pinmap.standard.build.variant=tinyx7", ".menu.pinmap.digi.build.variant=tinyx7_digi", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx7_legacy",".menu.pinmap.default.build.pinmapabr=",".menu.pinmap.digi.build.pinmapabr=.digi", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "USBPins":[".menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED",".menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED",".menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1",".menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6",".menu.usbpins.digispark.bootloader.usbpinsetname=pb1led",".menu.usbpins.azduino.bootloader.usbpinsetname=pa6led"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny167micr":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny167",
+    "flash":"14844",
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "entrymodesizes":[
+      ".menu.bootentry.jumper.upload.upload.maximum_size=14716"],
+    "clock":[
+      ".menu.clock.crystal_16m=16 MHz (external crystal)",
+      ".menu.clock.crystal_16m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_16m.build.f_cpu=16000000UL",
+      ".menu.clock.crystal_16m.build.speed=16",
+      ".menu.clock.crystal_16m.build.clocksource=1",
+      ".menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_8m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_8m.build.f_cpu=8000000UL",
+      ".menu.clock.crystal_8m.build.speed=8",
+      ".menu.clock.crystal_8m.build.clocksource=0x11",
+      ".menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_4m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_4m.build.f_cpu=4000000UL",
+      ".menu.clock.crystal_4m.build.speed=4",
+      ".menu.clock.crystal_4m.build.clocksource=0x11",
+      ".menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_2m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_2m.build.f_cpu=2000000UL",
+      ".menu.clock.crystal_2m.build.speed=2",
+      ".menu.clock.crystal_2m.build.clocksource=0x11",
+      ".menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_1m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_1m.build.f_cpu=1000000UL",
+      ".menu.clock.crystal_1m.build.speed=1",
+      ".menu.clock.crystal_1m.build.clocksource=0x11"],
+    "defaultvariant":"tinyx7_digi",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":False,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.digi=Digispark Pro",
+      ".menu.pinmap.standard=Standard/Azduino",
+      ".menu.pinmap.standard.build.variant=tinyx7",
+      ".menu.pinmap.digi.build.variant=tinyx7_digi",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx7_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.digi.build.pinmapabr=.digi",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "USBPins":[
+      ".menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED",
+      ".menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED",
+      ".menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1",
+      ".menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6",
+      ".menu.usbpins.digispark.bootloader.usbpinsetname=pb1led",
+      ".menu.usbpins.azduino.bootloader.usbpinsetname=pa6led"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny87micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                   ### #####         #   #  ###  ####\n#  #   #   #    #  #            #   #    #         #   # #     #   #\n#  #####   #   ###    ###  #  #  ###    #      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  # #   #  #       # # #   #     # #   #\n#  #   #   #    #  #  #  #  ###  ###  #         #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny87",
-  "flash":"6780",
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "entrymodesizes":[".menu.bootentry.jumper.upload.maximum_size=6716"],
-  "clock":[".menu.clock.crystal_16m=16 MHz (external crystal)",
-    ".menu.clock.crystal_16m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_16m.build.f_cpu=16000000UL",
-    ".menu.clock.crystal_16m.build.speed=16m",
-    ".menu.clock.crystal_16m.build.clocksource=1",
-    ".menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_8m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_8m.build.f_cpu=8000000UL",
-    ".menu.clock.crystal_8m.build.speed=8m",
-    ".menu.clock.crystal_8m.build.clocksource=0x11",
-    ".menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_4m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_4m.build.f_cpu=4000000UL",
-    ".menu.clock.crystal_4m.build.speed=4m",
-    ".menu.clock.crystal_4m.build.clocksource=0x11",
-    ".menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_2m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_2m.build.f_cpu=2000000UL",
-    ".menu.clock.crystal_2m.build.speed=2m",
-    ".menu.clock.crystal_2m.build.clocksource=0x11",
-    ".menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)",
-    ".menu.clock.crystal_1m.bootloader.low_fuses=0xF0",
-    ".menu.clock.crystal_1m.build.f_cpu=1000000UL",
-    ".menu.clock.crystal_1m.build.speed=1m",
-    ".menu.clock.crystal_1m.build.clocksource=0x11"],
-  "defaultvariant":"tinyx7_digi",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":False,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.digi=Digispark Pro", ".menu.pinmap.standard=Standard/Azduino", ".menu.pinmap.standard.build.variant=tinyx7", ".menu.pinmap.digi.build.variant=tinyx7_digi", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx7_legacy",".menu.pinmap.default.build.pinmapabr=",".menu.pinmap.digi.build.pinmapabr=.digi", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "USBPins":[".menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED",".menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED",".menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1",".menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6",".menu.usbpins.digispark.bootloader.usbpinsetname=pb1led",".menu.usbpins.azduino.bootloader.usbpinsetname=pa6led",".menu.usbpins.azduino.upload.maximum_size=6652"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny87micr":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny87",
+    "flash":"6780",
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "entrymodesizes":[
+      ".menu.bootentry.jumper.upload.maximum_size=6716"],
+    "clock":[
+      ".menu.clock.crystal_16m=16 MHz (external crystal)",
+      ".menu.clock.crystal_16m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_16m.build.f_cpu=16000000UL",
+      ".menu.clock.crystal_16m.build.speed=16m",
+      ".menu.clock.crystal_16m.build.clocksource=1",
+      ".menu.clock.crystal_8m=8 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_8m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_8m.build.f_cpu=8000000UL",
+      ".menu.clock.crystal_8m.build.speed=8m",
+      ".menu.clock.crystal_8m.build.clocksource=0x11",
+      ".menu.clock.crystal_4m=4 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_4m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_4m.build.f_cpu=4000000UL",
+      ".menu.clock.crystal_4m.build.speed=4m",
+      ".menu.clock.crystal_4m.build.clocksource=0x11",
+      ".menu.clock.crystal_2m=2 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_2m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_2m.build.f_cpu=2000000UL",
+      ".menu.clock.crystal_2m.build.speed=2m",
+      ".menu.clock.crystal_2m.build.clocksource=0x11",
+      ".menu.clock.crystal_1m=1 MHz (prescaled 16 MHz external crystal)",
+      ".menu.clock.crystal_1m.bootloader.low_fuses=0xF0",
+      ".menu.clock.crystal_1m.build.f_cpu=1000000UL",
+      ".menu.clock.crystal_1m.build.speed=1m",
+      ".menu.clock.crystal_1m.build.clocksource=0x11"],
+    "defaultvariant":"tinyx7_digi",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":False,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.digi=Digispark Pro",
+      ".menu.pinmap.standard=Standard/Azduino",
+      ".menu.pinmap.standard.build.variant=tinyx7",
+      ".menu.pinmap.digi.build.variant=tinyx7_digi",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx7_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.digi.build.pinmapabr=.digi",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "USBPins":[
+      ".menu.usbpins.digispark=Digispark Pro - PB3: D-, PB6: D+, PB1: LED",
+      ".menu.usbpins.azduino=Azduino 167 USB - PB3: D-, PB6: D+, PA6: LED",
+      ".menu.usbpins.digispark.build.usbpinset=-DLED_BUILTIN=PIN_PB1",
+      ".menu.usbpins.azduino.build.usbpinset=-DLED_BUILTIN=PIN_PA6",
+      ".menu.usbpins.digispark.bootloader.usbpinsetname=pb1led",
+      ".menu.usbpins.azduino.bootloader.usbpinsetname=pa6led",
+      ".menu.usbpins.azduino.upload.maximum_size=6652"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny861micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                        #    ##          #   #  ###  ####\n#  #   #   #    #  #                 #    ###          #   # #     #   #\n#  #####   #   ###    ###  #  # # # ####   ##      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  #  #   #  ##      # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### # #  ###  ####      #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "bootname":"attiny861",
-  "flash":"6524",
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "clock":[".build.extra_flags=-DBOOT_TUNED165",
-    ".menu.clock.pll_165m=16.5 MHz (internal tuned PLL)",
-    ".menu.clock.pll_165m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_165m.build.f_cpu=16500000UL",
-    ".menu.clock.pll_165m.build.speed=16m5",
-    ".menu.clock.pll_165m.build.clocksource=6",
-    ".menu.clock.pll_16m=16 MHz (internal PLL)",
-    ".menu.clock.pll_16m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_16m.build.f_cpu=16000000UL",
-    ".menu.clock.pll_16m.build.speed=16m",
-    ".menu.clock.pll_16m.build.clocksource=6",
-    ".menu.clock.pll_8m=8 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_8m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_8m.build.f_cpu=8000000UL",
-    ".menu.clock.pll_8m.build.speed=8m",
-    ".menu.clock.pll_8m.build.clocksource=0x16",
-    ".menu.clock.pll_4m=4 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_4m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_4m.build.f_cpu=4000000UL",
-    ".menu.clock.pll_4m.build.speed=4m",
-    ".menu.clock.pll_4m.build.clocksource=0x16",
-    ".menu.clock.pll_2m=2 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_2m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_2m.build.f_cpu=2000000UL",
-    ".menu.clock.pll_2m.build.speed=2m",
-    ".menu.clock.pll_2m.build.clocksource=0x16",
-    ".menu.clock.pll_1m=1 MHz (prescaled 16 MHz internal PLL)",
-    ".menu.clock.pll_1m.bootloader.low_fuses=0xF1",
-    ".menu.clock.pll_1m.build.f_cpu=1000000UL",
-    ".menu.clock.pll_1m.build.speed=1m",
-    ".menu.clock.pll_1m.build.clocksource=0x16"],
-  "defaultvariant":"tinyx61",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":False,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.default=Standard", ".menu.pinmap.legacy=Legacy", ".menu.pinmap.legacy.build.variant=tinyx61_legacy",".menu.pinmap.default.build.pinmapabr=", ".menu.pinmap.legacy.build.pinmapabr=.old"],
-  "USBPins":[".menu.usbpins.standard=Standard - PB4: D-, PB6: D+, PA5: LED",".menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB4 -DLED_BUILTIN2=PIN_PA4",".menu.usbpins.standard.bootloader.usbpinsetname=",".menu.usbpins.prototype=Prototype - PA4: D+, PA5: D-, PB6: LED",".menu.usbpins.prototype.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB6",".menu.usbpins.prototype.bootloader.usbpinsetname=_proto",".menu.usbpins.prototype.upload.maximum_size=6460"],
-  "softser":False,
-  "fancysoftser":True,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0xFE",
+    "attiny861micr":{
+    "title":True,
+    "chipmenu":False,
+    "bootname":"attiny861",
+    "flash":"6524",
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".build.extra_flags=-DBOOT_TUNED165",
+      ".menu.clock.pll_165m=16.5 MHz (internal tuned PLL)",
+      ".menu.clock.pll_165m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_165m.build.f_cpu=16500000UL",
+      ".menu.clock.pll_165m.build.speed=16m5",
+      ".menu.clock.pll_165m.build.clocksource=6",
+      ".menu.clock.pll_16m=16 MHz (internal PLL)",
+      ".menu.clock.pll_16m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_16m.build.f_cpu=16000000UL",
+      ".menu.clock.pll_16m.build.speed=16m",
+      ".menu.clock.pll_16m.build.clocksource=6",
+      ".menu.clock.pll_8m=8 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_8m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_8m.build.f_cpu=8000000UL",
+      ".menu.clock.pll_8m.build.speed=8m",
+      ".menu.clock.pll_8m.build.clocksource=0x16",
+      ".menu.clock.pll_4m=4 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_4m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_4m.build.f_cpu=4000000UL",
+      ".menu.clock.pll_4m.build.speed=4m",
+      ".menu.clock.pll_4m.build.clocksource=0x16",
+      ".menu.clock.pll_2m=2 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_2m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_2m.build.f_cpu=2000000UL",
+      ".menu.clock.pll_2m.build.speed=2m",
+      ".menu.clock.pll_2m.build.clocksource=0x16",
+      ".menu.clock.pll_1m=1 MHz (prescaled 16 MHz internal PLL)",
+      ".menu.clock.pll_1m.bootloader.low_fuses=0xF1",
+      ".menu.clock.pll_1m.build.f_cpu=1000000UL",
+      ".menu.clock.pll_1m.build.speed=1m",
+      ".menu.clock.pll_1m.build.clocksource=0x16"],
+    "defaultvariant":"tinyx61",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":False,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard",
+      ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
+      ".menu.pinmap.default.build.pinmapabr=",
+      ".menu.pinmap.legacy.build.pinmapabr=.old"],
+    "USBPins":[
+      ".menu.usbpins.standard=Standard - PB4: D-, PB6: D+, PA5: LED",
+      ".menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB4 -DLED_BUILTIN2=PIN_PA4",
+      ".menu.usbpins.standard.bootloader.usbpinsetname=",
+      ".menu.usbpins.prototype=Prototype - PA4: D+, PA5: D-, PB6: LED",
+      ".menu.usbpins.prototype.bootloader.usbpinset=-DLED_BUILTIN=PIN_PB6",
+      ".menu.usbpins.prototype.bootloader.usbpinsetname=_proto",
+      ".menu.usbpins.prototype.upload.maximum_size=6460"],
+    "softser":False,
+    "fancysoftser":True,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0xFE",
   },
-  "attiny841micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                      #  #  ##          #   #  ###  ####\n#  #   #   #    #  #                #  # ###          #   # #     #   #\n#  #####   #   ###    ###  #  # # # ####  ##      # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  #     #  ##      # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### # #    # ####      #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "flash":"6524",
-  "bootname":"attiny841",
-  "entrymodesizes":[".menu.bootentry.always.upload.maximum_size=6588"],
-  "sram":"512",
-  "bootloader":"Micronucleus",
-  "clock":[".menu.clock.internal_8m=8 MHz internal",
-    ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_8m.build.f_cpu=8000000L",
-    ".menu.clock.internal_8m.build.speed=8m",
-    ".menu.clock.internal_8m.build.clocksource=0",
-    ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
-    ".menu.clock.internal_16m=16 MHz (internal via tuning/guess)",
-    ".menu.clock.internal_16m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_16m.build.f_cpu=16000000L",
-    ".menu.clock.internal_16m.build.speed=16m",
-    ".menu.clock.internal_16m.build.clocksource=0",
-    ".menu.clock.internal_16m.build.extra_flags=-DBOOT_TUNED120",
-    ".menu.clock.internal_12m=12 MHz (tuned by bootloader)",
-    ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_12m.build.f_cpu=12000000L",
-    ".menu.clock.internal_12m.build.speed=12m",
-    ".menu.clock.internal_12m.build.clocksource=0",
-    ".menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120"],
-  "hasvoltdependance":True,
-  "defaultvariant":"tinyx41_cw",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFE",
-  "lfuse_xl":"0xED",
-  "fancybod":True,
-  "wiremodes":True,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tinyx41_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "USBPins":[".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED (Bitboss)", ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED (Wattuino)",".menu.usbpins.pb2plus=PB0: LED, PB1: D-, PB2: D+", ".menu.usbpins.pb2plus.build.usbpinset=-DUSB_TWOPLUS -DLED_BUILTIN=PIN_PB0", ".menu.usbpins.pb1plus.build.usbpinset=-DUSB_ONEPLUS",".menu.usbpins.pb0plus.build.usbpinset=-DUSB_ZEROPLUS",".menu.usbpins.pb2plus.bootloader.usbpinsetname=_pb2plus",".menu.usbpins.pb1plus.bootloader.usbpinsetname=_pb1plus",".menu.usbpins.pb0plus.bootloader.usbpinsetname=_pb0plus"],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
+    "attiny841micr":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"6524",
+    "bootname":"attiny841",
+    "entrymodesizes":[
+      ".menu.bootentry.always.upload.maximum_size=6588"],
+    "sram":"512",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".menu.clock.internal_8m=8 MHz internal",
+      ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_8m.build.f_cpu=8000000UL",
+      ".menu.clock.internal_8m.build.speed=8m",
+      ".menu.clock.internal_8m.build.clocksource=0",
+      ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
+      ".menu.clock.internal_16m=16 MHz (internal via tuning/guess)",
+      ".menu.clock.internal_16m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_16m.build.f_cpu=16000000UL",
+      ".menu.clock.internal_16m.build.speed=16m",
+      ".menu.clock.internal_16m.build.clocksource=0",
+      ".menu.clock.internal_16m.build.extra_flags=-DBOOT_TUNED120",
+      ".menu.clock.internal_12m=12 MHz (tuned by bootloader)",
+      ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_12m.build.f_cpu=12000000UL",
+      ".menu.clock.internal_12m.build.speed=12m",
+      ".menu.clock.internal_12m.build.clocksource=0",
+      ".menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120"],
+    "hasvoltdependance":True,
+    "defaultvariant":"tinyx41_cw",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFE",
+    "lfuse_xl":"0xED",
+    "fancybod":True,
+    "wiremodes":True,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tinyx41_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "USBPins":[
+      ".menu.usbpins.pb1plus=PB0: D-, PB1: D+, PB2: LED (Bitboss)",
+      ".menu.usbpins.pb0plus=PB0: D+, PB1: D-, PB2: LED (Wattuino)",
+      ".menu.usbpins.pb2plus=PB0: LED, PB1: D-, PB2: D+",
+      ".menu.usbpins.pb2plus.build.usbpinset=-DUSB_TWOPLUS -DLED_BUILTIN=PIN_PB0",
+      ".menu.usbpins.pb1plus.build.usbpinset=-DUSB_ONEPLUS",
+      ".menu.usbpins.pb0plus.build.usbpinset=-DUSB_ZEROPLUS",
+      ".menu.usbpins.pb2plus.bootloader.usbpinsetname=_pb2plus",
+      ".menu.usbpins.pb1plus.bootloader.usbpinsetname=_pb1plus",
+      ".menu.usbpins.pb0plus.bootloader.usbpinsetname=_pb0plus"],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
   },
-  "attiny1634micr":
-  {
-    "title":"#*******************************************************************************\n#   ###  #####                   ##    #   ###  #  #         #   #  ###  ####\n#  #   #   #    #  #            ###   #       # #  #         #   # #     #   #\n#  #####   #   ###    ###  #  #  ##  ####   ##  ####     # # #   #  ###  ####\n#  #   #   #    #  #  #  # #  #  ##  #   #    #    #     # # #   #     # #   #\n#  #   #   #    #  #  #  #  ### ####  ###  ###     #      #   ###  ####  ####\n#_____________________________#_______________________________________________________\n                           ###",
-  "chipmenu":False,
-  "flash":"14720",
-  "bootname":"attiny1634",
-  "sram":"1024",
-  "bootloader":"Micronucleus",
-  "clock":[".menu.clock.internal_8m=8 MHz",
-    ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_8m.build.f_cpu=8000000L",
-    ".menu.clock.internal_8m.build.speed=8m",
-    ".menu.clock.internal_8m.build.clocksource=0",
-    ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
-    ".menu.clock.internal_12m=12 MHz (tuned by bootloader)",
-    ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
-    ".menu.clock.internal_12m.build.f_cpu=12000000L",
-    ".menu.clock.internal_12m.build.speed=12m",
-    ".menu.clock.internal_12m.build.clocksource=0",
-    ".menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120"],
-  "hasvoltdependance":True,
-  "defaultvariant":"tiny1634_cw",
-  "lfuse_ext":"0xE0",
-  "lfuse_xh":"0xFF",
-  "lfuse_xl":"0xFD",
-  "fancybod":True,
-  "rstdisbl":True,
-  "pinmap":[".menu.pinmap.default=Standard (clockwise)", ".menu.pinmap.ccw=Legacy (counterclockwise)", ".menu.pinmap.ccw.build.variant=tiny1634_legacy",".menu.pinmap.default.build.pinmapabr=.cw", ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
-  "USBPins":[".menu.usbpins.standard=Standard: PC4: D-, PC5: D+, PC2: LED",".menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PC2",".menu.usbpins.standard.bootloader.usbpinsetname="],
-  "softser":False,
-  "fancysoftser":False,
-  "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
-  "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
-  }
+    "attiny1634micr":{
+    "title":True,
+    "chipmenu":False,
+    "flash":"14720",
+    "bootname":"attiny1634",
+    "sram":"1024",
+    "bootloader":"Micronucleus",
+    "clock":[
+      ".menu.clock.internal_8m=8 MHz",
+      ".menu.clock.internal_8m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_8m.build.f_cpu=8000000UL",
+      ".menu.clock.internal_8m.build.speed=8m",
+      ".menu.clock.internal_8m.build.clocksource=0",
+      ".menu.clock.internal_8m.build.extra_flags=-DBOOT_TUNED120",
+      ".menu.clock.internal_12m=12 MHz (tuned by bootloader)",
+      ".menu.clock.internal_12m.bootloader.low_fuses=0xE2",
+      ".menu.clock.internal_12m.build.f_cpu=12000000UL",
+      ".menu.clock.internal_12m.build.speed=12m",
+      ".menu.clock.internal_12m.build.clocksource=0",
+      ".menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120"],
+    "hasvoltdependance":True,
+    "defaultvariant":"tiny1634_cw",
+    "lfuse_ext":"0xE0",
+    "lfuse_xh":"0xFF",
+    "lfuse_xl":"0xFD",
+    "fancybod":True,
+    "rstdisbl":True,
+    "pinmap":[
+      ".menu.pinmap.default=Standard (clockwise)",
+      ".menu.pinmap.ccw=Legacy (counterclockwise)",
+      ".menu.pinmap.ccw.build.variant=tiny1634_legacy",
+      ".menu.pinmap.default.build.pinmapabr=.cw",
+      ".menu.pinmap.ccw.build.pinmapabr=.ccw"],
+    "USBPins":[
+      ".menu.usbpins.standard=Standard: PC4: D-, PC5: D+, PC2: LED",
+      ".menu.usbpins.standard.bootloader.usbpinset=-DLED_BUILTIN=PIN_PC2",
+      ".menu.usbpins.standard.bootloader.usbpinsetname="],
+    "softser":False,
+    "fancysoftser":False,
+    "hfuse":"0b{bootloader.rstbit}1011{bootloader.bod_bits}",
+    "efuse":"0b111{bootloader.bodpd_bits}{bootloader.bodact_bits}0",
+    }
 }
+def printSubMenuHeader(menuname):
+  printLit("\n################################")
+  printLit("# "+menuname.ljust(28)+" #")
+  printLit("################################")
+
+def printMenuItem(board,menuname,menuoption,optionprop):
+  printProp(x,".menu."+menuname+"."+menuoption+"."+optionprop)
+def printMenuItems(board,menuname,menuoption,optionproplist):
+  for z in optionproplist:
+    printProp(x,".menu."+menuname+"."+menuoption+"."+z)
+
+def printmake(string):
+  print(string,file = makefile)
+
+clocklist={}
+baudlist={}
+def printProp(board,string):
+  print(board+string)
+  print(board+string,file = f1)
+  mboot=re.search("bootloader\\.f_cpu=(\\d+UL)",string)
+  if not mboot:
+    mboot=re.search("build\\.f_cpu=(\\d+UL)",string)
+    if mboot:
+      clocklist[board].append(mboot.expand("\\1"))
+  else:
+    clocklist[board][-1]=mboot.expand("\\1")
+  n=re.search("upload\\.speed=(\\d+)",string)
+  if n:
+    baudlist[board].append(n.expand("\\1"))
+def printLit(string):
+  print(string)
+  print(string,file = f1)
 
 fhead = open("boards_header.txt")
 fheadtext=fhead.read()
@@ -1168,8 +1439,11 @@ for x in boards:
     printLit("")
     printLit(boards[x]["header"])
     continue
-  printLit(boards[x]["title"])
-  printLit("")
+  if boards[x]["title"]:
+    printLit(titles[x])
+    printLit("")
+  clocklist[x]=[]
+  baudlist[x]=[]
   if boards[x]["bootloader"]:
     printProp(x,".build.board=AVR_"+x[:-4].upper())
   else:
@@ -1211,9 +1485,7 @@ for x in boards:
       printProp(x,".build.bootloader=")
       printProp(x,".build.bootloaderabr=")
       printProp(x,".bootloader.flashstring=")
-  printLit("\n#########################")
-  printLit("# Optimization menu   #")
-  printLit("#########################")
+  printSubMenuHeader("Optimization menu")
   printProp(x,".menu.optimization.size=-Os (size, recommended)")
   printProp(x,".menu.optimization.othree=-O3 (speed)")
   printProp(x,".menu.optimization.debug=-Og (for advanced debugging)")
@@ -1221,9 +1493,7 @@ for x in boards:
   printProp(x,".menu.optimization.othree.build.optimize=-O3")
   printProp(x,".menu.optimization.debug.build.optimize=-Og")
   if boards[x]["chipmenu"]:
-    printLit("\n#########################")
-    printLit("# Microcontroller menu  #")
-    printLit("#########################")
+    printSubMenuHeader("Microcontroller menu")
     printLit(chipmenu[x])
   else:
     if boards[x]["bootloader"]:
@@ -1233,9 +1503,7 @@ for x in boards:
     if "flash" in boards[x]:
       printProp(x,".upload.maximum_size="+boards[x]["flash"])
       printProp(x,".upload.maximum_data_size="+boards[x]["sram"])
-  printLit("\n#########################")
-  printLit("# Clocking menu options #")
-  printLit("#########################")
+  printSubMenuHeader("Clocking menu options")
   if boards[x]["bootloader"] == "Micronucleus":
     # Micronucleus boards have their own clock option menu sets. Everything else shares them.
     for y in boards[x]["clock"]:
@@ -1244,7 +1512,7 @@ for x in boards:
     if boards[x]["hasvoltdependance"]:
       printProp(x,".menu.clock.internal_8m_4v5=8 MHz (internal > 4.5V)")
       printProp(x,".menu.clock.internal_8m_4v5.bootloader.low_fuses=0xE2")
-      printProp(x,".menu.clock.internal_8m_4v5.build.f_cpu=8000000L")
+      printProp(x,".menu.clock.internal_8m_4v5.build.f_cpu=8000000UL")
       printProp(x,".menu.clock.internal_8m_4v5.build.speed=8m")
       printProp(x,".menu.clock.internal_8m_4v5.build.clocksource=0")
       printProp(x,".menu.clock.internal_8m_4v5.build.tuneorcal=-DCAL_NUDGE_DOWN")
@@ -1262,6 +1530,8 @@ for x in boards:
         else:
           if boards[x]["softser"]:
             printProp(x,y[1]["soft"])
+          elif "haslin" in boards[x]:
+            printProp(x,y[1]["lin"])
           else:
             printProp(x,y[1]["hard"])
     if boards[x]["haspll"]:
@@ -1276,11 +1546,11 @@ for x in boards:
     if x[:9] == "attinyx41":
       printProp(x,".menu.clock.internal_16m=16 MHz (internal via tuning/guess)")
       printProp(x,".menu.clock.internal_16m.bootloader.low_fuses=0xE2")
-      printProp(x,".menu.clock.internal_16m.build.f_cpu=16000000L")
+      printProp(x,".menu.clock.internal_16m.build.f_cpu=16000000UL")
       printProp(x,".menu.clock.internal_16m.build.speed=16m")
       printProp(x,".menu.clock.internal_16m.build.clocksource=0")
       if boards[x]["bootloader"]=="Optiboot":
-        printProp(x,".menu.clock.internal_8m.upload.speed=76800")
+        printProp(x,".menu.clock.internal_16m.upload.speed=76800")
     if boards[x]["hasxtal"]:
       for y in xtalclocks:
         printProp(x,".menu.clock.crystal_"+y+"="+clocktobaud[y.strip("m")]["name"]+" (crystal)")
@@ -1291,14 +1561,23 @@ for x in boards:
         printProp(x,".menu.clock.crystal_"+y+".build.f_cpu="+clocktobaud[y.strip("m")]["f_cpu"])
         printProp(x,".menu.clock.crystal_"+y+".build.speed="+y)
         printProp(x,".menu.clock.crystal_"+y+".build.clocksource=1")
-    for y in tunedclocks:
-      for z in y[0]:
-        printProp(x,z)
-      if boards[x]["bootloader"]=="Optiboot":
-        if boards[x]["softser"]:
-          printProp(x,y[1]["soft"])
-        else:
-          printProp(x,y[1]["hard"])
+        if boards[x]["bootloader"]=="Optiboot":
+          temp=getspeed(".menu.clock.crystal_"+y+".upload.speed=",y.strip("m"))
+          if boards[x]["softser"]:
+            printProp(x,temp["soft"])
+          else:
+            printProp(x,temp["hard"])
+    tunedclklist=tunedclocks;
+    if not("onlytunesto8" in boards[x] and boards[x]["onlytunesto8"]):
+      #for a few parts we can't tune to anything higher than 8 and expect joy.
+      for y in tunedclocks:
+        for z in y[0]:
+          printProp(x,z)
+        if boards[x]["bootloader"]=="Optiboot":
+          if boards[x]["softser"]:
+            printProp(x,y[1]["soft"])
+          else:
+            printProp(x,y[1]["hard"])
     if boards[x]["hasvoltdependance"]:
       for y in tune8vdepclk:
         for z in y[0]:
@@ -1345,27 +1624,19 @@ for x in boards:
       printProp(x,".menu.clock.extclk_8m.build.speed=8m")
       printProp(x,".menu.clock.extclk_8m.build.clocksource=2")
   if "pinmap" in boards[x]:
-    printLit("\n#########################")
-    printLit("# Pin Mapping menu    #")
-    printLit("#########################")
+    printSubMenuHeader("Pin Mapping menu   ")
     for y in boards[x]["pinmap"]:
       printProp(x,y)
   if not boards[x]["bootloader"]:
-    printLit("\n#########################")
-    printLit("# Retain EEPROM menu  #")
-    printLit("#########################")
+    printSubMenuHeader("Retain EEPROM menu ")
     for y in eesavemenu:
       printProp(x,y)
   if "wiremodes" in boards[x]:
-    printLit("\n#########################")
-    printLit("# Wire Modes menu     #")
-    printLit("#########################")
+    printSubMenuHeader("Wire Modes menu    ")
     for y in wiremodesmenu:
       printProp(x,".menu.wiremode."+y)
   if boards[x]["softser"] or boards[x]["fancysoftser"]:
-    printLit("\n#########################")
-    printLit("# Software Serial menu  #")
-    printLit("#########################")
+    printSubMenuHeader("Software Serial menu ")
   if boards[x]["softser"]:
     printProp(x,".menu.softserial.enable=RX on P"+boards[x]["ssport"]+boards[x]["ssrx"]+", TX on P"+boards[x]["ssport"]+" (default P"+boards[x]["ssport"]+boards[x]["sstx"]+")")
     for y in softsermenu:
@@ -1378,41 +1649,31 @@ for x in boards:
       for y in softsermenu_861[:-4]:
         printProp(x, ".menu.softserial861."+y)
 
-  printLit("\n#########################")
-  printLit("# BrownOut Detect menu  #")
-  printLit("#########################")
+  printSubMenuHeader("BrownOut Detect menu ")
   if boards[x]["fancybod"]:
     for y in fancybodmenu:
       printProp(x,y)
   else:
     for y in plainbodmenu:
       printProp(x,y)
-  printLit("\n#########################")
-  printLit("# millis/micros menu  #")
-  printLit("#########################")
+  printSubMenuHeader("millis/micros menu ")
   for y in millismenu:
     printProp(x,y)
   if boards[x]["bootloader"]=="Micronucleus":
-    printLit("\n#########################")
-    printLit("# Boot Entrymode menu   #")
-    printLit("#########################")
+    printSubMenuHeader("Boot Entrymode menu  ")
     for y in bootmodesmicr:
       printProp(x,y)
     if "entrymodesizes" in boards[x]:
       for y in boards[x]["entrymodesizes"]:
         printProp(x,y)
-    printLit("\n################################")
-    printLit("# Pins used for USB      #")
-    printLit("################################")
+    printSubMenuHeader("Pins used for USB     ")
     for y in boards[x]["USBPins"]:
       printProp(x,y)
     if "rstdisbl" in boards[x]:
       if boards[x]["rstdisbl"]:
         for y in resetpinmenu:
           printProp(x,".menu.resetpin."+y)
-    printLit("\n################################")
-    printLit("# Upgrade vs ISP install menu  #")
-    printLit("################################")
+    printSubMenuHeader("Upgrade vs ISP install menu ")
     printProp(x,".menu.burnmode.upgrade=Upgrade (via USB)")
     printProp(x,".menu.burnmode.upgrade.bootloader.file={runtime.platform.path}/bootloaders/micronucleus/upgrade-"+boards[x]["bootname"]+"{bootloader.devpostfix}{bootloader.usbpinsetname}"+"_"+"{bootloader.entrymode}.hex")
     printProp(x,".menu.burnmode.upgrade.bootloader.tool=micronucleus")
@@ -1421,15 +1682,76 @@ for x in boards:
     printProp(x,".menu.burnmode.install.bootloader.tool=avrdude")
     printProp(x,".menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.file}:i")
   if boards[x]["bootloader"]=="Optiboot":
-    printLit("\n#########################")
-    printLit("# Boot Entrymode menu   #")
-    printLit("#########################")
+    printSubMenuHeader("Boot Entrymode menu  ")
     for y in bootmodesopti:
       printProp(x,y)
     if "optipins" in boards[x]:
-      printLit("\n################################")
-      printLit("# Serial Port:         #")
-      printLit("################################")
+      printSubMenuHeader("Serial Port:        ")
       for y in boards[x]["optipins"]:
         printProp(x,y)
 
+makehead=open("MakefileHead.txt")
+makeheadtext=makehead.read()
+makehead.close()
+makefile=open("Makefile.tiny","w")
+optibootbuilds={};
+optibootbuilds_proto={};
+for x in boards:
+  if "header" in boards[x]:
+    continue
+  if boards[x]["bootloader"]=="Optiboot":
+    for y in chiplist[x[:-4]]:
+      optibootbuilds[y]={}
+      optibootbuilds_proto[y]={"clocks":clocklist[x]}
+      optibootbuilds_proto[y]["baud"]=baudlist[x]
+      if boards[x]["hasvoltdependance"]:
+        optibootbuilds[y]["hasvoltdependance"]=True
+      else:
+        optibootbuilds[y]["hasvoltdependance"]=False
+      if "twouart" in boards[x]:
+        optibootbuilds[y]["twouart"]=True
+      else:
+        optibootbuilds[y]["twouart"]=False
+      if boards[x]["fancysoftser"]:
+        optibootbuilds[y]["fancysoftser"]=True
+      else:
+        optibootbuilds[y]["fancysoftser"]=False
+      optibootbuilds[y]["clocks"]=[];
+      optibootbuilds[y]["baud"]=[];
+      for z in range(len(optibootbuilds_proto[y]["clocks"])):
+        if optibootbuilds_proto[y]["clocks"][z] in optibootbuilds[y]["clocks"]:
+          continue
+        optibootbuilds[y]["clocks"].append(optibootbuilds_proto[y]["clocks"][z])
+        optibootbuilds[y]["baud"].append(optibootbuilds_proto[y]["baud"][z])
+
+print(optibootbuilds)
+listofbuilds=[]
+fhead = open("MakefileHead.txt")
+fheadtext=fhead.read()
+f2 = open("Makefile.tiny","w")
+print(fheadtext,file=f2)
+for x in optibootbuilds:
+  if optibootbuilds[x]["twouart"]:
+    optlist={"":"","_ser1":"UART=1"}
+  elif optibootbuilds[x]["fancysoftser"]:
+    optlist={"_rx7tx6":"TXPIN=6 RXPIN=7","_rx6tx7":"TXPIN=7 RXPIN=6","_rx5tx6":"TXPIN=6 RXPIN=5"}
+  else:
+    optlist={"":""}
+  for y in range(len(optibootbuilds[x]["baud"])):
+    z = optibootbuilds[x]["clocks"][y]
+    b = optibootbuilds[x]["baud"][y]
+    for t in optlist:
+      listofbuilds.append(x+"at"+z+t)
+      listofbuilds.append(x+"at"+z+t+"_8sec")
+      print(x+"at"+z+t+":\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+".hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+".lst\nendif\n\n",file=f2)
+      print(x+"at"+z+t+"_8sec:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" NO_START_APP_ON_POR=0 TIMEOUT=8 BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_8sec.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_8sec.lst\nendif\n\n",file=f2)
+      if y<=1:
+        if(optibootbuilds[x]["hasvoltdependance"]):
+          listofbuilds.append(x+"at"+z+t+"_int")
+          listofbuilds.append(x+"at"+z+t+"_int_8sec")
+          print(x+"at"+z+t+"_int:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_int.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_int.lst\nendif\n\n",file=f2)
+          print(x+"at"+z+t+"_int_8sec:\n\t$(MAKE) "+x+"\tAVR_FREQ="+z+" "+optlist[t]+" NO_START_APP_ON_POR=0 TIMEOUT=8 BAUD_RATE="+b+"\n\tmv $(PROGRAM)_"+x+".hex $(PROGRAM)_"+x+"_"+z+t+"_8sec_int.hex\nifndef PRODUCTION\n\tmv $(PROGRAM)_"+x+".lst $(PROGRAM)_"+x+"_"+z+t+"_8sec_int.lst\nendif\n\n",file=f2)
+f2.close();
+f3=open("makeall.tiny.bat","w")
+for x in listofbuilds:
+  print("call omake "+x,file=f3)

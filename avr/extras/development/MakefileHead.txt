@@ -1,0 +1,204 @@
+#-------------------------------
+# ATtiny 1634
+#-------------------------------
+
+HELPTEXT += "\n target attiny1634    - atttiny1634at<freq>  attiny1634at<freq>ser1\n"
+HELPTEXT += "                     - atttiny1634at8_5v  attiny1634at8_5vser1\n"
+
+attiny1634: TARGET = attiny1634
+attiny1634: MCU_TARGET = attiny1634
+attiny1634: LED_CMD ?= -DLED=C0
+attiny1634: CFLAGS += $(COMMON_OPTIONS) -DVIRTUAL_BOOT_PARTITION -DFOURPAGEERASE $(UART_CMD)
+attiny1634: AVR_FREQ ?= 8000000L
+attiny1634: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny1634: $(PROGRAM)_attiny1634.hex
+ifndef PRODUCTION
+attiny1634: $(PROGRAM)_attiny1634.lst
+endif
+
+#--------------------------------
+# ATtiny 841
+#-------------------------------
+
+HELPTEXT += "target attiny841     - atttiny841at<freq>  attiny841at<freq>ser1\n"
+HELPTEXT += "                     - atttiny841at8_5v  attiny841at8_5vser1\n"
+HELPTEXT += "                     - atttiny841at<freq>noLED\n"
+
+attiny841: TARGET = attiny841
+attiny841: MCU_TARGET = attiny841
+attiny841: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE' $(UART_CMD)
+attiny841: AVR_FREQ ?= 8000000L
+attiny841: LDSECTIONS  = -Wl,--section-start=.appjmp=0x1d70 -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny841: $(PROGRAM)_attiny841.hex
+ifndef PRODUCTION
+attiny841: $(PROGRAM)_attiny841.lst
+endif
+
+#--------------------------------
+# ATtiny 441
+#-------------------------------
+
+HELPTEXT += "target attiny441     - atttiny441at<freq>  attiny441at<freq>ser1\n"
+HELPTEXT += "                     - atttiny441at8_5v  attiny441at8_5vser1\n"
+HELPTEXT += "                     - atttiny441at<freq>noLED\n"
+
+attiny441: TARGET = attiny441
+attiny441: MCU_TARGET = attiny441
+attiny441: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DFOURPAGEERASE' $(UART_CMD)
+attiny441: AVR_FREQ ?= 8000000L
+attiny441: LDSECTIONS  = -Wl,--section-start=.text=0x0d80 -Wl,--section-start=.version=0x0ffe
+attiny441: $(PROGRAM)_attiny441.hex
+ifndef PRODUCTION
+attiny441: $(PROGRAM)_attiny441.lst
+endif
+
+#-------------------
+# ATtiny828
+#--------------------
+
+HELPTEXT += "target attiny828     - atttiny828at<freq>  attiny841at8_5v\n"
+
+attiny828: TARGET = attiny828
+attiny828: MCU_TARGET = attiny828
+attiny828: CFLAGS += $(COMMON_OPTIONS)
+attiny828: AVR_FREQ ?= 8000000L
+attiny828: LDSECTIONS  = -Wl,--section-start=.text=0x1e00 -Wl,--section-start=.version=0x1ffe
+attiny828: $(PROGRAM)_attiny828.hex
+ifndef PRODUCTION
+attiny828: $(PROGRAM)_attiny828.lst
+endif
+#-------------------
+# ATtiny88
+#--------------------
+
+HELPTEXT += "target attiny88     - atttiny88at<freq> \n"
+
+attiny88: TARGET = attiny88
+attiny88: MCU_TARGET = attiny88
+attiny88: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
+attiny88: AVR_FREQ ?= 8000000L
+attiny88: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny88: $(PROGRAM)_attiny88.hex
+ifndef PRODUCTION
+attiny88: $(PROGRAM)_attiny88.lst
+endif
+#-------------------
+# ATtiny48
+#--------------------
+
+HELPTEXT += "target attiny48     - atttiny48at<freq> \n"
+
+attiny48: TARGET = attiny48
+attiny48: MCU_TARGET = attiny48
+attiny48: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
+attiny48: AVR_FREQ ?= 8000000L
+attiny48: LDSECTIONS  = -Wl,--section-start=.text=0x0d80 -Wl,--section-start=.version=0x0ffe
+attiny48: $(PROGRAM)_attiny48.hex
+ifndef PRODUCTION
+attiny48: $(PROGRAM)_attiny48.lst
+endif
+#-------------------
+# ATtiny85 (No LED)
+#--------------------
+
+HELPTEXT += "target attiny85     - attiny85at<freq> \n"
+
+attiny85: TARGET = attiny85
+attiny85: MCU_TARGET = attiny85
+attiny85: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DLED_START_FLASHES=0' '-DSOFT_UART'
+attiny85: AVR_FREQ ?= 8000000L
+attiny85: LDSECTIONS  = -Wl,--section-start=.text=0x1dc0 -Wl,--section-start=.version=0x1ffe
+attiny85: $(PROGRAM)_attiny85.hex
+ifndef PRODUCTION
+attiny85: $(PROGRAM)_attiny85.lst
+endif
+#-------------------
+# ATtiny45 (No LED)
+#--------------------
+
+HELPTEXT += "target attiny45     - attiny45at<freq> \n"
+
+attiny45: TARGET = attiny45
+attiny45: MCU_TARGET = attiny45
+attiny45: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DLED_START_FLASHES=0' '-DSOFT_UART'
+attiny45: AVR_FREQ ?= 8000000L
+attiny45: LDSECTIONS  = -Wl,--section-start=.text=0x0DC0 -Wl,--section-start=.version=0x0ffe
+attiny45: $(PROGRAM)_attiny45.hex
+ifndef PRODUCTION
+attiny45: $(PROGRAM)_attiny45.lst
+endif
+#-------------------
+# ATtiny84
+#--------------------
+
+HELPTEXT += "target attiny84     - attiny84at<freq> \n"
+
+attiny84: TARGET = attiny84
+attiny84: MCU_TARGET = attiny84
+attiny84: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
+attiny84: AVR_FREQ ?= 8000000L
+attiny84: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny84: $(PROGRAM)_attiny84.hex
+ifndef PRODUCTION
+attiny84: $(PROGRAM)_attiny84.lst
+endif
+#-------------------
+# ATtiny44
+#--------------------
+
+HELPTEXT += "target attiny44     - attiny44at<freq> \n"
+
+attiny44: TARGET = attiny44
+attiny44: MCU_TARGET = attiny44
+attiny44: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
+attiny44: AVR_FREQ ?= 8000000L
+attiny44: LDSECTIONS  = -Wl,--section-start=.text=0x0d80 -Wl,--section-start=.version=0x0ffe
+attiny44: $(PROGRAM)_attiny44.hex
+ifndef PRODUCTION
+attiny44: $(PROGRAM)_attiny44.lst
+endif
+#-------------------
+# ATtiny861
+#--------------------
+
+HELPTEXT += "target attiny861     - attiny861at<freq> \n"
+
+attiny861: TARGET = attiny861
+attiny861: MCU_TARGET = attiny861
+attiny861: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
+attiny861: AVR_FREQ ?= 8000000L
+attiny861: LDSECTIONS  = -Wl,--section-start=.text=0x1d80 -Wl,--section-start=.version=0x1ffe
+attiny861: $(PROGRAM)_attiny861.hex
+ifndef PRODUCTION
+attiny861: $(PROGRAM)_attiny861.lst
+endif
+#-------------------
+# ATtiny461
+#--------------------
+
+HELPTEXT += "target attiny461     - attiny461at<freq> \n"
+
+attiny461: TARGET = attiny461
+attiny461: MCU_TARGET = attiny461
+attiny461: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION' '-DSOFT_UART'
+attiny461: AVR_FREQ ?= 8000000L
+attiny461: LDSECTIONS  = -Wl,--section-start=.text=0x0D80 -Wl,--section-start=.version=0x0ffe
+attiny461: $(PROGRAM)_attiny461.hex
+ifndef PRODUCTION
+attiny461: $(PROGRAM)_attiny461.lst
+endif
+#-------------------
+# ATtiny167, ATtiny87 - has LIN UART
+#--------------------
+
+HELPTEXT += "target attiny167, attiny87\n"
+
+attiny167: TARGET = attiny167
+attiny167: MCU_TARGET = attiny167
+attiny167: AVR_FREQ ?= 8000000L
+attiny167: CFLAGS += $(COMMON_OPTIONS) '-DVIRTUAL_BOOT_PARTITION'
+attiny167: LDSECTIONS  = -Wl,--section-start=.text=0x3d80 -Wl,--section-start=.version=0x3ffe
+attiny167: $(PROGRAM)_attiny167.hex
+ifndef PRODUCTION
+attiny167: $(PROGRAM)_attiny167.lst
+endif
