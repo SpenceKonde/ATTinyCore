@@ -202,7 +202,7 @@ class tinyNeoPixel {
   */
 
   attribute((always_inline)) inline void show(void) {
-    if(!pixels) {
+    if (!pixels) {
       return;
     }
     while(!canShow());

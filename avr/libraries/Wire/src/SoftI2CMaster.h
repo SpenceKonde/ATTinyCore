@@ -211,8 +211,7 @@ void  i2c_delay_half(void)
 #endif
 }
 
-void i2c_wait_scl_high(void)
-{
+void i2c_wait_scl_high(void) {
 #if I2C_TIMEOUT <= 0
   __asm__ __volatile__
     ("_Li2c_wait_stretch: \n\t"
@@ -258,8 +257,7 @@ void i2c_wait_scl_high(void)
 }
 
 
-bool i2c_init(void)
-{
+bool i2c_init(void) {
   __asm__ __volatile__
     (" cbi      %[SDADDR],%[SDAPIN]     ;release SDA \n\t"
      " cbi      %[SCLDDR],%[SCLPIN]     ;release SCL \n\t"
@@ -281,8 +279,7 @@ bool i2c_init(void)
   return true;
 }
 
-bool  i2c_start(uint8_t addr)
-{
+bool  i2c_start(uint8_t addr) {
   __asm__ __volatile__
     (
 #if I2C_NOINTERRUPT
@@ -299,8 +296,7 @@ bool  i2c_start(uint8_t addr)
   return true; // we never return here!
 }
 
-bool  i2c_rep_start(uint8_t addr)
-{
+bool  i2c_rep_start(uint8_t addr) {
   __asm__ __volatile__
 
     (
@@ -324,8 +320,7 @@ bool  i2c_rep_start(uint8_t addr)
   return true; // just to fool the compiler
 }
 
-void  i2c_start_wait(uint8_t addr)
-{
+void  i2c_start_wait(uint8_t addr) {
  __asm__ __volatile__
    (
     " push  r24                     ;save original parameter \n\t"
@@ -351,8 +346,7 @@ void  i2c_start_wait(uint8_t addr)
       [SCLIN] "I" (SCL_IN),[SCLPIN] "I" (SCL_PIN));
 }
 
-void  i2c_stop(void)
-{
+void  i2c_stop(void) {
   __asm__ __volatile__
     (
      " sbi      %[SCLDDR],%[SCLPIN]     ;force SCL low \n\t"
@@ -371,8 +365,7 @@ void  i2c_stop(void)
          [SDADDR] "I"  (SDA_DDR), [SDAPIN] "I" (SDA_PIN));
 }
 
-bool i2c_write(uint8_t value)
-{
+bool i2c_write(uint8_t value) {
   __asm__ __volatile__
     (
      " sec                              ;set carry flag \n\t"
@@ -448,8 +441,7 @@ bool i2c_write(uint8_t value)
   return true; // fooling the compiler
 }
 
-uint8_t i2c_read(bool last)
-{
+uint8_t i2c_read(bool last) {
   __asm__ __volatile__
     (
      " ldi  r23,0x01 \n\t"

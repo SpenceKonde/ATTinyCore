@@ -63,7 +63,7 @@ void i2c_tinyS::begin_(struct i2cStruct* i2c, uint8_t address, uint8_t mask) {
 }
 
 size_t i2c_tinyS::write(uint8_t data) {
-    if(i2c->txBufferLength < I2C_BUFFER_LENGTH) {
+    if (i2c->txBufferLength < I2C_BUFFER_LENGTH) {
         i2c->Buffer[i2c->txBufferLength++] = data;
         return 1;
     }
@@ -71,32 +71,32 @@ size_t i2c_tinyS::write(uint8_t data) {
 }
 
 size_t i2c_tinyS::write(const uint8_t* data, size_t quantity) {
-    if(i2c->txBufferLength < I2C_BUFFER_LENGTH) {
+    if (i2c->txBufferLength < I2C_BUFFER_LENGTH) {
         size_t avail = I2C_BUFFER_LENGTH - i2c->txBufferLength;
         uint8_t* dest = i2c->Buffer + i2c->txBufferLength;
-        if(quantity > avail) quantity = avail;
+        if (quantity > avail) quantity = avail;
         for (size_t count = quantity; count; count--) *dest++ = *data++;
         i2c->txBufferLength += quantity;
     }
 }
 
 int i2c_tinyS::read_(struct i2cStruct* i2c) {
-    if(i2c->rxBufferIndex >= i2c->rxBufferLength) return -1;
+    if (i2c->rxBufferIndex >= i2c->rxBufferLength) return -1;
     return i2c->Buffer[i2c->rxBufferIndex++];
 }
 
 int i2c_tinyS::peek_(struct i2cStruct* i2c) {
-    if(i2c->rxBufferIndex >= i2c->rxBufferLength) return -1;
+    if (i2c->rxBufferIndex >= i2c->rxBufferLength) return -1;
     return i2c->Buffer[i2c->rxBufferIndex];
 }
 
 uint8_t i2c_tinyS::readByte_(struct i2cStruct* i2c) {
-    if(i2c->rxBufferIndex >= i2c->rxBufferLength) return 0;
+    if (i2c->rxBufferIndex >= i2c->rxBufferLength) return 0;
     return i2c->Buffer[i2c->rxBufferIndex++];
 }
 
 uint8_t i2c_tinyS::peekByte_(struct i2cStruct* i2c) {
-    if(i2c->rxBufferIndex >= i2c->rxBufferLength) return 0;
+    if (i2c->rxBufferIndex >= i2c->rxBufferLength) return 0;
     return i2c->Buffer[i2c->rxBufferIndex];
 }
 

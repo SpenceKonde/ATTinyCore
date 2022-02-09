@@ -56,8 +56,7 @@ void USI_TWI_Master_Speed(uint8_t fm) {
 /*---------------------------------------------------------------
  USI TWI single master initialization function
 ---------------------------------------------------------------*/
-void USI_TWI_Master_Initialise(void)
-{
+void USI_TWI_Master_Initialise(void) {
   #ifdef USI_PUE
   USI_PUE         |= (1 << USI_DI_BIT);
   USI_CLOCK_PUE   |= (1 << USI_CLOCK_BIT);
@@ -80,8 +79,7 @@ void USI_TWI_Master_Initialise(void)
 /*---------------------------------------------------------------
 Use this function to get hold of the error message from the last transmission
 ---------------------------------------------------------------*/
-unsigned char USI_TWI_Get_State_Info(void)
-{
+unsigned char USI_TWI_Get_State_Info(void) {
   return (USI_TWI_state.errorState); // Return error state.
 }
 
@@ -108,8 +106,7 @@ unsigned char USI_TWI_Start_Transceiver_With_Data(unsigned char *msg, unsigned c
  of the transmission.
 ---------------------------------------------------------------*/
 
-unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsigned char msgSize, unsigned char stop)
-{
+unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsigned char msgSize, unsigned char stop) {
   unsigned char tempUSISR_8bit = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC) | (0x0 << USICNT0);
   // Prepare register value to: Clear flags set USI to shift 8 bits i.e. count 16 clock edges.
 
@@ -213,8 +210,7 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
  Data to be sent has to be placed into the USIDR prior to calling
  this function. Data read, will be return'ed from the function.
 ---------------------------------------------------------------*/
-unsigned char USI_TWI_Master_Transfer(unsigned char temp)
-{
+unsigned char USI_TWI_Master_Transfer(unsigned char temp) {
   USISR = temp;                                          // Set USISR according to temp.
                                                          // Prepare clocking.
   temp = (0 << USISIE) | (0 << USIOIE) |                 // Interrupts disabled
@@ -241,8 +237,7 @@ unsigned char USI_TWI_Master_Transfer(unsigned char temp)
  Function for generating a TWI Stop Condition. Used to release
  the TWI bus.
 ---------------------------------------------------------------*/
-unsigned char USI_TWI_Master_Stop(void)
-{
+unsigned char USI_TWI_Master_Stop(void) {
   USI_PORT &= ~(1 << USI_DI_BIT);            // Pull SDA low.
   USI_CLOCK_PORT |= (1 << USI_CLOCK_BIT);         // Release SCL.
   while (!(USI_CLOCK_PIN & (1 << USI_CLOCK_BIT)));   // Wait for SCL to go high.

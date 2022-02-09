@@ -81,7 +81,7 @@ val = EEPROM[ 0 ];
 EEPROM[ 0 ] = val;
 
 //Compare contents
-if( val == EEPROM[ 0 ] ) {
+if ( val == EEPROM[ 0 ] ) {
   //Do something...
 }
 ```

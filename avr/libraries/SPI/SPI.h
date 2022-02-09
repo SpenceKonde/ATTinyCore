@@ -375,8 +375,7 @@ namespace USI_impl {
     uint8_t clockoutUSI8(uint8_t data, uint8_t delay);
 
     __attribute__((always_inline))
-    inline ClockOut dispatchClockout(uint8_t div, uint8_t* delay)
-    {
+    inline ClockOut dispatchClockout(uint8_t div, uint8_t* delay) {
       *delay = 0;
       if (div <= 2) {
           return clockoutUSI2;

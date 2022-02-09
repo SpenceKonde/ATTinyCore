@@ -1,9 +1,9 @@
 #ifdef ARDUINO_ARCH_AVR
   #include <Arduino.h>
   #include <tinyNeoPixel_Static.h>
-  void _show(uint8_t *ptr, uint16_t data_length, volatile uint8_t port, uint8_t bitmask) {
+  void _show_S(uint8_t *ptr, uint16_t data_length, volatile uint8_t port, uint8_t bitmask) {
 
-    /*INDENT-OFF Astyle doesn;t like assembly*/
+    // *INDENT-OFF*   astyle don't like assembly
     /* Data latch = 50+ microsecond pause in the output stream.  Rather than
      * put a delay at the end of the function, the ending time is noted and
      * the function will simply hold off (if needed) on issuing the
@@ -120,7 +120,7 @@
     hi = (*port) |  bitmask;
     lo = (*port) & ~bitmask;
     n1 = lo;
-    if (b & 0x80) n1 = hi;
+    if(b & 0x80) n1 = hi;
     // And as if all that wasn't good enough, we also save 8 words of flash!
     asm volatile(
      "headD:"                   "\n\t" // Clk  Pseudocode
@@ -128,7 +128,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n1]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 6"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 6"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "nop"                     "\n\t" // 2   T = 10   nop
@@ -136,7 +136,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n2]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 5"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 5"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "nop"                     "\n\t" // 2   T = 10   nop
@@ -144,7 +144,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n1]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 4"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 4"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "nop"                     "\n\t" // 2   T = 10   nop
@@ -152,7 +152,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n2]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 3"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 3"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "nop"                     "\n\t" // 2   T = 10   nop
@@ -160,7 +160,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n1]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 2"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 2"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "subi %A[count], 1"       "\n\t" // 1   T = 10  i-- part 1
@@ -168,7 +168,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n2]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 1"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 1"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "sbci %B[count], 0"       "\n\t" // 1   T = 10  i-- part 2 - carrying clears 0 flag unless this is also 0. (don't act on Z flag yet)
@@ -176,7 +176,7 @@
       "st  %a[port] , %[hi]"    "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st  %a[port] , %[n1]"    "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 0"        "\n\t" // 1-2 T = 6   if (b & 0x40)
+      "sbrc %[byte] , 0"        "\n\t" // 1-2 T = 6   if(b & 0x40)
        "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 7   n2 = hi
       "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
       "ld   %[byte] , %a[ptr]+" "\n\t" // 2   T = 11  b = *ptr++ load next byte
@@ -184,7 +184,7 @@
       "st   %a[port] , %[hi]"   "\n\t" // 2   T = 2   PORT = hi   0 and 2
       "st   %a[port] , %[n2]"   "\n\t" // 2   T = 4   PORT = n1 - 250 ns zero
       "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 5   n2   = lo -
-      "sbrc %[byte] , 7"        "\n\t" // 1-2 T = 6   if (b & 0x80)
+      "sbrc %[byte] , 7"        "\n\t" // 1-2 T = 6   if(b & 0x80)
        "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 7   n1 = hi
       "st   %a[port] , %[lo]"   "\n\t" // 2   T = 9   PORT = lo
       "brne headD"              "\n"   // 2   T = 11  while(i) (Z flag set above)
@@ -218,7 +218,7 @@
       hi = (*port) |  pinMask;
       lo = (*port) & ~pinMask;
       n1 = lo;
-      if (b & 0x80) n1 = hi;
+      if(b & 0x80) n1 = hi;
 
       asm volatile(
        "headD:"                   "\n\t" // Clk  Pseudocode
@@ -226,7 +226,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n1]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 6"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 6"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 10  PORT = lo
         "rjmp .+0"                "\n\t" // 2   T = 12  nop nop
@@ -235,7 +235,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n2]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 5"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 5"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 10  PORT = lo
         "rjmp .+0"                "\n\t" // 2   T = 12  nop nop
@@ -244,7 +244,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n1]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 4"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 4"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 10  PORT = lo
         "rjmp .+0"                "\n\t" // 2   T = 12  nop nop
@@ -253,7 +253,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n2]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 3"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 3"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 10  PORT = lo
         "rjmp .+0"                "\n\t" // 2   T = 12  nop nop
@@ -262,7 +262,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n1]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 2"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 2"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 10  PORT = lo
         "rjmp .+0"                "\n\t" // 2   T = 12  nop nop
@@ -271,7 +271,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n2]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 1"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 1"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 10   PORT = lo
         "sbiw %[count], 1"        "\n\t" // 2   T = 12  i--
@@ -280,7 +280,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st  %a[port] , %[n1]"    "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n2]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 0"        "\n\t" // 1-2 T = 7   if (b & 0x40)
+        "sbrc %[byte] , 0"        "\n\t" // 1-2 T = 7   if(b & 0x40)
          "mov %[n2]   , %[hi]"    "\n\t" // 0-1 T = 8   n2 = hi
         "st  %a[port] , %[lo]"    "\n\t" // 2   T = 9   PORT = lo
         "ld   %[byte] , %a[ptr]+" "\n\t" // 2   T = 11  b = *ptr++ load next byte
@@ -289,7 +289,7 @@
         "nop"                     "\n\t" // 2   T = 3   nop
         "st   %a[port] , %[n2]"   "\n\t" // 2   T = 5   PORT = n1 - 250 ns zero
         "mov  %[n1]   , %[lo]"    "\n\t" // 1   T = 6   n2   = lo -
-        "sbrc %[byte] , 7"        "\n\t" // 1-2 T = 7   if (b & 0x80)
+        "sbrc %[byte] , 7"        "\n\t" // 1-2 T = 7   if(b & 0x80)
          "mov %[n1]   , %[hi]"    "\n\t" // 0-1 T = 8   n1 = hi
         "st   %a[port] , %[lo]"   "\n\t" // 2   T = 10   PORT = lo
         "breq .+2"                "\n\t" // 2   T = 11  while(i) (Z flag not set above)
@@ -330,7 +330,7 @@
         hi   = *port |  pinMask;
         lo   = *port & ~pinMask;
         next = lo;
-        if (b & 0x80) next = hi;
+        if(b & 0x80) next = hi;
         bit  = 7;
         asm volatile(
           "headD:"                    "\n\t" // Clk  Pseudocode    (T = 14)
@@ -340,7 +340,7 @@
             "rol  %[byte]"            "\n\t" // 1    b <<= 1       (T =  4)
             "st  %a[port], %[next]"   "\n\t" // 1    PORT = next   (T =  6)
             "mov  %[next], %[lo]"     "\n\t" // 1    next = lo     (T =  7)
-            "sbrc %[byte], 7"         "\n\t" // 1-2  if (b & 0x80)  (T =  8)
+            "sbrc %[byte], 7"         "\n\t" // 1-2  if(b & 0x80)  (T =  8)
              "mov %[next], %[hi]"     "\n\t" // 0-1   next = hi    (T =  9)
             "dec  %[bit]"             "\n\t" // 1    bit--         (T = 10)
             "st  %a[port], %[lo]"     "\n\t" // 1    PORT = lo     (T = 12)
@@ -350,7 +350,7 @@
             "sbiw %[count], 1"        "\n\t" // 2    i--            (T =  4)
             "st  %a[port] , %[next]"  "\n\t" // 2    PORT = hi      (T =  6)
             "mov  %[next] , %[lo]"    "\n\t" // 1    next = lo      (T =  7)
-            "sbrc %[byte] , 7"        "\n\t" // 1-2  if (b & 0x80)   (T =  8)
+            "sbrc %[byte] , 7"        "\n\t" // 1-2  if(b & 0x80)   (T =  8)
              "mov %[next] , %[hi]"    "\n\t" // 0-1    next = hi    (T =  9)
             "ldi %[bit], 7"           "\n\t" // 1    7 loops        (T = 10)
             "st  %a[port] , %[lo]"    "\n\t" // 1    PORT = lo      (T = 12)
@@ -391,7 +391,7 @@
         hi   = *port |  pinMask;
         lo   = *port & ~pinMask;
         next = lo;
-        if (b & 0x80) next = hi;
+        if(b & 0x80) next = hi;
         bit  = 7;
         asm volatile(
           "headD:"                    "\n\t" // Clk  Pseudocode    (T = 17)
@@ -401,7 +401,7 @@
             "rol  %[byte]"            "\n\t" // 1    b <<= 1       (T =  5)
             "st  %a[port], %[next]"   "\n\t" // 1    PORT = next   (T =  7)
             "mov  %[next], %[lo]"     "\n\t" // 1    next = lo     (T =  8)
-            "sbrc %[byte], 7"         "\n\t" // 1-2  if (b & 0x80)  (T =  9)
+            "sbrc %[byte], 7"         "\n\t" // 1-2  if(b & 0x80)  (T =  9)
              "mov %[next], %[hi]"     "\n\t" // 0-1   next = hi    (T = 10)
             "rjmp .+0"                "\n\t" // 2    nop nop       (T = 12)
             "st  %a[port], %[lo]"     "\n\t" // 1    PORT = lo     (T = 14)
@@ -413,7 +413,7 @@
             "sbiw %[count], 1"        "\n\t" // 2    i--            (T =  5)
             "st  %a[port] , %[next]"  "\n\t" // 2    PORT = next    (T =  7)
             "mov  %[next] , %[lo]"    "\n\t" // 1    next = lo      (T =  7)
-            "sbrc %[byte] , 7"        "\n\t" // 1-2  if (b & 0x80)   (T =  8)
+            "sbrc %[byte] , 7"        "\n\t" // 1-2  if(b & 0x80)   (T =  8)
              "mov %[next] , %[hi]"    "\n\t" // 0-1    next = hi    (T =  9)
             "ldi %[bit], 7"           "\n\t" // 1    7 loops        (T = 10)
             "rjmp .+0"                "\n\t" // 2    nop nop        (T = 12)
@@ -443,12 +443,12 @@
     asm volatile(
      "head20:"                   "\n\t" // Clk  Pseudocode    (T =  0)
       "st   %a[port],  %[hi]"    "\n\t" // 2    PORT = hi     (T =  2)
-      "sbrc %[byte],  7"         "\n\t" // 1-2  if (b & 128)
+      "sbrc %[byte],  7"         "\n\t" // 1-2  if(b & 128)
        "mov  %[next], %[hi]"     "\n\t" // 0-1   next = hi    (T =  4)
       "dec  %[bit]"              "\n\t" // 1    bit--         (T =  5)
       "st   %a[port],  %[next]"  "\n\t" // 2    PORT = next   (T =  7)
       "mov  %[next] ,  %[lo]"    "\n\t" // 1    next = lo     (T =  8)
-      "breq nextbyte20"          "\n\t" // 1-2  if (bit == 0) (from dec above)
+      "breq nextbyte20"          "\n\t" // 1-2  if(bit == 0) (from dec above)
       "rol  %[byte]"             "\n\t" // 1    b <<= 1       (T = 10)
       "rjmp .+0"                 "\n\t" // 2    nop nop       (T = 12)
       "nop"                      "\n\t" // 1    nop           (T = 13)
@@ -462,7 +462,7 @@
       "st   %a[port], %[lo]"     "\n\t" // 2    PORT = lo     (T = 15)
       "nop"                      "\n\t" // 1    nop           (T = 16)
       "sbiw %[count], 1"         "\n\t" // 2    i--           (T = 18)
-       "brne head20"             "\n"   // 2    if (i != 0) -> (next byte) (T = 20)
+       "brne head20"             "\n"   // 2    if(i != 0) -> (next byte) (T = 20)
       : [port]  "+e" (port),
         [byte]  "+r" (b),
         [bit]   "+r" (bit),
@@ -486,13 +486,13 @@
     asm volatile(
      "head20:"                   "\n\t" // Clk  Pseudocode    (T =  0)
       "st   %a[port],  %[hi]"    "\n\t" // 2    PORT = hi     (T =  2)
-      "sbrc %[byte],  7"         "\n\t" // 1-2  if (b & 128)
+      "sbrc %[byte],  7"         "\n\t" // 1-2  if(b & 128)
        "mov  %[next], %[hi]"     "\n\t" // 0-1   next = hi    (T =  4)
       "dec  %[bit]"              "\n\t" // 1    bit--         (T =  5)
       "rjmp .+0"                 "\n\t" // 2    nop nop       (T =  7)
       "st   %a[port],  %[next]"  "\n\t" // 2    PORT = next   (T =  9)
       "mov  %[next] ,  %[lo]"    "\n\t" // 1    next = lo     (T =  10)
-      "breq nextbyte20"          "\n\t" // 1-2  if (bit == 0) (from dec above)
+      "breq nextbyte20"          "\n\t" // 1-2  if(bit == 0) (from dec above)
       "rol  %[byte]"             "\n\t" // 1    b <<= 1       (T = 12)
       "rjmp .+0"                 "\n\t" // 2    nop nop       (T = 14)
       "nop"                      "\n\t" // 1    nop           (T = 15)
@@ -508,7 +508,7 @@
       "rjmp .+0"                 "\n\t" // 2    nop nop       (T = 19)
       "rjmp .+0"                 "\n\t" // 2    nop nop       (T = 21)
       "sbiw %[count], 1"         "\n\t" // 2    i--           (T = 23)
-       "brne head20"             "\n"   // 2    if (i != 0) -> (next byte)  ()
+       "brne head20"             "\n"   // 2    if(i != 0) -> (next byte)  ()
       : [port]  "+e" (port),
         [byte]  "+r" (b),
         [bit]   "+r" (bit),

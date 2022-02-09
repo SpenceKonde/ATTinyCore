@@ -45,8 +45,7 @@ static uint8_t *        TWI_TxBuf = TWI_Buffer + TWI_RX_BUFFER_SIZE;
 static volatile uint8_t TWI_TxHead;
 static volatile uint8_t TWI_TxTail;
 
-void Flush_TWI_Buffers(void)
-{
+void Flush_TWI_Buffers(void) {
   TWI_RxTail = 0;
   TWI_RxHead = 0;
   TWI_TxTail = 0;
@@ -58,8 +57,7 @@ void Flush_TWI_Buffers(void)
 /*----------------------------------------------------------
   Initialise USI for TWI Slave mode.
 ----------------------------------------------------------*/
-void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress)
-{
+void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress) {
   Flush_TWI_Buffers();
 
   TWI_slaveAddress = TWI_ownAddress;
@@ -80,8 +78,7 @@ void USI_TWI_Slave_Initialise(unsigned char TWI_ownAddress)
 }
 
 // Disable USI for TWI Slave mode.
-void USI_TWI_Slave_Disable()
-{
+void USI_TWI_Slave_Disable() {
   USI_CLOCK_DDR &= ~(1 << USI_CLOCK_BIT);  // Set SCL as input
   USI_DDR       &= ~(1 << USI_DI_BIT);      // Set SDA as input
   USICR = 0x00;                            // Disable USI
@@ -89,8 +86,7 @@ void USI_TWI_Slave_Disable()
 }
 
 // Puts data in the transmission buffer, Waits if buffer is full.
-void USI_TWI_Transmit_Byte(unsigned char data)
-{
+void USI_TWI_Transmit_Byte(unsigned char data) {
   unsigned char tmphead;
   tmphead = (TWI_TxHead + 1) & TWI_TX_BUFFER_MASK; // Calculate buffer index.
   while (tmphead == TWI_TxTail);                   // Wait for free space in buffer.
@@ -99,8 +95,7 @@ void USI_TWI_Transmit_Byte(unsigned char data)
 }
 
 // Returns a byte from the receive buffer. Waits if buffer is empty.
-unsigned char USI_TWI_Receive_Byte(void)
-{
+unsigned char USI_TWI_Receive_Byte(void) {
   unsigned char tmptail;
   unsigned char tmpRxTail; // Temporary variable to store volatile
   tmpRxTail = TWI_RxTail;  // Not necessary, but prevents warnings
@@ -112,8 +107,7 @@ unsigned char USI_TWI_Receive_Byte(void)
 }
 
 // Returns a byte from the receive buffer without incrementing TWI_RxTail. Waits if buffer is empty.
-unsigned char USI_TWI_Peek_Receive_Byte(void)
-{
+unsigned char USI_TWI_Peek_Receive_Byte(void) {
   unsigned char tmptail;
   unsigned char tmpRxTail; // Temporary variable to store volatile
   tmpRxTail = TWI_RxTail;  // Not necessary, but prevents warnings
@@ -124,24 +118,21 @@ unsigned char USI_TWI_Peek_Receive_Byte(void)
 }
 
 // Check if there is data in the receive buffer.
-unsigned char USI_TWI_Data_In_Receive_Buffer(void)
-{
+unsigned char USI_TWI_Data_In_Receive_Buffer(void) {
   unsigned char tmpRxTail;                              // Temporary variable to store volatile
   tmpRxTail = TWI_RxTail;                               // Not necessary, but prevents warnings
   return (TWI_RxHead - tmpRxTail) & TWI_RX_BUFFER_MASK; // Return 0 (FALSE) if the receive buffer is empty.
 }
 
 // Check if there is space in the transmission buffer.
-unsigned char USI_TWI_Space_In_Transmission_Buffer(void)
-{
+unsigned char USI_TWI_Space_In_Transmission_Buffer(void) {
   unsigned char tmpTxHead;
   tmpTxHead = (TWI_TxHead + 1) & TWI_TX_BUFFER_MASK;    // Calculate next buffer index.
   return (TWI_TxTail - tmpTxHead) & TWI_TX_BUFFER_MASK; // Return 0 (FALSE) if the transmission buffer is full.
 }
 
 // Check if there is an active data session.
-unsigned char USI_TWI_Slave_Is_Active()
-{
+unsigned char USI_TWI_Slave_Is_Active() {
   // Active if Overflow Interrupt is enabled and no Stop Condition occurred
   return (USICR & (1 << USIOIE)) && ((USISR & (1 << USIPF)) == 0);
 }
@@ -151,8 +142,7 @@ unsigned char USI_TWI_Slave_Is_Active()
  for reception of the "TWI Address" packet.
 ----------------------------------------------------------*/
 
-ISR(USI_START_VECTOR)
-{
+ISR(USI_START_VECTOR) {
   unsigned char tmpPin;             // Temporary variable for pin state
   unsigned char tmpRxHead;          // Temporary variable to store volatile
   // call slave receive callback on repeated start
@@ -190,8 +180,7 @@ ISR(USI_START_VECTOR)
  Handles all the communication. Is disabled only when waiting
  for new Start Condition.
 ----------------------------------------------------------*/
-ISR(USI_OVERFLOW_VECTOR)
-{
+ISR(USI_OVERFLOW_VECTOR) {
   unsigned char tmpRxHead;
   unsigned char tmpTxTail; // Temporary variables to store volatiles
   unsigned char tmpUSIDR;

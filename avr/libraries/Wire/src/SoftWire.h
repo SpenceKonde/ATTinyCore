@@ -70,8 +70,7 @@ public:
     beginTransmission((uint8_t)address);
   }
 
-  uint8_t endTransmission(uint8_t sendStop)
-  {
+  uint8_t endTransmission(uint8_t sendStop) {
     uint8_t transError = error;
     if (sendStop) {
       i2c_stop();
@@ -84,8 +83,7 @@ public:
   //  This provides backwards compatibility with the original
   //  definition, and expected behaviour, of endTransmission
   //
-  uint8_t endTransmission(void)
-  {
+  uint8_t endTransmission(void) {
     return endTransmission(true);
   }
 
@@ -100,7 +98,7 @@ public:
 
   size_t write(const uint8_t *data, size_t quantity) {
     size_t trans = 0;
-    for(size_t i = 0; i < quantity; ++i) {
+    for (size_t i = 0; i < quantity; ++i) {
       trans += write(data[i]);
     }
     return trans;
@@ -123,7 +121,7 @@ public:
       endTransmission(false);
     }
     // clamp to buffer length
-    if(quantity > BUFFER_LENGTH) {
+    if (quantity > BUFFER_LENGTH) {
       quantity = BUFFER_LENGTH;
     }
     localerror = !i2c_rep_start((address<<1) | I2C_READ);
@@ -164,7 +162,7 @@ public:
 
   int read(void) {
     int value = -1;
-    if(rxBufferIndex < rxBufferLength) {
+    if (rxBufferIndex < rxBufferLength) {
       value = rxBuffer[rxBufferIndex];
       ++rxBufferIndex;
     }
@@ -174,7 +172,7 @@ public:
   int peek(void) {
     int value = -1;
 
-    if(rxBufferIndex < rxBufferLength) {
+    if (rxBufferIndex < rxBufferLength) {
       value = rxBuffer[rxBufferIndex];
     }
     return value;

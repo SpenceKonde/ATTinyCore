@@ -34,7 +34,7 @@ void setup() {
 
   /***
     As get also returns a reference to 'f', you can use it inline.
-    E.g: Serial.print( EEPROM.get( eeAddress, f ) );
+    E.g: Serial.print( EEPROM.get( eeAddress, f ));
   ***/
 
   /***

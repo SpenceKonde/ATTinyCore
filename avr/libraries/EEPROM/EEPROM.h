@@ -52,15 +52,15 @@ struct EERef{
         : index( index )                 {}
 
     //Access/read members.
-    uint8_t operator*() const            { return eeprom_read_byte( (uint8_t*) index ); }
+    uint8_t operator*() const            { return eeprom_read_byte((uint8_t*) index ); }
     operator uint8_t() const       { return **this; }
 
     //Assignment/write members.
     EERef &operator=( const EERef &ref ) { return *this = *ref; }
     /*#if  (defined(__AVR_ATtinyX41__) && F_CPU==16000000 && CLOCK_SOURCE==0)
-      EERef &operator=( uint8_t in )       { return safe_eeprom_write_byte( (uint8_t*) index, in ), *this;  }
+      EERef &operator=( uint8_t in )       { return safe_eeprom_write_byte((uint8_t*) index, in ), *this;  }
     #else */
-    EERef &operator=( uint8_t in )       { return eeprom_write_byte( (uint8_t*) index, in ), *this;  }
+    EERef &operator=( uint8_t in )       { return eeprom_write_byte((uint8_t*) index, in ), *this;  }
     /*#endif*/
     EERef &operator +=( uint8_t in )     { return *this = **this + in; }
     EERef &operator -=( uint8_t in )     { return *this = **this - in; }
@@ -147,14 +147,14 @@ struct EEPROMClass{
     template< typename T > T &get( int idx, T &t ) {
         EEPtr e = idx;
         uint8_t *ptr = (uint8_t*) &t;
-        for( int count = sizeof(T) ; count ; --count, ++e )  *ptr++ = *e;
+        for ( int count = sizeof(T) ; count ; --count, ++e )  *ptr++ = *e;
         return t;
     }
 
     template< typename T > const T &put( int idx, const T &t ) {
         EEPtr e = idx;
         const uint8_t *ptr = (const uint8_t*) &t;
-        for( int count = sizeof(T) ; count ; --count, ++e )  (*e).update( *ptr++ );
+        for ( int count = sizeof(T) ; count ; --count, ++e )  (*e).update( *ptr++ );
         return t;
     }
 };

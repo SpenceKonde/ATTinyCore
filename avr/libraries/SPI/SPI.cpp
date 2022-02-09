@@ -35,8 +35,7 @@ uint8_t SPIClass::interruptSave = 0;
 uint8_t SPIClass::inTransactionFlag = 0;
 #endif
 
-void SPIClass::begin()
-{
+void SPIClass::begin() {
   uint8_t sreg = SREG;
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
   if (!initialized) {
@@ -59,7 +58,7 @@ void SPIClass::begin()
 
     // if the SS pin is not already configured as an output
     // then set it high (to enable the internal pull-up resistor)
-    if(!(*reg & bit)) {
+    if (!(*reg & bit)) {
       digitalWrite(SS_pin, HIGH);
     }
     pinMode(SS_pin, OUTPUT);
@@ -70,7 +69,7 @@ void SPIClass::begin()
 
     // if the SS pin is not already configured as an output
     // then set it high (to enable the internal pull-up resistor)
-    if(!(*reg & bit)) {
+    if (!(*reg & bit)) {
       digitalWrite(SS, HIGH);
     }
        // Set SS to high so a connected chip will be "deselected" by default
@@ -156,8 +155,7 @@ void SPIClass::end() {
   #endif
 #endif
 
-void SPIClass::usingInterrupt(uint8_t interruptNumber)
-{
+void SPIClass::usingInterrupt(uint8_t interruptNumber) {
   uint8_t mask = 0;
   uint8_t sreg = SREG;
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
@@ -196,8 +194,7 @@ void SPIClass::usingInterrupt(uint8_t interruptNumber)
   SREG = sreg;
 }
 
-void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
-{
+void SPIClass::notUsingInterrupt(uint8_t interruptNumber) {
   // Once in mode 2 we can't go back to 0 without a proper reference count
   if (interruptMode == 2)
     return;
@@ -245,8 +242,7 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
 
 #include <util/delay_basic.h>
 
-SPIClass::SPIClass()
-{
+SPIClass::SPIClass() {
 }
 
 USI_impl::ClockOut SPIClass::clockoutfn = 0;
@@ -257,8 +253,7 @@ uint8_t SPIClass::interruptMode = 0;
 uint8_t SPIClass::interruptMask = 0;
 uint8_t SPIClass::interruptSave = 0;
 
-void SPIClass::begin(void)
-{
+void SPIClass::begin(void) {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
     USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
     USI_SCK_PORT |= _BV(USCK_DD_PIN);   //set the USCK pin as output
@@ -267,8 +262,7 @@ void SPIClass::begin(void)
     applySettings(SPISettings());
 }
 
-void SPIClass::setDataMode(uint8_t spiDataMode)
-{
+void SPIClass::setDataMode(uint8_t spiDataMode) {
     if (spiDataMode == SPI_MODE1) {
         USICR |= _BV(USICS0);
     } else {
@@ -281,8 +275,7 @@ void SPIClass::setDataMode(uint8_t spiDataMode)
     }
 }
 
-USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay)
-{
+USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay) {
     return dispatchClockout(div, delay);
 }
 
@@ -309,8 +302,7 @@ static byte reverse (byte x) {
   return(result);
 }
 
-uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
-{
+uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t) {
     // Unlike other clockout methods, this one cannot rely on the
     // "external" clock source (USICS1) because it is too slow and
     // glitches. Instead, it uses software strobe explicitly.
@@ -368,8 +360,7 @@ uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t)
 }
 
 __attribute__((optimize (3, "unroll-all-loops")))
-uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
-{
+uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t) {
     USISR = _BV(USIOIF);
     USIDR = data;
     for (byte i = 0; i < 16; ++i) {
@@ -379,8 +370,7 @@ uint8_t USI_impl::clockoutUSI4(uint8_t data, uint8_t)
 }
 
 __attribute__((optimize (3, "unroll-all-loops")))
-uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
-{
+uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t) {
     USISR = _BV(USIOIF);
     USIDR = data;
     for (byte i = 0; i < 16; ++i) {
@@ -391,8 +381,7 @@ uint8_t USI_impl::clockoutUSI8(uint8_t data, uint8_t)
 }
 
 __attribute__((optimize ("Os")))
-uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t delay)
-{
+uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t delay) {
     uint8_t tmp = USICR | _BV(USITC);
     USISR = _BV(USIOIF);
     USIDR = data;
@@ -403,8 +392,7 @@ uint8_t USI_impl::clockoutUSI(uint8_t data, uint8_t delay)
     return USIDR;
 }
 
-uint8_t SPIClass::transfer(uint8_t spiData)
-{
+uint8_t SPIClass::transfer(uint8_t spiData) {
     if (msb1st) {
         return clockoutfn(spiData, delay);
     } else {
@@ -412,8 +400,7 @@ uint8_t SPIClass::transfer(uint8_t spiData)
     }
 }
 
-uint16_t SPIClass::transfer16(uint16_t data)
-{
+uint16_t SPIClass::transfer16(uint16_t data) {
     union { uint16_t val; struct { uint8_t lsb; uint8_t msb; }; } tmp;
     tmp.val = data;
     if (msb1st) {
@@ -501,8 +488,7 @@ void SPIClass::endTransaction(void) {
 #define SPI_INT2_MASK  (1<<INT2)
 #endif
 
-void SPIClass::usingInterrupt(uint8_t interruptNumber)
-{
+void SPIClass::usingInterrupt(uint8_t interruptNumber) {
   uint8_t mask = 0;
   uint8_t sreg = SREG;
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
@@ -526,8 +512,7 @@ void SPIClass::usingInterrupt(uint8_t interruptNumber)
   SREG = sreg;
 }
 
-void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
-{
+void SPIClass::notUsingInterrupt(uint8_t interruptNumber) {
   // Once in mode 2 we can't go back to 0 without a proper reference count
   if (interruptMode == 2)
     return;
@@ -553,8 +538,7 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber)
     interruptMode = 0;
   SREG = sreg;
 }
-void SPIClass::end(void)
-{
+void SPIClass::end(void) {
     USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
 }
 

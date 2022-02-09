@@ -58,7 +58,7 @@ void loop() {
 
 // Fill the dots one after the other with a color
 void colorWipe(uint32_t c, uint8_t wait) {
-  for(uint16_t i = 0; i<strip.numPixels(); i++) {
+  for (uint16_t i = 0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
@@ -66,17 +66,17 @@ void colorWipe(uint32_t c, uint8_t wait) {
 }
 
 void pulseWhite(uint8_t wait) {
-  for(int j = 0; j < 256 ; j++) {
-      for(uint16_t i = 0; i<strip.numPixels(); i++) {
-          strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ) );
+  for (int j = 0; j < 256 ; j++) {
+      for (uint16_t i = 0; i<strip.numPixels(); i++) {
+          strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ));
         }
         delay(wait);
         strip.show();
       }
 
-  for(int j = 255; j >= 0 ; j--) {
-      for(uint16_t i = 0; i<strip.numPixels(); i++) {
-          strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ) );
+  for (int j = 255; j >= 0 ; j--) {
+      for (uint16_t i = 0; i<strip.numPixels(); i++) {
+          strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ));
         }
         delay(wait);
         strip.show();
@@ -90,10 +90,10 @@ void rainbowFade2White(uint8_t wait, int rainbowLoops, int whiteLoops) {
   uint32_t wheelVal;
   int redVal, greenVal, blueVal;
 
-  for(int k = 0 ; k < rainbowLoops ; k ++) {
-    for(int j = 0; j<256; j++) { // 5 cycles of all colors on wheel
+  for (int k = 0 ; k < rainbowLoops ; k ++) {
+    for (int j = 0; j<256; j++) { // 5 cycles of all colors on wheel
 
-      for(int i = 0; i< strip.numPixels(); i++) {
+      for (int i = 0; i< strip.numPixels(); i++) {
 
         wheelVal = Wheel(((i * 256 / strip.numPixels()) + j) & 255);
 
@@ -101,17 +101,17 @@ void rainbowFade2White(uint8_t wait, int rainbowLoops, int whiteLoops) {
         greenVal = green(wheelVal) * float(fadeVal/fadeMax);
         blueVal = blue(wheelVal) * float(fadeVal/fadeMax);
 
-        strip.setPixelColor( i, strip.Color( redVal, greenVal, blueVal ) );
+        strip.setPixelColor( i, strip.Color( redVal, greenVal, blueVal ));
 
       }
 
       //First loop, fade in!
-      if(k == 0 && fadeVal < fadeMax-1) {
+      if (k == 0 && fadeVal < fadeMax-1) {
           fadeVal++;
       }
 
       //Last loop, fade out!
-      else if(k == rainbowLoops - 1 && j > 255 - fadeMax ) {
+      else if (k == rainbowLoops - 1 && j > 255 - fadeMax ) {
           fadeVal--;
       }
 
@@ -125,21 +125,21 @@ void rainbowFade2White(uint8_t wait, int rainbowLoops, int whiteLoops) {
   delay(500);
 
 
-  for(int k = 0 ; k < whiteLoops ; k ++) {
+  for (int k = 0 ; k < whiteLoops ; k ++) {
 
-    for(int j = 0; j < 256 ; j++) {
+    for (int j = 0; j < 256 ; j++) {
 
-        for(uint16_t i = 0; i < strip.numPixels(); i++) {
-            strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ) );
+        for (uint16_t i = 0; i < strip.numPixels(); i++) {
+            strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ));
           }
           strip.show();
         }
 
         delay(2000);
-    for(int j = 255; j >= 0 ; j--) {
+    for (int j = 255; j >= 0 ; j--) {
 
-        for(uint16_t i = 0; i < strip.numPixels(); i++) {
-            strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ) );
+        for (uint16_t i = 0; i < strip.numPixels(); i++) {
+            strip.setPixelColor(i, strip.Color(0,0,0, gamma[j] ));
           }
           strip.show();
         }
@@ -151,7 +151,7 @@ void rainbowFade2White(uint8_t wait, int rainbowLoops, int whiteLoops) {
 }
 
 void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
-  if(whiteLength >= strip.numPixels()) whiteLength = strip.numPixels() - 1;
+  if (whiteLength >= strip.numPixels()) whiteLength = strip.numPixels() - 1;
 
   int head = whiteLength - 1;
   int tail = 0;
@@ -163,26 +163,26 @@ void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
 
 
   while(true) {
-    for(int j = 0; j<256; j++) {
-      for(uint16_t i = 0; i<strip.numPixels(); i++) {
-        if((i >= tail && i <= head) || (tail > head && i >= tail) || (tail > head && i <= head) ) {
-          strip.setPixelColor(i, strip.Color(0,0,0, 255 ) );
+    for (int j = 0; j<256; j++) {
+      for (uint16_t i = 0; i<strip.numPixels(); i++) {
+        if ((i >= tail && i <= head) || (tail > head && i >= tail) || (tail > head && i <= head)) {
+          strip.setPixelColor(i, strip.Color(0,0,0, 255 ));
         }
         else{
           strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
         }
       }
 
-      if(millis() - lastTime > whiteSpeed) {
+      if (millis() - lastTime > whiteSpeed) {
         head++;
         tail++;
-        if(head == strip.numPixels()) {
+        if (head == strip.numPixels()) {
           loopNum++;
         }
         lastTime = millis();
       }
 
-      if(loopNum == loops) return;
+      if (loopNum == loops) return;
       head%=strip.numPixels();
       tail%=strip.numPixels();
         strip.show();
@@ -192,8 +192,8 @@ void whiteOverRainbow(uint8_t wait, uint8_t whiteSpeed, uint8_t whiteLength ) {
 }
 
 void fullWhite() {
-    for(uint16_t i = 0; i<strip.numPixels(); i++) {
-        strip.setPixelColor(i, strip.Color(0,0,0, 255 ) );
+    for (uint16_t i = 0; i<strip.numPixels(); i++) {
+        strip.setPixelColor(i, strip.Color(0,0,0, 255 ));
     }
       strip.show();
 }
@@ -203,8 +203,8 @@ void fullWhite() {
 void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
 
-  for(j = 0; j<256 * 5; j++) { // 5 cycles of all colors on wheel
-    for(i = 0; i< strip.numPixels(); i++) {
+  for (j = 0; j<256 * 5; j++) { // 5 cycles of all colors on wheel
+    for (i = 0; i< strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     strip.show();
@@ -215,8 +215,8 @@ void rainbowCycle(uint8_t wait) {
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
-  for(j = 0; j<256; j++) {
-    for(i = 0; i<strip.numPixels(); i++) {
+  for (j = 0; j<256; j++) {
+    for (i = 0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel((i + j) & 255));
     }
     strip.show();
@@ -228,10 +228,10 @@ void rainbow(uint8_t wait) {
 // The colours are a transition r - g - b - back to r.
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
-  if(WheelPos < 85) {
+  if (WheelPos < 85) {
     return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3,0);
   }
-  if(WheelPos < 170) {
+  if (WheelPos < 170) {
     WheelPos -= 85;
     return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3,0);
   }

@@ -180,7 +180,7 @@ class tinyNeoPixel {
   uint16_t
     numPixels(void) const;
   attribute((always_inline)) inline void show(void) {
-    if(!pixels) {
+    if (!pixels) {
       return;
     }
     while(!canShow());

@@ -97,8 +97,8 @@
       virtual int read(void);
       virtual int peek(void);
       virtual void flush(void);
-      void onReceive( void (*)(int) );
-      void onRequest( void (*)(void) );
+      void onReceive( void (*)(int));
+      void onRequest( void (*)(void));
 
       inline size_t write(unsigned long n) { return write((uint8_t)n); }
       inline size_t write(long n) { return write((uint8_t)n); }
@@ -151,8 +151,8 @@
       int read(void);
       int peek(void);
       void flush(void);
-      void onReceive( void (*)(int) );
-      void onRequest( void (*)(void) );
+      void onReceive( void (*)(int));
+      void onRequest( void (*)(void));
       uint8_t isActive(void);
 
       inline size_t write(unsigned long n) { return write((uint8_t)n); }
@@ -198,7 +198,7 @@
     int peek(void);
     void flush(void);
     void onReceive(void(*)(int));
-    void onReceive( void (*)(size_t) );
+    void onReceive( void (*)(size_t));
     void onRequest(void(*)(void));
 
     inline size_t write(unsigned long n) { return write((uint8_t)n); }
