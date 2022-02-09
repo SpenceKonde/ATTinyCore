@@ -4,19 +4,19 @@ on:
   pull_request:
     paths:
       - ".github/workflows/check-code-formatting.yml"
-      - "megaavr/bootloaders/optiboot/source/**"
-      - "megaavr/bootloaders/micronucleus/firmware/**"
-#      - "megaavr/cores/**"
-      - "megaavr/libraries/**"
-      - "megaavr/variants/**"
+      - "avr/bootloaders/optiboot/source/**"
+      - "avr/bootloaders/micronucleus/firmware/**"
+#      - "avr/cores/**"
+      - "avr/libraries/**"
+      - "avr/variants/**"
   push:
     paths:
       - ".github/workflows/check-code-formatting.yml"
-      - "megaavr/bootloaders/optiboot/source/**"
-      - "megaavr/bootloaders/micronucleus/firmware/**"
-#      - "megaavr/cores/**"
-      - "megaavr/libraries/**"
-      - "megaavr/variants/**"
+      - "avr/bootloaders/optiboot/source/**"
+      - "avr/bootloaders/micronucleus/firmware/**"
+#      - "avr/cores/**"
+      - "avr/libraries/**"
+      - "avr/variants/**"
 
   # workflow_dispatch event allows the workflow to be triggered manually
   # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
@@ -26,7 +26,7 @@ on:
   repository_dispatch:
 
 env:
-  OPTIONS_FILE_PATH: megaavr/extras/ci/arduino-code-style.conf
+  OPTIONS_FILE_PATH: avr/extras/ci/arduino-code-style.conf
   NAME_PATTERNS: |
     - '*.ino'
     - '*.h'
@@ -63,7 +63,7 @@ jobs:
           name-patterns: |
             ${{ env.NAME_PATTERNS }}
           target-paths: |
-            - megaavr/bootloaders
+            - avr/bootloaders
 
 #  cores:
 #    runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
 #          name-patterns: |
 #            ${{ env.NAME_PATTERNS }}
 #          target-paths: |
-#            - megaavr/cores
+#            - avr/cores
 
   libraries:
     runs-on: ubuntu-latest
@@ -95,7 +95,7 @@ jobs:
           name-patterns: |
             ${{ env.NAME_PATTERNS }}
           target-paths: |
-            - megaavr/libraries
+            - avr/libraries
 
   variants:
     runs-on: ubuntu-latest
@@ -111,4 +111,4 @@ jobs:
           name-patterns: |
             ${{ env.NAME_PATTERNS }}
           target-paths: |
-            - megaavr/variants
+            - avr/variants

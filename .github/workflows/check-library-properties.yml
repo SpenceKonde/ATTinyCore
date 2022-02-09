@@ -4,11 +4,11 @@ on:
   pull_request:
     paths:
       - ".github/workflows/check-library-properties.yml"
-      - "megaavr/libraries/**"
+      - "avr/libraries/**"
   push:
     paths:
       - ".github/workflows/check-library-properties.yml"
-      - "megaavr/libraries/**"
+      - "avr/libraries/**"
   # workflow_dispatch event allows the workflow to be triggered manually
   # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:
