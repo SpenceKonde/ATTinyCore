@@ -4,17 +4,20 @@ on:
   pull_request:
     paths:
       - ".github/workflows/check-code-formatting.yml"
-      - "megaavr/bootloaders/**"
+      - "megaavr/bootloaders/optiboot/source/**"
+      - "megaavr/bootloaders/micronucleus/firmware/**"
 #      - "megaavr/cores/**"
       - "megaavr/libraries/**"
       - "megaavr/variants/**"
   push:
     paths:
       - ".github/workflows/check-code-formatting.yml"
-      - "megaavr/bootloaders/**"
+      - "megaavr/bootloaders/optiboot/source/**"
+      - "megaavr/bootloaders/micronucleus/firmware/**"
 #      - "megaavr/cores/**"
       - "megaavr/libraries/**"
       - "megaavr/variants/**"
+
   # workflow_dispatch event allows the workflow to be triggered manually
   # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
   workflow_dispatch:

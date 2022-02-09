@@ -5,4 +5,4 @@ Changes to pinout images for ATTinyCore 2.0.0
 * ATtiny861 - Builtin SoftSerial defaults to RX on AIN1 (PA7) but can use AIN0 (PA6) or AIN2 (PA5) based on tools menu selection.
 
 * ATTiny841,84 - VUSB pins: PB0, PB1. I may have to make both combinations an option because every conceivable arrangement of these has been used, including D+ on PB2 (though I think I know why this was done, it was a t84-not-a and the oscillator wasn't stable enough so they had to pipe in external CLOCK - I don't know why you'd do D+ on B0 D- on B1. Which is the most common one!)
-* ATTiny828 - PA4 SDA (master-only mode), PA5 SDA (master-only mode). The 828 uses the same pins for SPI and hardware TWI slave, AND one of those pins has a nasty errata. But if only using master mode, its a softwre master that can use any pins, so we use these more sensible ones.
+* ATTiny828 - PA4 SDA (master-only mode), PA5 SDA (master-only mode). The 828 uses the same pins for SPI and hardware TWI slave, AND one of those pins has a nasty errata. But if only using master mode, its a software master that can use any pins, so we use these more sensible ones.

@@ -65,7 +65,7 @@ void pinMode(uint8_t pin, uint8_t mode) {
 void turnOffPWM(uint8_t timer) {
   #if defined(TOCPMCOE)
     // No need to change the timer, just flip the bit in TOCPMCOE
-    if (timer) {                          //          All PWM on thes parts is controlled like this (unlike the x7)
+    if (timer) {                          //          All PWM on these parts is controlled like this (unlike the x7)
       uint8_t bitmask = timer & 0xF0;     // mov andi Copy the portion that contains the bitmask;
       if (!(timer & 0x80)) {              // sbrs     0x08 is set for the higher 4 bits, so we want to swap only if it's not set
         _SWAP(bitmask);                   // swp
@@ -206,7 +206,7 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
   }
   #if defined(PUEA)
     if (!__builtin_constant_p(ignorepullups)) {
-      badArg("it must be known at compiletime whether to ignore the pullup state in a fast digital write on the 841, 441, 828, and 1634.");
+      badArg("it must be known at compile time whether to ignore the pullup state in a fast digital write on the 841, 441, 828, and 1634.");
     }
   #endif
   uint8_t mask = digitalPinToBitMask(pin);

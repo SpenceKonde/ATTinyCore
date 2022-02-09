@@ -33,7 +33,7 @@
 extern "C"{
 
   #ifndef SOFT_TX_ONLY
-    /* Manually inlining because throws a warnign that might not be able to inline this, and we really want to make sure this is always inlined,
+    /* Manually inlining because throws a warning that might not be able to inline this, and we really want to make sure this is always inlined,
     because it's in an ISR, and calling C functions within an ISR is warned against in the datasheet, it's so inefficient and bloat-inducing.
     __attribute__((always_inline)) uint8_t getch() {
       uint8_t ch = 0x80;
@@ -146,7 +146,7 @@ void TinySoftwareSerial::begin(long baud) {
   }
   _delayCount = (uint8_t)tempDelay;
   #ifndef SOFT_TX_ONLY
-    //Straight assignment, we need to configire all bits
+    //Straight assignment, we need to configure all bits
     ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
     // These should compile to cbi and sbi - everything is compile time known.
     SOFTSERIAL_DDR    &=  ~(1 << SOFTSERIAL_RXBIT);  // set RX to an input

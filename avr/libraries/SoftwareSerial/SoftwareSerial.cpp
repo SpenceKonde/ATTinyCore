@@ -10,7 +10,7 @@ Multi-instance software serial library for Arduino/Wiring
 -- 20MHz processor support by Garrett Mace (http://www.macetech.com)
 -- ATmega1280/2560 support by Brett Hagman (http://www.roguerobotics.com/)
 -- Adapted to handle corner cases (older classic AVRs with PCINT_vect
-   and to #error when we don't find one, and rmeoved workaround for
+   and to #error when we don't find one, and removed workaround for
    versions of AVR-gcc that existed when dinosaurs walked the earth.
    Spemce Konde 2021 for ATTimyCore.
 
@@ -38,7 +38,7 @@ for the full legal boilerplate.
 #include <util/delay_basic.h>
 
 //
-// Statics
+// Statistics
 //
 SoftwareSerial *SoftwareSerial::active_object = 0;
 char SoftwareSerial::_receive_buffer[_SS_MAX_RX_BUFF];
@@ -119,7 +119,7 @@ bool SoftwareSerial::stopListening()
 //
 void SoftwareSerial::recv()
 {
-  // Spence Konde: removed dead code to work around bugs in aincent compiler version. Thid core requires Link
+  // Spence Konde: removed dead code to work around bugs in aincent compiler version. This core requires Link
   // timer optimization as of 2.0.0, which was not implemented unti 5.x
   uint8_t d = 0;
 

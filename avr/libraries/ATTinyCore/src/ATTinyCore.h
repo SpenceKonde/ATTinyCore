@@ -292,7 +292,7 @@
   }
 #endif
 
-/* a grab-bag of miscelaneous functionality */
+/* a grab-bag of miscellaneous functionality */
 
 
 
@@ -327,7 +327,7 @@ uint8_t enableHighSinkPin(uint8_t pin, bool mode) {
 }
 
 uint8_t enableISRC(bool mode) {
-// The T167 can connect PA3 toan internal current source. This is much more precice than the internal pullups, and does not vary over voltage changes like they do. It was proposed for LIN addressing and a variety of other uncommon tasks,
+// The T167 can connect PA3 toan internal current source. This is much more precise than the internal pullups, and does not vary over voltage changes like they do. It was proposed for LIN addressing and a variety of other uncommon tasks,
   #if defined(__AVR_ATtinyx7__)
     if (mode) {
       AMICR |= 1;

@@ -135,7 +135,7 @@ void analogReference(uint8_t mode) {
         // This one is wacky - with pre-shifting analog reference looks like:
         // REFS1 | REFS0 | - | REFS2 | - | - | - | -
         ADMUX = ((mode & 0xC0));
-        // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
+        // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because that's where we store unipolar vs bipolar mode setting too...
         // ADCSRB     BIN | GSEL | - | REFS2 | MUX5 | ADTS2 | ADTS1 | ADTS0
         // BIN stands for Bipolar INput, not BINary
         ADCSRB = (ADCSRB & 0xA7) | (mode & 0x10);
@@ -264,7 +264,7 @@ inline int analogRead(uint8_t pin) {
       // ADMUX      REFS1 | REFS0 | ADLAR | MUX4  | MUX3 | MUX2  | MUX1  | MUX0
 
       ADMUX = ((analog_reference & 0xC0) | (pin & 0x1F));
-      // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because thats where we store unipolar vs bipolar mode setting too...
+      // 1 ref bit, 1 mux bit, and the gain sel bit are scattered in ADCSRB, and we can't blow away it's contents because that's where we store unipolar vs bipolar mode setting too...
       ADCSRB = (ADCSRB & (0xA7)) | (analog_reference & 0x10) | (pin & 0x40) | ((pin & 0x20) >> 2);
       // ADCSRB = (ADCSRB & (0xA7)) | (analog_reference & 0x10) | (pin & 0x40) | ((pin & 0x20)?0x08:0);
     #elif defined(ADMUXB)
@@ -319,7 +319,7 @@ inline int analogRead(uint8_t pin) {
      * 1. That the header supplied by microchip defines ADCW and doesn't warn about this implies that the issue
      * probably doesn't manifest when used reasonably. Comments to the effect of "You only need to worry about that
      * when writing assembly" are ubiquitous, as is C accessing the registers in the normal order
-     * 2. There is no plausible reason the compiler might feel it needed to access the registers backards (nor could I get
+     * 2. There is no plausible reason the compiler might feel it needed to access the registers backwards (nor could I get
      * it to generate unsafe code)
      * 3. Even if it did, it would only be a problem in weirdo atypical use cases that violate the expectations of the
      * the core (such that the user at that point is already, at best, in "it is the user's responsibility to ensure"

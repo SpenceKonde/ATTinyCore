@@ -1246,7 +1246,7 @@ void init_clock() {
           #endif
         #endif // Not 16 MHz
       #elif (F_CPU != 16500000L)  // second case - first was not 16.5 AND one of the normal ones - hence it's a custom tuning on a part that's starting
-        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 4)   // from VUSB and tuned it's osc for 16.5... You know what a normal, every day occurence that is right?
+        #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 4)   // from VUSB and tuned it's osc for 16.5... You know what a normal, every day occurrence that is right?
           check_tuning();   // if tuning is enabled for custom speed (ENABLE_TUNING & 4) - use tuned value - if we have one.
                             // If we don't, we're up a certain creek without a useful implement, as we don't know 'til runtime, when we can't tell the user!
         #else
@@ -1392,7 +1392,7 @@ void init_clock() {
         #if defined(ENABLE_TUNING) && (ENABLE_TUNING & 3)  // necessary tuning, if ENABLE_TUNING & 3, we try to tune - unlike cases where we only check ENABLE_TUNING & 2 (tune always)
           check_tuning();      // here it started up at one tuned speed, we want a speed that isn't tuned.
         #else
-          // cant make a general guess here, due to the high/low split in OSCCAL and variety of parts
+          // can't make a general guess here, due to the high/low split in OSCCAL and variety of parts
           #error "The selected frequency requires tuning or a bootloader that leaves internal so tuned."
         #endif
       #endif

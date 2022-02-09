@@ -209,7 +209,7 @@
 /*      Parts that do have a default need only specify the*/
 /*      TX and RX bits as TXPIN and RXPIN.                */
 /*      Remove conditional compilation for megaAVR parts  */
-/*      There are alread enough unholy things done to this*/
+/*      There are already enough unholy things done to this*/
 /*      version that it shouldn't compile for any ATmega  */
 /*      so why imply that it would?                       */
 /*      Adust most indentation to match all of my cores   */

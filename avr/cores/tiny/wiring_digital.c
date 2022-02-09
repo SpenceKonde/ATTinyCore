@@ -65,7 +65,7 @@ void pinMode(uint8_t pin, uint8_t mode) {
 inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
   check_constant_pin(pin);
   if (!__builtin_constant_p(mode))
-    badArg("pinModeFast requires the mode to be compiletime known");
+    badArg("pinModeFast requires the mode to be compile time known");
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
@@ -109,7 +109,7 @@ inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode
 inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
   check_constant_pin(pin);
   if (!__builtin_constant_p(mode))
-    badArg("openDrainFast requires the mode to be compiletime known");
+    badArg("openDrainFast requires the mode to be compile time known");
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
@@ -136,7 +136,7 @@ inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mo
 void turnOffPWM(uint8_t timer) {
   #if defined(TOCPMCOE)
     // No need to change the timer, just flip the bit in TOCPMCOE
-    if (timer) {                          //          All PWM on thes parts is controlled like this (unlike the x7)
+    if (timer) {                          //          All PWM on these parts is controlled like this (unlike the x7)
       uint8_t bitmask = timer & 0xF0;     // mov andi Copy the portion that contains the bitmask;
       if (!(timer & 0x08)) {              // sbrs     0x08 is set for the higher 4 bits, so we want to swap only if it's not set
         _SWAP(bitmask);                   // swp

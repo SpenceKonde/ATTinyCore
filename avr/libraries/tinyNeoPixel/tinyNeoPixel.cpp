@@ -301,7 +301,7 @@ void tinyNeoPixel::show(void) {
 #elif (F_CPU >= 9500000UL) && (F_CPU <= 11100000UL)
     /* In the 10 MHz case, an optimized 800 KHz datastream (no dead time
      * between bytes) is possible using ST... but requires unrolling the loop like 8
-     * AND we cant directly use a relative branch, we have to jump over the rjmp.
+     * AND we can't directly use a relative branch, we have to jump over the rjmp.
      *
      * At least it is perfectly on target!
      *
@@ -456,7 +456,7 @@ void tinyNeoPixel::show(void) {
            "mov %[next] , %[hi]"    "\n\t" // 0-1    next = hi    (T =  9)
           "ldi %[bit], 7"           "\n\t" // 1    7 loops        (T = 10)
           "st  %a[port] , %[lo]"    "\n\t" // 1    PORT = lo      (T = 12)
-          "brne headD"              "\n"   // 1-2 to hea (T = 14 at head which starts with nop to finsh this)
+          "brne headD"              "\n"   // 1-2 to hea (T = 14 at head which starts with nop to finish this)
           : [byte]  "+r" (b),
             [next]  "+r" (next),
             [count] "+w" (i),
@@ -524,7 +524,7 @@ void tinyNeoPixel::show(void) {
           "rjmp .+0"                "\n\t" // 2    nop nop        (T = 12)
           "st  %a[port] , %[lo]"    "\n\t" // 1    PORT = lo      (T = 14)
           "nop"                     "\n\t" // 1    nop            (T = 15)
-          "brne headD"              "\n"   // 1-2 to hea (T = 17 at head which starts with nop to finsh this)
+          "brne headD"              "\n"   // 1-2 to hea (T = 17 at head which starts with nop to finish this)
           : [byte]  "+r" (b),
             [next]  "+r" (next),
             [count] "+w" (i)

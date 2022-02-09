@@ -19,7 +19,7 @@
  * there's just no good reason for those decisions to have been made.
  *---------------------------------------------------------------------------*/
 
-// __AVR_ATtiny1634__ is alredy defined in the io headers.
+// __AVR_ATtiny1634__ is already defined in the io headers.
 
 #define NUM_DIGITAL_PINS            18
 #define NUM_ANALOG_INPUTS           12

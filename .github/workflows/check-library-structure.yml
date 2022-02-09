@@ -1,0 +1,39 @@
+name: Check library structure
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/check-library-structure.yml"
+      - "megaavr/libraries/**"
+  push:
+    paths:
+      - ".github/workflows/check-library-structure.yml"
+      - "megaavr/libraries/**"
+  # workflow_dispatch event allows the workflow to be triggered manually
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
+  workflow_dispatch:
+  # repository_dispatch event allows the workflow to be triggered via the GitHub API
+  # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
+  repository_dispatch:
+
+jobs:
+  check-library-structure:
+    runs-on: ubuntu-latest
+
+    env:
+      ARDUINO_CI_SCRIPT_FOLDER_PATH: extras/ci/tools/arduino-ci-script
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install arduino-ci-script
+        uses: per1234/install-arduino-ci-script-action@main
+        with:
+          installation-path: ${{ env.ARDUINO_CI_SCRIPT_FOLDER_PATH }}
+
+      - name: Check library structure
+        run: |
+          source "${{ env.ARDUINO_CI_SCRIPT_FOLDER_PATH }}/arduino-ci-script.sh"
+          # https://github.com/per1234/arduino-ci-script#check_library_structure-basepath-depth
+          check_library_structure "${GITHUB_WORKSPACE}/megaavr/libraries" 1

@@ -132,7 +132,7 @@ Optiboot used: Saved between end of bootloader and end of flash.
 | Bootloader Signature 1 | Not Used        | FLASHEND - 1   |
 | Bootloader Signature 2 | Not Used        | FLASHEND       |
 
-Mironucleus used: Micronucleus boards are locked to the crystal, no oscilator calibration is possible.
+Mironucleus used: Micronucleus boards are locked to the crystal, no oscillator calibration is possible.
 
 | Tuning Constant        | Location Flash |
 |------------------------|----------------|
