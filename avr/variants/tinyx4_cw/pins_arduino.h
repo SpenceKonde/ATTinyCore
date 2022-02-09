@@ -295,29 +295,25 @@ static const uint8_t A7 = ADC_CH(7);
 
 #warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order."
 
-const uint8_t PROGMEM port_to_mode_PGM[] =
-{
+const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&DDRA,
-  (uint8_t)(uint16_t)&DDRB,
+  (uint8_t)(uint16_t) &DDRA,
+  (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] =
-{
+const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PORTA,
-  (uint8_t)(uint16_t)&PORTB,
+  (uint8_t)(uint16_t) &PORTA,
+  (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] =
-{
+const uint8_t PROGMEM port_to_input_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PINA,
-  (uint8_t)(uint16_t)&PINB,
+  (uint8_t)(uint16_t) &PINA,
+  (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PA, /* 0 */
   PA,
   PA,
@@ -332,8 +328,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PB, /* 11 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0), /* port A */
   _BV(1),
   _BV(2),
@@ -348,8 +343,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(3),
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,

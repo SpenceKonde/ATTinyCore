@@ -229,29 +229,25 @@ static const uint8_t A3 = ADC_CH(3);
  * Currently we default to using the superior timer 1 for PW pin 1, which could also use the boring timer 0.
  *---------------------------------------------------------------------------*/
 
-const uint8_t PROGMEM port_to_mode_PGM[] =
-{
+const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&DDRB,
+  (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] =
-{
+const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PORTB,
+  (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] =
-{
+const uint8_t PROGMEM port_to_input_PGM[] = {
   NOT_A_PIN,
   NOT_A_PIN,
-  (uint8_t)(uint16_t)&PINB,
+  (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB, /* 0 */
   PB,
   PB,
@@ -261,8 +257,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
@@ -272,8 +267,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   TIMER0A, /* OC0A */
   #ifdef TIMER1_PWM
   TIMER1A, /* OC1A */

@@ -289,28 +289,24 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * * indicates PWM pin, a indicates ADC (analog input) pins
  *---------------------------------------------------------------------------*/
 
-const uint8_t PROGMEM port_to_mode_PGM[] =
-{
+const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&DDRA,
-  (uint8_t)(uint16_t)&DDRB,
+  (uint8_t)(uint16_t) &DDRA,
+  (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] =
-{
+const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PORTA,
-  (uint8_t)(uint16_t)&PORTB,
+  (uint8_t)(uint16_t) &PORTA,
+  (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] =
-{
+const uint8_t PROGMEM port_to_input_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PINA,
-  (uint8_t)(uint16_t)&PINB,
+  (uint8_t)(uint16_t) &PINA,
+  (uint8_t)(uint16_t) &PINB,
 };
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   ( 1), /* 0 */
   ( 1),
   ( 2), /* 2 */
@@ -330,8 +326,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 };
 
 // Wow, a core finally did such a perverse job of distributing pins that I needed to make a progmem array to sort out analog and digital pins.
-const uint8_t PROGMEM digital_pin_to_analog_input_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_analog_input_PGM[] = {
   ( 0), /* 0 */
   ( 1),
   ( 9), /* 2 */
@@ -350,8 +345,7 @@ const uint8_t PROGMEM digital_pin_to_analog_input_PGM[] =
   (10) /* 15 */
 };
 
-const uint8_t PROGMEM analog_input_to_digital_pin_PGM [] =
-{
+const uint8_t PROGMEM analog_input_to_digital_pin_PGM [] = {
   ( 0), /* 0 */
   ( 1),
   (12), /* 2 */
@@ -365,8 +359,7 @@ const uint8_t PROGMEM analog_input_to_digital_pin_PGM [] =
   (15)  /* 10 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0), /* 0 */
   _BV(1),
   _BV(6), /* 2 */
@@ -385,8 +378,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(7), /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_pos_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_pos_PGM[] = {
   (0), /* 0 */
   (1),
   (6), /* 2 */
@@ -405,8 +397,7 @@ const uint8_t PROGMEM digital_pin_to_bit_pos_PGM[] =
   (7), /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   TIM1AX,

@@ -275,8 +275,7 @@ const uint8_t PROGMEM port_to_input_PGM[] = {
   (uint16_t) &PIND,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PD, /* 0 */
   PD,
   PD,
@@ -307,8 +306,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PC
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0),  /* 0, port D */
   _BV(1),
   _BV(2),
@@ -339,8 +337,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(6)
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,

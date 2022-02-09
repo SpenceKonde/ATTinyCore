@@ -300,45 +300,40 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  *---------------------------------------------------------------------------*/
 
 
-const uint8_t PROGMEM port_to_mode_PGM[] =
-{
+const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&DDRA,
-  (uint8_t)(uint16_t)&DDRB,
-  (uint8_t)(uint16_t)&DDRC,
-  (uint8_t)(uint16_t)&DDRD
+  (uint8_t)(uint16_t) &DDRA,
+  (uint8_t)(uint16_t) &DDRB,
+  (uint8_t)(uint16_t) &DDRC,
+  (uint8_t)(uint16_t) &DDRD
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] =
-{
+const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PORTA,
-  (uint8_t)(uint16_t)&PORTB,
-  (uint8_t)(uint16_t)&PORTC,
-  (uint8_t)(uint16_t)&PORTD
+  (uint8_t)(uint16_t) &PORTA,
+  (uint8_t)(uint16_t) &PORTB,
+  (uint8_t)(uint16_t) &PORTC,
+  (uint8_t)(uint16_t) &PORTD
 };
 
-const uint8_t PROGMEM port_to_pullup_PGM[] =
-{
+const uint8_t PROGMEM port_to_pullup_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PUEA,
-  (uint8_t)(uint16_t)&PUEB,
-  (uint8_t)(uint16_t)&PUEC,
-  (uint8_t)(uint16_t)&PUED
+  (uint8_t)(uint16_t) &PUEA,
+  (uint8_t)(uint16_t) &PUEB,
+  (uint8_t)(uint16_t) &PUEC,
+  (uint8_t)(uint16_t) &PUED
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] =
-{
+const uint8_t PROGMEM port_to_input_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PINA,
-  (uint8_t)(uint16_t)&PINB,
-  (uint8_t)(uint16_t)&PINC,
-  (uint8_t)(uint16_t)&PIND
+  (uint8_t)(uint16_t) &PINA,
+  (uint8_t)(uint16_t) &PINB,
+  (uint8_t)(uint16_t) &PINC,
+  (uint8_t)(uint16_t) &PIND
 };
 
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PA,
   PA,
   PA,
@@ -370,8 +365,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
 };
 
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0),
   _BV(1),
   _BV(2),
@@ -403,8 +397,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
 };
 
 /* Include the TOCCn's in order to use the TOCPMOE register to easily turn PWM on and off. */
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER, /*  PA0 */
   NOT_ON_TIMER,
   NOT_ON_TIMER,

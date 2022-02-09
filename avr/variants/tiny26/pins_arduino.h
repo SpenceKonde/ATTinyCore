@@ -296,29 +296,25 @@ static const uint8_t A10 = ADC_CH(10);
  * x indicates XTAL pin
  *---------------------------------------------------------------------------*/
 
-const uint8_t PROGMEM port_to_mode_PGM[] =
-{
+const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&DDRA,
-  (uint8_t)(uint16_t)&DDRB,
+  (uint8_t)(uint16_t) &DDRA,
+  (uint8_t)(uint16_t) &DDRB,
 };
 
-const uint8_t PROGMEM port_to_output_PGM[] =
-{
+const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PORTA,
-  (uint8_t)(uint16_t)&PORTB,
+  (uint8_t)(uint16_t) &PORTA,
+  (uint8_t)(uint16_t) &PORTB,
 };
 
-const uint8_t PROGMEM port_to_input_PGM[] =
-{
+const uint8_t PROGMEM port_to_input_PGM[] = {
   NOT_A_PORT,
-  (uint8_t)(uint16_t)&PINA,
-  (uint8_t)(uint16_t)&PINB,
+  (uint8_t)(uint16_t) &PINA,
+  (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PA, /* 0 */
   PA,
   PA,
@@ -337,8 +333,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] =
   PB, /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0), /* 0 */
   _BV(1),
   _BV(2),
@@ -357,8 +352,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
   _BV(7), /* 15 */
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER,
   NOT_ON_TIMER,
   NOT_ON_TIMER,
