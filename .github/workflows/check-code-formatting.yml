@@ -49,21 +49,21 @@ env:
     - '*.tpl'
 
 jobs:
-  bootloaders:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Check code formatting
-        uses: per1234/artistic-style-action@main
-        with:
-          options-file-path: ${{ env.OPTIONS_FILE_PATH }}
-          name-patterns: |
-            ${{ env.NAME_PATTERNS }}
-          target-paths: |
-            - avr/bootloaders
+#  bootloaders:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Check code formatting
+#        uses: per1234/artistic-style-action@main
+#        with:
+#          options-file-path: ${{ env.OPTIONS_FILE_PATH }}
+#          name-patterns: |
+#            ${{ env.NAME_PATTERNS }}
+#          target-paths: |
+#            - avr/bootloaders
 
 #  cores:
 #    runs-on: ubuntu-latest
