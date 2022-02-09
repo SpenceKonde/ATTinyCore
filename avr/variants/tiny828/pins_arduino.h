@@ -77,16 +77,16 @@
 #define PIN_A26     (PIN_PD2)
 #define PIN_A27     (PIN_PD3)
 
-static const uint8_t  A0 = ADC_CH( 0);
-static const uint8_t  A1 = ADC_CH( 1);
-static const uint8_t  A2 = ADC_CH( 2);
-static const uint8_t  A3 = ADC_CH( 3);
-static const uint8_t  A4 = ADC_CH( 4);
-static const uint8_t  A5 = ADC_CH( 5);
-static const uint8_t  A6 = ADC_CH( 6);
-static const uint8_t  A7 = ADC_CH( 7);
-static const uint8_t  A8 = ADC_CH( 8);
-static const uint8_t  A9 = ADC_CH( 9);
+static const uint8_t  A0 = ADC_CH(0);
+static const uint8_t  A1 = ADC_CH(1);
+static const uint8_t  A2 = ADC_CH(2);
+static const uint8_t  A3 = ADC_CH(3);
+static const uint8_t  A4 = ADC_CH(4);
+static const uint8_t  A5 = ADC_CH(5);
+static const uint8_t  A6 = ADC_CH(6);
+static const uint8_t  A7 = ADC_CH(7);
+static const uint8_t  A8 = ADC_CH(8);
+static const uint8_t  A9 = ADC_CH(9);
 static const uint8_t A10 = ADC_CH(10);
 static const uint8_t A11 = ADC_CH(11);
 static const uint8_t A12 = ADC_CH(12);

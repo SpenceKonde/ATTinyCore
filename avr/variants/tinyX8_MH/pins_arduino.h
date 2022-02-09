@@ -41,7 +41,7 @@
 #define PIN_PB4  (12)
 #define PIN_PB5  (13)
 //      PIN_PB6 is the CLKI pin, which is not available on the MH-Tiny
-//      becayuse they use an external 16 MHz clock.
+//      because they use an external 16 MHz clock.
 #define PIN_PB7  (14)
 #define PIN_PA2  (15) /* Wait what? There's a reason            */
 #define PIN_PA3  (16) /* PA0 and PA1 have ADC, and they         */
@@ -284,15 +284,15 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PD,
   PD,
   PD,
-  PB, /* 8 */
+  PB,   /* 8 */
   PB,
   PB,
   PB,
   PB,
   PB,
-       /* no PB6 */
+  //    /* no PB6 */
   PB,
-  PA,  /* 15 */
+  PA,   /* 15 */
   PA,
   PA,
   PA,
@@ -321,7 +321,7 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(3),
   _BV(4),
   _BV(5),
-           /* no PB6 */
+  //       /* no PB6 */
   _BV(7),
   _BV(2),
   _BV(3),

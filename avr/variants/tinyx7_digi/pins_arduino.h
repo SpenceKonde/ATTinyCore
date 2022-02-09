@@ -84,11 +84,7 @@ static const uint8_t A13 = ADC_CH(2);
 #define digitalPinToPCICRbit(p)  (((p) >= 5 && (p) <= 12) ? PCIE0 : PCIE1 )
 #define digitalPinToPCMSK(p)     (((p) >= 5 && (p) <= 12) ? (&PCMSK0) : (&PCMSK1) )
 
-#define digitalPinToPCMSKbit(p) ( (((p) >= 0) && ((p) <= 2))  ? (p) :       \
-                                ( (((p) >= 6) && ((p) <= 13)) ? ((p) - 6) : \
-                                ( ((p) == 3) ? 6 :                          \
-                                ( ((p) == 4) ? 3 :                          \
-                                ( 7) ) ) ) ) /* pin 5 */
+#define digitalPinToPCMSKbit(p) ((((p) >= 0) && ((p) <= 2))  ? (p) : ((((p) >= 6) && ((p) <= 13)) ? ((p) - 6) : (((p) == 3) ? 6 : (((p) == 4) ? 3 : (7))))) /* pin 5 */
 
 
 #define digitalPinToInterrupt(p)    ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))

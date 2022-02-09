@@ -307,55 +307,55 @@ const uint8_t PROGMEM port_to_input_PGM[] = {
   (uint8_t)(uint16_t) &PINB,
 };
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
-  ( 1), /* 0 */
-  ( 1),
-  ( 2), /* 2 */
-  ( 1), /* 3 */
-  ( 2),  /* 4 */
-  ( 2),
-  ( 2),
-  ( 2),
-  ( 2),
-  ( 2),
-  ( 1), /* 10 */
-  ( 1),
-  ( 1),
-  ( 1),
-  ( 1),
-  ( 2) /* 15 */
+  (1), /* 0 */
+  (1),
+  (2), /* 2 */
+  (1), /* 3 */
+  (2),  /* 4 */
+  (2),
+  (2),
+  (2),
+  (2),
+  (2),
+  (1), /* 10 */
+  (1),
+  (1),
+  (1),
+  (1),
+  (2) /* 15 */
 };
 
 // Wow, a core finally did such a perverse job of distributing pins that I needed to make a progmem array to sort out analog and digital pins.
 const uint8_t PROGMEM digital_pin_to_analog_input_PGM[] = {
-  ( 0), /* 0 */
-  ( 1),
-  ( 9), /* 2 */
-  ( 3), /* 3 */
+  (0), /* 0 */
+  (1),
+  (9), /* 2 */
+  (3), /* 3 */
   NOT_A_PIN, /* 4 */
   NOT_A_PIN,
   NOT_A_PIN,
   NOT_A_PIN,
   NOT_A_PIN,
-  ( 8),
-  ( 6), /* 10 */
-  ( 4),
-  ( 2),
-  ( 5),
-  ( 7),
+  (8),
+  (6), /* 10 */
+  (4),
+  (2),
+  (5),
+  (7),
   (10) /* 15 */
 };
 
 const uint8_t PROGMEM analog_input_to_digital_pin_PGM [] = {
-  ( 0), /* 0 */
-  ( 1),
+  (0), /* 0 */
+  (1),
   (12), /* 2 */
-  ( 3), /* 3 */
+  (3), /* 3 */
   (11), /* 4 */
   (13),
   (10),
   (14),
-  ( 9),
-  ( 2),
+  (9),
+  (2),
   (15)  /* 10 */
 };
 

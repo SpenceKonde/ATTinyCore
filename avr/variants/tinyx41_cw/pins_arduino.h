@@ -402,20 +402,20 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(3),
 };
 
-  const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
-    NOT_ON_TIMER,
-    TOCC0 | NOT_ON_TIMER,   /* this is serial 0 TX, lets not use it for pwm */
-    TOCC1 | NOT_ON_TIMER,   /* this is serial 0 RX */
-    TOCC2 | TIMER1B,  /* OCR1B */
-    TOCC3 | TIMER0A,  /* OCR0A this is serial 1 RX, so let's give it the least desirable timer  */
-    TOCC4 | TIMER0B,  /* OCR0B this is serial 1 TX, so let's give it the least desirable timer  */
-    TOCC5 | TIMER1A,  /* OCR1A */
-    TOCC6 | TIMER2B,  /* OCR2B */
-    TOCC7 | TIMER2A,  /* OCR2A */
-    NOT_ON_TIMER,
-    NOT_ON_TIMER,
-    NOT_ON_TIMER,
-  };
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
+  NOT_ON_TIMER,
+  TOCC0 | NOT_ON_TIMER,   /* this is serial 0 TX, lets not use it for pwm */
+  TOCC1 | NOT_ON_TIMER,   /* this is serial 0 RX */
+  TOCC2 | TIMER1B,  /* OCR1B */
+  TOCC3 | TIMER0A,  /* OCR0A this is serial 1 RX, so let's give it the least desirable timer  */
+  TOCC4 | TIMER0B,  /* OCR0B this is serial 1 TX, so let's give it the least desirable timer  */
+  TOCC5 | TIMER1A,  /* OCR1A */
+  TOCC6 | TIMER2B,  /* OCR2B */
+  TOCC7 | TIMER2A,  /* OCR2A */
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+  NOT_ON_TIMER,
+};
 #endif
 
 #endif
