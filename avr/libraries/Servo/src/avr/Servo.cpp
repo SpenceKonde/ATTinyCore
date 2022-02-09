@@ -29,10 +29,10 @@
 #if (defined(__AVR_ATtinyX5__) || defined (__AVR_ATtinyX61__))
 
 
-    #define TCNTn   TCNT1
-    #define OCRnx   OCR1A
-    #define OCFnx   OCF1A
-    #define OCIEnx  OCIE1A
+  #define TCNTn   TCNT1
+  #define OCRnx   OCR1A
+  #define OCFnx   OCF1A
+  #define OCIEnx  OCIE1A
 // Trim Duration is about the total combined time spent inside the Compare Match ISR
 // This time is in timer ticks, where each tick is always 8 microseconds.
 #define TRIM_DURATION 4
@@ -43,82 +43,82 @@
 class ServoSequencer
 {
 public:
-    //=============================================================================
-    // Servo Sequencer public functions
-    //=============================================================================
-    static uint8_t  registerServo();
-    //              Reserves a slot for a servo in the pulse sequence
+  //=============================================================================
+  // Servo Sequencer public functions
+  //=============================================================================
+  static uint8_t  registerServo();
+  //              Reserves a slot for a servo in the pulse sequence
 
-    static void     deregisterServo(uint8_t servoSlotNumber);
-    //              Frees an occupied slot
+  static void     deregisterServo(uint8_t servoSlotNumber);
+  //              Frees an occupied slot
 
-    static void     setServoPulseLength(uint8_t servoNumber, uint16_t newLengthInMicroseconds);
-    //              Updates the pulse length of a servo to a new value
+  static void     setServoPulseLength(uint8_t servoNumber, uint16_t newLengthInMicroseconds);
+  //              Updates the pulse length of a servo to a new value
 
-    static uint16_t getServoPulseLength(uint8_t servoNumber);
-    //              returns the pulse length of a servo in microseconds
+  static uint16_t getServoPulseLength(uint8_t servoNumber);
+  //              returns the pulse length of a servo in microseconds
 
-    static void     setServoPin(uint8_t servoNumber, uint8_t newPin);
-    //              Updates the pin that will be pulsed
+  static void     setServoPin(uint8_t servoNumber, uint8_t newPin);
+  //              Updates the pin that will be pulsed
 
-    static void     enableDisableServo(uint8_t servoNumber, bool servoShouldBeEnabled);
-    //              Enable or disable a servo in a slot. A pulse is not generated for a servo slot that is disabled.
+  static void     enableDisableServo(uint8_t servoNumber, bool servoShouldBeEnabled);
+  //              Enable or disable a servo in a slot. A pulse is not generated for a servo slot that is disabled.
 
-    static bool     isEnabled(uint8_t servoNumber);
-    //              returns true is the servo is enabled
+  static bool     isEnabled(uint8_t servoNumber);
+  //              returns true is the servo is enabled
 
-    inline static void timerCompareMatchISR();
-    //              Handles a timer compare match.
-    //              Should only be called when the timer compare match interrupt fires.
+  inline static void timerCompareMatchISR();
+  //              Handles a timer compare match.
+  //              Should only be called when the timer compare match interrupt fires.
 
-    //=============================================================================
-    // Servo Sequencer public constants
-    //=============================================================================
-    //static const uint8_t kInvalidServoIndex = 0xFF;
+  //=============================================================================
+  // Servo Sequencer public constants
+  //=============================================================================
+  //static const uint8_t kInvalidServoIndex = 0xFF;
 
 
 
 private:
-    //=============================================================================
-    // Servo Sequencer types
-    //=============================================================================
-    //This enum defines the states of the Servo Sequencer
-    enum SequencerState_t
-    {
-        WAITING_FOR_512_MARK,
-        WAITING_TO_SET_PIN_LOW,
-        WAITING_FOR_2048_MARK,
-        WAITING_TO_SET_PIN_HIGH
-    };
+  //=============================================================================
+  // Servo Sequencer types
+  //=============================================================================
+  //This enum defines the states of the Servo Sequencer
+  enum SequencerState_t
+  {
+    WAITING_FOR_512_MARK,
+    WAITING_TO_SET_PIN_LOW,
+    WAITING_FOR_2048_MARK,
+    WAITING_TO_SET_PIN_HIGH
+  };
 
-    //This struct defines a single servo slot
-    struct ServoEntry
-    {
-        uint8_t  pulseLengthInTicks;    //length of pulse in ticks after offset is applied
-        uint8_t  pin;                   //which pin to pulse on portB
-        bool     enabled;               //True when this servo should be pulsed
-        bool     slotOccupied;          //True when this servo entry is allocated to a servo
-    };
+  //This struct defines a single servo slot
+  struct ServoEntry
+  {
+    uint8_t  pulseLengthInTicks;    //length of pulse in ticks after offset is applied
+    uint8_t  pin;                   //which pin to pulse on portB
+    bool     enabled;               //True when this servo should be pulsed
+    bool     slotOccupied;          //True when this servo entry is allocated to a servo
+  };
 
-    //=============================================================================
-    // Servo Sequencer private variables
-    //=============================================================================
-      //The number of servos to support. See NOTE1 below.
-    static volatile SequencerState_t  state;                            //The current state of the driver
-    static          bool              timerIsSetup;                     //True if the timer used by this driver was configured
-    static          bool              servoArrayIsInited;               //True if the servo Registry array was initialized with default values.
-    static          ServoEntry        servoRegistry[MAX_SERVOS]; //The array of servo slots
-    static volatile uint8_t           servoIndex;                       //The index of the current servo slot we are working with.
-                                                                        //With 5 servos, we go through the whole servoRegistry every 20 milliseconds exactly.
+  //=============================================================================
+  // Servo Sequencer private variables
+  //=============================================================================
+    //The number of servos to support. See NOTE1 below.
+  static volatile SequencerState_t  state;                            //The current state of the driver
+  static          bool              timerIsSetup;                     //True if the timer used by this driver was configured
+  static          bool              servoArrayIsInited;               //True if the servo Registry array was initialized with default values.
+  static          ServoEntry        servoRegistry[MAX_SERVOS]; //The array of servo slots
+  static volatile uint8_t           servoIndex;                       //The index of the current servo slot we are working with.
+                                                                //With 5 servos, we go through the whole servoRegistry every 20 milliseconds exactly.
 
-    //=============================================================================
-    // Servo Sequencer private functions
-    //=============================================================================
-    //This is a purely static class. Disallow making instances of this class.
-    ServoSequencer();              //private constructor
-    static void servoTimerSetup(); //Configures the timer used by this driver
-    static void setupTimerPrescaler(); //helper function to setup the prescaler
-    static void initServoArray();  //sets default values to each element of the servoRegistry array
+  //=============================================================================
+  // Servo Sequencer private functions
+  //=============================================================================
+  //This is a purely static class. Disallow making instances of this class.
+  ServoSequencer();              //private constructor
+  static void servoTimerSetup(); //Configures the timer used by this driver
+  static void setupTimerPrescaler(); //helper function to setup the prescaler
+  static void initServoArray();  //sets default values to each element of the servoRegistry array
 
 };//end ServoSequencer
 
@@ -128,11 +128,11 @@ private:
 // Servo Sequencer static variables initialization
 //=============================================================================
 volatile ServoSequencer::SequencerState_t ServoSequencer::state         = ServoSequencer::WAITING_TO_SET_PIN_HIGH;
-         bool                             ServoSequencer::timerIsSetup  = false;
-         bool                             ServoSequencer::servoArrayIsInited = false;
+     bool                             ServoSequencer::timerIsSetup  = false;
+     bool                             ServoSequencer::servoArrayIsInited = false;
 volatile uint8_t                          ServoSequencer::servoIndex    = 0;
-         ServoSequencer::ServoEntry       ServoSequencer::servoRegistry[MAX_SERVOS];
-         //TODO: Add the rest of the class variables here for better organization?
+     ServoSequencer::ServoEntry       ServoSequencer::servoRegistry[MAX_SERVOS];
+     //TODO: Add the rest of the class variables here for better organization?
 
 
 //NOTE1:
@@ -155,31 +155,27 @@ volatile uint8_t                          ServoSequencer::servoIndex    = 0;
 //=============================================================================
 uint8_t ServoSequencer::registerServo() {
 
-    if (servoArrayIsInited == false) {
-        initServoArray();
-    }
-    else
-    {
-        //the servo array is already inited. Do nothing.
-        //It needs to be setup only once. We do it when the first servo is registered.
-    }
+  if (servoArrayIsInited == false) {
+    initServoArray();
+  } else {
+    //the servo array is already inited. Do nothing.
+    //It needs to be setup only once. We do it when the first servo is registered.
+  }
 
 
-    //find a free slot in the servo registry
-    for (uint8_t i = 0; i < MAX_SERVOS; i++) {
-        if (servoRegistry[i].slotOccupied == false) {
-            //found a free slot.
-            servoRegistry[i].slotOccupied = true;
-            //return the slot number
-            return i;
-        }
-        else
-        {
-            //this slot is not free, check the next one.
-        }
+  //find a free slot in the servo registry
+  for (uint8_t i = 0; i < MAX_SERVOS; i++) {
+    if (servoRegistry[i].slotOccupied == false) {
+      //found a free slot.
+      servoRegistry[i].slotOccupied = true;
+      //return the slot number
+      return i;
+    } else {
+      //this slot is not free, check the next one.
     }
-    //no free slots were found.
-    return INVALID_SERVO;
+  }
+  //no free slots were found.
+  return INVALID_SERVO;
 }//end registerServo
 
 
@@ -193,16 +189,14 @@ uint8_t ServoSequencer::registerServo() {
 // RETURNS:     Nothing
 //=============================================================================
 void ServoSequencer::deregisterServo(uint8_t servoSlotNumber) {
-    //make sure we got a valid slot number
-    if (servoSlotNumber < MAX_SERVOS) {
-        servoRegistry[servoSlotNumber].enabled      = false;
-        servoRegistry[servoSlotNumber].slotOccupied = false;
-    servoRegistry[servoSlotNumber].pulseLengthInTicks = 128; //restore the pulse length to the default setting.
-    }
-    else
-    {
-        //we got a slot number that is out of range. Do nothing.
-    }
+  //make sure we got a valid slot number
+  if (servoSlotNumber < MAX_SERVOS) {
+    servoRegistry[servoSlotNumber].enabled      = false;
+    servoRegistry[servoSlotNumber].slotOccupied = false;
+  servoRegistry[servoSlotNumber].pulseLengthInTicks = 128; //restore the pulse length to the default setting.
+  } else {
+    //we got a slot number that is out of range. Do nothing.
+  }
 }//end deregisterServo
 
 
@@ -221,30 +215,26 @@ void ServoSequencer::deregisterServo(uint8_t servoSlotNumber) {
 // RETURNS:     Nothing
 //=============================================================================
 void ServoSequencer::setServoPulseLength(uint8_t servoNumber, uint16_t newLengthInMicroseconds) {
-    //make sure we got a valid slot number and the slot is registered to a servo
-    if ((servoNumber < MAX_SERVOS      ) &&
-        (servoRegistry[servoNumber].slotOccupied == true)   ) {
-        //Convert the servo pulse length into timer ticks.
-        //Each timer tick is 8 microseconds.
-        int16_t newLengthInClockTicks = newLengthInMicroseconds / 8;
-        //subtract the pulse offset
-        newLengthInClockTicks -= 64;
+  //make sure we got a valid slot number and the slot is registered to a servo
+  if ((servoNumber < MAX_SERVOS      ) &&
+    (servoRegistry[servoNumber].slotOccupied == true)   ) {
+    //Convert the servo pulse length into timer ticks.
+    //Each timer tick is 8 microseconds.
+    int16_t newLengthInClockTicks = newLengthInMicroseconds / 8;
+    //subtract the pulse offset
+    newLengthInClockTicks -= 64;
 
-        //make sure the length of this pulse is within the acceptable range
-        if ((newLengthInClockTicks > -1) && (newLengthInClockTicks < 256)) {
-            servoRegistry[servoNumber].pulseLengthInTicks = static_cast<uint8_t>(newLengthInClockTicks);
-            //Programming note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
-            //                 interrupts would need to be disabled when updating it to a new value.
-        }
-        else
-        {
-            //The new pulse length is too short or long than what we can generate
-        }
+    //make sure the length of this pulse is within the acceptable range
+    if ((newLengthInClockTicks > -1) && (newLengthInClockTicks < 256)) {
+      servoRegistry[servoNumber].pulseLengthInTicks = static_cast<uint8_t>(newLengthInClockTicks);
+      //Programming note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
+      //                 interrupts would need to be disabled when updating it to a new value.
+    } else {
+      //The new pulse length is too short or long than what we can generate
     }
-    else
-    {
-        //Servo number is out of range or is not allocate to a servo. Do nothing.
-    }
+  } else {
+    //Servo number is out of range or is not allocate to a servo. Do nothing.
+  }
 }//end setServoPulseLength
 
 
@@ -260,19 +250,17 @@ void ServoSequencer::setServoPulseLength(uint8_t servoNumber, uint16_t newLength
 // RETURNS:     The pulse length in microseconds
 //=============================================================================
 uint16_t ServoSequencer::getServoPulseLength(uint8_t servoNumber) {
-    uint16_t pulseLength = 0;
+  uint16_t pulseLength = 0;
 
-    //make sure we got a valid slot number and the slot is registered to a servo
-    if ((servoNumber < MAX_SERVOS      ) &&
-        (servoRegistry[servoNumber].slotOccupied == true)   ) {
-        pulseLength = (servoRegistry[servoNumber].pulseLengthInTicks * 8) + 64;
-    }
-    else
-    {
-        //Servo number is out of range or is not allocate to a servo. Do nothing.
-    }
+  //make sure we got a valid slot number and the slot is registered to a servo
+  if ((servoNumber < MAX_SERVOS      ) &&
+    (servoRegistry[servoNumber].slotOccupied == true)   ) {
+    pulseLength = (servoRegistry[servoNumber].pulseLengthInTicks * 8) + 64;
+  } else {
+    //Servo number is out of range or is not allocate to a servo. Do nothing.
+  }
 
-    return pulseLength;
+  return pulseLength;
 }//end getServoPulseLength
 
 
@@ -288,17 +276,15 @@ uint16_t ServoSequencer::getServoPulseLength(uint8_t servoNumber) {
 //
 //=============================================================================
 void ServoSequencer::setServoPin(uint8_t servoNumber, uint8_t newPin) {
-    //make sure we got a valid slot number and the slot is registered to a servo
-    if ((servoNumber < MAX_SERVOS      ) &&
-        (servoRegistry[servoNumber].slotOccupied == true)   ) {
+  //make sure we got a valid slot number and the slot is registered to a servo
+  if ((servoNumber < MAX_SERVOS      ) &&
+    (servoRegistry[servoNumber].slotOccupied == true)   ) {
 
-        servoRegistry[servoNumber].pin = newPin;
+    servoRegistry[servoNumber].pin = newPin;
 
-    }
-    else
-    {
-        //Servo number is out of range or is not allocate to a servo. Do nothing.
-    }
+  } else {
+    //Servo number is out of range or is not allocate to a servo. Do nothing.
+  }
 }//end setServoPin
 
 
@@ -318,43 +304,39 @@ void ServoSequencer::setServoPin(uint8_t servoNumber, uint8_t newPin) {
 //=============================================================================
 void ServoSequencer::enableDisableServo(uint8_t servoNumber, bool servoShouldBeEnabled) {
 
-    //make sure we got a valid slot number and the slot is registered to a servo
-    if ((servoNumber < MAX_SERVOS      ) &&
-        (servoRegistry[servoNumber].slotOccupied == true)   ) {
-        if (servoShouldBeEnabled == true) {
+  //make sure we got a valid slot number and the slot is registered to a servo
+  if ((servoNumber < MAX_SERVOS      ) &&
+    (servoRegistry[servoNumber].slotOccupied == true)   ) {
+    if (servoShouldBeEnabled == true) {
 
-            //if this is the very first servo we are enabling then configure the servo timer
-            if ( timerIsSetup == false) {
-                servoTimerSetup();
-                timerIsSetup = true;
-            }
+      //if this is the very first servo we are enabling then configure the servo timer
+      if ( timerIsSetup == false) {
+        servoTimerSetup();
+        timerIsSetup = true;
+      }
 
-            else
-            {
-                //The timer is already setup. Do nothing.
-                //It needs to be setup only once. We do it when the first servo is enabled.
-                //We setup the timer as late as possible. This allows this servo library
-                //to be more compatible with various frameworks written for the attiny45/85,
-                //which typically configure all the timers to their liking on start up.
-                //Configuring our timer late allows us to overwrite these settings.
-            }
-            //enable the servo. Its pulse will now be output on its pin.
-            servoRegistry[servoNumber].enabled = true;
-        }
-        else
-        {
-            //disable the servo. Its pulse will cease to be generated.
-            servoRegistry[servoNumber].enabled = false;
-            //TODO: set this servo pin low, if it is high.
-            //      Actually, ideally the pulse should finish by itself
-            //      forcing the pin low will generate a weird length pulse for the servo
-            //      Need to add some sort of "disable pending" status
-        }
+      else
+      {
+        //The timer is already setup. Do nothing.
+        //It needs to be setup only once. We do it when the first servo is enabled.
+        //We setup the timer as late as possible. This allows this servo library
+        //to be more compatible with various frameworks written for the attiny45/85,
+        //which typically configure all the timers to their liking on start up.
+        //Configuring our timer late allows us to overwrite these settings.
+      }
+      //enable the servo. Its pulse will now be output on its pin.
+      servoRegistry[servoNumber].enabled = true;
+    } else {
+      //disable the servo. Its pulse will cease to be generated.
+      servoRegistry[servoNumber].enabled = false;
+      //TODO: set this servo pin low, if it is high.
+      //      Actually, ideally the pulse should finish by itself
+      //      forcing the pin low will generate a weird length pulse for the servo
+      //      Need to add some sort of "disable pending" status
     }
-    else
-    {
-        //Servo number is out of range or is not allocate to a servo. Do nothing.
-    }
+  } else {
+    //Servo number is out of range or is not allocate to a servo. Do nothing.
+  }
 }//end enableDisableServo
 
 
@@ -371,17 +353,15 @@ void ServoSequencer::enableDisableServo(uint8_t servoNumber, bool servoShouldBeE
 //
 //=============================================================================
 bool ServoSequencer::isEnabled(uint8_t servoNumber) {
-    //make sure we got a valid slot number and the slot is registered to a servo
-    if ((servoNumber < MAX_SERVOS      ) &&
-        (servoRegistry[servoNumber].slotOccupied == true)   ) {
-        return servoRegistry[servoNumber].enabled;
-    }
-    else
-    {
-        //Servo number is out of range or is not allocate to a servo.
-        //So therefore it is not enabled.
-        return false;
-    }
+  //make sure we got a valid slot number and the slot is registered to a servo
+  if ((servoNumber < MAX_SERVOS      ) &&
+    (servoRegistry[servoNumber].slotOccupied == true)   ) {
+    return servoRegistry[servoNumber].enabled;
+  } else {
+    //Servo number is out of range or is not allocate to a servo.
+    //So therefore it is not enabled.
+    return false;
+  }
 }//end isEnabled
 
 
@@ -397,28 +377,28 @@ bool ServoSequencer::isEnabled(uint8_t servoNumber) {
 //
 //=============================================================================
 void ServoSequencer::servoTimerSetup() {
-    //set up the timer prescaler based on which timer was selected and our F_CPU clock
-    setupTimerPrescaler();
-    #ifdef __AVR_ATtinyX61__
-    TCCR1A = 0;
-    #endif
-    // Enable Output Compare Match Interrupt
-    TIMSK |= (1 << OCIEnx);
+  //set up the timer prescaler based on which timer was selected and our F_CPU clock
+  setupTimerPrescaler();
+  #ifdef __AVR_ATtinyX61__
+  TCCR1A = 0;
+  #endif
+  // Enable Output Compare Match Interrupt
+  TIMSK |= (1 << OCIEnx);
 
-    //reset the counter to 0
-    TCNTn  = 0;
-    //set the compare value to any number larger than 0
-    OCRnx = 255;
-    // Enable global interrupts
-    sei();
+  //reset the counter to 0
+  TCNTn  = 0;
+  //set the compare value to any number larger than 0
+  OCRnx = 255;
+  // Enable global interrupts
+  sei();
 
-    /*
-    TCNT0 - The Timer/Counter
-    OCR0A and OCR0B - Output Compare Registers
-    TIFR0 - Timer Interrupt Flag Register
-    TIMSK - Timer Interrupt Mask Register
-    TCCR0B Timer/Counter Control Register B
-    */
+  /*
+  TCNT0 - The Timer/Counter
+  OCR0A and OCR0B - Output Compare Registers
+  TIFR0 - Timer Interrupt Flag Register
+  TIMSK - Timer Interrupt Mask Register
+  TCCR0B Timer/Counter Control Register B
+  */
 
 }//end servoTimerSetup
 
@@ -436,103 +416,103 @@ void ServoSequencer::servoTimerSetup() {
 //=============================================================================
 void ServoSequencer::setupTimerPrescaler() {
   #if defined(__AVR_ATtinyX5__)
-    // No need to reset TCCR1 since we set it directly below.
-    #if defined(PLLTIMER1) //&& (F_CPU!=16500000L)
-        //set counter1 prescaler to 512
-        //our timer clock is 64 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1 |=  (1<< CS13); //set
-        //TCCR1 &= ~(1<< CS12); //clear
-        //TCCR1 |=  (1<< CS11); //set
-        //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1 = 0x0A;
-    #elif defined (LOWPLLTIMER1)// && (F_CPU!=16500000L)
-        //set counter1 prescaler to 256
-        //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1 |=  (1<< CS13); //set
-        //TCCR1 &= ~(1<< CS12); //clear
-        //TCCR1 &= ~(1<< CS11); //clear
-        //TCCR1 |=  (1<< CS10); //set
-        TCCR1 = 0x09;
-    #elif F_CPU == 8000000L
-        //set counter1 prescaler to 64
-        //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1 &= ~(1<< CS13); //clear
-        //TCCR1 |=  (1<< CS12); //set
-        //TCCR1 |=  (1<< CS11); //set
-        //TCCR1 |=  (1<< CS10); //set
-        TCCR1 = 0x07;
-    #elif (F_CPU == 16000000L || F_CPU==16500000L)//16 MHz
-        //set counter1 prescaler to 128
-        //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1|=(1<<CS13)
-        //TCCR1 &= ~(1<< CS12); //clear
-        //TCCR1 &= ~(1<< CS11); //clear
-        //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1 = 0x08;
-    #elif F_CPU == 4000000L
-        //set counter1 prescaler to 32
-        //our F_CPU is 4 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1 &= ~(1<< CS13); //clear
-        //TCCR1 |=  (1<< CS12); //set
-        //TCCR1 |=  (1<< CS11); //set
-        //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1 = 0x07;
-    #elif F_CPU == 1000000L
-        //set counter1 prescaler to 8
-        //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1 &= ~(1<< CS13); //clear
-        //TCCR1 |=  (1<< CS12); //set
-        //TCCR1 &= ~(1<< CS11); //clear
-        //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1 = 0x04;
-    #else
-        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
-    #endif
+  // No need to reset TCCR1 since we set it directly below.
+  #if defined(PLLTIMER1) //&& (F_CPU!=16500000L)
+    //set counter1 prescaler to 512
+    //our timer clock is 64 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1 |=  (1<< CS13); //set
+    //TCCR1 &= ~(1<< CS12); //clear
+    //TCCR1 |=  (1<< CS11); //set
+    //TCCR1 &= ~(1<< CS10); //clear
+    TCCR1 = 0x0A;
+  #elif defined (LOWPLLTIMER1)// && (F_CPU!=16500000L)
+    //set counter1 prescaler to 256
+    //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1 |=  (1<< CS13); //set
+    //TCCR1 &= ~(1<< CS12); //clear
+    //TCCR1 &= ~(1<< CS11); //clear
+    //TCCR1 |=  (1<< CS10); //set
+    TCCR1 = 0x09;
+  #elif F_CPU == 8000000L
+    //set counter1 prescaler to 64
+    //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1 &= ~(1<< CS13); //clear
+    //TCCR1 |=  (1<< CS12); //set
+    //TCCR1 |=  (1<< CS11); //set
+    //TCCR1 |=  (1<< CS10); //set
+    TCCR1 = 0x07;
+  #elif (F_CPU == 16000000L || F_CPU==16500000L)//16 MHz
+    //set counter1 prescaler to 128
+    //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1|=(1<<CS13)
+    //TCCR1 &= ~(1<< CS12); //clear
+    //TCCR1 &= ~(1<< CS11); //clear
+    //TCCR1 &= ~(1<< CS10); //clear
+    TCCR1 = 0x08;
+  #elif F_CPU == 4000000L
+    //set counter1 prescaler to 32
+    //our F_CPU is 4 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1 &= ~(1<< CS13); //clear
+    //TCCR1 |=  (1<< CS12); //set
+    //TCCR1 |=  (1<< CS11); //set
+    //TCCR1 &= ~(1<< CS10); //clear
+    TCCR1 = 0x07;
+  #elif F_CPU == 1000000L
+    //set counter1 prescaler to 8
+    //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1 &= ~(1<< CS13); //clear
+    //TCCR1 |=  (1<< CS12); //set
+    //TCCR1 &= ~(1<< CS11); //clear
+    //TCCR1 &= ~(1<< CS10); //clear
+    TCCR1 = 0x04;
+  #else
+    #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
+  #endif
   #elif defined(__AVR_ATtinyX61__)
-    // No need to reset TCCR1 since we set it directly below.
-    #if defined(PLLTIMER1) //&& (F_CPU!=16500000L)
-        //set counter1 prescaler to 512
-        //our timer clock is 64 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1B |=  (1<< CS13); //set
-        //TCCR1B &= ~(1<< CS12); //clear
-        //TCCR1B |=  (1<< CS11); //set
-        //TCCR1B &= ~(1<< CS10); //clear
-        TCCR1B = 0x0A;
-    #elif defined (LOWPLLTIMER1) //&& (F_CPU!=16500000L)
-        //set counter1 prescaler to 256
-        //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1B |=  (1<< CS13); //set
-        //TCCR1B &= ~(1<< CS12); //clear
-        //TCCR1B &= ~(1<< CS11); //clear
-        //TCCR1B |=  (1<< CS10); //set
-        TCCR1B = 0x09;
-    #elif F_CPU == 8000000L
-        //set counter1 prescaler to 64
-        //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1B &= ~(1<< CS13); //clear
-        //TCCR1B |=  (1<< CS12); //set
-        //TCCR1B |=  (1<< CS11); //set
-        //TCCR1B |=  (1<< CS10); //set
-        TCCR1B = 0x07;
-    #elif (F_CPU == 16000000L || F_CPU==16500000L) //16 MHz
-        //set counter1 prescaler to 128
-        //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1B |=(1<<CS13)
-        //TCCR1B &= ~(1<< CS12); //clear
-        //TCCR1B &= ~(1<< CS11); //clear
-        //TCCR1B &= ~(1<< CS10); //clear
-        TCCR1B = 0x08;
-    #elif F_CPU == 1000000L
-        //set counter1 prescaler to 8
-        //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
-        //TCCR1 &= ~(1<< CS13); //clear
-        //TCCR1 |=  (1<< CS12); //set
-        //TCCR1 &= ~(1<< CS11); //clear
-        //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1B = 4;
-    #else
-        #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
-    #endif
+  // No need to reset TCCR1 since we set it directly below.
+  #if defined(PLLTIMER1) //&& (F_CPU!=16500000L)
+    //set counter1 prescaler to 512
+    //our timer clock is 64 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1B |=  (1<< CS13); //set
+    //TCCR1B &= ~(1<< CS12); //clear
+    //TCCR1B |=  (1<< CS11); //set
+    //TCCR1B &= ~(1<< CS10); //clear
+    TCCR1B = 0x0A;
+  #elif defined (LOWPLLTIMER1) //&& (F_CPU!=16500000L)
+    //set counter1 prescaler to 256
+    //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1B |=  (1<< CS13); //set
+    //TCCR1B &= ~(1<< CS12); //clear
+    //TCCR1B &= ~(1<< CS11); //clear
+    //TCCR1B |=  (1<< CS10); //set
+    TCCR1B = 0x09;
+  #elif F_CPU == 8000000L
+    //set counter1 prescaler to 64
+    //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1B &= ~(1<< CS13); //clear
+    //TCCR1B |=  (1<< CS12); //set
+    //TCCR1B |=  (1<< CS11); //set
+    //TCCR1B |=  (1<< CS10); //set
+    TCCR1B = 0x07;
+  #elif (F_CPU == 16000000L || F_CPU==16500000L) //16 MHz
+    //set counter1 prescaler to 128
+    //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1B |=(1<<CS13)
+    //TCCR1B &= ~(1<< CS12); //clear
+    //TCCR1B &= ~(1<< CS11); //clear
+    //TCCR1B &= ~(1<< CS10); //clear
+    TCCR1B = 0x08;
+  #elif F_CPU == 1000000L
+    //set counter1 prescaler to 8
+    //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
+    //TCCR1 &= ~(1<< CS13); //clear
+    //TCCR1 |=  (1<< CS12); //set
+    //TCCR1 &= ~(1<< CS11); //clear
+    //TCCR1 &= ~(1<< CS10); //clear
+    TCCR1B = 4;
+  #else
+    #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
+  #endif
 
   #endif
 }//end setupTimerPrescaler
@@ -549,15 +529,15 @@ void ServoSequencer::setupTimerPrescaler() {
 //
 //=============================================================================
 void ServoSequencer::initServoArray() {
-    //init the Servo Registry array
-    for (uint8_t i = 0; i < MAX_SERVOS; ++i) {
-        servoRegistry[i].pulseLengthInTicks = 128;
-        servoRegistry[i].pin = 0;
-        servoRegistry[i].enabled = false;
-        servoRegistry[i].slotOccupied = false;
-    }
+  //init the Servo Registry array
+  for (uint8_t i = 0; i < MAX_SERVOS; ++i) {
+    servoRegistry[i].pulseLengthInTicks = 128;
+    servoRegistry[i].pin = 0;
+    servoRegistry[i].enabled = false;
+    servoRegistry[i].slotOccupied = false;
+  }
 
-    servoArrayIsInited = true;
+  servoArrayIsInited = true;
 }//end initServoArray
 
 
@@ -572,131 +552,121 @@ void ServoSequencer::initServoArray() {
 // RETURNS:     Nothing
 //=============================================================================
 void ServoSequencer::timerCompareMatchISR() {
-    switch (state) {
-    case WAITING_TO_SET_PIN_HIGH:
-        //go to the next servo in the registry
-        ++servoIndex;
-        //if we are the end of the registry, go to the beginning of it
-        if (servoIndex == MAX_SERVOS) {
-            servoIndex = 0;
-        }
-        else
-        {
-            //we are not at the end, leave the servo index as is
-        }
+  switch (state) {
+  case WAITING_TO_SET_PIN_HIGH:
+    //go to the next servo in the registry
+    ++servoIndex;
+    //if we are the end of the registry, go to the beginning of it
+    if (servoIndex == MAX_SERVOS) {
+      servoIndex = 0;
+    } else {
+      //we are not at the end, leave the servo index as is
+    }
 
-        //if this servo is enabled set the pin high
-        if ( servoRegistry[servoIndex].enabled == true ) {
-          #if defined(__AVR_ATtinyX5__)
-            PORTB |= (1 << servoRegistry[servoIndex].pin);
-          #elif defined(__AVR_ATtinyX61__)
-            uint8_t bit = digitalPinToBitMask(servoRegistry[servoIndex].pin);
-            uint8_t port = digitalPinToPort(servoRegistry[servoIndex].pin);
-            volatile uint8_t *out;
-            out = portOutputRegister(port);
-            *out|=bit;
-          #else
-            #error "Unsupported part - how did execution get here?"
-          #endif
-        }
-        else
-        {
-            //This servo position is not enabled, don't manipulate the pin
-        }
+    //if this servo is enabled set the pin high
+    if ( servoRegistry[servoIndex].enabled == true ) {
+      #if defined(__AVR_ATtinyX5__)
+      PORTB |= (1 << servoRegistry[servoIndex].pin);
+      #elif defined(__AVR_ATtinyX61__)
+      uint8_t bit = digitalPinToBitMask(servoRegistry[servoIndex].pin);
+      uint8_t port = digitalPinToPort(servoRegistry[servoIndex].pin);
+      volatile uint8_t *out;
+      out = portOutputRegister(port);
+      *out|=bit;
+      #else
+      #error "Unsupported part - how did execution get here?"
+      #endif
+    } else {
+      //This servo position is not enabled, don't manipulate the pin
+    }
 
-        //reset the counter to 0
-        TCNTn  = 0;
-        //set the compare value to 64 (512 us). This is the constant pulse offset.
-        OCRnx = 64 - TRIM_DURATION; //trim off 4 ticks (32us), this is about the total combined time we spent inside this ISR;
-        //update our state
-        state = WAITING_FOR_512_MARK;
-        break;
+    //reset the counter to 0
+    TCNTn  = 0;
+    //set the compare value to 64 (512 us). This is the constant pulse offset.
+    OCRnx = 64 - TRIM_DURATION; //trim off 4 ticks (32us), this is about the total combined time we spent inside this ISR;
+    //update our state
+    state = WAITING_FOR_512_MARK;
+    break;
 
 
-    case WAITING_FOR_512_MARK:
-        //set the compare value to the additional amount of timer ticks the pulse should last
-        OCRnx = servoRegistry[servoIndex].pulseLengthInTicks;
-        //update our state
-        state = WAITING_TO_SET_PIN_LOW;
+  case WAITING_FOR_512_MARK:
+    //set the compare value to the additional amount of timer ticks the pulse should last
+    OCRnx = servoRegistry[servoIndex].pulseLengthInTicks;
+    //update our state
+    state = WAITING_TO_SET_PIN_LOW;
 
-        //reset the counter to 0
-        TCNTn  = 0;
+    //reset the counter to 0
+    TCNTn  = 0;
 
-        //Did we just set OCRnx to zero?
-        if (OCRnx == 0) {
-           //Since we are setting OCRnx and TCNTn to 0 we are not going to get an interrupt
-           //until the counter overflows and goes back to 0.
-           //set the counter its highest value, to have it overflow right away.
-           TCNTn = 0xFF;
-           //This will cause this interrupt to fire again almost immediately (at the next timer tick)
-        }
-        else
-        {
-            //otherwise we need to clear the OCF0A flag because it is possible that the
-            //counter value incremented and matched the output compare value while this
-            //function was being executed
-            TIFR = (1 << OCF0A);  // write logical 1 to the OCF0A flag to clear it
-                                  // also have to write 0 to all other bits for this to work.
-        }
-        break;
+    //Did we just set OCRnx to zero?
+    if (OCRnx == 0) {
+       //Since we are setting OCRnx and TCNTn to 0 we are not going to get an interrupt
+       //until the counter overflows and goes back to 0.
+       //set the counter its highest value, to have it overflow right away.
+       TCNTn = 0xFF;
+       //This will cause this interrupt to fire again almost immediately (at the next timer tick)
+    } else {
+      //otherwise we need to clear the OCF0A flag because it is possible that the
+      //counter value incremented and matched the output compare value while this
+      //function was being executed
+      TIFR = (1 << OCF0A);  // write logical 1 to the OCF0A flag to clear it
+      //                    // also have to write 0 to all other bits for this to work.
+    }
+    break;
 
 
-    case WAITING_TO_SET_PIN_LOW:
-        //if this servo is enabled set the pin low
-        if ( servoRegistry[servoIndex].enabled == true ) {
-          #if defined(__AVR_ATtinyX5__)
-            PORTB &= ~(1 << servoRegistry[servoIndex].pin);
-          #elif defined(__AVR_ATtinyX61__)
-            uint8_t bit = digitalPinToBitMask(servoRegistry[servoIndex].pin);
-            uint8_t port = digitalPinToPort(servoRegistry[servoIndex].pin);
-            volatile uint8_t *out;
-            out = portOutputRegister(port);
-            *out&=~bit;
-          #else
-            #error "Unsupported part - how did execution get here?"
-          #endif
-        }
-        else
-        {
-            //This servo position is not enabled, don't manipulate the pin
-        }
+  case WAITING_TO_SET_PIN_LOW:
+    //if this servo is enabled set the pin low
+    if ( servoRegistry[servoIndex].enabled == true ) {
+      #if defined(__AVR_ATtinyX5__)
+      PORTB &= ~(1 << servoRegistry[servoIndex].pin);
+      #elif defined(__AVR_ATtinyX61__)
+      uint8_t bit = digitalPinToBitMask(servoRegistry[servoIndex].pin);
+      uint8_t port = digitalPinToPort(servoRegistry[servoIndex].pin);
+      volatile uint8_t *out;
+      out = portOutputRegister(port);
+      *out&=~bit;
+      #else
+      #error "Unsupported part - how did execution get here?"
+      #endif
+    } else {
+      //This servo position is not enabled, don't manipulate the pin
+    }
 
-        //check if the length of this pulse is 2048 microseconds or longer
-        if ((64 + servoRegistry[servoIndex].pulseLengthInTicks) > 255 ) {
-            //This pulse length has passed the 2048 us mark, so we skip state WAITING_FOR_2048_MARK
-            //update state
-            state = WAITING_TO_SET_PIN_HIGH;
-            //set the compare value to the amount of time (in timer ticks) we need to wait to reach
-            //4096 microseconds mark
-            //which is 512 minus the total pulse length. (resulting number will be between 0 and 255 inclusive)
-            OCRnx = 512 - (64 + servoRegistry[servoIndex].pulseLengthInTicks);
-        }
-        else
-        {
-            //This pulse length has not reached the 2048 us mark, therefore we have to get to that mark first
-            //update state
-            state = WAITING_FOR_2048_MARK;
-            //set OCRnx to the amount of time (in timer ticks) we have to wait to reach this mark
-            //which is 255 minus the total pulse length
-            OCRnx = 255 - (64 + servoRegistry[servoIndex].pulseLengthInTicks);
-        }
+    //check if the length of this pulse is 2048 microseconds or longer
+    if ((64 + servoRegistry[servoIndex].pulseLengthInTicks) > 255 ) {
+      //This pulse length has passed the 2048 us mark, so we skip state WAITING_FOR_2048_MARK
+      //update state
+      state = WAITING_TO_SET_PIN_HIGH;
+      //set the compare value to the amount of time (in timer ticks) we need to wait to reach
+      //4096 microseconds mark
+      //which is 512 minus the total pulse length. (resulting number will be between 0 and 255 inclusive)
+      OCRnx = 512 - (64 + servoRegistry[servoIndex].pulseLengthInTicks);
+    } else {
+      //This pulse length has not reached the 2048 us mark, therefore we have to get to that mark first
+      //update state
+      state = WAITING_FOR_2048_MARK;
+      //set OCRnx to the amount of time (in timer ticks) we have to wait to reach this mark
+      //which is 255 minus the total pulse length
+      OCRnx = 255 - (64 + servoRegistry[servoIndex].pulseLengthInTicks);
+    }
 
-        //reset the counter to 0
-        TCNTn  = 0;
+    //reset the counter to 0
+    TCNTn  = 0;
 
-        break;
+    break;
 
-    case WAITING_FOR_2048_MARK:
-        //update state
-        state = WAITING_TO_SET_PIN_HIGH;
-        //reset the counter to 0
-        TCNTn  = 0;
-        //set the compare value to the longest length of time, 255 ticks, or 2040 microseconds
-        //This will take us to the ~4096 microsecond mark,
-        //at which point the cycle starts again with the next servo slot.
-        OCRnx = 255;
-        break;
-    }//end switch
+  case WAITING_FOR_2048_MARK:
+    //update state
+    state = WAITING_TO_SET_PIN_HIGH;
+    //reset the counter to 0
+    TCNTn  = 0;
+    //set the compare value to the longest length of time, 255 ticks, or 2040 microseconds
+    //This will take us to the ~4096 microsecond mark,
+    //at which point the cycle starts again with the next servo slot.
+    OCRnx = 255;
+    break;
+  }//end switch
 }//end timerCompareMatchISR
 
 
@@ -718,7 +688,7 @@ void ServoSequencer::timerCompareMatchISR() {
 // RETURNS:     Nothing
 //=============================================================================
 ISR(TIMER1_COMPA_vect) {
-    ServoSequencer::timerCompareMatchISR();
+  ServoSequencer::timerCompareMatchISR();
 }//end ISR TIM0_COMPA_vect
 
 
@@ -769,9 +739,9 @@ ISR(TIMER1_COMPA_vect) {
 //
 //=============================================================================
 Servo::Servo() {
-    servoIndex = INVALID_SERVO;
-    min = MIN_PULSE_WIDTH;
-    max = MAX_PULSE_WIDTH;
+  servoIndex = INVALID_SERVO;
+  min = MIN_PULSE_WIDTH;
+  max = MAX_PULSE_WIDTH;
 }//end constructor
 
 //=============================================================================
@@ -802,46 +772,46 @@ uint8_t Servo::attach(uint8_t pin) {
 
   //Do we need to register with the servo sequencer?
   delay(1000);
-    if (servoIndex == INVALID_SERVO) {
-    //Yep, we do, so register and save our servo number.
-    servoIndex = ServoSequencer::registerServo();
-    if (servoIndex == INVALID_SERVO) {
-      //We got an invalid servo number. That means the servo sequencer is full and can't handle any more servos.
-      return INVALID_SERVO;
-    }
+  if (servoIndex == INVALID_SERVO) {
+  //Yep, we do, so register and save our servo number.
+  servoIndex = ServoSequencer::registerServo();
+  if (servoIndex == INVALID_SERVO) {
+    //We got an invalid servo number. That means the servo sequencer is full and can't handle any more servos.
+    return INVALID_SERVO;
+  }
   }
 
-    //valid pin values are between 0 and 5, inclusive.
+  //valid pin values are between 0 and 5, inclusive.
   #if defined(__AVR_ATtinyX5__)
-    if ( pin <= 5 ) {
-        DDRB |= (1<<pin); //set pin as output
-        //set the servo pin
-        ServoSequencer::setServoPin(servoIndex, pin);
-        //enable the servo to start outputting the PWM wave
-        ServoSequencer::enableDisableServo(servoIndex, true);
-    }
+  if ( pin <= 5 ) {
+    DDRB |= (1<<pin); //set pin as output
+    //set the servo pin
+    ServoSequencer::setServoPin(servoIndex, pin);
+    //enable the servo to start outputting the PWM wave
+    ServoSequencer::enableDisableServo(servoIndex, true);
+  }
 
   #elif defined(__AVR_ATtinyX61__)
-    if (pin <= 16) {
-      uint8_t bit = digitalPinToBitMask(pin);
-      uint8_t port = digitalPinToPort(pin);
-      volatile uint8_t *reg;
-      if (port == NOT_A_PIN) return INVALID_SERVO;
-      reg = portModeRegister(port);
-      *reg |= bit;
-      ServoSequencer::setServoPin(servoIndex, pin);
-      //enable the servo to start outputting the PWM wave
-      ServoSequencer::enableDisableServo(servoIndex, true);
-    }
+  if (pin <= 16) {
+    uint8_t bit = digitalPinToBitMask(pin);
+    uint8_t port = digitalPinToPort(pin);
+    volatile uint8_t *reg;
+    if (port == NOT_A_PIN) return INVALID_SERVO;
+    reg = portModeRegister(port);
+    *reg |= bit;
+    ServoSequencer::setServoPin(servoIndex, pin);
+    //enable the servo to start outputting the PWM wave
+    ServoSequencer::enableDisableServo(servoIndex, true);
+  }
   #else
-    #error "This part isn't supported - how did execution get here?"
+  #error "This part isn't supported - how did execution get here?"
   #endif
-    else
-    {
-        //bad pin value. do nothing.
-    }
+  else
+  {
+    //bad pin value. do nothing.
+  }
 
-    return servoIndex;
+  return servoIndex;
 
 }//end attach
 
@@ -863,9 +833,9 @@ uint8_t Servo::attach(uint8_t pin) {
 //
 //=============================================================================
 uint8_t Servo::attach(uint8_t pin, uint16_t newMin, uint16_t newMax) {
-    min = newMin;
-    max = newMax;
-    return attach(pin);
+  min = newMin;
+  max = newMax;
+  return attach(pin);
 }//end attach with min/max
 
 
@@ -880,8 +850,8 @@ uint8_t Servo::attach(uint8_t pin, uint16_t newMin, uint16_t newMax) {
 //
 //=============================================================================
 void Servo::detach() {
-    ServoSequencer::deregisterServo(servoIndex);
-    servoIndex = INVALID_SERVO;
+  ServoSequencer::deregisterServo(servoIndex);
+  servoIndex = INVALID_SERVO;
 }
 
 
@@ -898,20 +868,18 @@ void Servo::detach() {
 //
 //=============================================================================
 void Servo::write(uint16_t value) {
-    //make sure we have a valid servo number. If it's invalid then exit doing nothing.
-    if (servoIndex == INVALID_SERVO) return;
+  //make sure we have a valid servo number. If it's invalid then exit doing nothing.
+  if (servoIndex == INVALID_SERVO) return;
 
-    //for now, only accept angles, and angles that are between 0 and 200 degrees
-    if ( value > 180 ) {
-        //treat this number as microseconds
-        writeMicroseconds( value );
-    }
-    else
-    {
-        //treat this number as degrees
-        uint16_t servoPulseLengthInUs = map(value, 0, 180, min, max);
-        writeMicroseconds( servoPulseLengthInUs );
-    }
+  //for now, only accept angles, and angles that are between 0 and 200 degrees
+  if ( value > 180 ) {
+    //treat this number as microseconds
+    writeMicroseconds( value );
+  } else {
+    //treat this number as degrees
+    uint16_t servoPulseLengthInUs = map(value, 0, 180, min, max);
+    writeMicroseconds( servoPulseLengthInUs );
+  }
 }//end write
 
 
@@ -926,10 +894,10 @@ void Servo::write(uint16_t value) {
 //
 //=============================================================================
 void Servo::writeMicroseconds(uint16_t value) {
-    //make sure we have a valid servo number. If it's invalid then exit doing nothing.
-    if (servoIndex == INVALID_SERVO) return;
+  //make sure we have a valid servo number. If it's invalid then exit doing nothing.
+  if (servoIndex == INVALID_SERVO) return;
 
-    ServoSequencer::setServoPulseLength(servoIndex, value );
+  ServoSequencer::setServoPulseLength(servoIndex, value );
 }//end writeMicroseconds
 
 
@@ -947,10 +915,10 @@ void Servo::writeMicroseconds(uint16_t value) {
 //
 //=============================================================================
 uint16_t Servo::readMicroseconds() {
-    //make sure we have a valid servo number. If it's invalid then exit doing nothing.
-    if (servoIndex == INVALID_SERVO) return 0;
+  //make sure we have a valid servo number. If it's invalid then exit doing nothing.
+  if (servoIndex == INVALID_SERVO) return 0;
 
-    return ServoSequencer::getServoPulseLength(servoIndex);
+  return ServoSequencer::getServoPulseLength(servoIndex);
 }//end readMicroseconds
 
 
@@ -965,12 +933,12 @@ uint16_t Servo::readMicroseconds() {
 //
 //=============================================================================
 uint16_t Servo::read() {
-    //make sure we have a valid servo number. If it's invalid then exit doing nothing.
-    if (servoIndex == INVALID_SERVO) return 0;
+  //make sure we have a valid servo number. If it's invalid then exit doing nothing.
+  if (servoIndex == INVALID_SERVO) return 0;
 
-    uint16_t servoPulseLengthInUs = readMicroseconds();
-    uint16_t servoPositionInDegrees = map(servoPulseLengthInUs, min, max, 0, 180);
-    return servoPositionInDegrees;
+  uint16_t servoPulseLengthInUs = readMicroseconds();
+  uint16_t servoPositionInDegrees = map(servoPulseLengthInUs, min, max, 0, 180);
+  return servoPositionInDegrees;
 }//end read
 
 
@@ -986,10 +954,10 @@ uint16_t Servo::read() {
 //
 //=============================================================================
 bool Servo::attached() {
-    //make sure we have a valid servo number. If it's invalid then exit doing nothing.
-    if (servoIndex == INVALID_SERVO) return false;
+  //make sure we have a valid servo number. If it's invalid then exit doing nothing.
+  if (servoIndex == INVALID_SERVO) return false;
 
-    return ServoSequencer::isEnabled(servoIndex);
+  return ServoSequencer::isEnabled(servoIndex);
 }//end attached
 
 
@@ -1026,25 +994,25 @@ uint8_t ServoCount = 0;                                     // the total number 
 
 static inline void handle_interrupts(timer16_Sequence_t timer, volatile uint16_t *TCNTn, volatile uint16_t* OCRnA) {
   if ( Channel[timer] < 0 )
-    *TCNTn = 0; // channel set to -1 indicated that refresh interval completed so reset the timer
+  *TCNTn = 0; // channel set to -1 indicated that refresh interval completed so reset the timer
   else{
-    if ( SERVO_INDEX(timer,Channel[timer]) < ServoCount && SERVO(timer,Channel[timer]).Pin.isActive == true )
-      digitalWrite( SERVO(timer,Channel[timer]).Pin.nbr,LOW); // pulse this channel low if activated
+  if ( SERVO_INDEX(timer,Channel[timer]) < ServoCount && SERVO(timer,Channel[timer]).Pin.isActive == true )
+    digitalWrite( SERVO(timer,Channel[timer]).Pin.nbr,LOW); // pulse this channel low if activated
   }
 
   Channel[timer]++;    // increment to the next channel
   if ( SERVO_INDEX(timer,Channel[timer]) < ServoCount && Channel[timer] < SERVOS_PER_TIMER) {
-    *OCRnA = *TCNTn + SERVO(timer,Channel[timer]).ticks;
-    if (SERVO(timer,Channel[timer]).Pin.isActive == true)     // check if activated
-      digitalWrite( SERVO(timer,Channel[timer]).Pin.nbr,HIGH); // its an active channel so pulse it high
+  *OCRnA = *TCNTn + SERVO(timer,Channel[timer]).ticks;
+  if (SERVO(timer,Channel[timer]).Pin.isActive == true)     // check if activated
+    digitalWrite( SERVO(timer,Channel[timer]).Pin.nbr,HIGH); // its an active channel so pulse it high
   }
   else {
-    // finished all channels so wait for the refresh period to expire before starting over
-    if (((unsigned)*TCNTn) + 4 < usToTicks(REFRESH_INTERVAL))  // allow a few ticks to ensure the next OCR1A not missed
-      *OCRnA = (unsigned int)usToTicks(REFRESH_INTERVAL);
-    else
-      *OCRnA = *TCNTn + 4;  // at least REFRESH_INTERVAL has elapsed
-    Channel[timer] = -1; // this will get incremented at the end of the refresh period to start again at the first channel
+  // finished all channels so wait for the refresh period to expire before starting over
+  if (((unsigned)*TCNTn) + 4 < usToTicks(REFRESH_INTERVAL))  // allow a few ticks to ensure the next OCR1A not missed
+    *OCRnA = (unsigned int)usToTicks(REFRESH_INTERVAL);
+  else
+    *OCRnA = *TCNTn + 4;  // at least REFRESH_INTERVAL has elapsed
+  Channel[timer] = -1; // this will get incremented at the end of the refresh period to start again at the first channel
   }
 }
 
@@ -1058,11 +1026,11 @@ static void initISR(timer16_Sequence_t timer) {
   TCCR1B = _BV(CS11);     // set prescaler of 8
   TCNT1 = 0;              // clear the timer count
   #if defined(TIMSK)
-    TIFR |= _BV(OCF1A);      // clear any pending interrupts;
-    TIMSK |=  _BV(OCIE1A) ;  // enable the output compare interrupt
+  TIFR |= _BV(OCF1A);      // clear any pending interrupts;
+  TIMSK |=  _BV(OCIE1A) ;  // enable the output compare interrupt
   #else
-    TIFR1 |= _BV(OCF1A);
-    TIMSK1 |=  _BV(OCIE1A) ;  // enable the output compare interrupt
+  TIFR1 |= _BV(OCF1A);
+  TIMSK1 |=  _BV(OCIE1A) ;  // enable the output compare interrupt
   #endif
 }
 
@@ -1074,8 +1042,8 @@ static void finISR(timer16_Sequence_t timer) {
 static boolean isTimerActive(timer16_Sequence_t timer) {
   // returns true if any servo is active on this timer
   for (uint8_t channel = 0; channel < SERVOS_PER_TIMER; channel++) {
-    if (SERVO(timer,channel).Pin.isActive == true)
-      return true;
+  if (SERVO(timer,channel).Pin.isActive == true)
+    return true;
   }
   return false;
 }
@@ -1085,11 +1053,11 @@ static boolean isTimerActive(timer16_Sequence_t timer) {
 
 Servo::Servo() {
   if ( ServoCount < MAX_SERVOS) {
-    this->servoIndex = ServoCount++;                    // assign a servo index to this instance
-    servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values  - 12 Aug 2009
+  this->servoIndex = ServoCount++;                    // assign a servo index to this instance
+  servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values  - 12 Aug 2009
   }
   else
-    this->servoIndex = INVALID_SERVO ;  // too many servos
+  this->servoIndex = INVALID_SERVO ;  // too many servos
 }
 
 uint8_t Servo::attach(int pin) {
@@ -1098,16 +1066,16 @@ uint8_t Servo::attach(int pin) {
 
 uint8_t Servo::attach(int pin, int min, int max) {
   if (this->servoIndex < MAX_SERVOS ) {
-    pinMode( pin, OUTPUT) ;                                   // set servo pin to output
-    servos[this->servoIndex].Pin.nbr = pin;
-    // todo min/max check: abs(min - MIN_PULSE_WIDTH) /4 < 128
-    this->min  = (MIN_PULSE_WIDTH - min)/4; //resolution of min/max is 4 uS
-    this->max  = (MAX_PULSE_WIDTH - max)/4;
-    // initialize the timer if it has not already been initialized
-    timer16_Sequence_t timer = SERVO_INDEX_TO_TIMER(servoIndex);
-    if (isTimerActive(timer) == false)
-      initISR(timer);
-    servos[this->servoIndex].Pin.isActive = true;  // this must be set after the check for isTimerActive
+  pinMode( pin, OUTPUT) ;                                   // set servo pin to output
+  servos[this->servoIndex].Pin.nbr = pin;
+  // todo min/max check: abs(min - MIN_PULSE_WIDTH) /4 < 128
+  this->min  = (MIN_PULSE_WIDTH - min)/4; //resolution of min/max is 4 uS
+  this->max  = (MAX_PULSE_WIDTH - max)/4;
+  // initialize the timer if it has not already been initialized
+  timer16_Sequence_t timer = SERVO_INDEX_TO_TIMER(servoIndex);
+  if (isTimerActive(timer) == false)
+    initISR(timer);
+  servos[this->servoIndex].Pin.isActive = true;  // this must be set after the check for isTimerActive
   }
   return this->servoIndex ;
 }
@@ -1116,16 +1084,16 @@ void Servo::detach() {
   servos[this->servoIndex].Pin.isActive = false;
   timer16_Sequence_t timer = SERVO_INDEX_TO_TIMER(servoIndex);
   if (isTimerActive(timer) == false) {
-    finISR(timer);
+  finISR(timer);
   }
 }
 
 void Servo::write(int value) {
   if (value < MIN_PULSE_WIDTH)
   {  // treat values less than 544 as angles in degrees (valid values in microseconds are handled as microseconds)
-    if (value < 0) value = 0;
-    if (value > 180) value = 180;
-    value = map(value, 0, 180, SERVO_MIN(),  SERVO_MAX());
+  if (value < 0) value = 0;
+  if (value > 180) value = 180;
+  value = map(value, 0, 180, SERVO_MIN(),  SERVO_MAX());
   }
   this->writeMicroseconds(value);
 }
@@ -1135,18 +1103,18 @@ void Servo::writeMicroseconds(int value) {
   byte channel = this->servoIndex;
   if ((channel < MAX_SERVOS))   // ensure channel is valid
   {
-    if ( value < SERVO_MIN())          // ensure pulse width is valid
-      value = SERVO_MIN();
-    else if ( value > SERVO_MAX())
-      value = SERVO_MAX();
+  if ( value < SERVO_MIN())          // ensure pulse width is valid
+    value = SERVO_MIN();
+  else if ( value > SERVO_MAX())
+    value = SERVO_MAX();
 
-    value = value - TRIM_DURATION;
-    value = usToTicks(value);  // convert to ticks after compensating for interrupt overhead - 12 Aug 2009
+  value = value - TRIM_DURATION;
+  value = usToTicks(value);  // convert to ticks after compensating for interrupt overhead - 12 Aug 2009
 
-    uint8_t oldSREG = SREG;
-    cli();
-    servos[channel].ticks = value;
-    SREG = oldSREG;
+  uint8_t oldSREG = SREG;
+  cli();
+  servos[channel].ticks = value;
+  SREG = oldSREG;
   }
 }
 
@@ -1158,9 +1126,9 @@ int Servo::read() // return the value as degrees
 int Servo::readMicroseconds() {
   unsigned int pulsewidth;
   if ( this->servoIndex != INVALID_SERVO )
-    pulsewidth = ticksToUs(servos[this->servoIndex].ticks)  + TRIM_DURATION ;   // 12 aug 2009
+  pulsewidth = ticksToUs(servos[this->servoIndex].ticks)  + TRIM_DURATION ;   // 12 aug 2009
   else
-    pulsewidth  = 0;
+  pulsewidth  = 0;
 
   return pulsewidth;
 }
