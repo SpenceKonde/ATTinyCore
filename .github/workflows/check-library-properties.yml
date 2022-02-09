@@ -36,4 +36,4 @@ jobs:
         run: |
           source "${{ env.ARDUINO_CI_SCRIPT_FOLDER_PATH }}/arduino-ci-script.sh"
           # https://github.com/per1234/arduino-ci-script#check_library_properties-searchpath-maximumsearchdepth
-          check_library_properties "${GITHUB_WORKSPACE}/megaavr/libraries" 1
+          check_library_properties "${GITHUB_WORKSPACE}/avr/libraries" 1
