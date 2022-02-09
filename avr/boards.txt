@@ -177,7 +177,18 @@ attinyx4.menu.optimization.debug.build.optimize=-Og
 ################################
 # Microcontroller menu         #
 ################################
-['attiny84', 'attiny44']
+attinyx4.menu.chip.84=ATtiny84
+attinyx4.menu.chip.84.build.mcu=attiny84
+attinyx4.menu.chip.84.upload.maximum_size=8192
+attinyx4.menu.chip.84.upload.maximum_data_size=512
+attinyx4.menu.chip.44=ATtiny44
+attinyx4.menu.chip.44.build.mcu=attiny44
+attinyx4.menu.chip.44.upload.maximum_size=4096
+attinyx4.menu.chip.44.upload.maximum_data_size=256
+attinyx4.menu.chip.44=ATtiny44
+attinyx4.menu.chip.24.build.mcu=attiny24
+attinyx4.menu.chip.24.upload.maximum_size=2048
+attinyx4.menu.chip.24.upload.maximum_data_size=128
 
 ################################
 # Clocking menu options        #
@@ -1598,7 +1609,7 @@ attinyx61.menu.eesave.disable.bootloader.eesave_bit=1
 attinyx61.menu.remap.default=USI on PB0-PB2
 attinyx61.menu.remap.alternate=USI on PA0-PA2
 attinyx61.menu.remap.default.build.remap=
-attinyx61.menu.remap.alternate.build.remap-=DREMAPUSI
+attinyx61.menu.remap.alternate.build.remap-=DSET_REMAPUSI
 attinyx61.menu.remap.default.build.remapabr=
 attinyx61.menu.remap.alternate.build.remapabr=rU
 
@@ -1922,9 +1933,9 @@ attinyx41.menu.remap.defaultuart=UART0: TX PA1, RX PA2. SPI: SCK PA3, MISO PA0, 
 attinyx41.menu.remap.defaultspi=UART0: TX PA7, RX PB2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7
 attinyx41.menu.remap.altboth=UART0: TX PA7, RX PB2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2
 attinyx41.menu.remap.defaultboth.build.remap=
-attinyx41.menu.remap.defaultuart.build.remap=-DREMAP=2
-attinyx41.menu.remap.defaultspi.build.remap=-DREMAP=1
-attinyx41.menu.remap.altboth.build.remap=-DREMAP=3
+attinyx41.menu.remap.defaultuart.build.remap=-DSET_REMAP=2
+attinyx41.menu.remap.defaultspi.build.remap=-DSET_REMAP=1
+attinyx41.menu.remap.altboth.build.remap=-DSET_REMAP=3
 attinyx41.menu.remap.defaultboth.build.remapabr=
 attinyx41.menu.remap.defaultuart.build.remapabr=rS
 attinyx41.menu.remap.defaultspi.build.remapabr=rU
@@ -4146,7 +4157,7 @@ attinyx61opti.menu.pinmap.legacy.build.pinmapabr=.old
 attinyx61opti.menu.remap.default=USI on PB0-PB2
 attinyx61opti.menu.remap.alternate=USI on PA0-PA2
 attinyx61opti.menu.remap.default.build.remap=
-attinyx61opti.menu.remap.alternate.build.remap-=DREMAPUSI
+attinyx61opti.menu.remap.alternate.build.remap-=DSET_REMAPUSI
 attinyx61opti.menu.remap.default.build.remapabr=
 attinyx61opti.menu.remap.alternate.build.remapabr=rU
 
@@ -4478,9 +4489,9 @@ attinyx41opti.menu.remap.defaultuart=UART0: TX PA1, RX PA2. SPI: SCK PA3, MISO P
 attinyx41opti.menu.remap.defaultspi=UART0: TX PA7, RX PB2 SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7
 attinyx41opti.menu.remap.altboth=UART0: TX PA7, RX PB2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2
 attinyx41opti.menu.remap.defaultboth.build.remap=
-attinyx41opti.menu.remap.defaultuart.build.remap=-DREMAP=2
-attinyx41opti.menu.remap.defaultspi.build.remap=-DREMAP=1
-attinyx41opti.menu.remap.altboth.build.remap=-DREMAP=3
+attinyx41opti.menu.remap.defaultuart.build.remap=-DSET_REMAP=2
+attinyx41opti.menu.remap.defaultspi.build.remap=-DSET_REMAP=1
+attinyx41opti.menu.remap.altboth.build.remap=-DSET_REMAP=3
 attinyx41opti.menu.remap.defaultboth.build.remapabr=
 attinyx41opti.menu.remap.defaultuart.build.remapabr=rS
 attinyx41opti.menu.remap.defaultspi.build.remapabr=rU
@@ -6088,7 +6099,7 @@ attiny861micr.menu.pinmap.legacy.build.pinmapabr=.old
 attiny861micr.menu.remap.default=USI on PB0-PB2
 attiny861micr.menu.remap.alternate=USI on PA0-PA2
 attiny861micr.menu.remap.default.build.remap=
-attiny861micr.menu.remap.alternate.build.remap=-DREMAPUSI
+attiny861micr.menu.remap.alternate.build.remap=-DSET_REMAPUSI
 attiny861micr.menu.remap.default.build.remapabr=
 attiny861micr.menu.remap.alternate.build.remapabr=rU
 
@@ -6249,9 +6260,9 @@ attiny841micr.menu.remap.defaultuart=UART0: TX PA1, RX PA2. SPI: SCK PA3, MISO P
 attiny841micr.menu.remap.defaultspi=UART0: TX PA7, RX PB2. SPI: SCK PA4, MISO PA5, MOSI PA6, SS PA7
 attiny841micr.menu.remap.altboth=UART0: TX PA7, RX PB2. SPI: SCK PA3, MISO PA0, MOSI PA1, SS PA2
 attiny841micr.menu.remap.defaultboth.build.remap=
-attiny841micr.menu.remap.defaultuart.build.remap=-DREMAP=2
-attiny841micr.menu.remap.defaultspi.build.remap=-DREMAP=1
-attiny841micr.menu.remap.altboth.build.remap=-DREMAP=3
+attiny841micr.menu.remap.defaultuart.build.remap=-DSET_REMAP=2
+attiny841micr.menu.remap.defaultspi.build.remap=-DSET_REMAP=1
+attiny841micr.menu.remap.altboth.build.remap=-DSET_REMAP=3
 attiny841micr.menu.remap.defaultboth.build.remapabr=
 attiny841micr.menu.remap.defaultuart.build.remapabr=rS
 attiny841micr.menu.remap.defaultspi.build.remapabr=rU
