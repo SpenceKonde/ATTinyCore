@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check for unnecessary use of true tabs
-        run: find . -path './.git' -prune -or \(-not -name '*.py' -and -not -name 'build.log' -and -not -name "iotn*.h" -and -not -name 'keywords.txt' -and -not -name 'Makefile' -and -not -name 'Makefile.*' -and -not -name '*.py' -and -not -name '.gitmodules' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp=$'\t' '{}' \; -exec echo 'Tab found.' \; -exec false '{}' +
+        run: find . -path './.git' -prune -or \( -not -name '*.py' -and -not -name 'build.log' -and -not -name "iotn*.h" -and -not -name 'keywords.txt' -and -not -name 'Makefile' -and -not -name 'Makefile.*' -and -not -name '*.py' -and -not -name '.gitmodules' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp=$'\t' '{}' \; -exec echo 'Tab found.' \; -exec false '{}' +
 
   trailing:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check for trailing whitespace
-        run: find . -path './.git' -prune -or \( -not -name '*.hex' -and -not -name '*.py' -and -not -name 'build.log' -and -not -name "iotn*.h" -and -not -name '*.gif' -and -not -name '*.png' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp='[[:blank:]]$' '{}' \; -exec echo 'Trailing whitespace found.' \; -exec false '{}' +
+        run: find . -path './.git' -prune -or \( -not -name '*.hex' -and -not -name '*.py' -and -not -name 'Makefile.tiny' -and -not -name 'build.log' -and -not -name "iotn*.h" -and -not -name '*.gif' -and -not -name '*.png' -and -type f \) -exec grep --with-filename --line-number --binary-files=without-match --regexp='[[:blank:]]$' '{}' \; -exec echo 'Trailing whitespace found.' \; -exec false '{}' +
 
   line-endings:
     runs-on: ubuntu-latest
