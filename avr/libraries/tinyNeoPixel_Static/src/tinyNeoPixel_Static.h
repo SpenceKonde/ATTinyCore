@@ -6,6 +6,12 @@
   It uses ST instructions now, and while the assembly is uglier, the
   result is often smaller code that doesn't need a stupid menu option.
 
+  This is the "static allocation" version of this library. You must
+  pass a pointer to a suitable array to use as the frame buffer, and
+  you must ensure that the pin being used is set output. We don't do
+  that here, so that you can use direct port writes to set it output
+  while using less flash.
+
   NeoPixel is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of
@@ -99,11 +105,14 @@
 
 /* A PROGMEM (flash mem) table containing 8-bit unsigned sine wave (0-255).
    Copy & paste this snippet into a Python REPL to regenerate:
-import math
-for x in range(256):
+  ```
+  import math
+  for x in range(256):
     print("{:3},".format(int((math.sin(x/128.0*math.pi)+1.0)*127.5+0.5))),
     if x&15 == 15: print
+  ```
 */
+/*INDENT-OFF*/
 static const uint8_t PROGMEM _NeoPixelSineTable[256] = {
   128,131,134,137,140,143,146,149,152,155,158,162,165,167,170,173,
   176,179,182,185,188,190,193,196,198,201,203,206,208,211,213,215,
@@ -124,11 +133,12 @@ static const uint8_t PROGMEM _NeoPixelSineTable[256] = {
 
 /* Similar to above, but for an 8-bit gamma-correction table.
    Copy & paste this snippet into a Python REPL to regenerate:
-import math
-gamma=2.6
-for x in range(256):
-    print("{:3},".format(int(math.pow((x)/255.0,gamma)*255.0+0.5))),
+  ```
+  import math
+  for x in range(256):
+    print("{:3},".format(int((math.sin(x/128.0*math.pi)+1.0)*127.5+0.5))),
     if x&15 == 15: print
+  ```
 */
 static const uint8_t PROGMEM _NeoPixelGammaTable[256] = {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -148,6 +158,7 @@ static const uint8_t PROGMEM _NeoPixelGammaTable[256] = {
   182,184,186,188,191,193,195,197,199,202,204,206,209,211,213,215,
   218,220,223,225,227,230,232,235,237,240,242,245,247,250,252,255};
 
+/*INDENT-ON*/
 
 
 typedef uint8_t  neoPixelType;
@@ -157,22 +168,17 @@ class tinyNeoPixel {
  public:
 
   // Constructor: number of LEDs, pin number, LED type
-  tinyNeoPixel(uint16_t n, uint8_t p=3, neoPixelType t=NEO_GRB + NEO_KHZ800);
-  tinyNeoPixel(void);
+  tinyNeoPixel(uint16_t n, uint8_t p, neoPixelType t,uint8_t *pxl);
   ~tinyNeoPixel();
 
   void
-    begin(void),
-    show(void),
     setPin(uint8_t p),
     setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b),
     setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b, uint8_t w),
     setPixelColor(uint16_t n, uint32_t c),
     fill(uint32_t c = 0, uint16_t first = 0, uint16_t count = 0),
-    setBrightness(uint8_t b),
-    clear(),
-    updateLength(uint16_t n),
-    updateType(neoPixelType t);
+    setBrightness(uint8_t),
+    clear();
   uint8_t
    *getPixels(void) const,
     getBrightness(void) const;
@@ -194,6 +200,17 @@ class tinyNeoPixel {
              a signed int8_t, but you'll most likely want unsigned as this
              output is often used for pixel brightness in animation effects.
   */
+
+  attribute((always_inline)) inline void show(void) {
+    if(!pixels) {
+      return;
+    }
+    while(!canShow());
+    _show_S(pixels, numbytes, port, pinmask);
+    endTime=micros();
+  }
+  /* allows me to put the architecture specific assembly in a separate file! */
+
   static uint8_t    sine8(uint8_t x) {
     return pgm_read_byte(&_NeoPixelSineTable[x]); // 0-255 in, 0-255 out
   }
@@ -279,10 +296,8 @@ class tinyNeoPixel {
     gOffset,       // Index of green byte
     bOffset,       // Index of blue byte
     wOffset;       // Index of white byte (same as rOffset if no white)
-  #ifndef DISABLEMILLIS
   uint32_t
     endTime;       // Latch timing reference
-  #endif
   volatile uint8_t
     *port;         // Output PORT register
   uint8_t

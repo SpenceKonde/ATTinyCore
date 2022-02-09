@@ -6,12 +6,6 @@
   It uses ST instructions now, and while the assembly is uglier, the
   result is often smaller code that doesn't need a stupid menu option.
 
-  This is the "static allocation" version of this library. You must
-  pass a pointer to a suitable array to use as the frame buffer, and
-  you must ensure that the pin being used is set output. We don't do
-  that here, so that you can use direct port writes to set it output
-  while using less flash.
-
   NeoPixel is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
   published by the Free Software Foundation, either version 3 of
@@ -163,18 +157,21 @@ class tinyNeoPixel {
  public:
 
   // Constructor: number of LEDs, pin number, LED type
-  tinyNeoPixel(uint16_t n, uint8_t p, neoPixelType t,uint8_t *pxl);
+  tinyNeoPixel(uint16_t n, uint8_t p=3, neoPixelType t=NEO_GRB + NEO_KHZ800);
+  tinyNeoPixel(void);
   ~tinyNeoPixel();
 
   void
-    show(void),
+    begin(void),
     setPin(uint8_t p),
     setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b),
     setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b, uint8_t w),
     setPixelColor(uint16_t n, uint32_t c),
     fill(uint32_t c = 0, uint16_t first = 0, uint16_t count = 0),
-    setBrightness(uint8_t),
-    clear();
+    setBrightness(uint8_t b),
+    clear(),
+    updateLength(uint16_t n),
+    updateType(neoPixelType t);
   uint8_t
    *getPixels(void) const,
     getBrightness(void) const;
@@ -182,6 +179,14 @@ class tinyNeoPixel {
     getPin(void) { return pin; };
   uint16_t
     numPixels(void) const;
+  attribute((always_inline)) inline void show(void) {
+    if(!pixels) {
+      return;
+    }
+    while(!canShow());
+    _show(pixels, numbytes, port, pinmask);
+    endTime=micros();
+  }
   uint32_t
     getPixelColor(uint16_t n) const;
   /*!
@@ -281,8 +286,10 @@ class tinyNeoPixel {
     gOffset,       // Index of green byte
     bOffset,       // Index of blue byte
     wOffset;       // Index of white byte (same as rOffset if no white)
+  #ifndef DISABLEMILLIS
   uint32_t
     endTime;       // Latch timing reference
+  #endif
   volatile uint8_t
     *port;         // Output PORT register
   uint8_t
