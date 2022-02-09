@@ -330,7 +330,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   #define OCR1H OCR1AH
   #define OCR1L OCR1AL
 #endif
-  #ifndef UMSEL
+#ifndef UMSEL
   #define UMSEL UMSEL0
 #endif
 #ifndef UMSEL0
