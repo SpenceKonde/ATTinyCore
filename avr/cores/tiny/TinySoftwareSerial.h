@@ -117,7 +117,23 @@
       #endif
       void begin(long);
       void setTxBit(uint8_t);
-      void end();
+      void end();          // Basic printHex() forms for 8, 16, and 32-bit values
+      void                printHex(const     uint8_t              b);
+      void                printHex(const    uint16_t  w, bool s = 0);
+      void                printHex(const    uint32_t  l, bool s = 0);
+      // printHex(signed) and printHexln() - trivial implementation;
+      void                printHex(const      int8_t  b)              {printHex((uint8_t )   b);           }
+      void                printHex(const        char  b)              {printHex((uint8_t )   b);           }
+      void              printHexln(const      int8_t  b)              {printHex((uint8_t )   b); println();}
+      void              printHexln(const        char  b)              {printHex((uint8_t )   b); println();}
+      void              printHexln(const     uint8_t  b)              {printHex(             b); println();}
+      void              printHexln(const    uint16_t  w, bool s = 0)  {printHex(          w, s); println();}
+      void              printHexln(const    uint32_t  l, bool s = 0)  {printHex(          l, s); println();}
+      void              printHexln(const     int16_t  w, bool s = 0)  {printHex((uint16_t)w, s); println();}
+      void              printHexln(const     int32_t  l, bool s = 0)  {printHex((uint16_t)l, s); println();}
+      // The pointer-versions for mass printing uint8_t and uint16_t arrays.
+      uint8_t *           printHex(          uint8_t* p, uint8_t len, char sep = 0            );
+      uint16_t *          printHex(         uint16_t* p, uint8_t len, char sep = 0, bool s = 0);
       virtual int available(void);
       virtual int peek(void);
       virtual int read(void);

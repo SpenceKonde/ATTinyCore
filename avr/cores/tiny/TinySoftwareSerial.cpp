@@ -261,7 +261,61 @@ size_t TinySoftwareSerial::write(uint8_t ch) {
    */
   return 1;
 }
+void TinySoftwareSerial::printHex(const uint8_t b) {
+    char x = (b >> 4) | '0';
+    if (x > '9')
+      x += 7;
+    write(x);
+    x = (b & 0x0F) | '0';
+    if (x > '9')
+      x += 7;
+    write(x);
+  }
 
+  void TinySoftwareSerial::printHex(const uint16_t w, bool swaporder) {
+    uint8_t *ptr = (uint8_t *) &w;
+    if (swaporder) {
+      printHex(*(ptr++));
+      printHex(*(ptr));
+    } else {
+      printHex(*(ptr + 1));
+      printHex(*(ptr));
+    }
+  }
+
+  void TinySoftwareSerial::printHex(const uint32_t l, bool swaporder) {
+    uint8_t *ptr = (uint8_t *) &l;
+    if (swaporder) {
+      printHex(*(ptr++));
+      printHex(*(ptr++));
+      printHex(*(ptr++));
+      printHex(*(ptr));
+    } else {
+      ptr+=3;
+      printHex(*(ptr--));
+      printHex(*(ptr--));
+      printHex(*(ptr--));
+      printHex(*(ptr));
+    }
+  }
+
+  uint8_t * TinySoftwareSerial::printHex(uint8_t* p, uint8_t len, char sep) {
+    for (byte i = 0; i < len; i++) {
+      if (sep && i) write(sep);
+      printHex(*p++);
+    }
+    println();
+    return p;
+  }
+
+  uint16_t * TinySoftwareSerial::printHex(uint16_t* p, uint8_t len, char sep, bool swaporder) {
+    for (byte i = 0; i < len; i++) {
+      if (sep && i) write(sep);
+      printHex(*p++, swaporder);
+    }
+    println();
+    return p;
+  }
 void TinySoftwareSerial::flush() {
   ;
 }
