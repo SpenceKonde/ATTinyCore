@@ -145,12 +145,12 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
   uint8_t i;
 
   // ensure data will fit into buffer
-  if(TWI_BUFFER_LENGTH < length){
+  if(TWI_BUFFER_LENGTH < length) {
     return 0;
   }
 
   // wait until twi is ready, become master receiver
-  while(TWI_READY != twi_state){
+  while(TWI_READY != twi_state) {
     continue;
   }
   twi_state = TWI_MRX;
@@ -167,7 +167,7 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
   // received, causing that NACK to be sent in response to receiving the last
   // expected byte of data.
 
-  // build sla+w, slave device address + w bit
+  // build sla + w, slave device address + w bit
   twi_slarw = TW_READ;
   twi_slarw |= address << 1;
 
@@ -189,7 +189,7 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
     TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWEA) | _BV(TWINT) | _BV(TWSTA);
 
   // wait for read operation to complete
-  while(TWI_MRX == twi_state){
+  while(TWI_MRX == twi_state) {
     continue;
   }
 
@@ -197,7 +197,7 @@ uint8_t twi_readFrom(uint8_t address, uint8_t* data, uint8_t length, uint8_t sen
     length = twi_masterBufferIndex;
 
   // copy twi buffer to data
-  for(i = 0; i < length; ++i){
+  for(i = 0; i < length; ++i) {
     data[i] = twi_masterBuffer[i];
   }
 
@@ -224,12 +224,12 @@ uint8_t twi_writeTo(uint8_t address, uint8_t* data, uint8_t length, uint8_t wait
   uint8_t i;
 
   // ensure data will fit into buffer
-  if(TWI_BUFFER_LENGTH < length){
+  if(TWI_BUFFER_LENGTH < length) {
     return 1;
   }
 
   // wait until twi is ready, become master transmitter
-  while(TWI_READY != twi_state){
+  while(TWI_READY != twi_state) {
     continue;
   }
   twi_state = TWI_MTX;
@@ -242,11 +242,11 @@ uint8_t twi_writeTo(uint8_t address, uint8_t* data, uint8_t length, uint8_t wait
   twi_masterBufferLength = length;
 
   // copy data to twi buffer
-  for(i = 0; i < length; ++i){
+  for(i = 0; i < length; ++i) {
     twi_masterBuffer[i] = data[i];
   }
 
-  // build sla+w, slave device address + w bit
+  // build sla + w, slave device address + w bit
   twi_slarw = TW_WRITE;
   twi_slarw |= address << 1;
 
@@ -271,7 +271,7 @@ uint8_t twi_writeTo(uint8_t address, uint8_t* data, uint8_t length, uint8_t wait
     TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE) | _BV(TWSTA); // enable INTs
 
   // wait for write operation to complete
-  while(wait && (TWI_MTX == twi_state)){
+  while(wait && (TWI_MTX == twi_state)) {
     continue;
   }
 
@@ -300,18 +300,18 @@ uint8_t twi_transmit(const uint8_t* data, uint8_t length)
   uint8_t i;
 
   // ensure data will fit into buffer
-  if(TWI_BUFFER_LENGTH < (twi_txBufferLength+length)){
+  if(TWI_BUFFER_LENGTH < (twi_txBufferLength + length)) {
     return 1;
   }
 
   // ensure we are currently a slave transmitter
-  if(TWI_STX != twi_state){
+  if(TWI_STX != twi_state) {
     return 2;
   }
 
   // set length and copy data into tx buffer
-  for(i = 0; i < length; ++i){
-    twi_txBuffer[twi_txBufferLength+i] = data[i];
+  for(i = 0; i < length; ++i) {
+    twi_txBuffer[twi_txBufferLength + i] = data[i];
   }
   twi_txBufferLength += length;
 
@@ -349,7 +349,7 @@ void twi_attachSlaveTxEvent( void (*function)(void) )
 void twi_reply(uint8_t ack)
 {
   // transmit master read ready signal, with or without ack
-  if(ack){
+  if(ack) {
     TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWINT) | _BV(TWEA);
   }else{
     TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWINT);
@@ -369,7 +369,7 @@ void twi_stop(void)
 
   // wait for stop condition to be executed on bus
   // TWINT is not set after a stop condition!
-  while(TWCR & _BV(TWSTO)){
+  while(TWCR & _BV(TWSTO)) {
     continue;
   }
 
@@ -394,7 +394,7 @@ void twi_releaseBus(void)
 
 ISR(TWI_vect)
 {
-  switch(TW_STATUS){
+  switch(TW_STATUS) {
     // All Master
     case TW_START:     // sent start condition
     case TW_REP_START: // sent repeated start condition
@@ -407,7 +407,7 @@ ISR(TWI_vect)
     case TW_MT_SLA_ACK:  // slave receiver acked address
     case TW_MT_DATA_ACK: // slave receiver acked data
       // if there is data to send, send it, otherwise stop
-      if(twi_masterBufferIndex < twi_masterBufferLength){
+      if(twi_masterBufferIndex < twi_masterBufferLength) {
         // copy data to output register and ack
         TWDR = twi_masterBuffer[twi_masterBufferIndex++];
         twi_reply(1);
@@ -443,7 +443,7 @@ ISR(TWI_vect)
       twi_masterBuffer[twi_masterBufferIndex++] = TWDR;
     case TW_MR_SLA_ACK:  // address sent, ack received
       // ack if more bytes are expected, otherwise nack
-      if(twi_masterBufferIndex < twi_masterBufferLength){
+      if(twi_masterBufferIndex < twi_masterBufferLength) {
         twi_reply(1);
       }else{
         twi_reply(0);
@@ -482,7 +482,7 @@ ISR(TWI_vect)
     case TW_SR_DATA_ACK:       // data received, returned ack
     case TW_SR_GCALL_DATA_ACK: // data received generally, returned ack
       // if there is still room in the rx buffer
-      if(twi_rxBufferIndex < TWI_BUFFER_LENGTH){
+      if(twi_rxBufferIndex < TWI_BUFFER_LENGTH) {
         // put byte in buffer and ack
         twi_rxBuffer[twi_rxBufferIndex++] = TWDR;
         twi_reply(1);
@@ -495,7 +495,7 @@ ISR(TWI_vect)
       // ack future responses and leave slave receiver state
       twi_releaseBus();
       // put a null char after data if there's room
-      if(twi_rxBufferIndex < TWI_BUFFER_LENGTH){
+      if(twi_rxBufferIndex < TWI_BUFFER_LENGTH) {
         twi_rxBuffer[twi_rxBufferIndex] = '\0';
       }
       // callback to user defined callback
@@ -522,7 +522,7 @@ ISR(TWI_vect)
       // note: user must call twi_transmit(bytes, length) to do this
       twi_onSlaveTransmit();
       // if they didn't change buffer & length, initialize it
-      if(0 == twi_txBufferLength){
+      if(0 == twi_txBufferLength) {
         twi_txBufferLength = 1;
         twi_txBuffer[0] = 0x00;
       }
@@ -531,7 +531,7 @@ ISR(TWI_vect)
       // copy data to output register
       TWDR = twi_txBuffer[twi_txBufferIndex++];
       // if there is more to send, ack, otherwise nack
-      if(twi_txBufferIndex < twi_txBufferLength){
+      if(twi_txBufferIndex < twi_txBufferLength) {
         twi_reply(1);
       }else{
         twi_reply(0);

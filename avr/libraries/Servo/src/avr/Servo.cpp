@@ -420,7 +420,7 @@ void ServoSequencer::servoTimerSetup()
     //set up the timer prescaler based on which timer was selected and our F_CPU clock
     setupTimerPrescaler();
     #ifdef __AVR_ATtinyX61__
-    TCCR1A=0;
+    TCCR1A = 0;
     #endif
     // Enable Output Compare Match Interrupt
     TIMSK |= (1 << OCIEnx);
@@ -465,7 +465,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 &= ~(1<< CS12); //clear
         //TCCR1 |=  (1<< CS11); //set
         //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1=0x0A;
+        TCCR1 = 0x0A;
     #elif defined (LOWPLLTIMER1)// && (F_CPU!=16500000L)
         //set counter1 prescaler to 256
         //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
@@ -473,7 +473,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 &= ~(1<< CS12); //clear
         //TCCR1 &= ~(1<< CS11); //clear
         //TCCR1 |=  (1<< CS10); //set
-        TCCR1=0x09;
+        TCCR1 = 0x09;
     #elif F_CPU == 8000000L
         //set counter1 prescaler to 64
         //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
@@ -481,7 +481,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 |=  (1<< CS11); //set
         //TCCR1 |=  (1<< CS10); //set
-        TCCR1=0x07;
+        TCCR1 = 0x07;
     #elif (F_CPU == 16000000L || F_CPU==16500000L)//16 MHz
         //set counter1 prescaler to 128
         //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
@@ -489,7 +489,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 &= ~(1<< CS12); //clear
         //TCCR1 &= ~(1<< CS11); //clear
         //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1=0x08;
+        TCCR1 = 0x08;
     #elif F_CPU == 4000000L
         //set counter1 prescaler to 32
         //our F_CPU is 4 MHz so this makes each timer tick be 8 microseconds long
@@ -497,7 +497,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 |=  (1<< CS11); //set
         //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1=0x07;
+        TCCR1 = 0x07;
     #elif F_CPU == 1000000L
         //set counter1 prescaler to 8
         //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
@@ -505,7 +505,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 &= ~(1<< CS11); //clear
         //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1=0x04;
+        TCCR1 = 0x04;
     #else
         #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny25/45/85 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
     #endif
@@ -518,7 +518,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1B &= ~(1<< CS12); //clear
         //TCCR1B |=  (1<< CS11); //set
         //TCCR1B &= ~(1<< CS10); //clear
-        TCCR1B=0x0A;
+        TCCR1B = 0x0A;
     #elif defined (LOWPLLTIMER1) //&& (F_CPU!=16500000L)
         //set counter1 prescaler to 256
         //our timer clock is 32 MHz so this makes each timer tick be 8 microseconds long
@@ -526,7 +526,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1B &= ~(1<< CS12); //clear
         //TCCR1B &= ~(1<< CS11); //clear
         //TCCR1B |=  (1<< CS10); //set
-        TCCR1B=0x09;
+        TCCR1B = 0x09;
     #elif F_CPU == 8000000L
         //set counter1 prescaler to 64
         //our F_CPU is 8 MHz so this makes each timer tick be 8 microseconds long
@@ -534,7 +534,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1B |=  (1<< CS12); //set
         //TCCR1B |=  (1<< CS11); //set
         //TCCR1B |=  (1<< CS10); //set
-        TCCR1B=0x07;
+        TCCR1B = 0x07;
     #elif (F_CPU == 16000000L || F_CPU==16500000L) //16 MHz
         //set counter1 prescaler to 128
         //our F_CPU is 16 MHz so this makes each timer tick be 8 microseconds long
@@ -542,7 +542,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1B &= ~(1<< CS12); //clear
         //TCCR1B &= ~(1<< CS11); //clear
         //TCCR1B &= ~(1<< CS10); //clear
-        TCCR1B=0x08;
+        TCCR1B = 0x08;
     #elif F_CPU == 1000000L
         //set counter1 prescaler to 8
         //our F_CPU is 1 MHz so this makes each timer tick be 8 microseconds long
@@ -550,7 +550,7 @@ void ServoSequencer::setupTimerPrescaler()
         //TCCR1 |=  (1<< CS12); //set
         //TCCR1 &= ~(1<< CS11); //clear
         //TCCR1 &= ~(1<< CS10); //clear
-        TCCR1B=4;
+        TCCR1B = 4;
     #else
         #error "Servo only supported at 1MHz, 8MHz and 16MHz on tiny261/461/861 unless PLL used as Timer1 clock source and PLL clock isn't 16.5 MHz."
     #endif
@@ -801,9 +801,9 @@ ISR(TIMER1_COMPA_vect)
 //=============================================================================
 Servo::Servo()
 {
-    servoIndex=INVALID_SERVO;
-    min=MIN_PULSE_WIDTH;
-    max=MAX_PULSE_WIDTH;
+    servoIndex = INVALID_SERVO;
+    min = MIN_PULSE_WIDTH;
+    max = MAX_PULSE_WIDTH;
 }//end constructor
 
 //=============================================================================
@@ -1123,7 +1123,7 @@ static void finISR(timer16_Sequence_t timer)
 static boolean isTimerActive(timer16_Sequence_t timer)
 {
   // returns true if any servo is active on this timer
-  for(uint8_t channel=0; channel < SERVOS_PER_TIMER; channel++) {
+  for(uint8_t channel = 0; channel < SERVOS_PER_TIMER; channel++) {
     if(SERVO(timer,channel).Pin.isActive == true)
       return true;
   }

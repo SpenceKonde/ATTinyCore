@@ -80,12 +80,12 @@ struct EERef{
     EERef& operator--()                  { return *this -= 1; }
 
     /** Postfix increment/decrement **/
-    uint8_t operator++ (int){
+    uint8_t operator++ (int) {
         uint8_t ret = **this;
         return ++(*this), ret;
     }
 
-    uint8_t operator-- (int){
+    uint8_t operator-- (int) {
         uint8_t ret = **this;
         return --(*this), ret;
     }
@@ -144,14 +144,14 @@ struct EEPROMClass{
     uint16_t length()                    { return E2END + 1; }
 
     //Functionality to 'get' and 'put' objects to and from EEPROM.
-    template< typename T > T &get( int idx, T &t ){
+    template< typename T > T &get( int idx, T &t ) {
         EEPtr e = idx;
         uint8_t *ptr = (uint8_t*) &t;
         for( int count = sizeof(T) ; count ; --count, ++e )  *ptr++ = *e;
         return t;
     }
 
-    template< typename T > const T &put( int idx, const T &t ){
+    template< typename T > const T &put( int idx, const T &t ) {
         EEPtr e = idx;
         const uint8_t *ptr = (const uint8_t*) &t;
         for( int count = sizeof(T) ; count ; --count, ++e )  (*e).update( *ptr++ );

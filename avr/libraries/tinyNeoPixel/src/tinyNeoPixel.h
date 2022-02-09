@@ -101,7 +101,7 @@
    Copy & paste this snippet into a Python REPL to regenerate:
 import math
 for x in range(256):
-    print("{:3},".format(int((math.sin(x/128.0*math.pi)+1.0)*127.5+0.5))),
+    print("{:3},".format(int((math.sin(x/128.0*math.pi)+1.0)*127.5 + 0.5))),
     if x&15 == 15: print
 */
 static const uint8_t PROGMEM _NeoPixelSineTable[256] = {
@@ -125,9 +125,9 @@ static const uint8_t PROGMEM _NeoPixelSineTable[256] = {
 /* Similar to above, but for an 8-bit gamma-correction table.
    Copy & paste this snippet into a Python REPL to regenerate:
 import math
-gamma=2.6
+gamma = 2.6
 for x in range(256):
-    print("{:3},".format(int(math.pow((x)/255.0,gamma)*255.0+0.5))),
+    print("{:3},".format(int(math.pow((x)/255.0,gamma)*255.0 + 0.5))),
     if x&15 == 15: print
 */
 static const uint8_t PROGMEM _NeoPixelGammaTable[256] = {
@@ -157,7 +157,7 @@ class tinyNeoPixel {
  public:
 
   // Constructor: number of LEDs, pin number, LED type
-  tinyNeoPixel(uint16_t n, uint8_t p=3, neoPixelType t=NEO_GRB + NEO_KHZ800);
+  tinyNeoPixel(uint16_t n, uint8_t p = 3, neoPixelType t = NEO_GRB + NEO_KHZ800);
   tinyNeoPixel(void);
   ~tinyNeoPixel();
 
@@ -185,7 +185,7 @@ class tinyNeoPixel {
     }
     while(!canShow());
     _show(pixels, numbytes, port, pinmask);
-    endTime=micros();
+    endTime = micros();
   }
   uint32_t
     getPixelColor(uint16_t n) const;
@@ -247,7 +247,7 @@ class tinyNeoPixel {
   static uint32_t   Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
     return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
   }
-  static uint32_t   ColorHSV(uint16_t hue, uint8_t sat=255, uint8_t val=255);
+  static uint32_t   ColorHSV(uint16_t hue, uint8_t sat = 255, uint8_t val = 255);
   /*!
     @brief   A gamma-correction function for 32-bit packed RGB or WRGB
              colors. Makes color transitions appear more perceptially

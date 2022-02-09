@@ -38,7 +38,7 @@
 // Generalized way of getting a correct delay that is acceptable by standard or fast mode I2C
 // round up to nearest 1mhz if not even multiple of 1 MHz and divide by 1000000 to get clock/us rounded up (safe)
 // these are the number of passes through _delay_loop1()
-#define CLKBASE ((F_CPU+999999)/1000000)
+#define CLKBASE ((F_CPU + 999999)/1000000)
 #define T2_TWI (5*CLKBASE) //5us
 #define T4_TWI (4*CLKBASE) //4us
 // these all err in the direction of being too slow, which is fine

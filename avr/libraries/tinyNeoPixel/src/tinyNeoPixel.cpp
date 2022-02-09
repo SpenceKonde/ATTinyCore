@@ -265,7 +265,7 @@ uint32_t tinyNeoPixel::ColorHSV(uint16_t hue, uint8_t sat, uint8_t val) {
    * and so forth. Hence, 1530 distinct hues (0 to 1529), and hence why
    * the constants below are not the multiples of 256 you might expect.
    */
-  // Convert hue to R,G,B (nested ifs faster than divide+mod+switch):
+  // Convert hue to R,G,B (nested ifs faster than divide + mod + switch):
   if(hue < 510) {         // Red to Green-1
     b = 0;
     if(hue < 255) {       //   Red to Yellow-1
@@ -359,7 +359,7 @@ uint16_t tinyNeoPixel::numPixels(void) const {
   return numLEDs;
 }
 
-/* Adjust output brightness; 0=darkest (off), 255=brightest.  This does
+/* Adjust output brightness; 0 = darkest (off), 255 = brightest.  This does
  * NOT immediately affect what's currently displayed on the LEDs.  The
  * next call to show() will refresh the LEDs at this level.  However,
  * this process is potentially "lossy," especially when increasing
@@ -390,7 +390,7 @@ void tinyNeoPixel::setBrightness(uint8_t b) {
     if(oldBrightness == 0) scale = 0; // Avoid /0
     else if(b == 255) scale = 65535 / oldBrightness;
     else scale = (((uint16_t)newBrightness << 8) - 1) / oldBrightness;
-    for(uint16_t i=0; i<numBytes; i++) {
+    for(uint16_t i = 0; i<numBytes; i++) {
       c      = *ptr;
       *ptr++ = (c * scale) >> 8;
     }
@@ -420,6 +420,6 @@ uint32_t tinyNeoPixel::gamma32(uint32_t x) {
    * of an RGB value, but this seems exceedingly rare and if it's
    * encountered in reality they can mask values going in or coming out.
    */
-  for(uint8_t i=0; i<4; i++) y[i] = gamma8(y[i]);
+  for(uint8_t i = 0; i<4; i++) y[i] = gamma8(y[i]);
   return x; // Packed 32-bit return
 }

@@ -37,7 +37,7 @@
 
 unsigned char USI_TWI_Master_Transfer(unsigned char);
 unsigned char USI_TWI_Master_Stop(void);
-static unsigned char USI_TWI_MASTER_SPEED=0;
+static unsigned char USI_TWI_MASTER_SPEED = 0;
 
 union USI_TWI_state {
   unsigned char errorState; // Can reuse the TWI_state for error states due to that it will not be need if there
@@ -50,7 +50,7 @@ union USI_TWI_state {
 } USI_TWI_state;
 
 void USI_TWI_Master_Speed(uint8_t fm) {
-  USI_TWI_MASTER_SPEED=fm?1:0;
+  USI_TWI_MASTER_SPEED = fm?1:0;
 }
 
 /*---------------------------------------------------------------

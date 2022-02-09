@@ -43,17 +43,17 @@
     TCCR1 = oldtccr; // and turn back on the timer.
   }
   void setTimer1Prescaler(TIMER1_PRESCALE_t presc) {
-    uint8_t oldtccr=TCCR1;
+    uint8_t oldtccr = TCCR1;
     tccr &= 0xF0;
     tccr |= presc;
-    TCCR1=tccr;
+    TCCR1 = tccr;
   }
   void setTimer1Top(uint8_t newtop) {
     OCR1C = newtop;
   }
   uint8_t setTimer1Frequency(uint32_t target) {
     while (true) {
-      uint8_t pll=PLLCSR;
+      uint8_t pll = PLLCSR;
       pll &= 0x84;
       unsigned long speed;
       if (pll == 0x84) {
@@ -84,7 +84,7 @@
         }
         uint8_t top;
         if (topval > 255) {
-          top=255;
+          top = 255;
         } else {
           top = topval;
         }
@@ -144,10 +144,10 @@
     TCCR1B = oldtccr; // and turn back on the timer.
   }
   void setTimer1Prescaler(TIMER1_PRESCALE_t presc) {
-    uint8_t oldtccr=TCCR1B;
+    uint8_t oldtccr = TCCR1B;
     tccr &= 0xF0;
     tccr |= presc;
-    TCCR1B=tccr;
+    TCCR1B = tccr;
   }
   void setTimer1Top(uint8_t newtop) {
     uint8_t oldsreg = SREG;
@@ -194,7 +194,7 @@
         }
         uint8_t top;
         if (topval > 256) {
-          top=255;
+          top = 255;
         } else {
           top = (uint8_t)topval - 1;
         }
@@ -341,7 +341,7 @@ uint8_t enableISRC(bool mode) {
 
 void disableAllPullups(bool mode) {
   #if defined(PUD)
-    if (mode){
+    if (mode) {
       MCUCR |= 1 << PUD;
     } else {
       MCUCR &= ~(1 << PUD);

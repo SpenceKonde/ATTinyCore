@@ -42,16 +42,16 @@ void SPIClass::begin()
   if (!initialized) {
 
     #ifdef  REMAP
-    uint8_t SS_pin=0;
+    uint8_t SS_pin = 0;
 
     if (REMAP & 1<<SPIMAP) {
       pinMode(SCK_REMAP, OUTPUT);
       pinMode(MOSI_REMAP, OUTPUT);
-      SS_pin=SS_REMAP;
+      SS_pin = SS_REMAP;
     } else {
       pinMode(SCK, OUTPUT);
       pinMode(MOSI, OUTPUT);
-      SS_pin=SS;
+      SS_pin = SS;
     }
     uint8_t port = digitalPinToPort(SS_pin);
     uint8_t bit = digitalPinToBitMask(SS_pin);
@@ -59,7 +59,7 @@ void SPIClass::begin()
 
     // if the SS pin is not already configured as an output
     // then set it high (to enable the internal pull-up resistor)
-    if(!(*reg & bit)){
+    if(!(*reg & bit)) {
       digitalWrite(SS_pin, HIGH);
     }
     pinMode(SS_pin, OUTPUT);
@@ -70,7 +70,7 @@ void SPIClass::begin()
 
     // if the SS pin is not already configured as an output
     // then set it high (to enable the internal pull-up resistor)
-    if(!(*reg & bit)){
+    if(!(*reg & bit)) {
       digitalWrite(SS, HIGH);
     }
        // Set SS to high so a connected chip will be "deselected" by default
@@ -90,7 +90,7 @@ void SPIClass::begin()
     // By doing this AFTER enabling SPI, we avoid accidentally
     // clocking in a single bit since the lines go directly
     // from "input" to SPI control.
-    // http://code.google.com/p/arduino/issues/detail?id=888
+    // http://code.google.com/p/arduino/issues/detail?id = 888
     pinMode(SS, OUTPUT);
     pinMode(SCK, OUTPUT);
     pinMode(MOSI, OUTPUT);
@@ -286,7 +286,7 @@ USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay)
     return dispatchClockout(div, delay);
 }
 
-static byte reverse (byte x){
+static byte reverse (byte x) {
  byte result;
  asm("mov __tmp_reg__, %[in] \n\t"
   "lsl __tmp_reg__  \n\t"   /* shift out high bit to carry */

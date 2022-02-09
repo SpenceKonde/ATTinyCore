@@ -203,9 +203,9 @@ void  i2c_delay_half(void)
     (
      " ldi      r25, %[DELAY]           ;load delay constant   ;; 4C \n\t"
      "_Lidelay: \n\t"
-     " dec r25                          ;decrement counter     ;; 4C+xC \n\t"
-     " brne _Lidelay                                           ;;5C+(x-1)2C+xC\n\t"
-     " ret                                                     ;; 9C+(x-1)2C+xC = 7C+xC"
+     " dec r25                          ;decrement counter     ;; 4C + xC \n\t"
+     " brne _Lidelay                                           ;;5C+(x-1)2C + xC\n\t"
+     " ret                                                     ;; 9C+(x-1)2C + xC = 7C + xC"
      : : [DELAY] "M" I2C_DELAY_COUNTER : "r25");
   // 7 cycles + 3 times x cycles
 #endif
@@ -229,16 +229,16 @@ void i2c_wait_scl_high(void)
       " clr     __tmp_reg__             ;do next loop 255 times \n\t"
       "_Lwait_stretch_inner_loop: \n\t"
       " rcall   _Lcheck_scl_level       ;call check function   ;; 12C \n\t"
-      " brpl    _Lstretch_done          ;done if N=0           ;; +1 = 13C\n\t"
+      " brpl    _Lstretch_done          ;done if N = 0           ;; +1 = 13C\n\t"
       " dec     __tmp_reg__             ;dec inner loop counter;; +1 = 14C\n\t"
       " brne    _Lwait_stretch_inner_loop                      ;; +2 = 16C\n\t"
       " sbiw    r26,1                   ;dec outer loop counter \n\t"
       " brne    _Lwait_stretch          ;continue with outer loop \n\t"
-      " sen                             ;timeout -> set N-bit=1 \n\t"
-      " rjmp _Lwait_return              ;and return with N=1\n\t"
-      "_Lstretch_done:                  ;SCL=1 sensed \n\t"
+      " sen                             ;timeout -> set N-bit = 1 \n\t"
+      " rjmp _Lwait_return              ;and return with N = 1\n\t"
+      "_Lstretch_done:                  ;SCL = 1 sensed \n\t"
       " cln                             ;OK -> clear N-bit \n\t"
-      " rjmp _Lwait_return              ; and return with N=0 \n\t"
+      " rjmp _Lwait_return              ; and return with N = 0 \n\t"
 
       "_Lcheck_scl_level:                                      ;; call = 3C\n\t"
       " cln                                                    ;; +1C = 4C \n\t"
@@ -247,7 +247,7 @@ void i2c_wait_scl_high(void)
       " sen                                                    ;; +1 = 7C\n\t "
       "_Lscl_high: "
       " nop                                                    ;; +1C = 8C \n\t"
-      " ret                             ;return N-Bit=1 if low ;; +4 = 12C\n\t"
+      " ret                             ;return N-Bit = 1 if low ;; +4 = 12C\n\t"
 
       "_Lwait_return:"
       : : [SCLIN] "I" (SCL_IN), [SCLPIN] "I" (SCL_PIN),
@@ -289,7 +289,7 @@ bool  i2c_start(uint8_t addr)
      " cli                              ;clear IRQ bit \n\t"
 #endif
      " sbis     %[SCLIN],%[SCLPIN]      ;check for clock stretching slave\n\t"
-     " rcall    ass_i2c_wait_scl_high   ;wait until SCL=H\n\t"
+     " rcall    ass_i2c_wait_scl_high   ;wait until SCL = H\n\t"
      " sbi      %[SDADDR],%[SDAPIN]     ;force SDA low  \n\t"
      " rcall    ass_i2c_delay_half      ;wait T/2 \n\t"
      " rcall    ass_i2c_write           ;now write address \n\t"
@@ -314,7 +314,7 @@ bool  i2c_rep_start(uint8_t addr)
      " cbi  %[SCLDDR],%[SCLPIN] ;release SCL \n\t"
      " rcall  ass_i2c_delay_half  ;delay  T/2 \n\t"
      " sbis     %[SCLIN],%[SCLPIN]      ;check for clock stretching slave\n\t"
-     " rcall    ass_i2c_wait_scl_high   ;wait until SCL=H\n\t"
+     " rcall    ass_i2c_wait_scl_high   ;wait until SCL = H\n\t"
      " sbi  %[SDADDR],%[SDAPIN] ;force SDA low \n\t"
      " rcall  ass_i2c_delay_half  ;delay  T/2 \n\t"
      " rcall    ass_i2c_write       \n\t"
@@ -336,7 +336,7 @@ void  i2c_start_wait(uint8_t addr)
     " cli                               ;disable interrupts \n\t"
 #endif
     " sbis     %[SCLIN],%[SCLPIN]      ;check for clock stretching slave\n\t"
-    " rcall    ass_i2c_wait_scl_high   ;wait until SCL=H\n\t"
+    " rcall    ass_i2c_wait_scl_high   ;wait until SCL = H\n\t"
     " sbi   %[SDADDR],%[SDAPIN] ;force SDA low \n\t"
     " rcall   ass_i2c_delay_half  ;delay T/2 \n\t"
     " rcall   ass_i2c_write         ;write address \n\t"
@@ -361,7 +361,7 @@ void  i2c_stop(void)
      " cbi      %[SCLDDR],%[SCLPIN]     ;release SCL \n\t"
      " rcall    ass_i2c_delay_half      ;T/2 delay \n\t"
      " sbis     %[SCLIN],%[SCLPIN]      ;check for clock stretching slave\n\t"
-     " rcall    ass_i2c_wait_scl_high   ;wait until SCL=H\n\t"
+     " rcall    ass_i2c_wait_scl_high   ;wait until SCL = H\n\t"
      " cbi      %[SDADDR],%[SDAPIN]     ;release SDA \n\t"
      " rcall    ass_i2c_delay_half \n\t"
 #if I2C_NOINTERRUPT
@@ -386,7 +386,7 @@ bool i2c_write(uint8_t value)
      " nop \n\t"
      " nop \n\t"
      " nop \n\t"
-     " brcc     _Li2c_write_low                                ;;+1/+2=5/6C\n\t"
+     " brcc     _Li2c_write_low                                ;;+1/+2 = 5/6C\n\t"
      " nop                                                     ;; +1 = 7C \n\t"
      " cbi %[SDADDR],%[SDAPIN]          ;release SDA           ;; +2 = 9C \n\t"
      " rjmp      _Li2c_write_high                              ;; +2 = 11C \n\t"
@@ -395,22 +395,22 @@ bool i2c_write(uint8_t value)
      " rjmp _Li2c_write_high                               ;;+2 = 11C \n\t"
      "_Li2c_write_high: \n\t"
 #if I2C_DELAY_COUNTER >= 1
-     " rcall  ass_i2c_delay_half  ;delay T/2             ;;+X = 11C+X\n\t"
+     " rcall  ass_i2c_delay_half  ;delay T/2             ;;+X = 11C + X\n\t"
 #endif
-     " cbi  %[SCLDDR],%[SCLPIN] ;release SCL           ;;+2 = 13C+X\n\t"
-     " cln                              ;clear N-bit           ;;+1 = 14C+X\n\t"
+     " cbi  %[SCLDDR],%[SCLPIN] ;release SCL           ;;+2 = 13C + X\n\t"
+     " cln                              ;clear N-bit           ;;+1 = 14C + X\n\t"
      " nop \n\t"
      " nop \n\t"
      " nop \n\t"
-     " sbis %[SCLIN],%[SCLPIN]  ;check for SCL high    ;;+2 = 16C+X\n\t"
+     " sbis %[SCLIN],%[SCLPIN]  ;check for SCL high    ;;+2 = 16C + X\n\t"
      " rcall    ass_i2c_wait_scl_high \n\t"
-     " brpl     _Ldelay_scl_high                              ;;+2 = 18C+X\n\t"
+     " brpl     _Ldelay_scl_high                              ;;+2 = 18C + X\n\t"
      "_Li2c_write_return_false: \n\t"
      " clr      r24                     ; return false because of timeout \n\t"
      " rjmp     _Li2c_write_return \n\t"
      "_Ldelay_scl_high: \n\t"
 #if I2C_DELAY_COUNTER >= 1
-     " rcall  ass_i2c_delay_half  ;delay T/2             ;;+X= 18C+2X\n\t"
+     " rcall  ass_i2c_delay_half  ;delay T/2             ;;+X= 18C + 2X\n\t"
 #endif
      " rjmp _Li2c_write_bit \n\t"
      "              ;; +2 = 20C +2X for one bit-loop \n\t"
@@ -420,11 +420,11 @@ bool i2c_write(uint8_t value)
      " nop \n\t"
      " cbi  %[SDADDR],%[SDAPIN] ;release SDA ;;+2 = 7C \n\t"
 #if I2C_DELAY_COUNTER >= 1
-     " rcall  ass_i2c_delay_half  ;delay T/2 ;; +X = 7C+X \n\t"
+     " rcall  ass_i2c_delay_half  ;delay T/2 ;; +X = 7C + X \n\t"
 #endif
-     " clr  r25                                            ;; 17C+2X \n\t"
+     " clr  r25                                            ;; 17C + 2X \n\t"
      " clr  r24           ;return 0              ;; 14C + X \n\t"
-     " cbi  %[SCLDDR],%[SCLPIN] ;release SCL ;; +2 = 9C+X\n\t"
+     " cbi  %[SCLDDR],%[SCLPIN] ;release SCL ;; +2 = 9C + X\n\t"
      "_Li2c_ack_wait: \n\t"
      " cln                              ; clear N-bit          ;; 10C + X\n\t"
      " nop \n\t"
@@ -439,7 +439,7 @@ bool i2c_write(uint8_t value)
      "_Li2c_write_return: \n\t"
      " nop \n\t "
      " nop \n\t "
-     " sbi  %[SCLDDR],%[SCLPIN] ;force SCL low so SCL=H is short\n\t"
+     " sbi  %[SCLDDR],%[SCLPIN] ;force SCL low so SCL = H is short\n\t"
      " ret \n\t"
      "              ;; + 4 = 17C + 2X for acknowldge bit"
      ::
@@ -460,7 +460,7 @@ uint8_t i2c_read(bool last)
      " nop \n\t"
      " nop \n\t"
 #if I2C_DELAY_COUNTER >= 1
-     " rcall  ass_i2c_delay_half  ;delay T/2             ;; 4C+X \n\t"
+     " rcall  ass_i2c_delay_half  ;delay T/2             ;; 4C + X \n\t"
 #endif
      " cbi  %[SCLDDR],%[SCLPIN] ;release SCL           ;; 6C + X \n\t"
 #if I2C_DELAY_COUNTER >= 1
@@ -483,7 +483,7 @@ uint8_t i2c_read(bool last)
      "_Li2c_put_ack: \n\t"
      " sbi  %[SCLDDR],%[SCLPIN] ;force SCL low         ;; 2C \n\t"
      " cpi  r24,0                                          ;; 3C \n\t"
-     " breq _Li2c_put_ack_low ;if (ack=0) ;; 5C \n\t"
+     " breq _Li2c_put_ack_low ;if (ack = 0) ;; 5C \n\t"
      " cbi  %[SDADDR],%[SDAPIN] ;release SDA \n\t"
      " rjmp _Li2c_put_ack_high \n\t"
      "_Li2c_put_ack_low:                ;else \n\t"
@@ -507,7 +507,7 @@ uint8_t i2c_read(bool last)
      "_Li2c_read_return: \n\t"
      " nop \n\t "
      " nop \n\t "
-     "sbi %[SCLDDR],%[SCLPIN] ;force SCL low so SCL=H is short\n\t"
+     "sbi %[SCLDDR],%[SCLPIN] ;force SCL low so SCL = H is short\n\t"
      " mov  r24,r23                                        ;; 12C + 2X \n\t"
      " clr  r25                                            ;; 13 C + 2X\n\t"
      " ret                                                     ;; 17C + X"

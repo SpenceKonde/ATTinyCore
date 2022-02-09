@@ -120,7 +120,7 @@
     beginTransmission(address);
 
     // the maximum size of internal address is 3 bytes
-    if (isize > 3){
+    if (isize > 3) {
       isize = 3;
     }
 
@@ -131,7 +131,7 @@
     }
 
     // clamp to buffer length
-    if(quantity > BUFFER_LENGTH){
+    if(quantity > BUFFER_LENGTH) {
       quantity = BUFFER_LENGTH;
     }
     // perform blocking read into buffer
@@ -216,10 +216,10 @@
   // or after beginTransmission(address)
   size_t TwoWire::write(uint8_t data)
   {
-    if(transmitting){
+    if(transmitting) {
     // in master transmitter mode
       // don't bother if buffer is full
-      if(txBufferLength >= BUFFER_LENGTH){
+      if(txBufferLength >= BUFFER_LENGTH) {
         setWriteError();
         return 0;
       }
@@ -241,9 +241,9 @@
   // or after beginTransmission(address)
   size_t TwoWire::write(const uint8_t *data, size_t quantity)
   {
-    if(transmitting){
+    if(transmitting) {
     // in master transmitter mode
-      for(size_t i = 0; i < quantity; ++i){
+      for(size_t i = 0; i < quantity; ++i) {
         write(data[i]);
       }
     }else{
@@ -270,7 +270,7 @@
     int value = -1;
 
     // get each successive byte on each call
-    if(rxBufferIndex < rxBufferLength){
+    if(rxBufferIndex < rxBufferLength) {
       value = rxBuffer[rxBufferIndex];
       ++rxBufferIndex;
     }
@@ -285,7 +285,7 @@
   {
     int value = -1;
 
-    if(rxBufferIndex < rxBufferLength){
+    if(rxBufferIndex < rxBufferLength) {
       value = rxBuffer[rxBufferIndex];
     }
 
@@ -296,18 +296,18 @@
   void TwoWire::onReceiveService(uint8_t* inBytes, int numBytes)
   {
     // don't bother if user hasn't registered a callback
-    if(!user_onReceive){
+    if(!user_onReceive) {
       return;
     }
     // don't bother if rx buffer is in use by a master requestFrom() op
     // i know this drops data, but it allows for slight stupidity
     // meaning, they may not have read all the master requestFrom() data yet
-    if(rxBufferIndex < rxBufferLength){
+    if(rxBufferIndex < rxBufferLength) {
       return;
     }
     // copy twi rx buffer into local read buffer
     // this enables new reads to happen in parallel
-    for(uint8_t i = 0; i < numBytes; ++i){
+    for(uint8_t i = 0; i < numBytes; ++i) {
       rxBuffer[i] = inBytes[i];
     }
     // set rx iterator vars
@@ -321,7 +321,7 @@
   void TwoWire::onRequestService(void)
   {
     // don't bother if user hasn't registered a callback
-    if(!user_onRequest){
+    if(!user_onRequest) {
       return;
     }
     // reset tx buffer iterator vars
@@ -550,7 +550,7 @@
   // or after beginTransmission(address)
   size_t TwoWire::write(const uint8_t *data, size_t quantity) {
     size_t numBytes = 0;
-    for (size_t i = 0; i < quantity; ++i){
+    for (size_t i = 0; i < quantity; ++i) {
       numBytes += write(data[i]);
     }
     return numBytes;

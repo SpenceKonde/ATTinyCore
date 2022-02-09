@@ -12,11 +12,11 @@ The EEPROM library is included in your IDE download. To add its functionality to
 ```Arduino
 #include <EEPROM.h>
 
-void setup(){
+void setup() {
 
 }
 
-void loop(){
+void loop() {
 
 }
 
@@ -81,7 +81,7 @@ val = EEPROM[ 0 ];
 EEPROM[ 0 ] = val;
 
 //Compare contents
-if( val == EEPROM[ 0 ] ){
+if( val == EEPROM[ 0 ] ) {
   //Do something...
 }
 ```

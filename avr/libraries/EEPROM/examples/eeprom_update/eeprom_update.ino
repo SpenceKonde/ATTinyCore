@@ -38,7 +38,7 @@ void loop() {
   /***
     The function EEPROM.update(address, val) is equivalent to the following:
 
-    if( EEPROM.read(address) != val ){
+    if( EEPROM.read(address) != val ) {
       EEPROM.write(address, val);
     }
   ***/

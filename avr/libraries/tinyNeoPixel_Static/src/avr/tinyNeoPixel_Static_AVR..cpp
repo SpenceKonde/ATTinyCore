@@ -111,7 +111,7 @@
      * One is 7 clocks/875ns
      * low is 3 clocks/375ns, sometimes 4/500ns
      * 10 instruction clocks per bit:LLHHxxxxxL
-     * ST instructions:              ^ ^    ^   (T=0,2,7)
+     * ST instructions:              ^ ^    ^   (T = 0,2,7)
      * Diagram assumes ST takes effect at end of the 2 clocks, but it
      * doesn't matter, as long as they're all the same.
      * And as if all that wasn't good enough, we also save 8 words of flash!
@@ -206,7 +206,7 @@
        * At least it is perfectly on target!
        *
        * 13 instruction clocks per bit: LLHHHHxxxxLLL
-       * ST  instructions:              ^   ^   ^   (T=0,3,8)
+       * ST  instructions:              ^   ^   ^   (T = 0,3,8)
        * 3 clocks  = 300ns zero
        * 8 clocks =  800ns one
        * 5 clocks  = 50ns low
@@ -318,7 +318,7 @@
        * loading the next byte
        *
        * 15 instruction clocks per bit: LLHHHHxxxxxxLLL
-       * ST  instructions:              ^   ^     ^     (T=0,4,10)
+       * ST  instructions:              ^   ^     ^     (T = 0,4,10)
        * 4 clocks  = 333ns zero
        * 10 clocks = 833ns one
        * 5 clocks  = 416ns low
@@ -371,7 +371,7 @@
        * between bytes) requires a PORT-specific loop similar to the 8 MHz
        * code (but a little more relaxed in this case).
        * 18 instruction clocks per bit: LLHHHHHxxxxxxxLLLL
-       * ST  instructions:              ^    ^      ^     (T=0,5,12)
+       * ST  instructions:              ^    ^      ^     (T = 0,5,12)
        * 5 clocks  = 340ns zero
        * 12 clocks = 816ns one
        * 6 clocks  = 406ns low
@@ -432,7 +432,7 @@
   // 16 MHz(ish) AVRe/AVRe+ --------------------------------------------------
   #elif (F_CPU >= 15400000UL) && (F_CPU <= 19000000L)
     // 20 inst. clocks per bit: HHHHHxxxxxxxxLLLLLLL
-    // ST instructions:         ^    ^       ^       (T=0,5,13)
+    // ST instructions:         ^    ^       ^       (T = 0,5,13)
     volatile uint8_t next, bit;
 
     hi   = *port |  pinMask;
@@ -455,14 +455,14 @@
       "st   %a[port],  %[lo]"    "\n\t" // 2    PORT = lo     (T = 15)
       "nop"                      "\n\t" // 1    nop           (T = 16)
       "rjmp .+0"                 "\n\t" // 2    nop nop       (T = 18)
-      "rjmp head20"              "\n\t" // 2    -> head20 (next bit out) (T=20)
+      "rjmp head20"              "\n\t" // 2    -> head20 (next bit out) (T = 20)
      "nextbyte20:"               "\n\t" //                    (T = 10)
       "ldi  %[bit]  ,  8"        "\n\t" // 1    bit = 8       (T = 11)
       "ld   %[byte] ,  %a[ptr]+" "\n\t" // 2    b = *ptr++    (T = 13)
       "st   %a[port], %[lo]"     "\n\t" // 2    PORT = lo     (T = 15)
       "nop"                      "\n\t" // 1    nop           (T = 16)
       "sbiw %[count], 1"         "\n\t" // 2    i--           (T = 18)
-       "brne head20"             "\n"   // 2    if(i != 0) -> (next byte) (T=20)
+       "brne head20"             "\n"   // 2    if(i != 0) -> (next byte) (T = 20)
       : [port]  "+e" (port),
         [byte]  "+r" (b),
         [bit]   "+r" (bit),
@@ -475,7 +475,7 @@
   // 20 MHz(ish) AVRe/AVRe+ --------------------------------------------------
   #elif (F_CPU >= 19000000UL) && (F_CPU <= 22000000L)
     // 25 inst. clocks per bit: HHHHHHHxxxxxxxxLLLLLLLLLL
-    // ST instructions:         ^      ^       ^       (T=0,7,15)
+    // ST instructions:         ^      ^       ^       (T = 0,7,15)
     volatile uint8_t next, bit;
 
     hi   = *port |  pinMask;

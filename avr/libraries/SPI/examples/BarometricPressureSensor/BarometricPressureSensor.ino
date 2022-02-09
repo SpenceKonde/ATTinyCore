@@ -3,7 +3,7 @@
 
  Shows the output of a Barometric Pressure Sensor on a
  Uses the SPI library. For details on the sensor, see:
- http://www.sparkfun.com/commerce/product_info.php?products_id=8161
+ http://www.sparkfun.com/commerce/product_info.php?products_id = 8161
  http://www.vti.fi/en/support/obsolete_products/pressure_sensors/
 
  This sketch adapted from Nathan Seidle's SCP1000 example for PIC:

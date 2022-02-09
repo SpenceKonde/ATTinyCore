@@ -333,7 +333,7 @@ public:
 
 private:
   static uint8_t initialized;
-  static uint8_t interruptMode; // 0=none, 1=mask, 2=global
+  static uint8_t interruptMode; // 0 = none, 1 = mask, 2 = global
   static uint8_t interruptMask; // which interrupts to mask
   static uint8_t interruptSave; // temp storage, to restore state
   #ifdef SPI_TRANSACTION_MISMATCH_LED
@@ -469,7 +469,7 @@ private:
   static uint8_t msb1st;
   static uint8_t delay;
   static USI_impl::ClockOut clockoutfn;
-  static uint8_t interruptMode; // 0=none, 1=mask, 2=global
+  static uint8_t interruptMode; // 0 = none, 1 = mask, 2 = global
   static uint8_t interruptMask; // which interrupts to mask
   static uint8_t interruptSave; // temp storage, to restore state
 };

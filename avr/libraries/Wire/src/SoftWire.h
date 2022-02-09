@@ -100,7 +100,7 @@ public:
 
   size_t write(const uint8_t *data, size_t quantity) {
     size_t trans = 0;
-    for(size_t i = 0; i < quantity; ++i){
+    for(size_t i = 0; i < quantity; ++i) {
       trans += write(data[i]);
     }
     return trans;
@@ -114,7 +114,7 @@ public:
       // TWI module on other processors (for example Due's TWI_IADR and TWI_MMR registers)
       beginTransmission(address);
       // the maximum size of internal address is 3 bytes
-      if (isize > 3){
+      if (isize > 3) {
   isize = 3;
       }
       // write internal register address - most significant byte first
@@ -123,13 +123,13 @@ public:
       endTransmission(false);
     }
     // clamp to buffer length
-    if(quantity > BUFFER_LENGTH){
+    if(quantity > BUFFER_LENGTH) {
       quantity = BUFFER_LENGTH;
     }
     localerror = !i2c_rep_start((address<<1) | I2C_READ);
     if (error == 0 && localerror) error = 2;
     // perform blocking read into buffer
-    for (uint8_t cnt=0; cnt < quantity; cnt++)
+    for (uint8_t cnt = 0; cnt < quantity; cnt++)
       rxBuffer[cnt] = i2c_read(cnt == quantity-1);
     // set rx buffer iterator vars
     rxBufferIndex = 0;
@@ -164,7 +164,7 @@ public:
 
   int read(void) {
     int value = -1;
-    if(rxBufferIndex < rxBufferLength){
+    if(rxBufferIndex < rxBufferLength) {
       value = rxBuffer[rxBufferIndex];
       ++rxBufferIndex;
     }
@@ -174,7 +174,7 @@ public:
   int peek(void) {
     int value = -1;
 
-    if(rxBufferIndex < rxBufferLength){
+    if(rxBufferIndex < rxBufferLength) {
       value = rxBuffer[rxBufferIndex];
     }
     return value;

@@ -43,7 +43,7 @@
 
 
 #ifdef TWDR
-  #if ((RAMEND+1) - RAMSTART) > 128
+  #if ((RAMEND + 1) - RAMSTART) > 128
     #define BUFFER_LENGTH 32
   #else
     #define BUFFER_LENGTH 16

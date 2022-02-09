@@ -51,7 +51,7 @@ volatile uint8_t SoftwareSerial::_receive_buffer_head = 0;
 // This function generates a brief pulse
 // for debugging or measuring on an oscilloscope.
 // Spence observes that this is a lousy implementant.
-// weould split into 2 functions and get *ppin=portInputRegister(digitalPinToPort(pin)) using the LTO tricks
+// weould split into 2 functions and get *ppin = portInputRegister(digitalPinToPort(pin)) using the LTO tricks
 // then we could do *ppin |= (1 << bitposition) (toggle), and make sure we do it an even number of times,
 // and it would come out right with less impoact ion timing
 #if _DEBUG
@@ -138,7 +138,7 @@ void SoftwareSerial::recv()
       DebugPulse(_DEBUG_PIN2, 1);
     #endif
     // Read each of the 8 bits
-    for (uint8_t i=8; i > 0; --i)
+    for (uint8_t i = 8; i > 0; --i)
     {
       tunedDelay(_rx_delay_intrabit);
       d >>= 1;
