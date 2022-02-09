@@ -297,9 +297,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
 
 //The 2313 2313a and 4313 use different names for a few things in the headers. This makes sure all of them are there for this family if lousy, obsolete garbage parts.
 #ifndef DDA0
-#define DDA0 DDRA0
-#define DDA1 DDRA1
-#define DDA2 DDRA2
+  #define DDA0 DDRA0
+  #define DDA1 DDRA1
+  #define DDA2 DDRA2
 #endif
 #ifdef PCMSK1
   #ifndef PCMSK0
@@ -307,44 +307,44 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   #endif
 #endif
 #ifndef DDAR0
-#define DDAR0 DDA0
-#define DDAR1 DDA1
-#define DDAR2 DDA2
+  #define DDAR0 DDA0
+  #define DDAR1 DDA1
+  #define DDAR2 DDA2
 #endif
 #ifndef EEPROM_Ready_vect
-#define EEPROM_Ready_vect EEPROM_READY_vect
-#define EEPROM_Ready_vect_num EEPROM_READY_vect_num
+  #define EEPROM_Ready_vect EEPROM_READY_vect
+  #define EEPROM_Ready_vect_num EEPROM_READY_vect_num
 #endif
 #ifndef EEPROM_READY_vect
-#define EEPROM_READY_vect EEPROM_Ready_vect
-#define EEPROM_READY_vect_num EEPROM_Ready_vect_num
+  #define EEPROM_READY_vect EEPROM_Ready_vect
+  #define EEPROM_READY_vect_num EEPROM_Ready_vect_num
 #endif
 #ifndef EEARL
-#define EEARL EEAR
+  #define EEARL EEAR
 #endif
 #ifndef GIFR
-#define GIFR EIFR
+  #define GIFR EIFR
 #endif
 #ifndef OCR1
-#define OCR1 OCR1A
-#define OCR1H OCR1AH
-#define OCR1L OCR1AL
+  #define OCR1 OCR1A
+  #define OCR1H OCR1AH
+  #define OCR1L OCR1AL
 #endif
-#ifndef UMSEL
-#define UMSEL UMSEL0
+  #ifndef UMSEL
+  #define UMSEL UMSEL0
 #endif
 #ifndef UMSEL0
-#define UMSEL0 UMSEL
+  #define UMSEL0 UMSEL
 #endif
 #ifndef WDTCR
-#define WDTCR WDTCSR
+  #define WDTCR WDTCSR
 #endif
 #ifndef WDTCSR
-#define WDTCSR WDTCR
+  #define WDTCSR WDTCR
 #endif
 #ifndef TXB
-#define TXB UDR
-#define RXB UDR
+  #define TXB UDR
+  #define RXB UDR
 #endif
 
 #endif
