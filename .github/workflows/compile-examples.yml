@@ -86,29 +86,29 @@ jobs:
         # Filter out these matrix combinations
         exclude:
           - soft-serial: softserial=enable
-            device: attinyx41,chip=841
+            device: attinyx41:chip=841
           - soft-serial: softserial=enable
-            device: attinyx41,chip=441
+            device: attinyx41:chip=441
           - soft-serial: softserial=txonly
-            device: attinyx41,chip=841
+            device: attinyx41:chip=841
           - soft-serial: softserial=txonly
-            device: attinyx41,chip=441
+            device: attinyx41:chip=441
           - soft-serial: softserial=enable
-            device: attinyx7,chip=87
+            device: attinyx7:chip=87
           - soft-serial: softserial=enable
-            device: attinyx7,chip=167
+            device: attinyx7:chip=167
           - soft-serial: softserial=txonly
-            device: attinyx7,chip=87
+            device: attinyx7:chip=87
           - soft-serial: softserial=txonly
-            device: attinyx7,chip=167
+            device: attinyx7:chip=167
           - soft-serial: softserial=enable
-            device: attinyx313,chip=4313
+            device: attinyx313:chip=4313
           - soft-serial: softserial=enable
-            device: attinyx313,chip=2313a
+            device: attinyx313:chip=2313a
           - soft-serial: softserial=txonly
-            device: attinyx313,chip=4313
+            device: attinyx313:chip=4313
           - soft-serial: softserial=txonly
-            device: attinyx313,chip=2313a
+            device: attinyx313:chip=2313a
           - soft-serial: softserial=enable
             device: attiny1634
           - soft-serial: softserial=enable
@@ -118,27 +118,27 @@ jobs:
           - soft-serial: softserial=txonly
             device: attiny828
           - soft-serial:
-            device: attinyx4,chip=84
+            device: attinyx4:chip=84
           - soft-serial:
-            device: attinyx4,chip=44
+            device: attinyx4:chip=44
           - soft-serial:
-            device: attinyx4,chip=24
+            device: attinyx4:chip=24
           - soft-serial:
-            device: attinyx5,chip=85
+            device: attinyx5:chip=85
           - soft-serial:
-            device: attinyx5,chip=45
+            device: attinyx5:chip=45
           - soft-serial:
-            device: attinyx5,chip=25
+            device: attinyx5:chip=25
           - soft-serial:
-            device: attinyx61,chip=861
+            device: attinyx61:chip=861
           - soft-serial:
-            device: attinyx61,chip=461
+            device: attinyx61:chip=461
           - soft-serial:
-            device: attinyx61,chip=261
+            device: attinyx61:chip=261
           - soft-serial:
-            device: attinyx8,chip=88
+            device: attinyx8:chip=88
           - soft-serial:
-            device: attinyx8,chip=48
+            device: attinyx8:chip=48
           - soft-serial:
             device: attiny43u
           - soft-serial:
