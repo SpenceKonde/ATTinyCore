@@ -10,6 +10,7 @@
 #include <avr/pgmspace.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 
 #include "binary.h"
 
@@ -96,7 +97,31 @@ unsigned long micros(void);
 
 void yield(void);
 void delay(unsigned long);
-void delayMicroseconds(unsigned int us);
+
+// Shamelessly stolen from @nerdralph's picoCore
+// delays a specified number of microseconds
+// works for clock frequencies of 1Mhz and up
+__attribute((always_inline))
+static inline void delayMicroseconds(uint16_t us)
+{
+    // if us is a compile-time constant result is accurate to 1 cycle
+    if (__builtin_constant_p(us)) {
+        _delay_us(us);
+        return;
+    }
+
+    // when us is not known at compile time, delay is accurate to +/- 2us
+    // plus an overhead of 3 CPU cycles
+    const float fMHz = (F_CPU/1000000.0);
+    // subtract two for rounding before dividing by 4
+    us -= 2;
+    delay4us:
+        // delay 4us per loop, less 4 cycles for overhead
+        _delay_us(4.0 - (4.0 / fMHz));
+        asm volatile ("sbiw %[us], 4" : [us]"+d"(us));
+    asm goto( "brpl %l[delay4us]" :::: delay4us);
+}
+
 
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
 unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout);
