@@ -217,5 +217,3 @@ jobs:
           enable-deltas-report: true
           enable-warnings-report: true
           sketches-report-path: sketches-reports
-
-
