@@ -272,7 +272,7 @@
     if (duty == 0) {
       digitalWrite(pwmchanneltopin(channel), LOW);
     } else if (duty == 1023) {
-      digitalWrite(pwmchanneltopin(channel), HIGH;);
+      digitalWrite(pwmchanneltopin(channel), HIGH; );
     } else {
       uint8_t oldsreg = SREG;
       cli();

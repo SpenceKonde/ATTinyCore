@@ -120,7 +120,7 @@ private:
   static void setupTimerPrescaler(); //helper function to setup the prescaler
   static void initServoArray();  //sets default values to each element of the servoRegistry array
 
-};//end ServoSequencer
+}; //end ServoSequencer
 
 
 
@@ -226,7 +226,7 @@ void ServoSequencer::setServoPulseLength(uint8_t servoNumber, uint16_t newLength
 
     //make sure the length of this pulse is within the acceptable range
     if ((newLengthInClockTicks > -1) && (newLengthInClockTicks < 256)) {
-  servoRegistry[servoNumber].pulseLengthInTicks = static_cast<uint8_t>(newLengthInClockTicks);
+  servoRegistry[servoNumber].pulseLengthInTicks = static_cast < uint8_t>(newLengthInClockTicks);
   //Programming note: If pulseLengthInTicks is ever changed to be larger than 1 byte in size then
   //                 interrupts would need to be disabled when updating it to a new value.
 } else {

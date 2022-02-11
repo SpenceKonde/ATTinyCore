@@ -364,7 +364,7 @@ void tinyNeoPixel::setBrightness(uint8_t b) {
     if (oldBrightness == 0) scale = 0; // Avoid /0
     else if (b == 255) scale = 65535 / oldBrightness;
     else scale = (((uint16_t)newBrightness << 8) - 1) / oldBrightness;
-    for (uint16_t i = 0; i<numBytes; i++) {
+    for (uint16_t i = 0; i < numBytes; i++) {
       c      = *ptr;
       *ptr++ = (c * scale) >> 8;
     }
@@ -394,6 +394,6 @@ uint32_t tinyNeoPixel::gamma32(uint32_t x) {
    * of an RGB value, but this seems exceedingly rare and if it's
    * encountered in reality they can mask values going in or coming out.
    */
-  for (uint8_t i = 0; i<4; i++) y[i] = gamma8(y[i]);
+  for (uint8_t i = 0; i < 4; i++) y[i] = gamma8(y[i]);
   return x; // Packed 32-bit return
 }

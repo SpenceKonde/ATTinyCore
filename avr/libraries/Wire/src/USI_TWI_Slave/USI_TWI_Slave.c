@@ -251,7 +251,7 @@ ISR(USI_OVERFLOW_VECTOR) {
       if (TWI_RxTail != tmpRxHead) { // data in receive buffer
         // check for stop Condition
         while ((USISR & ((1 << USI_START_COND_INT) | (1 << USIPF) | (0xE << USICNT0))) == 0)
-          ;// wait for either Start or Stop Condition
+          ; // wait for either Start or Stop Condition
           // cancel after one SCL cycle
         if (USISR & (1 << USIPF)) { // Stop Condition
           USI_TWI_On_Slave_Receive(USI_TWI_Data_In_Receive_Buffer());

@@ -39,7 +39,7 @@ void loop() {
 
   // For a set of NeoPixels the first NeoPixel is 0, second is 1, all the way up to the count of pixels minus one.
 
-  for (int i = 0;i<NUMPIXELS;i++) {
+  for (int i = 0; i < NUMPIXELS; i++) {
 
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
     leds.setPixelColor(i, leds.Color(0,150,0)); // Moderately bright green color.
@@ -49,7 +49,7 @@ void loop() {
     delay(delayval); // Delay for a period of time (in milliseconds).
   }
   //with tinyNeoPixel_Static, since we have the pixel array, we can also directly manipulate it - this sacrifices the correction for the pixel order, and the clarity of setColor to save a tiny amount of flash and time.
-  for (int i = 0;i<(NUMPIXELS*3);i++) {
+  for (int i = 0; i < (NUMPIXELS*3); i++) {
     pixels[i]=150; //set byte i of array (this is channel (i%3) of led (i/3) (respectively, i%4 and i/4 for RGBW leds)
     leds.show(); //show
     delay(delayval); //delay for a period of time
