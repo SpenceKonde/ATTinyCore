@@ -24,8 +24,48 @@
 #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(LINBRRH)) && !USE_SOFTWARE_SERIAL
 
   #include <inttypes.h>
-
   #include "Stream.h"
+  // Register names for USART0 normalized to the names with 0 in them.
+  #if defined(UBRRH) // if we have a UART0 (and only a UART0)
+    #define UBRR0H    UBRRH
+    #define UBRR0L    UBRRL
+    #if defined(UBRR)
+      #define UBRR0   UBRR
+    #endif
+    #define UDR0      UDR
+    #define UCSR0A    UCSRA
+    #define UCSR0B    UCSRB
+    #if defined(UCSRC)
+      #define UCSR0D  UCSRD
+    #endif
+    #if defined(UCSRD)
+      #define UCSR0D  UCSRD
+    #endif
+    #ifndef USART0_RX_vect
+      #define USART0_RX_vect  USART_RX_vect
+    #endif
+    #ifndef USART0_UDRE_vect
+      #if defined(USART_DRE_vect)
+        #define USART0_UDRE_vect USART_DRE_vect
+      #elif defined(USART_UDRE_vect)
+        #define USART0_UDRE_vect USART_UDRE_vect
+      #endif
+    #endif
+  #elif defined(UBRR0H)
+    // Register names for BITS are normalized to the unnumbered forms because they are not different where there are two USARTs.
+    #define RXEN  RXEN0
+    #define TXEN  TXEN0
+    #define RXCIE RXCIE0
+    #define UDRIE  UDRIE0
+    #define U2X   U2X0
+  #endif
+  #if defined (UBRR0H)
+    const uint8_t _rxen   = (1 << RXEN);
+    const uint8_t _txen   = (1 << TXEN);
+    const uint8_t _rxcie  = (1 << RXCIE);
+    const uint8_t _udrie  = (1 << UDRIE);
+    const uint8_t _u2x    = (1 << U2X);
+  #endif
   #if (RAMEND < 1000)
     #define SERIAL_BUFFER_SIZE 16
   #else
@@ -37,6 +77,8 @@
    * to use a power of two size, and there are some extrenely flash-constrained parts that have a USART (I'm thinking of the 2313 in particular
    * I couldn't justify not explicitly optimizing the % SERIAL_BUFFER_SIZE to a & (SERIAL_BUFFER_SIZE -1))
    */
+
+
 
   struct ring_buffer;
 
@@ -68,19 +110,13 @@
       volatile uint8_t *_ucsra;
       volatile uint8_t *_ucsrb;
       volatile uint8_t *_udr;
-      uint8_t _rxen;
-      uint8_t _txen;
-      uint8_t _rxcie;
-      uint8_t _udrie;
-      uint8_t _u2x;
     public:
       HardwareSerial(ring_buffer *rx_buffer, ring_buffer *tx_buffer
       #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
         ,
         volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
         volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
-        volatile uint8_t *udr,
-        uint8_t BV_rxen, uint8_t BV_txen, uint8_t BV_rxcie, uint8_t BV_udrie, uint8_t BV_u2x);
+        volatile uint8_t *udr);
       #else
         );
       #endif

@@ -4,7 +4,7 @@
   #if defined(UBRR1H)
     ring_buffer rx_buffer1  =  { { 0 }, 0, 0 };
     ring_buffer tx_buffer1  =  { { 0 }, 0, 0 };
-    HardwareSerial Serial1(&rx_buffer1, &tx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UDR1, (1 << RXEN1), (1 << TXEN1), (1 << RXCIE1), (1 << UDRE1), (1 << U2X1));
+    HardwareSerial Serial1(&rx_buffer1, &tx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UDR1);
   #endif
   #if defined(USART1_RX_vect)
     ISR(USART1_RX_vect)

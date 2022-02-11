@@ -34,19 +34,7 @@
 #if ((defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(LINBRRH)) && !(USE_SOFTWARE_SERIAL && (!defined(UBRR1H) || DISABLE_UART1)) && !DISABLE_UART && !(DISABLE_UART0 && (DISABLE_UART1 || !defined(UBRR1H ))))
 
   #include "HardwareSerial.h"
-
-  // Define constants and variables for buffering incoming serial data.  We're
-  // using a ring buffer (I think), in which rx_buffer_head is the index of the
-  // location to which to write the next incoming character and rx_buffer_tail
-  // is the index of the location from which to read.
-
-
-  #if defined(UBRRH) || defined(UBRR0H) || defined(LINCR)
-  #endif
-  #if defined(UBRR1H)
-  #endif
-
-
+  //from here on out we rely on the normalized register names!
 
 
   // Constructors ////////////////////////////////////////////////////////////////
@@ -55,20 +43,9 @@
   #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
     ,volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
     volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
-    volatile uint8_t *udr,
-    uint8_t BV_rxen, uint8_t BV_txen, uint8_t BV_rxcie, uint8_t BV_udrie, uint8_t BV_u2x) {
+    volatile uint8_t *udr) {
     _rx_buffer = rx_buffer;
     _tx_buffer = tx_buffer;
-    _ubrrh = ubrrh;
-    _ubrrl = ubrrl;
-    _ucsra = ucsra;
-    _ucsrb = ucsrb;
-    _udr = udr;
-    _rxen = BV_rxen;
-    _txen = BV_txen;
-    _rxcie = BV_rxcie;
-    _udrie = BV_udrie;
-    _u2x = BV_u2x;
   }
   #else
   ) {
@@ -81,7 +58,7 @@
   // Public Methods //////////////////////////////////////////////////////////////
 
   void HardwareSerial::begin(long baud) {
-  #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
+  #if (defined(UBRR0H) || defined(UBRR1H))
     uint16_t baud_setting;
     bool use_u2x = true;
   /*
@@ -188,7 +165,7 @@
     while (_tx_buffer->head != _tx_buffer->tail) {
       ; // wait for buffer to end.
     }
-    #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H))
+    #if (defined(UBRR0H) || defined(UBRR1H))
      /*
       cbi(*_ucsrb, _rxen);
       cbi(*_ucsrb, _txen);
@@ -253,7 +230,7 @@
     _tx_buffer->buffer[_tx_buffer->head] = c;
     _tx_buffer->head = i;
 
-    #if ( defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) )
+    #if (defined(UBRR0H) || defined(UBRR1H) )
       *_ucsrb |= _udrie;
     #else
       if(!(LINENIR & _BV(LENTXOK))){
