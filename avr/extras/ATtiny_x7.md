@@ -38,7 +38,7 @@ This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on
 * Reset and Power On, with 8-secind wait (for use without autoreset)
 
 ### Micronucleus VUSB Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal (if USB is not required, it can be prescaled as listed in the table for low power applications). See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
+This core includes a Micronucleus bootloader that supports the ATtiny167, allowing sketches to be uploaded directly over USB. The board definition runs at 16 MHz via external crystal (if USB is not required, it can be prescaled as listed in the table for low power applications). See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. D- is on PIN_PB3, D+ is on pin PIN_PB6.
 
 Two versions of the bootloader are provided, one for use with Digispark Pro boards with the LED on PB1, and one for use on our Azduino boards with the LED on PA6 (this is easier to route on the 0.425" wide PCB, which is sized to plug into a DIP-24 socket - 6 pin positions near the middle are unused, 2 forced by the width of the chip, and 2 by the fact that you don't *want* the crystal pins broken out).
 

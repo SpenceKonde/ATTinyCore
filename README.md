@@ -23,7 +23,7 @@ The most significant changes are:
 
 ### [Installation](Installation.md)
 ### [Wiring and required external components](Wiring.md)
-### [Using with Micronucleus boards](avr/extras/UsingMicronucleus.md)
+### [Using with Micronucleus boards](avr/extras/Ref_Micronucleus.md)
 ### [Programming Guide](Programming.md)
 ### [Migration Guide - moving to ATTinyCore from a different ATtiny board package](Migration.md)
 ### Current **strongly** recommended IDE version: 1.8.13
@@ -143,7 +143,7 @@ Virtual boot relies on rewriting the vector table, such that the RESET vector po
 See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
-It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](avr/extras/UsingMicronucleus.md).
+It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](avr/extras/Ref_Micronucleus.md).
 
 ### Changing the ATtiny clock speed and other settings
 

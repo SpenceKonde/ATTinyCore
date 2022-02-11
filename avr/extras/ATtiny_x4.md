@@ -38,7 +38,7 @@ This core includes an Optiboot bootloader for the ATtiny84/44, operating using s
 Programming the ATtiny84/44 via ISP without the bootloader is fully supported; the 24 is supported only for ISP programming.
 
 ### Micronucleus Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny84A (it is not recommended for use on the tiny84-not-A), allowing sketches to be uploaded directly over USB. It runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table. See the document on [Micronucleus usage](UsingMicronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz, but is set back down before running the sketch. USB libraries are not supported (yet). D- is on PIN_PB0, D+ is on PIN_PB1.
+This core includes a Micronucleus bootloader that supports the ATtiny84A (it is not recommended for use on the tiny84-not-A), allowing sketches to be uploaded directly over USB. It runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz, but is set back down before running the sketch. USB libraries are not supported (yet). D- is on PIN_PB0, D+ is on PIN_PB1.
 
 **Currently the version of micronucleus supplied with ATTinyCore enters the bootloader for all reset sources. This will be made an option in a future release, as will higher clock frequencies, including ones high enough for USB libraries**
 
