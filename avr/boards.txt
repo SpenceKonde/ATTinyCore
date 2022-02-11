@@ -916,6 +916,7 @@ attinyx7.menu.chip.167.upload.maximum_size=16384
 attinyx7.menu.chip.87=ATtiny87
 attinyx7.menu.chip.87.build.mcu=attiny87
 attinyx7.menu.chip.87.upload.maximum_size=8196
+attinyx7.upload.maximum_data_size=512
 
 ################################
 # Clocking menu options        #
@@ -3671,6 +3672,7 @@ attinyx7opti.menu.chip.167.upload.maximum_size=15744
 attinyx7opti.menu.chip.87=ATtiny87
 attinyx7opti.menu.chip.87.build.mcu=attiny87
 attinyx7opti.menu.chip.87.upload.maximum_size=7552
+attinyx7opti.upload.maximum_data_size=512
 
 ################################
 # Clocking menu options        #

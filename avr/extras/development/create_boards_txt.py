@@ -483,6 +483,7 @@ boards = {
     "attinyx7":{
     "title":True,
     "chipmenu":True,
+    "sram":"512",
     "bootloader":"",
     "haspll":False,
     "hasvoltdependance":False,
@@ -770,6 +771,7 @@ boards = {
     "attinyx7opti":{
     "title":True,
     "chipmenu":True,
+    "sram":"512",
     "bootloader":"Optiboot",
     "haspll":False,
     "hasvoltdependance":False,
@@ -1569,9 +1571,10 @@ for x in boards:
       printProp(x,".build.mcu="+x[:-4])
     else:
       printProp(x,".build.mcu="+x)
-    if "flash" in boards[x]:
-      printProp(x,".upload.maximum_size="+boards[x]["flash"])
-      printProp(x,".upload.maximum_data_size="+boards[x]["sram"])
+  if "flash" in boards[x]:
+    printProp(x,".upload.maximum_size="+boards[x]["flash"])
+  if "sram" in boards[x]:
+    printProp(x,".upload.maximum_data_size="+boards[x]["sram"])
   printSubMenuHeader("Clocking menu options")
   if boards[x]["bootloader"] == "Micronucleus":
     # Micronucleus boards have their own clock option menu sets. Everything else shares them.
