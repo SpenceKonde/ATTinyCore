@@ -7,7 +7,7 @@ Working with the tinyAVR parts without any sort of serial port is quite challeng
 
 ## TinySoftSerial and baud rates
 
-The builtin software serial implementation has a rather limited range between maximum and minimum possible baud rates - the "delay" loop used for timing also has a lower bound on the baud rate that it can generate, because it uses a byte to count down it's iterations. As there is no means of error reporting in the Serial API, you will not be notified if it is unable to calculate a valid delay, but begin() will not have taken effect.
+The builtin software serial implementation has a rather limited range between maximum and minimum possible baud rates - the "delay" loop used for timing also has a lower bound on the baud rate that it can generate, because it uses a byte to count down it's iterations. There is no means of error reporting of the normal sort - however you can test if begin() has been called succeessfully with if (Serial)  - this will return false if Serial has not yet been given a valid baud rate. If the port has not yet been "begun", all transmission attempts will fail immediately, with write returning 0.
 
 Clock Speed  | Minimum Baud | Maximum plausible Baud
 -------------|--------------|---------------------------
