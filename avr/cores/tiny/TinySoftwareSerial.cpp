@@ -140,11 +140,12 @@ void TinySoftwareSerial::setTxBit(uint8_t txbit) {
 }
 
 void TinySoftwareSerial::begin(long baud) {
-  long tempDelay = (((F_CPU/baud) - 39) / 12); // As far as I can tell this is WAY off...
+  long tempDelay = (((F_CPU/baud) - 39) / 12);
   if ((tempDelay > 255) || (tempDelay <= 0)) {
     return; //Cannot start - baud rate out of range.
   }
   _delayCount = (uint8_t)tempDelay;
+  _begun = 1;
   #ifndef SOFT_TX_ONLY
     //Straight assignment, we need to configure all bits
     ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
@@ -184,11 +185,12 @@ void TinySoftwareSerial::end() {
     _delayCount = 0;
     _rx_buffer->head = _rx_buffer->tail;
   #endif
+  _begun=0;
 }
 
 int TinySoftwareSerial::available(void) {
   #ifndef SOFT_TX_ONLY
-    return (uint8_t)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) % SERIAL_BUFFER_SIZE;
+    return (uint8_t)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) & (SERIAL_BUFFER_SIZE-1);
   #else
     return 0;
   #endif
@@ -214,7 +216,7 @@ int TinySoftwareSerial::read(void) {
       return -1;
     } else {
       uint8_t c = _rx_buffer->buffer[_rx_buffer->tail];
-      _rx_buffer->tail = (uint8_t)(_rx_buffer->tail + 1) % SERIAL_BUFFER_SIZE;
+      _rx_buffer->tail = (uint8_t)(_rx_buffer->tail + 1) & (SERIAL_BUFFER_SIZE-1);
       return c;
     }
   #else
@@ -321,7 +323,7 @@ void TinySoftwareSerial::flush() {
 }
 
 TinySoftwareSerial::operator bool() {
-  return true;
+  return !!_begun;
 }
 
 #if defined(SOFT_TX_ONLY)

@@ -141,6 +141,8 @@
       virtual size_t write(uint8_t);
       using Print::write; // pull in write(str) and write(buf, size) from Print
       operator bool();
+    private:
+      uint8_t _begun = 0;
   };
 
   extern TinySoftwareSerial Serial;
