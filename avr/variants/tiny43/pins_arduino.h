@@ -75,8 +75,8 @@ static const uint8_t A3 = ADC_CH(3);
 #define digitalPinToInterrupt(p)    ((p) == PIN_PB7 ? 0 : NOT_AN_INTERRUPT)
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p) < 4) ? (P) + 8 : -1)
-#define digitalPinToAnalogInput(p)  (((p) > 7) & (p) < 12 ? (p) - 8: -1)
+#define analogInputToDigitalPin(p)  (((p) < 4) ? (p) + 8 : -1)
+#define digitalPinToAnalogInput(p)  (((p) > 7) && ((p) < 12) ? (p) - 8: -1)
 
 /* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) == PIN_PB1 || (p) == PIN_PB2 || (p) == PIN_PB4 || (p) == PIN_PB5)

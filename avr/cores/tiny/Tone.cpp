@@ -40,6 +40,8 @@ Version Modified By Date     Comments
 #include "wiring_private.h"
 #include "pins_arduino.h"
 
+#if !defined(__AVR_ATtiny26__)
+
 // timerx_toggle_count:
 //  > 0 - duration specified
 //  = 0 - stopped
@@ -581,3 +583,4 @@ void noTone( uint8_t _pin ) {
     noTone( 255 );
   }
 }
+#endif

@@ -9,8 +9,9 @@
  *---------------------------------------------------------------------------*/
 
 #include "wiring_private.h"
+#ifndef __AVR_ATtiny26__
 #include <avr/boot.h>
-
+#endif
 #if USING_BOOTLOADER
   #include <avr/pgmspace.h>
 #else
@@ -837,6 +838,14 @@ void initToneTimer(void) {
     OCR1A  = 0;
     OCR1B  = 0;
     TIFR1  = 0x07;
+  #elif defined(__AVR_ATtiny26__)
+    TIMSK  &= 2;
+    TCCR1A = 0;
+    TCCR1B = 0;
+    TCNT1  = 0;
+    OCR1A  = 0;
+    OCR1B  = 0;
+    TIFR   = 0x66;
   #elif (TIMER_TO_USE_FOR_TONE == 0)
     #warning "ATTinyCore only supports using Timer1 for tone - this is untested code!"
     // Just zero the registers out, instead of trying to name all the bits, as there are combinations of hardware and settings where that doesn't work
@@ -894,6 +903,7 @@ void initToneTimer(void) {
     // Disable all Timer1 interrupts & clear the Timer1 interrupt flags
     TIMSK &= ~((1 << TOIE1) | (1 << OCIE1A) | (1 << OCIE1B) | (1 << OCIE1D));
     TIFR   =  ((1 <<  TOV1) | (1 <<  OCF1A) | (1 <<  OCF1B) | (1 <<  OCF1D));
+
   #elif (TIMER_TO_USE_FOR_TONE == 1)
     // Normal, well-behaved 16-bit Timer 1.
     // Turn off Input Capture Noise Canceler, Input Capture Edge Select on Falling, stop the clock
@@ -980,6 +990,10 @@ void initToneTimer(void) {
       /* Like the 841/441/828 we turn on the output compare, and analogWrite() only twiddles the enable bits */
       TCCR1A = (1 << COM1A1)  |(1 << COM1B1) | (1 << WGM10);
       TCCR1B = (ToneTimer_Prescale_Index << CS10);
+    #elif (TIMER_TO_USE_FOR_TONE == 1 && defined(__AVR_ATtiny26__))
+      OCR1C = 0xFE;
+      TCCR1A = (1 << PWM1A) | (1 << PWM1B);
+      TCCR1B = ToneTimer_Prescale_Index;
     #elif (TIMER_TO_USE_FOR_TONE == 1) // x4, x8, x313,
       // Use the Tone Timer for phase correct PWM
       TCCR1A = (1 << WGM10);
@@ -1084,13 +1098,12 @@ void initToneTimer(void) {
   #define LASTCAL E2END
 #endif
 
-uint8_t read_factory_calibration(void) {
-  #ifndef SIGRD
-  uint8_t SIGRD = 5; // Yes, this variable is needed. boot.h is looking for SIGRD but the io.h calls it RSIG... (unlike where this is needed in the other half of this core, at least the io.h file mentions it... ). Since it's actually a macro, not a function call, this works...
-  #endif
-  uint8_t value = boot_signature_byte_get(1);
-  return value;
-}
+#if defined(__SPM_REG)
+  uint8_t read_factory_calibration(void) {
+    uint8_t value = boot_signature_byte_get(1);
+    return value;
+  }
+#endif
 
 // only called in one place most likely, but we'll try to make sure the compiler inlines it just the same. It's 3 instructions, so it absolutely ought to be.
 inline void __attribute__((always_inline)) set_OSCCAL(uint8_t cal) {
@@ -1220,7 +1233,9 @@ void init_clock() {
                                       // This is "necessary" tuning, if ENABLE_TUNING & 1, we try to tune - unlike cases where we only tune if ENABLE_TUNING & 2 (tune always)
           if (!check_tuning())        // because it was tuned to a different speed than what we want by the bootloader (or we suspect it was)
         #endif                        // failing that, or if tuning isn't enabled in the first place we just get the factory cal.
-          set_OSCCAL(read_factory_calibration());
+          #if defined(__SPM_REG)
+            set_OSCCAL(read_factory_calibration());
+          #endif
         #if (F_CPU     != 16000000L)  // 16MHz is speed of unprescaled PLL clock - if we don't want that, means we want a prescaled one
           #ifdef CCP
             CCP   = 0xD8;             // enable change of protected register
@@ -1264,13 +1279,21 @@ void init_clock() {
       if (!check_tuning())                                // and only grab default and guess if we didn't find one.
       #endif
       { // if that fails, or tuning isn't enabled, we do the guess :-(
-        if (OSCCAL == read_factory_calibration()) { // adjust the calibration up from 16.0mhz to 16.5mhz
+        #if defined(__SPM_REG)
+          if (OSCCAL == read_factory_calibration()) { // adjust the calibration up from 16.0mhz to 16.5mhz
+            if (OSCCAL >= 128) {
+              set_OSCCAL(OSCCAL + 7); // maybe 8 is better? oh well - only about 0.3% out anyway
+            } else {
+              set_OSCCAL(OSCCAL + 5);
+            }
+          }
+        #else
           if (OSCCAL >= 128) {
             set_OSCCAL(OSCCAL + 7); // maybe 8 is better? oh well - only about 0.3% out anyway
           } else {
             set_OSCCAL(OSCCAL + 5);
           }
-        }
+        #endif
       }
     #else // We're using PLL, and we are neither tuned to nor seeking 16.5...
       #if (F_CPU == 16000000L || F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L || F_CPU == 250000L || F_CPU == 125000L || F_CPU == 62500L )
@@ -1315,27 +1338,30 @@ void init_clock() {
   #elif (CLOCK_SOURCE == 0) // system clock is internal, so we may want to tune it, or it may be boot tuned.
     /* Start internal osc prescale and tuning */
     #if (F_CPU == 8000000L || F_CPU == 4000000L || F_CPU == 2000000L || F_CPU == 1000000L || F_CPU == 500000L || F_CPU == 250000L || F_CPU == 125000L || F_CPU == 62500L || F_CPU == 31250L)
-      #if (defined(BOOTTUNED128) || defined(BOOTTUNED120) || defined(BOOTTUNED160))
-        // if the bootloader tuned for 12, 12.8, or even 16, but we want a normal speed,  grab the cal byte if enabled and we have it, otherwise grab default cal.
-        #if defined(ENABLE_TUNING)  && (ENABLE_TUNING & 3)  // necessary tuning, if ENABLE_TUNING & 3, we try to tune - unlike cases where we only check ENABLE_TUNING & 2 (tune always)
-          if (!check_tuning())  // try to use stored calibration
-        #endif
-        #if defined(LOWERCAL)   // means it is 1634, 828, or 441/841 so we probably have LOWERCAL set (if running at 5V it should be). Use it to guess at correct cal.
-          set_OSCCAL(read_factory_calibration() - LOWERCAL);
-        #else
-          set_OSCCAL(read_factory_calibration());
-        #endif
-      #else
-        // bootloader hasn't tuned it, and it's a normal frequency. Use tuning if set to always tune, otherwise don't do anything.
-        // BUT if LOWERCAL is defined, that means it is 1634, 828, or 441/841 and running at 5V, treat as "necessary" tuning
-        // and use LOWERCAL to adjust factory cal if no tuning.
-        #if defined(ENABLE_TUNING) && (((ENABLE_TUNING) & 2) || (defined(LOWERCAL) && (ENABLE_TUNING & 3)))
-          if (!check_tuning())  // try to use stored calibration
-        #endif
-        #if defined(LOWERCAL)
+      #if defined(__SPM_REG)
+        // on parts without self programming no bootloader can set the speed. This whole section is skipped because on the one part like this, we do not support these weird clocks.
+        #if (defined(BOOTTUNED128) || defined(BOOTTUNED120) || defined(BOOTTUNED160))
+          // if the bootloader tuned for 12, 12.8, or even 16, but we want a normal speed,  grab the cal byte if enabled and we have it, otherwise grab default cal.
+          #if defined(ENABLE_TUNING)  && (ENABLE_TUNING & 3)  // necessary tuning, if ENABLE_TUNING & 3, we try to tune - unlike cases where we only check ENABLE_TUNING & 2 (tune always)
+            if (!check_tuning())  // try to use stored calibration
+          #endif
+          #if defined(LOWERCAL)   // means it is 1634, 828, or 441/841 so we probably have LOWERCAL set (if running at 5V it should be). Use it to guess at correct cal.
             set_OSCCAL(read_factory_calibration() - LOWERCAL);
-        #else
+          #else
             set_OSCCAL(read_factory_calibration());
+          #endif
+        #else
+          // bootloader hasn't tuned it, and it's a normal frequency. Use tuning if set to always tune, otherwise don't do anything.
+          // BUT if LOWERCAL is defined, that means it is 1634, 828, or 441/841 and running at 5V, treat as "necessary" tuning
+          // and use LOWERCAL to adjust factory cal if no tuning.
+          #if defined(ENABLE_TUNING) && (((ENABLE_TUNING) & 2) || (defined(LOWERCAL) && (ENABLE_TUNING & 3)))
+            if (!check_tuning())  // try to use stored calibration
+          #endif
+          #if defined(LOWERCAL)
+              set_OSCCAL(read_factory_calibration() - LOWERCAL);
+          #else
+              set_OSCCAL(read_factory_calibration());
+          #endif
         #endif
       #endif
       // apply prescaling to get desired frequency if not set by fuses
@@ -1462,8 +1488,10 @@ void init() {
     #endif
     #if defined(TCCR0B) // Almost everything
       TCCR0B = (MillisTimer_Prescale_Index << CS00);
-    #else               // Tiny x8 has no PWM from timer0
+    #elif defined(TCCR0A)  // Tiny x8 has no PWM from timer0
       TCCR0A = (MillisTimer_Prescale_Index << CS00);
+    #else // tiny26 has no TCCR0A at all, only TCCR0
+      TCCR0 = (MillisTimer_Prescale_Index << CS00);
     #endif
   #else
     #warning "ATTinyCore only supports using Timer0 for millis - this is untested code!"

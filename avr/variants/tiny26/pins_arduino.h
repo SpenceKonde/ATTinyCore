@@ -137,8 +137,7 @@ static const uint8_t A10 = ADC_CH(10);
  *---------------------------------------------------------------------------*/
 
 /* Timer 0 - 8-bit timer without PWM */
-#define TIMER0_TYPICAL              (1)
-#define PIN_TIMER_T0                (PIN_PB7)
+#define TIMER0_TYPICAL              (0)
 
 /* Timer 1: 8 bit high speed timer with PWM */
 #define TIMER1_TYPICAL              (0)
@@ -155,17 +154,19 @@ static const uint8_t A10 = ADC_CH(10);
  * reorder the bits so they line up. Aren't you glad that's not happening at
  * runtime?
  *---------------------------------------------------------------------------*/
-#define ADC_REF(x)          ((((x) & 0x03) << 6) | (((x) & 0x04) << 2)
+#define ADC_REF(x)          (((x) & 0x03) << 6)
+
+/* This is such an old part they didn't have an ADCSRB so ADCSRA is called ADCSR */
+#define ADCSRA ADCSR
 
 /* Analog Reference bit masks */
 #define DEFAULT             ADC_REF(0x00)
 #define EXTERNAL            ADC_REF(0x01)
-#define INTERNAL1V1         ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL2V56        ADC_REF(0x06) /* Not connected to AREF; AREF may be used for other purposes */
-#define INTERNAL2V56_CAP    ADC_REF(0x07) /* Connect a capacitor between AREF and ground for improved reference stability */
+#define INTERNAL2V56        ADC_REF(0x02) /* Not connected to AREF; AREF may be used for other purposes */
+#define INTERNAL2V56_CAP    ADC_REF(0x03) /* Connect a capacitor between AREF and ground for improved reference stability */
 #define INTERNAL2V56_NO_CAP INTERNAL2V56
 #define INTERNAL2V56NOBP    INTERNAL2V56  /* deprecated */
-#define INTERNAL            INTERNAL1V1   /* deprecated */
+#define INTERNAL            INTERNAL2V56   /* deprecated */
 
 /* Special Analog Channels */
 #define ADC_INTERNAL1V1      ADC_CH(0x1E)
@@ -173,61 +174,28 @@ static const uint8_t A10 = ADC_CH(10);
 #define ADC_TEMPERATURE      ADC_CH(0x3F)
 
 /* Differential Analog Channels */
-#define DIFF_A0_A1_20XA      ADC_CH(0x0B)
-#define DIFF_A0_A1_1XA       ADC_CH(0x0C)
-#define DIFF_A1_A1_20XA      ADC_CH(0x0D)
-#define DIFF_A2_A1_20XA      ADC_CH(0x0E)
-#define DIFF_A2_A1_1XA       ADC_CH(0x0F)
+#define DIFF_A0_A1_20X       ADC_CH(0x0B)
+#define DIFF_A0_A1_1X        ADC_CH(0x0C)
+#define DIFF_A1_A1_20X       ADC_CH(0x0D)
+#define DIFF_A2_A1_20X       ADC_CH(0x0E)
+#define DIFF_A2_A1_1X        ADC_CH(0x0F)
+
 #define DIFF_A2_A3_1X        ADC_CH(0x10)
 #define DIFF_A3_A3_20X       ADC_CH(0x11)
 #define DIFF_A4_A3_20X       ADC_CH(0x12)
 #define DIFF_A4_A3_1X        ADC_CH(0x13)
-#define DIFF_A4_A5_20XA      ADC_CH(0x14)
-#define DIFF_A4_A5_1XA       ADC_CH(0x15)
-#define DIFF_A5_A5_20XA      ADC_CH(0x16)
-#define DIFF_A6_A5_20XA      ADC_CH(0x17)
-#define DIFF_A6_A5_1XA       ADC_CH(0x18)
+
+#define DIFF_A4_A5_20X       ADC_CH(0x14)
+#define DIFF_A4_A5_1X        ADC_CH(0x15)
+#define DIFF_A5_A5_20X       ADC_CH(0x16)
+#define DIFF_A6_A5_20X       ADC_CH(0x17)
+#define DIFF_A6_A5_1X        ADC_CH(0x18)
+
 #define DIFF_A8_A9_20X       ADC_CH(0x19)
 #define DIFF_A8_A9_1X        ADC_CH(0x1A)
 #define DIFF_A9_A9_20X       ADC_CH(0x1B)
 #define DIFF_A10_A9_20X      ADC_CH(0x1C)
 #define DIFF_A10_A9_1X       ADC_CH(0x1D)
-/* These support gain selection GSEL
- * is passed as high bit of the channel
- * so that analogRead still works  */
-#define DIFF_A0_A1_20X       ADC_CH(0x20)
-#define DIFF_A0_A1_1X        ADC_CH(0x21)
-#define DIFF_A1_A0_20X       ADC_CH(0x22)
-#define DIFF_A1_A0_1X        ADC_CH(0x23)
-#define DIFF_A1_A2_20X       ADC_CH(0x24)
-#define DIFF_A1_A2_1X        ADC_CH(0x25)
-#define DIFF_A2_A1_20X       ADC_CH(0x26)
-#define DIFF_A2_A1_1X        ADC_CH(0x27)
-#define DIFF_A2_A0_20X       ADC_CH(0x28)
-#define DIFF_A2_A0_1X        ADC_CH(0x29)
-#define DIFF_A0_A2_20X       ADC_CH(0x2A)
-#define DIFF_A0_A2_1X        ADC_CH(0x2B)
-#define DIFF_A4_A5_20X       ADC_CH(0x2C)
-#define DIFF_A4_A5_1X        ADC_CH(0x2D)
-#define DIFF_A5_A4_20X       ADC_CH(0x2E)
-#define DIFF_A5_A4_1X        ADC_CH(0x2F)
-#define DIFF_A5_A6_20X       ADC_CH(0x30)
-#define DIFF_A5_A6_1X        ADC_CH(0x31)
-#define DIFF_A6_A5_20X       ADC_CH(0x32)
-#define DIFF_A6_A5_1X        ADC_CH(0x33)
-#define DIFF_A6_A4_20X       ADC_CH(0x34)
-#define DIFF_A6_A4_1X        ADC_CH(0x35)
-#define DIFF_A4_A6_20X       ADC_CH(0x36)
-#define DIFF_A4_A6_1X        ADC_CH(0x37)
-#define DIFF_A0_A0_20X       ADC_CH(0x38)
-#define DIFF_A0_A0_1X        ADC_CH(0x39)
-/* Same channels on both sides
- * for offset correction */
-#define DIFF_A1_A1_20X       ADC_CH(0x3A)
-#define DIFF_A2_A2_20X       ADC_CH(0x3B)
-#define DIFF_A4_A4_20X       ADC_CH(0x3C)
-#define DIFF_A5_A5_20X       ADC_CH(0x3D)
-#define DIFF_A6_A6_20X       ADC_CH(0x3E)
 
 /* Analog Comparator - used for soft-serial*/
 #define ANALOG_COMP_DDR            (DDRA)
@@ -277,7 +245,7 @@ static const uint8_t A10 = ADC_CH(10);
 
 #ifdef ARDUINO_MAIN
 /*---------------------------------------------------------------------------
- * ATMEL ATTINY861 ATTinyCore Standard Pin Mapping
+ * ATMEL ATTINY26 ATTinyCore Standard Pin Mapping
  *
  *                 +-\/-+
  *      ( 8) PB0  1|   a|20  PA0 ( 0)

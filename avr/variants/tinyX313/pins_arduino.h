@@ -16,6 +16,16 @@
 #define ATTINYX313 1       // backwards compatibility
 #define __AVR_ATtinyX313__ // recommended
 
+/* These cause problems later */
+#undef UDR0
+#undef UDR1
+#undef UDR2
+#undef UDR3
+#undef UDR4
+#undef UDR5
+#undef UDR6
+#undef UDR7
+
 #define NUM_DIGITAL_PINS            (18)
 #define NUM_ANALOG_INPUTS           ( 0)
 

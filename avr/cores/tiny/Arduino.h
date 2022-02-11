@@ -459,6 +459,14 @@ void loop() {
  * For minimum pain to users, we go both directions.
  *---------------------------------------------------------------------------*/
 
+// On the 26, there's an extra number on the vectors, get rid of it.
+#if defined(TIMER1_OVF1_vect)
+  #define TIMER1_OVF_vect_num TIMER1_OVF1_vect_num
+  #define TIMER1_OVF_vect TIMER1_OVF1_vect
+  #define TIMER0_OVF_vect_num TIMER0_OVF0_vect_num
+  #define TIMER0_OVF_vect TIMER0_OVF0_vect
+#endif
+
 #if defined(TIM0_CAPT_vect)   && !defined(TIMER0_CAPT_vect)
   #define TIMER0_CAPT_vect TIM0_CAPT_vect
 #endif
@@ -533,5 +541,4 @@ void loop() {
 #if defined(TIMER2_OVF_vect)    && !defined(TIM2_OVF_vect)
   #define TIM2_OVF_vect TIMER2_OVF_vect
 #endif
-
 #endif
