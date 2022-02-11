@@ -190,7 +190,9 @@ void TinySoftwareSerial::end() {
 
 int TinySoftwareSerial::available(void) {
   #ifndef SOFT_TX_ONLY
-    return (uint8_t)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) & (SERIAL_BUFFER_SIZE-1);
+    if (!_begun) {
+      return (uint8_t)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) & (SERIAL_BUFFER_SIZE-1);
+    }
   #else
     return 0;
   #endif
@@ -212,7 +214,7 @@ int TinySoftwareSerial::peek(void) {
 int TinySoftwareSerial::read(void) {
   #ifndef SOFT_TX_ONLY
     // if the head isn't ahead of the tail, we don't have any characters
-    if (_rx_buffer->head == _rx_buffer->tail) {
+    if (_rx_buffer->head == _rx_buffer->tail || _begun != 0) {
       return -1;
     } else {
       uint8_t c = _rx_buffer->buffer[_rx_buffer->tail];
@@ -225,6 +227,9 @@ int TinySoftwareSerial::read(void) {
 }
 
 size_t TinySoftwareSerial::write(uint8_t ch) {
+  if (!_begun) {
+    return 0;
+  }
   uint8_t oldSREG = SREG;
   cli(); //Prevent interrupts from breaking the transmission. Note: TinySoftwareSerial is half duplex.
   //it can either receive or send, not both (because receiving requires an interrupt and would stall transmission
