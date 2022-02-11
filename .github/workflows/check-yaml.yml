@@ -1,0 +1,71 @@
+# Source: https://github.com/per1234/.github/blob/main/workflow-templates/check-yaml.md
+name: Check YAML
+
+# See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+on:
+  push:
+    paths:
+      - ".github/workflows/check-yaml.ya?ml"
+      - ".yamllint*"
+      # Source: https://github.com/ikatyang/linguist-languages/blob/master/data/YAML.json (used by Prettier)
+      - "**/.clang-format"
+      - "**/.clang-tidy"
+      - "**/.gemrc"
+      - "**/glide.lock"
+      - "**.ya?ml*"
+      - "**.mir"
+      - "**.reek"
+      - "**.rviz"
+      - "**.sublime-syntax"
+      - "**.syntax"
+  pull_request:
+    paths:
+      - ".github/workflows/check-yaml.ya?ml"
+      - ".yamllint*"
+      # Source: https://github.com/ikatyang/linguist-languages/blob/master/data/YAML.json (used by Prettier)
+      - "**/.clang-format"
+      - "**/.clang-tidy"
+      - "**/.gemrc"
+      - "**/glide.lock"
+      - "**.ya?ml*"
+      - "**.mir"
+      - "**.reek"
+      - "**.rviz"
+      - "**.sublime-syntax"
+      - "**.syntax"
+  schedule:
+    # Run every Tuesday at 8 AM UTC to catch breakage caused by changes to yamllint.
+    - cron: "0 8 * * TUE"
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  check:
+    name: ${{ matrix.configuration.name }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        configuration:
+          - name: Generate problem matcher output
+            # yamllint's "github" output type produces annotated diffs, but is not useful to humans reading the log.
+            format: github
+            # The other matrix job is used to set the result, so this job is configured to always pass.
+            continue-on-error: true
+          - name: Check formatting
+            # yamllint's "colored" output type is most suitable for humans reading the log.
+            format: colored
+            continue-on-error: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check YAML
+        continue-on-error: ${{ matrix.configuration.continue-on-error }}
+        run: |
+          yamllint \
+            --format ${{ matrix.configuration.format }} \
+            .

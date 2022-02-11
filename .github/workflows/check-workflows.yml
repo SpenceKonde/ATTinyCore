@@ -1,0 +1,44 @@
+# Source: https://github.com/per1234/.github/blob/main/workflow-templates/check-workflows.md
+name: Check Workflows
+
+# See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+on:
+  push:
+    paths:
+      - ".github/workflows/*.ya?ml"
+  pull_request:
+    paths:
+      - ".github/workflows/*.ya?ml"
+  schedule:
+    # Run every Tuesday at 8 AM UTC to catch breakage resulting from changes to the JSON schema.
+    - cron: "0 8 * * TUE"
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download JSON schema for GitHub Actions workflows
+        id: download-schema
+        uses: carlosperate/download-file-action@v1
+        with:
+          # See: https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/github-workflow.json
+          file-url: https://json.schemastore.org/github-workflow
+          location: ${{ runner.temp }}/github-workflow-schema
+          file-name: github-workflow.json
+
+      - name: Install JSON schema validator
+        run: sudo npm install --global ajv-cli
+
+      - name: Validate GitHub Actions workflows
+        run: |
+          # See: https://github.com/ajv-validator/ajv-cli#readme
+          ajv validate \
+            --strict=false \
+            -s "${{ steps.download-schema.outputs.file-path }}" \
+            -d "./.github/workflows/*.{yml,yaml}"
