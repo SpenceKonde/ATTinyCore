@@ -366,7 +366,7 @@ ATtiny167, ATtiny87
 These call it RSIG:
 ATtiny1634, ATtiny24*, ATtiny25, ATtiny4313, ATtiny44*, ATtiny441, ATtiny45, ATtiny828, ATtiny84*, ATtiny841, ATtiny85
 
-* datasheet doesnt mention it, and in fact lists just 5 valid combinations of of SPMCSR bits, that will have any effect
+* datasheet doesn't mention it, and in fact lists just 5 valid combinations of of SPMCSR bits, that will have any effect
 ...
 
 These don't list it, but the datasheet says they support it:
