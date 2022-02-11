@@ -435,7 +435,7 @@ inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
   inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
     // "Pullup enable? Never heard if it"
     // writes the output register without touching the PUE register. Avail. on 841 and 441 only because that's the only place that the
-    // pullup register is not in the low I/O space and is thus painfully slow to acess.
+    // pullup register is not in the low I/O space and is thus painfully slow to access.
     check_constant_pin(pin);
     if (pin > 127) {
       pin = analogInputToDigitalPin((pin & 127));
