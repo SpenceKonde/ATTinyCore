@@ -56,24 +56,24 @@ jobs:
 
       matrix:
         device:
-          - attinyx4,chip=84
-          - attinyx4,chip=44
-          - attinyx4,chip=24
-          - attinyx41,chip=841
-          - attinyx41,chip=441
-          - attinyx5,chip=85
-          - attinyx5,chip=45
-          - attinyx5,chip=25
-          - attinyx61,chip=861
-          - attinyx61,chip=461
-          - attinyx61,chip=261
-          - attinyx7,chip=167
-          - attinyx7,chip=87
-          - attinyx8,chip=88
-          - attinyx8,chip=48
+          - attinyx4:chip=84
+          - attinyx4:chip=44
+          - attinyx4:chip=24
+          - attinyx41:chip=841
+          - attinyx41:chip=441
+          - attinyx5:chip=85
+          - attinyx5:chip=45
+          - attinyx5:chip=25
+          - attinyx61:chip=861
+          - attinyx61:chip=461
+          - attinyx61:chip=261
+          - attinyx7:chip=167
+          - attinyx7:chip=87
+          - attinyx8:chip=88
+          - attinyx8:chip=48
           - attiny1634
-          - attinyx313,chip=4313
-          - attinyx313,chip=2313a
+          - attinyx313:chip=4313
+          - attinyx313:chip=2313a
           - attiny828
           - attiny43u
           - attiny26
