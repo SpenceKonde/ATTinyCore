@@ -11,18 +11,7 @@
 #include "wiring_private.h"
 #include "pins_arduino.h"
 
-inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pin) {
-  if(__builtin_constant_p(pin)) {
-    if (pin >= NUM_DIGITAL_PINS && pin != NOT_A_PIN)
-    // Exception made for NOT_A_PIN - code exists which relies on being able to pass this and have nothing happen.
-    // While IMO very poor coding practice, these checks aren't here to prevent lazy programmers from intentionally
-    // taking shortcuts we disapprove of, but to call out things that are virtually guaranteed to be a bug.
-    // Passing -1/255/NOT_A_PIN to the digital I/O functions is most likely intentional.
-      badArg("Digital pin is constant, but not a valid pin");
-    return pin != NOT_A_PIN;
-  }
-  return 1;
-}
+
 
 void pinMode(uint8_t pin, uint8_t mode) {
   if (pin > 127) {
@@ -62,75 +51,6 @@ void pinMode(uint8_t pin, uint8_t mode) {
   }
 }
 
-inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
-  check_constant_pin(pin);
-  if (!__builtin_constant_p(mode))
-    badArg("pinModeFast requires the mode to be compile time known");
-  if (pin > 127) {
-    pin = analogInputToDigitalPin((pin & 127));
-  }
-  if (!check_valid_digital_pin(pin)) {
-    return;
-  }
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
-
-  volatile uint8_t *reg, *out;
-  reg = portModeRegister(port);
-
-#if defined(PUEA)
-  out = portPullupRegister(port);
-#else
-  out = portOutputRegister(port);
-#endif
-
-  if (mode == INPUT) {
-    uint8_t oldSREG = SREG;
-    cli();
-    *reg &= ~mask;
-    *out &= ~mask;
-    SREG = oldSREG;
-  } else if (mode == INPUT_PULLUP) {
-    uint8_t oldSREG = SREG;
-    cli();
-    *reg &= ~mask;
-    *out |= mask;
-    SREG = oldSREG;
-  } else {
-    uint8_t oldSREG = SREG;
-    cli();
-    *reg |= mask;
-    SREG = oldSREG;
-  }
-}
-
-
-inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
-  check_constant_pin(pin);
-  if (!__builtin_constant_p(mode))
-    badArg("openDrainFast requires the mode to be compile time known");
-  if (pin > 127) {
-    pin = analogInputToDigitalPin((pin & 127));
-  }
-  if (!check_valid_digital_pin(pin)) {
-    return;
-  }
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
-
-  volatile uint8_t *reg, *out;
-  reg = portModeRegister(port);
-  out = portOutputRegister(port);
-  if (mode == FLOATING) {
-    *out &= ~mask;
-    *reg &= ~mask;
-  } else if (mode == LOW) {
-    *out |= mask;
-    *reg &= ~mask;
-  }
-}
 
 
 void turnOffPWM(uint8_t timer) {
@@ -264,7 +184,8 @@ void openDrain(uint8_t pin, uint8_t val) {
   uint8_t timer = digitalPinToTimer(pin);
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  volatile uint8_t *out;
+  volatile uint8_t * out;
+  volatile uint8_t * ddr;
 
   if (port == NOT_A_PIN) return;
 
@@ -273,102 +194,22 @@ void openDrain(uint8_t pin, uint8_t val) {
   if (timer != NOT_ON_TIMER) turnOffPWM(timer);
 
   out = portOutputRegister(port);
+  ddr = portModeRegister(port);
   if (val == LOW) {
     uint8_t oldSREG = SREG;
     cli();
     *out &= ~mask;
+    *ddr |= mask;
     SREG = oldSREG;
   } else {
     uint8_t oldSREG = SREG;
     cli();
-    *out |= mask;
+    *out &= ~mask;
+    *ddr &= ~mask;
     SREG = oldSREG;
   }
 }
 
-#if defined(__AVR_ATtinyX41__)
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
-    // "Pullup enable? Never heard if it"
-    // writes the output register without touching the PUE register. Avail. on 841 and 441 only because that's the only place that the
-    check_constant_pin(pin);
-    if (pin > 127) {
-      pin = analogInputToDigitalPin((pin & 127));
-    }
-    if (!check_valid_digital_pin(pin)) {
-      // check_valid_digital_pin returns 0 if the pin is explicitly NOT_A_PIN, 1 if it is a pin, and errors with badArg if it's not a pin.
-      return;
-    }
-    uint8_t mask = digitalPinToBitMask(pin);
-    uint8_t port = digitalPinToPort(pin);
-    volatile uint8_t *out;
-    if (port == NOT_A_PIN) return;
-    out = portOutputRegister(port);
-    if (val == LOW) {                  // 2 instruction
-      *out &= ~mask;                   // 1/1 atomic
-    } else {                           //
-      *out |= mask;                    // 1/1
-    }
-  }
-#endif
-
-inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
-  check_constant_pin(pin);
-  if (pin > 127) {
-    pin = analogInputToDigitalPin((pin & 127));
-  }
-  if (!check_valid_digital_pin(pin)) {
-    // check_valid_digital_pin returns 0 if the pin is explicitly NOT_A_PIN, 1 if it is a pin, and errors with badArg if it's not a pin.
-    return;
-  }
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  volatile uint8_t *out;
-  if (port == NOT_A_PIN) return;
-  out = portOutputRegister(port);
-  #if defined(__AVR_ATtinyX41__)      //Uniquely bad
-    volatile uint8_t *pue, *mode;     //
-    pue = portPullupRegister(port);   //
-    mode = out+1;
-    if (val == LOW) {                 // 2 instructions
-
-      if (*mode & mask) {
-        *out &= ~mask;                // 1/1 atomic
-      } else {                        // 1/1 +1
-        uint8_t oldSREG = SREG;       // 1/1
-        cli();                        // 1/1
-        *pue &= ~mask;                // 3/5 in 5
-        SREG = oldSREG;               // 1/1
-      }
-    } else {                          // total subtotal 8/10 in 5/9
-      if (*mode & mask) {             // 1/1
-        *out &= ~mask;                // 1/1
-      } else {                        // 1/1 in 2
-        uint8_t oldSREG = SREG;       // 1/1
-        cli();                        // 1/1
-        *pue &= ~mask;                // 3/5 in 5
-        SREG = oldSREG;               // 1/1
-      }                               // 17 instruction, 21 word, and and execution time of 8-12 clocks?
-                                      // A whole new definition of fast (now it means "slow") - who wants to inline that!?
-    }
-  #elif defined(PUEA)
-    if (val == LOW) {
-      *pue &= ~mask;                  // 1/1
-      *out &= ~mask;                  // 1/1
-    } else {                          // 1/1
-      *pue &= ~mask;                  // 1/1
-      *out &= ~mask;                  // 1/1
-    }
-      // constant pin -> constant out register.
-      // constant val -> constant mask. Combined with above means we will get CBI/SBI (only one bit at a time will be set in the mask
-  }   // and we know which one
-  #else                               // total 13 and 13 and execution time of ~8 eitherway
-    if (val == LOW) {
-      *out &= ~mask;                  // 1/1
-    } else {                          // 1/1
-      *out &= ~mask;                  // 1/1
-    }   // and we know which one at compile time, so
-  #endif
-}
 
 
 
@@ -392,18 +233,4 @@ int8_t digitalRead(uint8_t pin)
 
   if (*portInputRegister(port) & mask) return HIGH;
   return LOW;
-}
-
-inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
-  check_constant_pin(pin);
-  if (pin > 127) {
-    pin = analogInputToDigitalPin((pin & 127));
-  }
-  check_valid_digital_pin(pin);
-
-  uint8_t mask = digitalPinToBitMask(pin);
-  uint8_t port = digitalPinToPort(pin);
-  //if (port == NOT_A_PORT) return NOT_A_PIN;  // This check is not needed, as we reject non-constant pins but constant pins that are never valid get rejected by check valid digital pin!
-
-  return !!(*portInputRegister(port) & mask);
 }
