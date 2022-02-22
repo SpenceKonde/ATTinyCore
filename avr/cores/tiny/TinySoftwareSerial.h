@@ -58,10 +58,6 @@
   #if !defined(ACSR) && defined(ACSRA)
     #define ACSR ACSRA
   #endif
-  #define USE_SBIC
-    // This option enables use of the sbic instruction instead of using Serial._rxmask in, and, breq .+2 sequence
-    // skip over the `sec` instruction. Looks like the code may date to when compatibility with AVR itself mattered
-    // (these parts are AVRe, atmega is AVRe+, and modern AVR is AVRxt)
   #ifndef SOFT_TX_ONLY
     #if (RAMEND < 250)
       #define SERIAL_BUFFER_SIZE 8
@@ -96,6 +92,7 @@
   extern "C"{
     void uartDelay() __attribute__ ((naked, used)); //used attribute needed to prevent LTO from throwing it out.
     #ifndef SOFT_TX_ONLY
+      // manually inlined because the compiler refused to do it.
       //uint8_t getch();
       //void store_char(unsigned char c, soft_ring_buffer *buffer);
     #endif
@@ -104,7 +101,6 @@
   {
     public: //should be private but needed by extern "C" {} functions.
     uint8_t _txmask;
-    uint8_t _txunmask;
     #if !defined(SOFT_TX_ONLY)
       soft_ring_buffer *_rx_buffer;
     #endif
@@ -113,10 +109,12 @@
       #if !defined(SOFT_TX_ONLY)
         TinySoftwareSerial(soft_ring_buffer *rx_buffer);
       #else
-        TinySoftwareSerial(uint8_t txbitmask);
+        TinySoftwareSerial();
       #endif
       void begin(long);
       void setTxBit(uint8_t);
+      bool stopListening();
+      bool listen();
       void end();          // Basic printHex() forms for 8, 16, and 32-bit values
       void                printHex(const     uint8_t              b);
       void                printHex(const    uint16_t  w, bool s = 0);

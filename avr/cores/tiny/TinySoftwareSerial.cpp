@@ -33,73 +33,68 @@
 extern "C"{
 
   #ifndef SOFT_TX_ONLY
-    /* Manually inlining because throws a warning that might not be able to inline this, and we really want to make sure this is always inlined,
-    because it's in an ISR, and calling C functions within an ISR is warned against in the datasheet, it's so inefficient and bloat-inducing.
-    __attribute__((always_inline)) uint8_t getch() {
-      uint8_t ch = 0x80;
-        __asm__ __volatile__ (
-        "clc"                      "\n\t"   // clear carry, we may then set it again. uartDelay DOES NOT CHANGE CARRY because they use DEC decrement the number...
-        "rcall uartDelay"          "\n\t"   // Get to 0.25 of start bit (our baud is too fast, so give room to correct). Spence: No, you get 0.25 bits further than you were when the start of the ISR finished.
-       "_rxstart:"                          //  That depends on baud rate / clock speed and the size of the interrupt vectors.... and halfway in is what you want.
-        "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
-        "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
-        "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
-        "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
-        "sbic %[pin], %[rxbit]"    "\n\t"   // 1 This is how it's done!
-        "sec"                      "\n\t"   // 2 Set the carry flag so we can shift it in
-        "ror %[rxch]"              "\n\t"   // 3 This clears the carry bit UNTIL it shifts out the bit from the 0x80, which indicates that we got the whole byte and are done.
-        "brcc _rxstart"            "\n\t"   // 5 clock total. Assuming carry is clear, we go back to the delay.
-        //"rcall uartDelay"        "\n\t"   // Wait 0.25 bit period
-        //"rcall uartDelay"        "\n\t"   // Wait 0.25 bit period These two lines were to ensure that this ended only once we were into the stop bit. Old code did NOT guarantee that due to clock error.
-        "sbis %[pin], %[rxbit]"    "\n\t"   // but SBIS provides us with an easy solution - checking the port input bit itself, with an rjmp back to the test after it
-        "rjmp .-4"                 "\n\t"   // it will only skip the rjmp if the pin is high, and thus the last 0 bit is over, and we've recorded the last bit, and it's into the stop bit and we can
-                                            // let app code run until the next byte starts.
-        :
-          [rxch]"=r" (ch)
-        : [pin] "I" (_SFR_IO_ADDR(SOFTSERIAL_PIN)),
-          [rxbit] "I" (SOFTSERIAL_RXBIT)
-        : "r0"
-        );
-      return ch;
-    }*/
-
     soft_ring_buffer rx_buffer = {{ 0 }, 0, 0};
     ISR(SOFTSERIAL_vect) {
+      register uint8_t DelayCount asm ("r21");
+      DelayCount = Serial._delayCount;
+      // 4 clocks to get to the interrupt vector, per "Interrupt Response Time" section of datasheet, plus 2 for the rjmp itself
+      // then there's the Prologue; push r0, push r1, in r0, sreg, push r0, push some register (ch) push r21 = 11 clocks total 17
       uint8_t ch;
       __asm__ __volatile__ (
         "ldi %[rxch], 0x80"        "\n\t"   // We want to start with 0b1000000 in the register that we're putting the received bits. We
-        "clc"                      "\n\t"   // clear carry, we may then set it again. uartDelay DOES NOT CHANGE CARRY because they use DEC decrement the number...
-        "rcall uartDelay"          "\n\t"   // Get to 0.25 of start bit (our baud is too fast, so give room to correct). Spence: No, you get 0.25 bits further than you were when the start of the ISR finished.
-    //  "_rxstart:" //label caused problems // That depends on baud rate / clock speed and the size of the interrupt vectors.... and halfway in is what you want.
+        "clc"                      "\n\t"   // clear carry, we may then set it again. uartDelay DOES NOT CHANGE CARRY because it uses use DEC decrement the number...
+        "rcall uartDelay"          "\n\t"   // delay for 1/4th of a bit period. this, combined with the prologue, 2 cycles to lds the delayCount into r21, and  2 clocks above (ldi, clc)
+    //                                      // we hope will bring us to about the middle of the start bit. 28 + 3*_delayCount should be approx (actual bit time) / 2
+    //  "_rxstart:" //label caused problems
         "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
         "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
         "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
         "rcall uartDelay"          "\n\t"   // Wait 0.25 bit period
-        "sbic %[pin], %[rxbit]"    "\n\t"   // 1 This is how it's done!
+        "sbic %[pin], %[rxbit]"    "\n\t"   // 1 Skip the SEC below if the bit is clear
         "sec"                      "\n\t"   // 2 Set the carry flag so we can shift it in
         "ror %[rxch]"              "\n\t"   // 3 This clears the carry bit UNTIL it shifts out the bit from the 0x80, which indicates that we got the whole byte and are done.
         "brcc .-16"                "\n\t"   // 5 clock total. Assuming carry is clear, we go back to the delay.
-        //"rcall uartDelay"        "\n\t"   // Wait 0.25 bit period
-        //"rcall uartDelay"        "\n\t"   // Wait 0.25 bit period These two lines were to ensure that this ended only once we were into the stop bit. Old code did NOT guarantee that due to clock error.
-        "sbis %[pin], %[rxbit]"    "\n\t"   // but SBIS provides us with an easy solution - checking the port input bit itself, with an rjmp back to the test after it
-        "rjmp .-4"                 "\n\t"   // it will only skip the rjmp if the pin is high, and thus the last 0 bit is over, and we've recorded the last bit, and it's into the stop bit and we can
-                                            // let app code run until the next byte starts.
+        //                                  // total (4 * (3 + 4 + 3 * _delayCount) + 5) * 8 + (17 + 4 + 3 + 4 + 3 * delayCount) -1 (brcc not branching last bit) clock cycles have gone by since the falling edge of the start bit.
+        //                                  // (4 * (3 + 4 + 3 * _delayCount) + 5) * 8 + (17 + 4 + 3 + 4 + 3 * delayCount) -1  =  23 + 160 + 224 + 33 * 3 * _delayCount  = 447 + 99 * _delayCount
+        //                                  // We sampled the final bit 4 clocks before that, at 443+99*_delayTime / (actual bit time in clocks) must be between 8 and 9 or we received garbage.
+        // "sbis %[pin], %[rxbit]"   "\n\t" // check the port input bit itself  and wait until it is a 1 (meaning no further transitions and we're on either a 1 as last bit or the stop bit)
+        // "rjmp .-4"                "\n\t" //
+        // Wait - do we need this? The interrupt happens on the rising edge of ACO (falling edge of RX. If we're in the last bit, it's either a 1 or a 0. If it's a 1, then there are no further transitions)
+        // and no reason wait before storing the character and exiting the interrupt. If it's a 0, the only edge is a rising edge on RX, which is a falling edge on ACO, which doesn't trigger the ISR.
+        // No, we don't! And the faster we gtfo of the interrupt the faster the maximum baud rate and the better overall app performance, not to mention saving 2 words of flash.
         : [rxch]"=r" (ch)
         : [pin] "I" (_SFR_IO_ADDR(SOFTSERIAL_PIN)),
-          [rxbit] "I" (SOFTSERIAL_RXBIT)
+          [rxbit] "I" (SOFTSERIAL_RXBIT),
+          [delaycount] "d" (DelayCount)
         : "r0"
       );
-      sbi(ACSR, ACI); //clear the flag.
-      uint8_t i = (uint8_t)(rx_buffer.head + 1) & (SERIAL_BUFFER_SIZE-1);
+      /* clear the flag once we have finished receiving the byte. Per datasheet:
+          "the Program Counter is vectored to the actual Interrupt Vector in order to execute the interrupt handling routine, and hardware clears the corresponding Interrupt Flag."
+        This implies that the automatic clearing happens **at the start** of the interrupt. But the interrupt condition (rising edge of ACO) will occur again, likely several times
+        over the course of receiving a byte, so we had damned well better clear this bit manually!
+      */
+      #if !defined(__AVR_ATtinyx8__)
+        ACSR |= (1 << ACI); // SBI - except on x8 where this isn't in low I/O
+      #else
+        ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE); // ldi, out
+      #endif
+      uint8_t i = (uint8_t)(rx_buffer.head + 1) & (SERIAL_BUFFER_SIZE-1); //lds, andi
 
       // if we should be storing the received character into the location
       // just before the tail (meaning that the head would advance to the
       // current location of the tail), we're about to overflow the buffer
       // and so we don't write the character or advance the head.
-      if (i != rx_buffer.tail) {
-        rx_buffer.buffer[rx_buffer.head] = ch;
-        rx_buffer.head = i;
+      if (i != rx_buffer.tail) { // lds, cp, breq
+        rx_buffer.buffer[rx_buffer.head] = ch; // ldi, ldi, add, adc, st
+        rx_buffer.head = i; // sts
       }
+      // total 2 + (2+1) + (2 + 1 + 1) + (1 + 1 + 1 + 1 + 2) = 2 + 3 + 4 + 6 = 15 clocks from sampling last bit
+      // epilogue = prologue only with pop's instead of pushes, same time as prologue on classic AVRs = 11 clocks
+      // reti 4 clocks
+      // total 15 + 11 + 4 = 30 clocks from end of asm to end of ISR. which is 447 + 99 * _delayCount clocks from it's start
+      // 477 + 99 * _delayCount total.
+      // the falling edge of the next byte's start bit must not occur during this time, or we will get garbage for the next byte
+      // (actual byte duration in clocks) < 477 * 99 * delayCount, or (actual bit time in clocks ) < 34 (30 + the 4 clocks from sample time to end of ISR) worst case assuming we're barely catching end of last bit.
     }
 
   #endif
@@ -107,18 +102,18 @@ extern "C"{
 
   void uartDelay() {
     __asm__ __volatile__ (
-      "mov  r0, %[count]"     "\n\t"
-      "dec  r0"               "\n\t"
-      "brne .-4"              "\n\t"
-      "ret"                   "\n\t"
-      ::[count] "r" ((uint8_t)Serial._delayCount)
+    "uartDelay:"              "\n\t" // We rely on this being set up by the tx and rx routines, that way it doesn't have to ldi anything
+      "mov  r0, r21"          "\n\t" // because I don't think it would be set up correctly if we tried to pass it in a constraint from here.
+      "dec  r0"               "\n\t" // prev. line set up __temp_reg__ with _delayCount. decrement it
+      "brne .-4"              "\n\t" // and loop if it's not 0. Total loop time including mov is 3 * _delayCount, the mov offset by the shorter brne not taken at end
+      "ret"                   "\n\t" // 4 clocks for the return, and it took 3 to rcall - total 7 + 3*_delayCount.
+      ::
     );
   }
 }
 #if defined(SOFT_TX_ONLY)
-TinySoftwareSerial::TinySoftwareSerial(uint8_t txbitmask) {
-
-  _txmask   = txbitmask;
+TinySoftwareSerial::TinySoftwareSerial() {
+  _txmask   = _BV(SOFTSERIAL_TXBIT);
   _txunmask = ~_txmask;
 
   _delayCount = 0;
@@ -128,7 +123,6 @@ TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
   _rx_buffer = rx_buffer;
 
   _txmask   = _BV(SOFTSERIAL_TXBIT);
-  _txunmask = ~_txmask;
 
   _delayCount = 0;
 }
@@ -136,7 +130,6 @@ TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
 
 void TinySoftwareSerial::setTxBit(uint8_t txbit) {
   _txmask   = _BV(txbit);
-  _txunmask =    ~_txmask;
 }
 
 void TinySoftwareSerial::begin(long baud) {
@@ -145,18 +138,20 @@ void TinySoftwareSerial::begin(long baud) {
     return; //Cannot start - baud rate out of range.
   }
   _delayCount = (uint8_t)tempDelay;
-  _begun = 1;
   #ifndef SOFT_TX_ONLY
     //Straight assignment, we need to configure all bits
+    // ACBR connects the 1.1v bandgap reference the positive side of the analog comparator. ACO is high when AINp > AINn.
+    // since AINn is our RX line, not AINp, ACO goes high when the RX line falls below 1.1v (ie, ACO is inverted relative to
+    // the RX input). Hence we want ACIS = 11 to interrupt on the rising edge of ACO so we get the falling edge of RX.
     ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
     // These should compile to cbi and sbi - everything is compile time known.
     SOFTSERIAL_DDR    &=  ~(1 << SOFTSERIAL_RXBIT);  // set RX to an input
     SOFTSERIAL_PORT   |=   (1 << SOFTSERIAL_RXBIT);  // enable pullup on RX pin - to prevent accidental interrupt triggers.
-    #if !defined(__ATtinyx8__) // on most classic tinyies ACSR is in the low IO space, so we can use sbi, cbi instructions.
+    #if !defined(__AVR_ATtinyx8__) // on most classic tinyies ACSR is in the low IO space, so we can use sbi, cbi instructions.
       ACSR            |=   (1 <<  ACI);              // clear the flag - above configuration may cause it to be set.
       ACSR            |=   (1 << ACIE);              // turn on the comparator interrupt
     #else
-      ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE); // do this all with an LDI/OUT on the x8 series.
+      ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE); // do this with an LDI and OUT on the x8 series.
     #endif
     #ifdef ACSRB
       /* This is only the case on an ATtiny x61, out of the parts that support this builtin Software serial. The 1634 and 828 have it
@@ -181,21 +176,19 @@ void TinySoftwareSerial::begin(long baud) {
 
 void TinySoftwareSerial::end() {
   #ifndef SOFT_TX_ONLY
-    ACSR = (1 << ACD) | (1 << ACI); // turn off the analog comparator, clearing the flag while we're at it. We also in the process clear all the other settings.
-    _delayCount = 0;
+    ACSR = (1 << ACD) | (1 << ACI); // turn off the analog comparator, clearing the flag while we're at it.
     _rx_buffer->head = _rx_buffer->tail;
   #endif
-  _begun=0;
+  _delayCount = 0;
 }
 
 int TinySoftwareSerial::available(void) {
   #ifndef SOFT_TX_ONLY
-    if (!_begun) {
+    if (_delayCount) {
       return (uint8_t)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) & (SERIAL_BUFFER_SIZE-1);
     }
-  #else
-    return 0;
   #endif
+  return 0;
 }
 
 
@@ -225,42 +218,74 @@ int TinySoftwareSerial::read(void) {
     return -1;
   #endif
 }
+bool TinySoftwareSerial::listen() {
+  if (!_delayCount) {
+    return false;
+  }
+  if (ACSR & (1 << ACD)) {
+    _rx_buffer->head = 0;
+    _rx_buffer->tail = 0;
+    ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI); // must not have ACIE set while changing ACD
+    #if defined(__AVR_ATtiny_x8__) // not in the low I/O space so use LDI, OUT
+      ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE);
+    #else // we can use sbi. on 88/48 this would result in a 3 instruction IN, ORI, OUT sequence.
+      ACSR |= 1 << ACIE;
+    #endif
+    }
+  return true;
+}
+
+// Stop listening. Returns true if we were actually listening.
+bool TinySoftwareSerial::stopListening() {
+  if (ACSR & (1 << ACD)) {
+    ACSR = (1 << ACD) | (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
+    return true;
+  }
+  return false;
+}
 
 size_t TinySoftwareSerial::write(uint8_t ch) {
-  if (!_begun) {
+  register uint8_t DelayCount asm ("r21");
+  DelayCount = Serial._delayCount;
+  if (!_delayCount) {
     return 0;
   }
-  uint8_t oldSREG = SREG;
-  cli(); //Prevent interrupts from breaking the transmission. Note: TinySoftwareSerial is half duplex.
-  //it can either receive or send, not both (because receiving requires an interrupt and would stall transmission
-  uint8_t zerobit = SOFTSERIAL_PORT & ~_txmask;
-  uint8_t onebit = SOFTSERIAL_PORT | _txmask;
   __asm__ __volatile__ (
-    "com %[ch]"                   "\n\t" // ones complement, carry set
-    "sec"                         "\n\t"
-  //"_txstart:"                          // labels cause problems with some optimization options.
-    "brcc .+4"  /* _txpart2 */    "\n\t" //  1  no branch first bit
-    "out %[uartPort], %[zerobit]" "\n\t" //  2 output a zero bit
-    "rjmp .+4"                    "\n\t" //  4 jump to the delay part.
-  //"_txpart2:"                          //  2 used with brcc with branch
-    "out %[uartPort], %[onebit]"  "\n\t" //  3 output a 1 bit
-    "nop"                         "\n\t" //  4 so the two paths have equal running time.
-    "rcall uartDelay"             "\n\t" // then we do the 4 quarter-bit delays
-    "rcall uartDelay"             "\n\t"
-    "rcall uartDelay"             "\n\t"
-    "rcall uartDelay"             "\n\t" //  rightshift the bit and decrement the count
-    "lsr %[ch]"                   "\n\t" //  1
-    "dec %[count]"                "\n\t" //  1
-    "brne .-24"  /* to _txstart */"\n\t" //  2 total 4.
-    "ldi %[count],10"             "\n\t" //  probably not needed, but we *did* change it's value when we said we wouldn't so we should not leave it that way right?
-    : [ch] "+r" (ch)              // this is a read-write variable - as the sending process is destructive.
+    "in r1, 0x3F"                 "\n\t" // we don't use the known zero in this routine, so we stash the SREG there.
+    //                                   // We can't use r0 for this, because uartDelay uses r0 as it's delay counter.
+    "cli"                         "\n\t" // disable interrupts if they're not disabled already.
+    "ldi r20, 10"                 "\n\t" //
+    "in r19, %[uartPort]"         "\n\t" // load the curret value of the TX PORT register.
+    "or r19, %[txmask]"           "\n\t" // there's our pattern for a 1. one hopes that this line is unnecessary since serial is IDLE HIGH.
+    "mov r18,r19"                 "\n\t" // copy it to the zero bit...
+    "eor r18, %[txmask]"          "\n\t" // xor with the txmask, which has all but 1 bit set, a bit which we know is set in the destination register. 4 instructions to prepare the 0 and 1 bit patterns.
+    "com %[ch]"                   "\n\t" // Invert the bits because we will be shifting in 0's, and the stop bit has to be a 1, so a 0 in carry must output a "1" bit pattern.
+    "sec"                         "\n\t" // clear the carry bit - the start bit is a 0 bit, so that's what we want to generate
+  //"_txstart:"                          // labels cause problems with some optimization options which try to inline this.
+  //                                     // running total of clocks so far this bit after executing this line is in left column.
+    "brcc .+4"  /* _txpart2 */    "\n\t" //  1      if we have a 0 in carry bit, we want to output the 1 pattern stored in r19 so skip 2 insn's
+    "out %[uartPort], r18"        "\n\t" //  2      output a zero bit (clock tally is for the case when branch is not taken)
+    "rjmp .+4"                    "\n\t" //  4      jump over the two instructions for outputting a 1 bringing us to the delay part.
+  //"_txpart2:"                          //  2      used with brcs with branch (we're startin from clock tally of 2 because we took the branch)
+    "out %[uartPort], r19"        "\n\t" //  3      output a 1 bit
+    "nop"                         "\n\t" //  4      pad the 1-bit case with a nop so that the two paths have equal running time.
+    "rcall uartDelay"             "\n\t" // then we do the 4 quarter-bit delays. rcall is okay here, because we don't support any 16k parts. The 167 and 1634 have HW serial.
+    "rcall uartDelay"             "\n\t" // rcall = 3 clocks, and the return = 4. The body of uartDelay takes 1 clock for the mov
+    "rcall uartDelay"             "\n\t" // plus 3 * _delayCount, minus 1 on the last loop since branch not taken, or 3x _delayCount
+    "rcall uartDelay"             "\n\t" // that done, we'll rightshift the bit and decrement the count
+    "lsr %[ch]"                   "\n\t" //  1 - shift the output character right one place, shifting in a 0 on the left. Shifted bit is in carry
+    "dec r20"                     "\n\t" //  1 - decrement count
+    "brne .-24"  /* to _txstart */"\n\t" //  2 total 4; Loop runtime per bit is hence 4 + 4 + 28 + 12*delaycount
+    "out 0x3F, r1"                "\n\t" // restore SREG turning interrupts back on if they were on before
+    "eor r1, r1"                  "\n\t" // and clear r1 since compiler expects it to always contain 0.
+    : [ch] "+r" (ch) // this is a read-write variable - as the sending process is destructive.
     : [uartPort] "I" (_SFR_IO_ADDR(SOFTSERIAL_PORT)),
-      [count] "d" ((uint8_t)10),
-      [zerobit] "r" (zerobit),
-      [onebit] "r" (onebit)
-    : "r0"
+      [txmask] "r" ((uint8_t) _txmask),
+      [delaycount] "d" (DelayCount) // we never read this, but we need to make sure it's in r21 because delayCount expects it there.
+    : "r18","r19","r20"
+    /* zero bit pattern, one bit pattern, count - all are call-clobbered, and we don't touch r24, which will contain ch when we start,
+    and get replaced with 1 after this block to return 1, thus these clobbers should result in no additional code. */
   );
-  SREG = oldSREG;
   /*  Time per bit is 8 + 4 (3 (rcall) + 4)) + 4 * uartDelay
    *  or 36 + 4*uartdelay. uartdelay = is lds, mov (3) + (dec brne) * loopcount.
    *  so we have 48 + 12*loopcount clocks per bit.
@@ -328,11 +353,11 @@ void TinySoftwareSerial::flush() {
 }
 
 TinySoftwareSerial::operator bool() {
-  return !!_begun;
+  return !!_delayCount;
 }
 
 #if defined(SOFT_TX_ONLY)
-  TinySoftwareSerial Serial(_BV(SOFTSERIAL_TXBIT));
+  TinySoftwareSerial Serial();
 #else
   TinySoftwareSerial Serial(&rx_buffer);
 #endif
