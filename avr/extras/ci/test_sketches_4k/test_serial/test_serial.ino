@@ -8,7 +8,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (Serial.available()) { 
-    EEDR=Serial.read();
+  if (Serial.available()) {
+    Serial.write(Serial.read());
   }
 }
