@@ -1,8 +1,23 @@
-Changes to pinout images for ATTinyCore 2.0.0
-* New ATTiny1634 pinout
-* ATTiny1634 - VUSB pins: PC4 D+, PC5 D-
-* ATTiny861 - VUSB pins: PB6 D+, PB4 D- (by not putting it on PD5, the third PWM pin is no longer encumbered by the USB stuff)
-* ATtiny861 - Builtin SoftSerial defaults to RX on AIN1 (PA7) but can use AIN0 (PA6) or AIN2 (PA5) based on tools menu selection.
+Pinout Diagram Changes:
 
-* ATTiny841,84 - VUSB pins: PB0, PB1. I may have to make both combinations an option because every conceivable arrangement of these has been used, including D+ on PB2 (though I think I know why this was done, it was a t84-not-a and the oscillator wasn't stable enough so they had to pipe in external CLOCK - I don't know why you'd do D+ on B0 D- on B1. Which is the most common one!)
-* ATTiny828 - PA4 SDA (master-only mode), PA5 SDA (master-only mode). The 828 uses the same pins for SPI and hardware TWI slave, AND one of those pins has a nasty errata. But if only using master mode, its a software master that can use any pins, so we use these more sensible ones.
+* All parts without a hardware serial port:
+  * Add note that indicates that the TX pin may be set with Serial.setTXPin() to pins on the same port.
+* Add diagram for the ATtiny26 (mostly the same as a x61, but with less features. Only the new pin mapping is supported there. It has no third PWM pin)
+* x61:
+  * Alternate serial port locations: RX PA5, PA6. TX PA6, PA7.
+  * Possibly distinguish the non-standard PCINts (PCINT 8-11 are controlled by PCIE1, but PCINT12-16 are back to PCIE0 (wtf), or add note to that effect).
+  * Add note that between all PCINTs, there's only one interrupt vector (double wtf)).
+  * Possibly the above two can simply be combined into a note indicating that PCINT behavior is slightly different on these parts and to refer to the part specific documentation.
+  * Add alternate pin locations for DI, DO, SCK (non-ISP programming only) and hence SCL and SDA: they can now be moved from PB0-PB2 to PA0-PA2.
+* x5, x4, x41, x61, x7, x8, 1634:
+  * Add USB pins. Where there are multiple pin mappings, only one associated with vUSB boards (x8, x7, 1634), these should should be de-emphacized if they are shown at all
+  * Add alternate USB pins for x41 and x4 - boards have been made with PB0 = D-, PB1 = D+, the opposite, and with PB0 = D- and PB2 = D+. All boards of which I am aware put the LED on the unused PORTB pin.
+* All parts: Add LED pin (note: this pin is often different for different pin mappings)
+* x4, x5, x41, 26, x61, x7:
+  * Indicate pins that can be used for differential ADC measurements.
+  * A +/- symbol might be a good marker, with a footnote indicating that users should refer to the part-specific documentation more information.
+* 1634: Add new pin mapping as the recommended pin mapping (clockwise) The CCW pin mapping is strictly worse and only for compatibility.
+* x7: Add pin mapping diagram for the new QFN-24 package (the old QFN32 is not going to be used by anyone now that there's a QFN24 version - it uses more board space and is harder to solder).
+* x41: Mark PA5, PA7 as having High Sink Capability. Add alternate pin for UART0 (RX PB2, TX, PA7), SPI (SS: PA2 MOSI: PA1 MISO: PA0, SCK PA3). The default pins must be marked as being used for programming.
+* 828: Mark PORTC as having High Sink Capability.
+*

@@ -193,7 +193,7 @@ External crystal (all except 828, 43 and x8-family):
 * 7.3728 MHz* !
 * 6 MHz !
 * 4 MHz
-* 3.6864 MHz* ! (parts with hardware serial port only)
+* 3.6864 MHz* !
 
 External Clock:
 * 20 MHz !
@@ -205,12 +205,12 @@ External Clock:
 * 9.216 MHz* !
 * 8 MHz
 * 7.3728 MHz* !
-* 3.6864 MHz* ! (parts with hardware serial port only)
+* 3.6864 MHz* !
 
 
 All available clock options for the selected processor will be shown in the Tools -> Clock menu.
 
-`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies, the usual caveats about software serial and baud rate accuracy on classic (pre-2016) AVR designs notwithstanding.
+`*` These weird crystals are "UART frequencies" - these divide evenly to common baud rates, so you can get a perfect match if this is required for your application - typical UART use cases do not require running at one of these UART frequencies, the usual caveats about software serial and baud rate accuracy on classic (pre-2016) AVR designs notwithstanding. These to not hold particular benefit for either the 87/167, nor parts without hardware serial ports. They are not recommended on parts without applicable hardware serial ports, as the odd clock speed imposes additional overhead.
 
 `**` These options are slow enough that many ISP programmers may not be able to program them. Depending on the ISP programmer (and in some cases the firmware on it), there may be a setting or jumper to slow the SCK frequency down for programming these parts, or it may automatically figure it out. The SCK frequency must be less than 1/6th of the system clock for ISP programming. Before using a such a low clock speed, consider whether you might be able to get lower power consumption by running at a higher base clock while staying in sleep most of the time - this results in fewer programming headaches, and in many (but not all) use cases results in comparable or lower power consumption.
 
@@ -242,28 +242,19 @@ The clock speed is made available via the F_CPU #define - you can test this usin
 
 In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values (as of 1.4.0, it is expanded to cover a few weird clocking situations: the low 4 bits identify the source, and high 4 bits identify special things regarding it:
 
-> 0 - Internal 8MHz oscillator, not prescaled, or prescaled to 1 MHz (ie, fully set by fuses)
-
-> 1 - External Crystal
-
-> 2 - External Clock
-
-> 3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
-
-> 4 - Internal ULP oscillator (available only on the x41, 1634, and 828)
-
-> 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0x10, not 5.)
-
-> 6 - Internal PLL (x5 and x61 only)
-
-> 16 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
-
-> 17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
-
-> 18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
-
-
-
+```text
+0 - Internal 8MHz oscillator, not prescaled, or prescaled to 1 MHz (ie, fully set by fuses)
+1 - External Crystal
+2 - External Clock
+3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
+4 - Internal ULP oscillator (available only on the x41, 1634, and 828)
+5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0x10, not 5.)
+6 - Internal PLL (x5 and x61 only)
+16 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
+17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
+18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
+22 or 0x16 (ie, 0x10 | 6) - Internal PLL prescaled to get a lower frequency (for Digispark et. al.)
+```
 ### Assembler Listing generation
 
 In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. In 2.0.0 and later it gemnerates a memory map. Tools submenu options which impact the compiled binary will be encoded in the name that the files are given.
@@ -305,10 +296,10 @@ Where real hardware SPI is available, SPI.h will behave identically to that on a
 
 On USI parts, there are a few minor concerns, though most things will work without issue, and it should all be handled transparently via the SPI library.
 * **USI does not have MISO/MOSI, it has DI/DO**
-  * when operating in master mode, DI is MISO, and DO is MOSI.
-  * When operating in slave mode, DI is MOSI and DO is MISO. Note that like all other versions of SPI.h, slave mode is not supported. You must use a different library for that.
-  * The #defines for MISO and MOSI assume master mode. PIN_USI_DI, PIN_USI_DO, and PIN_USI_SCK are defined and can be used for operation  in slave mode.
-* The clock dividers are implemented in software (this is one of the things that USI lacks). Clock dividers of 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness.
+  * when operating in master mode, **DI is MISO, and DO is MOSI**.
+  * When operating in slave mode, **DI is MOSI and DO is MISO**. Note that like all other versions of SPI.h, slave mode is not supported. You must use a different library for that.
+  * The #defines for MISO and MOSI assume master mode, slave mode being unsupported). PIN_USI_DI, PIN_USI_DO, and PIN_USI_SCK are defined and can be used for operation in slave mode with some other library. Be careful to distinguish the MISO/MOSI/SCK pins marked as "Programming Pins" from the pins used for SPI from within the sketch - when programming a part via ISP, it is, after all, acting as a slave.
+* The clock dividers are implemented in software (a clock generator is one of the many things that USI lacks). Clock dividers of 2, 4, 8 and >=14 are implemented as separate routines; **call `SPISettings` or `setClockDivider` with a constant value to use less program space**, otherwise, all routines will be included along with 32-bit math. Clock dividers larger than 14 are only approximate because the routine is optimized for size, not exactness.
 * Interrupts are not disabled during data transfer. That means that an interrupt could fire in the middle of a byte, and one of the bits in that byte would be very long. This is usually fine. If it isn't, because you're working with devices that require consistent clocking, wrap calls to `transfer` in `ATOMIC_BLOCK` or disable interrupts in the normal ways.
 * Be aware that USI-based I2C is not available when USI-based SPI is in use (this should be obvious, as they used the same pins).
 
@@ -332,9 +323,9 @@ Regardless of the implementation, simultaneously acting as both a master and a s
 On all parts with more than 128b of SRAM, the buffer size in 32 bytes. On smaller parts, it is 16 bytes, but I'm not sure you could make those work with the Wire library anyway due to flash size constraints so this may not be relevant. All official cores use 32b buffers, and it is for this reason that a 32b buffer is used even on parts where the pair of buffers leads to using a painfully large fraction of the RAM  - libraries implicitly depend on the buffer being at least 32b, often without the author even being aware of that fact.
 
 #### Serial Support
-To most of us, the Serial interface is the most important of the big three serial protocols. All parts, whether or not they have hardware serial, will have an object named serial that provides serial interface functionality. Where there is hardware serial, the Serial object is a normal fully featured, full duplex serial port that works just like any other AVR. The lucky chips that have two serial ports will also have Serial1 defined.
+To most of us, the Serial interface is the most important of the big three serial protocols. All parts, whether or not they have hardware serial, will have an object named `Serial` that provides serial interface functionality. Where there is hardware serial, the Serial object is a normal fully featured, full duplex serial port that works just like any other AVR. The lucky chips that have two serial ports will also have Serial1 defined.
 
-Unfortunately, that's only 8 of the 21 parts supported by this core. The rest must use some form of software serial. While this core is fully compatible with the usual SoftwareSerial library, it comes with the usual disadvantages, most notably the fact that it grabs all the PCINT vectors for itself. To address that on the parts not blessed with hardware serial, we include a software serial implementation with a fixed RX pin, and a TX pin with a limited number of options - but which leaves the PCINT vectors available. It uises the analog comparator interrupt, and requires that the RX pin be the AIN1 pin. TX defaults to the AIN0 pin.
+Unfortunately, that's only 8 of the 21 parts supported by this core. The rest must use some form of software serial. While this core is fully compatible with the usual SoftwareSerial library, it comes with the usual disadvantages, most notably the fact that it grabs all the PCINT vectors for itself. To address that on the parts not blessed with hardware serial, we include a software serial implementation with a fixed (on the x61, there are three options, selected from a tools menu.) RX pin, and a TX pin with a limited number of options - but which leaves the PCINT vectors available. It uises the analog comparator interrupt, and requires that the RX pin be the AIN1 pin. TX defaults to the AIN0 pin.
 
 Regardless of how you achieve the software serial, however, you can still only transmit or receive on a single software serial instance at a time (SoftwareSerial or the builtin tinySoftSerial). Transmit is always blocking - a call that writes via software serial will not return until the data is sent unlike hardware serial which puts it into a buffer to send in the background.
 
@@ -400,6 +391,11 @@ The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds
 ### Additional configuration options
 These are available from tools submenus
 
+#### Pin Remapping (x61, 441, 841 only, new in 2.0.0)
+The x61-series can use either PORTA or PORTB pins for the USI. This must be chosen at compiletime - implementing swap() like the megaAVR parts have would impose excess overhead.
+
+The x41-series has two options for USART0 and two options for SPI. They are chosen independently, and the tools menu hence contains four options. (it's better than two menus, right?)
+
 #### Retain EEPROM
 All non-bootloader board definitions have a menu option to control whether the contents of the EEPROM are erased when programming. This only applies to ISP programming, and you must "burn bootloader" to set the fuses to apply this. Because it only applies to ISP programming, it is not available for Bootloader board definitions. on Optiboot definitions, EESAVE is never enabled, but since only ISP programming will normally erase the EEPROM, the only time you'd be running into this is if you were "rebootloading" it - which should always return it to a known state - or were writing over the bootloader with a sketch (which you probably shouldn't be doing anyway). Meanwhile if that option was present, it would cause a great deal of confusion since it would apply only to an uploading use case that you shouldn't be doing, and to rebootloading, not to normal uploads.
 
@@ -421,7 +417,10 @@ The Tools -> millis()/micros() allows you to enable or disable the millis() and 
 ## Memory Lock Bits, disabling Reset
 ATTinyCore will never set lock bits, nor will it set fuses to disable ISP programming (it is intentionally not made available as an option, since after doing that an HV programmer is needed to further reprogram the chip, and inexperienced users would be at risk of bricking their chips this way). The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> manually set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the fuse/lock bits.
 
-Disabling of reset is only an option for boards definitions with a bootloader which uses a sound flash-erase implementation (Optiboot presently does not, while the VUSB bootloaders which disable reset are in widespread use, seemingly without issue) and for the 8 and 14-pin parts It will never be an option for non-bootloader board definitions for other parts. We recommend against it in all cases. The 8 and 14 pin parts can be unbricked with a comparatively simple HVSP programmer (only 4-7 pins - 4 pins + reset for 8-pin, plus 3 more tied low on 14-pin)/ Everything with more pins needs an HVPP programmer, involving a wire connected to every pin or almost every pin on the chip. The sheer number of connections makes it unlikely that it could ever be unbricked in-system if the "system" is much more than a breakout board. HVPP is extremely exotic within the hobby community, such that I've never heard anyone talk about unbricking with HVPP.
+Disabling of reset is only an option for boards definitions with a bootloader which uses a sound flash-erase implementation (Optiboot presently does not, while the VUSB bootloaders which disable reset are in widespread use, seemingly without issue). We recommend against it in all cases. The 8 and 14 pin parts can be unbricked with a comparatively simple HVSP programmer (only 4-7 pins - 4 pins + reset for 8-pin, plus 3 more tied low on 14-pin). Everything with more pins needs an HVPP programmer, involving a wire connected to every pin or almost every pin on the chip. The sheer number of connections makes it unlikely that it could ever be unbricked in-system if the "system" is much more than a breakout board. HVPP is extremely exotic within the hobby community, such that I've never heard anyone talk about unbricking with HVPP.
+
+**USE EXTREME CAUTION WHEN USING THE USB UPDATE FOR MICRONUCLEUS** as you can update to a version of the bootloader that will not support your board.
+
 
 ## Pin Mappings
 

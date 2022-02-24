@@ -1,7 +1,7 @@
 # TinySoftSerial ("Serial" on parts with no hardware serial port)
 Many of the classic tinyAVR parts lack a hardware serial port. This is obviously inconvenient when the majority of us do our debugging entirely over serial (a small number - not including myself - are more sophisticated and know how to do hardware debugging).
 
-Working with the tinyAVR parts without any sort of serial port is quite challenging, and beyond that, a UART is often the only mechanism available for communication with some types of peripherals. There is of course the SoftwareSerial library, but that takes over every single
+Working with the tinyAVR parts without any sort of serial port is quite challenging, and beyond that, a UART is often the only mechanism available for communication with some types of peripherals. There is of course the SoftwareSerial library, but that takes over every single PCINT (to use PCINTs it must take over one port worth, but it permits software serial on ANY pin, so must take over PCINTs on EVERY pin).
 
 ##
 

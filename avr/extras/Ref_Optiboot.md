@@ -82,13 +82,13 @@ In the even more unlikely event that your sketch uses GPIOR0, be sure to set it 
 ## Number of included binaries
 Each clock speed requires it's own bootloader binary, and has two entry conditions, and in addition to each of the parts requiring their own bootloader binaries, there are several parts that get more than one: The 1634 can use either USART0 or USART1, the 441/841 can use either USART0, USART1, or USART0 in it's alternate pin mapping, and the 461 and 861 have 3 options for the software serial to match the tinySoftSerial configuration options. The number of bootloaders required borders on the absurd: ATTinyCore 2.0.0 includes no less than 586 hex files (though in the past it was already close to 200). Makefile.tiny should not be hand-edited - it is automatically generated along with makeall.tiny.bat when create_boards_txt.py is run.
 
-### Building Optiboot - with apologies to linux and sane developers
+### Building Optiboot - with apologies to Linux and sane developers
 I like programming embedded systems. I do not like setting up build environments. My build environment is created as follows:
 1. Unzip the 1.0.6 version of the Arduino IDE (zip package) in a location outside of program files.
-2. Delete all contents except for the hardware and tools folders. Delete contents of tools folder except for the avr folder.
+2. Delete all contents except for the `hardware` and `tools` folders. Within the the hardware folder, delete everything except `Arduino` and `tools`. In `hardware/tools`, delele everything except `avr`. In `hardware/Arduino`, delete everthing except `bootloaders` (this greatly shrinks the package size allowing the build environment to be copied between machines quickly)
 3. Download [the Arduino toolchain for Windows platforms, v5.4.0 arduino2](http://downloads.arduino.cc/tools/avr-gcc-5.4.0-atmel3.6.1-arduino2-i686-w64-mingw32.zip) (I suspect a more recent toolchain would work, but I see little possible upside to that, and it could cause unforseen problems - zero gain non-zero risk = bad deal)
-4. Extract it, there will be a folder called 'avr' - copy it into tools, and you should be prompted to replace several thousand files. Do so.
+4. Extract it, there will be a folder called 'avr' - copy it into tools, and you should be prompted to replace several thousand files. Do so. There are several nested folders named AVR, and you will still match some file names if you copy these 1 layer too deep or too shallow. Start over if you do - trying to fix the resulting mess is hopeless.
 5. Copy (repository root)/avr/bootloaders/optiboot/source to a location under (1.0.6 arduino skeleton)/hardware/arduino/bootloaders.
 6. If create_boards_txt was modified, be sure to run it and copy the new Makefile.tiny and makeall.tiny.bat from (repository root)/avr/extras/development (copying boards.txt to (repository root)/avr is required as well - this is to permit manual inspection.)
 
-If it wasn't clear from the above, I am unlikely to be able to answer questions about building on other platforms, or setting up a build environment that differs in any way.
+If it wasn't clear from the above, I am unlikely to be able to answer questions about building on other platforms, or setting up a build environment that differs in any way. That is pretty much the extent of my knowledge of setting up the build environment.
