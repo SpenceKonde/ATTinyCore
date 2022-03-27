@@ -62,6 +62,12 @@ If you want to use Micronucleus (VUSB) boards on Windows, you must manually inst
 
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
+**Timing or baud rates are wrong** 
+Typically 8x slower than expected - see below entry. 
+
+**When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
+The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured, and so writing the .
+
 **This core includes part specific documentation - click the links above for your family of chips and READ IT**
 The classic tinyAVR parts are a motley bunch - some of them are very mundane, with little to distinguish them other than the fact that they just work like you'd expect, while others are just bizarre. The part specific documentation covers most of the relevant topics that apply specifically to a given family of parts.
 
@@ -71,9 +77,6 @@ The classic tinyAVR parts are a motley bunch - some of them are very mundane, wi
 That version has been out for over a year and a half. While we do not intentionally break things on older IDE versions, we also do not test on older versions.
 
 **Windows store version sometimes experiences strange issues**. The windows store issues are difficult to reproduce on other systems, and no reliable solutions to them are currently known. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version.
-
-**When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
-The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured.
 
 **Problems programming some parts for first time, especially ATtiny841/441** These parts are less forgiving of the SCK clock rate being on the high edge of the spec.  Arduino as ISP or USBTinyISP SLOW will program without issue.
 
