@@ -68,10 +68,10 @@ Typically 8x slower than expected - see below entry.
 #### When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader
 The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured, and so writing the .
 
-#### Micronucleus/VUSB is not supported for USB functionality within the sketch
-It has been persuasively argued to me that it is not possible to get these parts to meet USB timing contstraints in an interrupt driven context without compromising on everything else. On the classical digispark, their core bent over backwards and got only mediocre results. The libraries floating around are stale, having rarely received updates, often dating back to the days of avr-gcc 4.8.x, and only ever worked on the digispark core - and even there they didn't work particularly well. USB timing constraints are very constraining. If anyone cared to put in the considerable amount of effort it would involve to port micronucleus and package the VUSB libraries, the pieces to make this work are actually present on the tinyAVR 0/1/2-series (the key features being the lvl 1 priority interrupt option, and the improved performance of push to enter the interrupt faster). But I don't know that anyone is showing much interest in taking that on. 
+#### VUSB is not supported for USB functionality within the sketch
+It has been persuasively argued to me that it is not possible to get these parts to meet USB timing contstraints in an interrupt driven context without compromising on everything else. On the classical digispark, their core bent over backwards and got only mediocre results. The libraries floating around are stale, having rarely received updates, often dating back to the days of avr-gcc 4.8.x, and only ever worked on the digispark core - and even there they didn't work particularly well. USB timing constraints are very constraining. If anyone cared to put in the considerable amount of effort it would involve to port micronucleus and package the VUSB libraries, the pieces to make this viable *are actually present on the tinyAVR 0/1/2-series* (the key feature being the lvl 1 priority interrupt option though the improvements to instruction set timing don't hurt). But I don't know that anyone is showing much interest in taking that on. 
 
-To make matters worse, much of the functionality you want on Windows (namely, low speed CDC for a serial port) requires drivers that don't exist in a fully working form. Unfortunately, making them work alone is not enough because you need to bend over backwards to install them if they haven't been blessed with a digital signaure from Microsoft. 
+To make matters worse, much of the functionality you want on Windows (namely, low speed CDC for a serial port) requires drivers that don't exist in a fully working form. Unfortunately, even if you found a solution to meet the USB constraint and made the drivers work, that's still not enough because you need to bend over backwards to install them if they haven't been blessed with a digital signaure from Microsoft, so it is difficult to get a solution you could share with the world
 
 I concluded that there are far too many obstacles here, and that it is dishonest to act as though this functionality works. There are a few cases that some people report success with (USB MIDI being one of them, IIRC); these are exceptions, not the rule. You may need to disable millis() timekeeping for reliable functioning.
 
@@ -110,7 +110,7 @@ this should be located as close to the chip as possible (minimize length of wire
 
 #### Extra ~270 uA current during sleep mode
 Turn off the ADC before entering sleep mode. 
-```
+```c++
 ADCSRA &= (~(1 << ADEN))
 ```
 otherwise it will waste 270 uA
