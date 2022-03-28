@@ -212,7 +212,7 @@ boardnames = [
   "attiny84micr.name=ATtiny84 w/Micronucleus (12.8 MHz, bootloader takes more flash)"]
 
 chipmenu = {
-  "attinyx4":"attinyx4.menu.chip.84=ATtiny84\nattinyx4.menu.chip.84.build.mcu=attiny84\nattinyx4.menu.chip.84.upload.maximum_size=8192\nattinyx4.menu.chip.84.upload.maximum_data_size=512\nattinyx4.menu.chip.44=ATtiny44\nattinyx4.menu.chip.44.build.mcu=attiny44\nattinyx4.menu.chip.44.upload.maximum_size=4096\nattinyx4.menu.chip.44.upload.maximum_data_size=256\nattinyx4.menu.chip.44=ATtiny44\nattinyx4.menu.chip.24.build.mcu=attiny24\nattinyx4.menu.chip.24.upload.maximum_size=2048\nattinyx4.menu.chip.24.upload.maximum_data_size=128",
+  "attinyx4":"attinyx4.menu.chip.84=ATtiny84\nattinyx4.menu.chip.84.build.mcu=attiny84\nattinyx4.menu.chip.84.upload.maximum_size=8192\nattinyx4.menu.chip.84.upload.maximum_data_size=512\nattinyx4.menu.chip.44=ATtiny44\nattinyx4.menu.chip.44.build.mcu=attiny44\nattinyx4.menu.chip.44.upload.maximum_size=4096\nattinyx4.menu.chip.44.upload.maximum_data_size=256\nattinyx4.menu.chip.24=ATtiny24\nattinyx4.menu.chip.24.build.mcu=attiny24\nattinyx4.menu.chip.24.upload.maximum_size=2048\nattinyx4.menu.chip.24.upload.maximum_data_size=128",
   "attinyx4opti":"attinyx4opti.menu.chip.84=ATtiny84\nattinyx4opti.menu.chip.84.build.mcu=attiny84\nattinyx4opti.menu.chip.84.upload.maximum_size=7552\nattinyx4opti.menu.chip.84.upload.maximum_data_size=512\nattinyx4opti.menu.chip.44=ATtiny44\nattinyx4opti.menu.chip.44.build.mcu=attiny44\nattinyx4opti.menu.chip.44.upload.maximum_size=3456\nattinyx4opti.menu.chip.44.upload.maximum_data_size=256",
   "attinyx4micr":"",
   "attinyx5":"attinyx5.menu.chip.85=ATtiny85\nattinyx5.menu.chip.85.build.mcu=attiny85\nattinyx5.menu.chip.85.upload.maximum_size=8192\nattinyx5.menu.chip.85.upload.maximum_data_size=512\nattinyx5.menu.chip.45=ATtiny45\nattinyx5.menu.chip.45.build.mcu=attiny45\nattinyx5.menu.chip.45.upload.maximum_size=4096\nattinyx5.menu.chip.45.upload.maximum_data_size=256\nattinyx5.menu.chip.25=ATtiny25\nattinyx5.menu.chip.25.build.mcu=attiny25\nattinyx5.menu.chip.25.upload.maximum_size=2048\nattinyx5.menu.chip.25.upload.maximum_data_size=128",
@@ -280,10 +280,10 @@ eesavemenu = [
 softsermenu = [
   ".menu.softserial.txonly=No receiving, transmit only.",".menu.softserial.txonly.build.softser=-DSOFT_TX_ONLY",".menu.softserial.txonly.build.softserabr=ssTX"]
 softsermenu_861= ["enable_AIN1=RX on PA7, TX on PA (default PA6)",
-"enable_AIN0=RX on PA6, TX on PA (default PA7)", "enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0", "enable_AIN0.build.softserabr=ssAIN0",
-"enable_AIN2=RX on PA5, TX on PA (default PA6)", "enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2", "enable_AIN2.build.softserabr=ssAIN2",
-"txonly=No receiving, transmit only. TX on PA, default PA6.", "txonly.build.softserabr=ssTX", "txonly.build.softser=-DSOFT_TX_ONLY",
-"enable_AIN1.bootloader.uart=_rx7tx6", "enable_AIN0.bootloader.uart=_rx6tx7", "enable_AIN2.bootloader.uart=_rx5tx6", "txonly.bootloader.uart=_rx7tx6"]
+  "enable_AIN0=RX on PA6, TX on PA (default PA7)", "enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0", "enable_AIN0.build.softserabr=ssAIN0",
+  "enable_AIN2=RX on PA5, TX on PA (default PA6)", "enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2", "enable_AIN2.build.softserabr=ssAIN2",
+  "txonly=No receiving, transmit only. TX on PA, default PA6.", "txonly.build.softserabr=ssTX", "txonly.build.softser=-DSOFT_TX_ONLY",
+  "enable_AIN1.bootloader.uart=_rx7tx6", "enable_AIN0.bootloader.uart=_rx6tx7", "enable_AIN2.bootloader.uart=_rx5tx6", "txonly.bootloader.uart=_rx7tx6"]
 millismenu = [
   ".menu.millis.enabled=Enabled",".menu.millis.enabled.build.millis=",".menu.millis.enabled.build.millisabr=",
   ".menu.millis.disabled=Disabled (saves flash)",".menu.millis.disabled.build.millis=-DDISABLEMILLIS",".menu.millis.disabled.build.millisabr=mNONE"]
