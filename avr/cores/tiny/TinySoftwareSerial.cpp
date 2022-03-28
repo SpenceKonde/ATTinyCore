@@ -266,7 +266,7 @@ size_t TinySoftwareSerial::write(uint8_t ch) {
     "brcc .+4"  /* _txpart2 */    "\n\t" //  1      if we have a 0 in carry bit, we want to output the 1 pattern stored in r19 so skip 2 insn's
     "out %[uartPort], r18"        "\n\t" //  2      output a zero bit (clock tally is for the case when branch is not taken)
     "rjmp .+4"                    "\n\t" //  4      jump over the two instructions for outputting a 1 bringing us to the delay part.
-  //"_txpart2:"                          //  2      used with brcs with branch (we're startin from clock tally of 2 because we took the branch)
+  //"_txpart2:"                          //  2      used with brcs with branch (we're starting from clock tally of 2 because we took the branch)
     "out %[uartPort], r19"        "\n\t" //  3      output a 1 bit
     "nop"                         "\n\t" //  4      pad the 1-bit case with a nop so that the two paths have equal running time.
     "rcall uartDelay"             "\n\t" // then we do the 4 quarter-bit delays. rcall is okay here, because we don't support any 16k parts. The 167 and 1634 have HW serial.

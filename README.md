@@ -418,7 +418,7 @@ The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds
 These are available from tools submenus
 
 #### Pin Remapping (x61, 441, 841 only, new in 2.0.0)
-The x61-series can use either PORTA or PORTB pins for the USI. This must be chosen at compiletime - implementing swap() like the megaAVR parts have would impose excess overhead.
+The x61-series can use either PORTA or PORTB pins for the USI. This must be chosen at compile time - implementing swap() like the megaAVR parts have would impose excess overhead.
 
 The x41-series has two options for USART0 and two options for SPI. They are chosen independently, and the tools menu hence contains four options. (it's better than two menus, right?)
 

@@ -267,8 +267,8 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * Seriously? This is one of the dumbest pin mappings I have ever seen!
  * The only one that's uglier is the legacy x7 pinout!
  * What's rather impressive is how many consecutive numbers they managed to use, while
- * still having the result be absoltely horrendous. I understand how the
- * designers at Atmel-now-Microchip might come up witn a pinout that sucks to
+ * still having the result be absolutely horrendous. I understand how the
+ * designers at Atmel-now-Microchip might come up with a pinout that sucks to
  * arduino-ize and results in page-wide macros with a million ternary statements.
  * But how do you pull that off IN ARDUINO-LAND and not realize *as you're doing it*
  * "Wait, digitalPinToPCICRBit() is gonna be like a page wide.... and all the other
