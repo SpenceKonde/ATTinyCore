@@ -55,48 +55,71 @@ ATTinyCore supports classic ATtiny parts. It does not support any other AVR devi
 * Anything with "ATmega" in the name - you want [one of MCUDude's cores](https://github.com/MCUdude/)
 * AVR Dx-series (AVR128DA64, etc) - [the crown jewel of the AVR product line](https://github.com/SpenceKonde/), supported by my DxCore.
 
-## Quick Gotcha list - having trouble, read these first
-
-**Windows users must install Micronucleus drivers manually**
+## Quick Gotchas/FAQ list
+### Having trouble? read these first!
+#### Windows users must install Micronucleus drivers manually
 If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to "security" considerations. This is of course nonsensical - if the core was malicious, it could do just as much by running the malicious command as part of a compile or upload recipe. I have gotten word that I am not the first person to raise this objection and that restriction will be removed from a future version of the IDE.
 
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
-**Timing or baud rates are wrong** 
+#### Timing or baud rates are wrong
 Typically 8x slower than expected - see below entry. 
 
-**When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
+#### When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader
 The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured, and so writing the .
 
-**This core includes part specific documentation - click the links above for your family of chips and READ IT**
+#### Micronucleus/VUSB is not supported for USB functionality within the sketch
+It has been persuasively argued to me that it is not possible to get these parts to meet USB timing contstraints in an interrupt driven context without compromising on everything else. On the classical digispark, their core bent over backwards and got only mediocre results. The libraries floating around are stale, having rarely received updates, often dating back to the days of avr-gcc 4.8.x, and only ever worked on the digispark core - and even there they didn't work particularly well. USB timing constraints are very constraining. If anyone cared to put in the considerable amount of effort it would involve to port micronucleus and package the VUSB libraries, the pieces to make this work are actually present on the tinyAVR 0/1/2-series (the key features being the lvl 1 priority interrupt option, and the improved performance of push to enter the interrupt faster). But I don't know that anyone is showing much interest in taking that on. 
+
+To make matters worse, much of the functionality you want on Windows (namely, low speed CDC for a serial port) requires drivers that don't exist in a fully working form. Unfortunately, making them work alone is not enough because you need to bend over backwards to install them if they haven't been blessed with a digital signaure from Microsoft. 
+
+I concluded that there are far too many obstacles here, and that it is dishonest to act as though this functionality works. There are a few cases that some people report success with (USB MIDI being one of them, IIRC); these are exceptions, not the rule. You may need to disable millis() timekeeping for reliable functioning.
+
+#### This core includes part specific documentation - click the links above for your family of chips and READ IT
 The classic tinyAVR parts are a motley bunch - some of them are very mundane, with little to distinguish them other than the fact that they just work like you'd expect, while others are just bizarre. The part specific documentation covers most of the relevant topics that apply specifically to a given family of parts.
 
-**problems dynamically linking libusb-0.1 on linux** can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
+#### problems dynamically linking libusb-0.1 on linux
+These can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
 
-**There are several problems encountered when using versions of Arduino older than 1.8.13**
+#### There are several problems encountered when using versions of Arduino older than 1.8.13
 That version has been out for over a year and a half. While we do not intentionally break things on older IDE versions, we also do not test on older versions.
 
-**Windows store version sometimes experiences strange issues**. The windows store issues are difficult to reproduce on other systems, and no reliable solutions to them are currently known. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version.
+#### Windows store version sometimes experiences strange issues. 
+The windows store issues are difficult to reproduce on other systems, and no reliable solutions to them are currently known. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version.
 
-**Problems programming some parts for first time, especially ATtiny841/441** These parts are less forgiving of the SCK clock rate being on the high edge of the spec.  Arduino as ISP or USBTinyISP SLOW will program without issue.
+#### Problems programming some parts for first time, especially ATtiny841/441
+These parts are less forgiving of the SCK clock rate being on the high edge of the spec.  Arduino as ISP or USBTinyISP SLOW will program without issue.
 
-**Chips sold as "ATtiny85" with wrong signature** - enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
+#### Counterfeit/mismarked "ATtiny85" with wrong signatures.
+Enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
 
-**free(): invalid next size (normal) error** This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
+#### free(): invalid next size (normal) error
+This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
 
-**When using analogRead(), use the A# constant to refer to the pin, not the digital pin number.** Analog channel number (see table in datasheet entry for ADMUX register) can also be used - unlike the official core, you can use analogRead() with the differential ADC channels (for example).
+#### When using analogRead(), use the A# constant to refer to the pin
+Previously (prior to 2.0.0) numbers were treated as analog channel numbers. Now they are treated as the digital pin number (the old behavior, when explained to people, generally got several incredulous clarifying questions, followed by something to the effect of "I consider that behavior to be incorrect", usually with some abbreviated profanity. Nobody liked the old behavior. 
 
-**When using I2C on anything other than the ATtiny48/88** you **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). 4.7k or 10k is a good default value. On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. **That said, you should always use external pullups, even on the 48/88**, as the internal pullups are not as strong as the specification requires.
+#### When using I2C on anything other than the ATtiny48/88
+You **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). 4.7k or 10k is a good default value. On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. **Even on the 48/88 you should always use external pullups** as the internal pullups are not nearly as strong as the specification requires.
 
-**You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_Pxn (ex, PIN_PB2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used. We recommend this method of referring to pins, especially on parts with multiple pinmapping options
+#### You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins
+these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use `PIN_Pxn` (ex, `PIN_PB2`); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used. We recommend this method of referring to pins, especially on parts with multiple pinmapping options
 
-**All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.**
+#### All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling;
+this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.
 
-**For low power applications, before entering sleep, remember to turn off the ADC (`ADCSRA &= (~(1 << ADEN))`) - otherwise it will waste ~270uA**
+#### Extra ~270 uA current during sleep mode
+Turn off the ADC before entering sleep mode. 
+```
+ADCSRA &= (~(1 << ADEN))
+```
+otherwise it will waste 270 uA
 
-**When in power down sleep mode, the clock is stopped - using a slower clock speed does not save power while sleeping** I am asked very frequently about using very low clock speeds in low-power applications. Almost invariably, upon further interrogation, the user reveals that they plan to have the part in power-down sleep mode almost all the time. In this case, there is often little to be gained from running at a lower clock speed, since it only effects power use in the brief moments that the chip is awake - even more so because these moments may well be shorter when running at a higher clock speed. Clock speeds below 1MHz can present problems while programming due to the programmer using an SCK clock speed too fast for the target chip running at such a low system clock speed.
+#### When in power down sleep mode, the clock is stopped - using a slower clock speed does not save power while sleeping
+I am asked very frequently about using very low clock speeds in low-power applications. Almost invariably, upon further interrogation, the user reveals that they plan to have the part in power-down sleep mode almost all the time. In this case, there is often little to be gained from running at a lower clock speed, since it only effects power use in the brief moments that the chip is awake - even more so because these moments may well be shorter when running at a higher clock speed. Halving the clock speed generally reduces power consumption by less than half while awake, so if you are spending almost all the time in sleep, you will in fact see very little change in battery life as you reduce the clock speed - and what change you do see will not be in the direction you were hoping for. Clock speeds below 1MHz can present problems while programming due to the programmer using an SCK clock speed too fast for the target chip running at such a low system clock speed.
 
-**When using the WDT as a reset source and NOT using a bootloader** remember that after reset the WDT will be enabled with minimum timeout. The very first thing your application must do upon restart is reset the WDT (`wdt_reset()`), clear WDRF flag in MCUSR (`MCUSR &= ~(1 << WDRF)`) and then turn off or configure the WDT for your desired settings. If using the Optiboot bootloader, this is already done for you by the bootloader.
+#### When using the WDT as a reset source and NOT using a bootloader
+Remember that after reset the WDT will be enabled with minimum timeout. The very first thing your application must do upon restart is reset the WDT (`wdt_reset()`), clear WDRF flag in MCUSR (`MCUSR &= ~(1 << WDRF)`) and then turn off or configure the WDT for your desired settings. If using the Optiboot bootloader, this is already done for you by the bootloader.
 
 ## ATTinyCore Features
 
@@ -152,17 +175,17 @@ It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) suppor
 
 Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCore board is selected from the Tools -> Board menu, there will appear extra submenus under Tools menu where we can set several ATtiny properties:
 
-* Tools > Chip: (Select the part being used )
-* Tools > Clock:  (Select the desired clock speed)
-* Tools > Save EEPROM: (Boards without bootloader only - controls whether EEPROM is erased during a chip erase cycle)
-* Tools > B.O.D Level: (trigger voltage for Brown Out Detection - below this voltage, chip will be held in reset)
+* Tools > Chip (Select the part being used )
+* Tools > Clock  (Select the desired clock speed and source)
+* Tools > Save EEPROM (Boards without bootloader only - controls whether EEPROM is erased during a chip erase cycle)
+* Tools > B.O.D Level (trigger voltage for Brown Out Detection - below this voltage, chip will be held in reset)
 * Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
 * Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
 
 After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
 
 #### Supported clock speeds:
-Supported clock speeds are shown in the menus in descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.
+Supported clock speeds are shown in the menus in approximate descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.
 
 Optiboot is supported only on speeds of 1 MHz or more.
 
@@ -175,8 +198,8 @@ Internal:
 * 4 MHz*** (except on x313, starts up at 1MHz and immediately switches to 4MHz before setup() is run)
 * 2 MHz*** (starts up at 1MHz and switches to 4MHz before setup() is run)
 * 16.5MHz † ! (PLL clock, tuned, x5, x61 only, for vUSB support)
-* 12 MHz † ‡ (Internal, tuned aggressively, for vUSB support)
-* 12.8MHz † ‡ (Internal, tuned aggressively, for vUSB support)
+* 12 MHz † (Internal, tuned aggressively, for vUSB support)
+* 12.8MHz † (Internal, tuned aggressively, for vUSB support)
 * 0.5 MHz** ‼ (x313 only)
 * 512 kHz** ‼ ‡ (ULP - x41 only)
 * 256 kHz** ‼ ‡ (ULP - x41 only)
@@ -221,7 +244,7 @@ All available clock options for the selected processor will be shown in the Tool
 
 `†` These speeds support vUSB - 12 MHz and 16 MHz modes may not work reliably with aggressively tuned internal oscillators. 16.5 and 12.8 are much better - but 12.8 requires a very large amount of flash. Note that 64/12.8 is an integer, so this has inherrently better timekeeping capability than other odd speeds, though even the weird speeds do now work correctly. .
 
-`‡` The ULP is the "Ultra Low Power" oscillator that replaced the 128 kHz WDT oscillator on the 441/841/828/1634. Like the WDT oscillator, it is only calibrated very roughly - the spec is +/- 30% (over the whole operating range - so in practice it's usually not quite that bad). On the 1634 and 828, it always runs at 32 KHz, but on the 841, it can apparently clock the system up to 16 times that rate. Though there is a tuning register, and a nice responsive looking tuning curve in the typical properties section of the datasheet, look more closely - there are only 4 points marked on the horizontal axis: Sure enough in the register, there are only 2 bits of tuning for it, and that graph just gives you a false impression otherwise.
+`‡` The ULP is the "Ultra Low Power" oscillator that replaced the 128 kHz WDT oscillator on the 441/841/828/1634. Like the WDT oscillator, it is only calibrated very roughly - the spec is +/- 30% (over the whole operating range - so in practice it's usually not quite that bad). On the 1634 and 828, it always runs at 32 KHz, but on the 841, it can apparently clock the system up to 16 times that rate. Though there is a tuning register, and a nice looking tuning curve in the typical properties section of the datasheet, look more closely - there are only 4 points marked on the horizontal axis: Sure enough in the register, there are only 2 bits of tuning for it, and the fact that the graph shows curves instead of points is just a case study in how to lie with graphs and numbers.
 
 `!` Micros takes longer to return on these clocks - the math for micros is easiest if the prescaler used by the millis timer (almost always 64, except at extremely low clock speeds) can be evenly divided by the clock speed in MHz; in that case, we can just rightshift the number of ticks. When it can't, we use bitshift/addition ersatz division, which is slower (we never use actual division - We did VERY briefly, until someone noticed just how long micros() was taking to return)
 
