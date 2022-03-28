@@ -272,6 +272,8 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY167/ATTINY87
  * Legacy Arduino-compatible pin mapping - an inspired work of evil
+ * This must have been a bet or something, what's the most consecutive
+ * pin numbers we can have while making the code maximally unpleasant?
  *
  *                   +-\/-+
  *     RX ( 0) PA0  1|a   |20  PB0 ( 4)*

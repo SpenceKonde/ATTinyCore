@@ -98,22 +98,23 @@ The ATtiny x7 series features a mid-range ADC - it has the second reference volt
 ### Differential ADC channels
 Though it's a far cry from what some of the classic tinyAVR parts have, the x7-series does offer a modest selection of ADC channels with 8x and 20x selectable gain.  ATTinyCore (v2.0.0+) allows you to read from them with `analogRead()` by using the channel names shown below. If it is required to know the numeric values of the channels, they are shown below as well. If you must work with channel numbers, instead of a names, when passing them to `analogRead()`, use the `ADC_CH()` macro (ex: `analogRead(ADC_CH(0x11))` to read ADC0 and ADC1 at 20x gain, equivalent to `analogRead(DIFF_A0_A1_20X)`), otherwise they will be interpreted as a (likely non-existent) digital pin.
 
-|  Positive  |   Negative  | 8X Gain |20X Gain|  Name (8x Gain)  |  Name (20x Gain)  |
-|------------|-------------|---------|--------|------------------|-------------------|
-| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  `DIFF_A0_A1_8X` |  `DIFF_A0_A1_20X` |
-| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  `DIFF_A1_A2_8X` |  `DIFF_A1_A2_20X` |
-| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  `DIFF_A2_A3_8X` |  `DIFF_A2_A3_20X` |
-| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  `DIFF_A4_A5_8X` |  `DIFF_A4_A5_20X` |
-| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  `DIFF_A5_A6_8X` |  `DIFF_A5_A6_20X` |
-| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  `DIFF_A6_A7_8X` |  `DIFF_A6_A7_20X` |
-| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_8X` |  `DIFF_A8_A9_20X` |
-| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_8X` | `DIFF_A9_A10_20X` |
+On the Digispark pinout, the analog numbers they used were the same as the digital pin numbers. So to make things logically consistent (would it make sense that to measure difference between A6 and A7 you had to use `DIFF_A0_A1_8X`? Of course not! So we number the differential channels accordingly. The result is almost as horrendous as if we hadn't done so and stubbornly insisted on using ADC channel numbers in the differential names. It sucks either way. For this reason, it is recommended that the default pin mapping be used if you are using the differential ADC.
 
+|  Positive  |   Negative  | 8X Gain |20X Gain|  Name (8x Gain)  |  Name (20x Gain)  |    Digispark 8x   |   Digispark 20x    |
+|------------|-------------|---------|--------|------------------|-------------------|-------------------|--------------------|
+| ADC0 (PA0) |  ADC1 (PA1) |   0x10  |  0x11  |  `DIFF_A0_A1_8X` |  `DIFF_A0_A1_20X` |   `DIFF_A6_A7_8X` |   `DIFF_A6_A7_20X` |
+| ADC1 (PA1) |  ADC2 (PA2) |   0x12  |  0x13  |  `DIFF_A1_A2_8X` |  `DIFF_A1_A2_20X` |  `DIFF_A7_A13_8X` |  `DIFF_A7_A13_20X` |
+| ADC2 (PA2) |  ADC3 (PA3) |   0x14  |  0x15  |  `DIFF_A2_A3_8X` |  `DIFF_A2_A3_20X` |  `DIFF_A13_A9_8X` |  `DIFF_A13_A9_20X` |
+| ADC4 (PA4) |  ADC5 (PA5) |   0x16  |  0x17  |  `DIFF_A4_A5_8X` |  `DIFF_A4_A5_20X` | `DIFF_A10_A11_8X` | `DIFF_A10_A11_20X` |
+| ADC5 (PA5) |  ADC6 (PA6) |   0x18  |  0x19  |  `DIFF_A5_A6_8X` |  `DIFF_A5_A6_20X` | `DIFF_A11_A12_8X` | `DIFF_A11_A12_20X` |
+| ADC6 (PA6) |  ADC7 (PA7) |   0x1A  |  0x1B  |  `DIFF_A6_A7_8X` |  `DIFF_A6_A7_20X` |  `DIFF_A12_A5_8X` |  `DIFF_A12_A5_20X` |
+| ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_8X` |  `DIFF_A8_A9_20X` |   `DIFF_A8_A3_8X` |   `DIFF_A8_A3_20X` |
+| ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_8X` | `DIFF_A9_A10_20X` |  `DIFF_A3_A15_8X` |  `DIFF_A3_A15_20X` |
 
 ### Temperature Measurement
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
-Note that while the text of this section of the datasheet is essentially copied verbatim between most of the classic tinyAVR parts, the ATtiny87/167 datasheet has a different set of "typical values"... and these are inconsistent with what the text is saying by a huge margin. However, it did not escape my notice that the same table also contains a typo in the notation (0c01B8 instead of 0x01B8), and that the inconsistencies are suspiciously close to what might happen if someone attempted to convert from decimal to hex recognizing that the third digit is 256s but not that second digit is 16's (230middle value is 300 on other sheets, 0x144 here. 300 - 256 = 44, so a 1 in the 256's and 44 in the tens and ones, high value 370 on other sheets, 0x1B8 here. Very close to 370 - 256 = 114 11 is B in hex so 0x1B4, though I can't account for the extra 4. The low value is harder to explain via math errors but if my bad-math theory above is correct, I have no confidence in his ability to add and subtract correctly either).
+Note that while the text of this section of the datasheet is essentially copied verbatim between most of the classic tinyAVR parts, the ATtiny87/167 datasheet has a different set of "typical values"... and these are inconsistent with what the text is saying by a huge margin. However, it did not escape my notice that the same table also contains a typo in the notation (0c01B8 instead of 0x01B8), and that the inconsistencies are suspiciously close to what might happen if someone attempted to convert from decimal to hex recognizing that the third digit is 256s but not that second digit is 16's (230 middle value is 300 on other sheets, 0x144 here. 300 - 256 = 44, so a 1 in the 256's and 44 in the tens and ones, high value 370 on other sheets, 0x1B8 here. Very close to 370 - 256 = 114 11 is B in hex so 0x1B4, though I can't account for the extra 4. The low value is harder to explain via math errors but if my bad-math theory above is correct, I have no confidence in his ability to add and subtract correctly either).
 
 ### Tuning Constant Locations
 These are the recommended locations to store tuning constants. In the case of OSCCAL, they are what are checked during startup when a tuned configuration is selected. They are not otherwiseused by the core.
@@ -139,20 +140,20 @@ Mironucleus used: Micronucleus boards are locked to the crystal, no oscillator c
 | Temperature Slope      | FLASHEND       |
 
 ### Purchasing ATtiny167 Boards
-I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. Unfortunately this design is currently out of stock; a revised version in in the works.
+I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. Unfortunately this design is currently out of stock; a revised version is in the works.
 * Micronucleus boards are readily available all over the internet, fairly cheaply, in several models. Search for things like "Digispark Pro", "Digispark ATtiny167", "ATtiny167 USB" and so on.
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
+This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses shown are "word addressed". The `#` column is the number you are shown in the event of a duplicate vector error, among other things.
 Addresses are for 87 and 167 - the 167, having 16k of flash, has 4-byte vectors instead of 2-byte vectors.
 
 |  # |87 addr |167 addr| Vector Name         | Interrupt Definition                |
 |----|--------|--------|---------------------|-------------------------------------|
-|  0 | 0x0000 | 0x0000 | `RESET_vect`        | External Pin, Power-on Res          |
+|  0 | 0x0000 | 0x0000 | `RESET_vect`        | External Pin, Power-on Reset        |
 |  1 | 0x0001 | 0x0002 | `INT0_vect`         | External Interrupt Request 0        |
 |  2 | 0x0002 | 0x0004 | `INT1_vect`         | External Interrupt Request 1        |
-|  3 | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORT A)       |
-|  4 | 0x0004 | 0x0008 | `PCINT1_vect`       | Pin Change Interrupt (PORT B)       |
+|  3 | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORTA)        |
+|  4 | 0x0004 | 0x0008 | `PCINT1_vect`       | Pin Change Interrupt (PORTB)        |
 |  5 | 0x0005 | 0x000A | `WDT_vect`          | Watchdog Time-out (Interrupt Mode)  |
 |  6 | 0x0006 | 0x000C | `TIMER1_CAPT_vect`  | Timer/Counter1 Capture              |
 |  7 | 0x0007 | 0x000E | `TIMER1_COMPA_vect` | Timer/Counter1 Compare Match        |

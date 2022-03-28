@@ -90,12 +90,12 @@ static const uint8_t A10 = ADC_CH(10);
 #define digitalPinToPCICR(p)        (&PCICR)
 #define digitalPinToPCICRbit(p)     ((p) >= 8 ? 1 : 0)
 #define digitalPinToPCMSK(p)        ((p) >= 8 ?(&PCMSK1) : (&PCMSK0))
-#define digitalPinToPCMSKbit(p)     (p & 15)
+#define digitalPinToPCMSKbit(p)     ((p) & 0x07)
 
 #define digitalPinToInterrupt(p)    ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  ((p) < 8 ? (p) :((p) + 5))
+#define analogInputToDigitalPin(p)  ((p) < 8 ? (p) : ((p) + 5))
 #define digitalPinToAnalogInput(p)  ((p) < 8 ? (p) : ((p) > 12 ? (p - 5) : (-1)))
 
 /* Which pins have PWM? */

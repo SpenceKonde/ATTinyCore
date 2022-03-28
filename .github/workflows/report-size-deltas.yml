@@ -16,5 +16,8 @@ jobs:
       # See: https://github.com/arduino/report-size-deltas/README.md
       - name: Comment size deltas reports to PRs
         uses: arduino/report-size-deltas@main
+        environment:
+          - name: workflows
         with:
           sketches-reports-source: sketches-reports
+          github-token:

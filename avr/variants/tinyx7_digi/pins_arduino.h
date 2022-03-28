@@ -40,7 +40,7 @@
 #define PIN_PA4   (10) // A4
 #define PIN_PA5   (11) // A5
 #define PIN_PA6   (12) // A6
-#define PIN_PB7   (13) /* RESET */
+#define PIN_PB7   (13) /* A10/RESET */
 #define PIN_PB4   (14) /* XTAL1 */
 #define PIN_PB5   (15) /* XTAL2 */
 
@@ -60,16 +60,17 @@
 #define PIN_A13   (13)
 
 /* DANGER - An does not refer to analog channel n */
-static const uint8_t A3  = ADC_CH(9);
-static const uint8_t A5  = ADC_CH(7);
-static const uint8_t A6  = ADC_CH(0);
-static const uint8_t A7  = ADC_CH(1);
-static const uint8_t A8  = ADC_CH(2);
-static const uint8_t A9  = ADC_CH(3);
-static const uint8_t A10 = ADC_CH(4);
-static const uint8_t A11 = ADC_CH(5);
-static const uint8_t A12 = ADC_CH(6);
-static const uint8_t A13 = ADC_CH(2);
+static const uint8_t A6   = ADC_CH(0);
+static const uint8_t A7   = ADC_CH(1);
+static const uint8_t A13  = ADC_CH(2);
+static const uint8_t A9   = ADC_CH(3);
+static const uint8_t A10  = ADC_CH(4);
+static const uint8_t A11  = ADC_CH(5);
+static const uint8_t A12  = ADC_CH(6);
+static const uint8_t A5   = ADC_CH(7);
+static const uint8_t A8   = ADC_CH(8);
+static const uint8_t A3   = ADC_CH(9);
+static const uint8_t A13  = ADC_CH(10);
 
 /* Interrupt macros to go from pin to PCMSK register and bit within it, and
  * the register to enable/disable banks of PCINTs, and bit within it PCICR
@@ -80,21 +81,21 @@ static const uint8_t A13 = ADC_CH(2);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)     (&PCICR)
-#define digitalPinToPCICRbit(p)  (((p) >= 5 && (p) <= 12) ? PCIE0 : PCIE1 )
-#define digitalPinToPCMSK(p)     (((p) >= 5 && (p) <= 12) ? (&PCMSK0) : (&PCMSK1) )
+#define digitalPinToPCICR(p)        (&PCICR)
+#define digitalPinToPCICRbit(p)     (((p) >= 5 && (p) <= 12) ? PCIE0 : PCIE1 )
+#define digitalPinToPCMSK(p)        (((p) >= 5 && (p) <= 12) ? (&PCMSK0) : (&PCMSK1) )
 
-#define digitalPinToPCMSKbit(p) ((((p) >= 0) && ((p) <= 2))  ? (p) : ((((p) >= 6) && ((p) <= 13)) ? ((p) - 6) : (((p) == 3) ? 6 : (((p) == 4) ? 3 : (7))))) /* pin 5 */
+#define digitalPinToPCMSKbit(p)     ((((p) >= 0) && ((p) <= 2))  ? (p) : ((((p) >= (6)) && ((p) <= (13))) ? ((p) - (6)) : (((p) > (13)) ? ((p) - (10)) : (((p) == 3) ? (6) : (((p) == 4) ? (3) : (7))))) /* pin 5 */
 
 
-#define digitalPinToInterrupt(p)    ((p) == PIN_PB6 ? 0 : ((p)==PIN_PA3?1: NOT_AN_INTERRUPT))
+#define digitalPinToInterrupt(p)    (((p) == PIN_PB6) ? 0 : (((p) == PIN_PA3) ? 1 : NOT_AN_INTERRUPT))
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p == 9) ? 3 : (p == 7) ? 5 : (p < 13 && p > 5) ? (p-6) : (p ==13) ? 13 : -1))
-#define digitalPinToAnalogInput(p)  (((p) > 5) && ((p < 13)) ? (p) - 6 :(((p) == 5) ? 7 : (((p) == 3) ? 9 : (((p) == 13) ? 10 : -1 ))))
+#define analogInputToDigitalPin(p)  ((((p) == 9) ? (3) : ((p) == 7) ? (5) : ((p) < 13 && (p) > 5) ? ((p) - 6) : ((p) == 13) ? (13) : (-1)))
+#define digitalPinToAnalogInput(p)  (((p) > 5) && (((p) < 13)) ? ((p) - 6) : (((p) == 5) ? (7) : (((p) == 3) ? (9) : (((p) == 13) ? (10) : (-1)))))
 
 /* Which pins have PWM? */
-#define digitalPinHasPWM(p)         ((p) == PIN_PA2 || ((p) >= 0 && (p) <= 16 && ((p) < 5 || (p) > 12)))
+#define digitalPinHasPWM(p)         ((p) == PIN_PA2 || (((p) >= 0) && ((p) <= 16) && (((p) < 5 ) || ((p) > 12))))
 
 #define PINMAPPING_DIGI
 
@@ -195,22 +196,23 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define ADC_GROUND         ADC_CH(0x0E)
 
 /* Differential Analog Channels */
-#define DIFF_A0_A1_8X      ADC_CH(0x10)
-#define DIFF_A0_A1_20X     ADC_CH(0x11)
-#define DIFF_A1_A2_8X      ADC_CH(0x12)
-#define DIFF_A1_A2_20X     ADC_CH(0x13)
-#define DIFF_A2_A3_8X      ADC_CH(0x14)
-#define DIFF_A2_A3_20X     ADC_CH(0x15)
-#define DIFF_A4_A5_8X      ADC_CH(0x16)
-#define DIFF_A4_A5_20X     ADC_CH(0x17)
-#define DIFF_A5_A6_8X      ADC_CH(0x18)
-#define DIFF_A5_A6_20X     ADC_CH(0x19)
-#define DIFF_A6_A7_8X      ADC_CH(0x1A)
-#define DIFF_A6_A7_20X     ADC_CH(0x1B)
-#define DIFF_A8_A9_8X      ADC_CH(0x1C)
-#define DIFF_A8_A9_20X     ADC_CH(0x1D)
-#define DIFF_A9_A10_8X     ADC_CH(0x1E)
-#define DIFF_A9_A10_20X    ADC_CH(0x1F)
+#define DIFF_A6_A7_8X      ADC_CH(0x10)
+#define DIFF_A6_A7_20X     ADC_CH(0x11)
+#define DIFF_A7_A13_8X     ADC_CH(0x12)
+#define DIFF_A7_A13_20X    ADC_CH(0x13)
+#define DIFF_A13_A9_8X     ADC_CH(0x14)
+#define DIFF_A13_A9_20X    ADC_CH(0x15)
+#define DIFF_A10_A11_8X    ADC_CH(0x16)
+#define DIFF_A10_A11_20X   ADC_CH(0x17)
+#define DIFF_A11_A12_8X    ADC_CH(0x18)
+#define DIFF_A11_A12_20X   ADC_CH(0x19)
+#define DIFF_A12_A5_8X     ADC_CH(0x1A)
+#define DIFF_A12_A5_20X    ADC_CH(0x1B)
+#define DIFF_A8_A3_8X      ADC_CH(0x1C)
+#define DIFF_A8_A3_20X     ADC_CH(0x1D)
+#define DIFF_A3_A13_8X     ADC_CH(0x1E)
+#define DIFF_A3_A13_20X    ADC_CH(0x1F)
+
 
 /* Analog Comparator - not used by core */
 #define ANALOG_COMP_DDR          (DDRA)
@@ -262,6 +264,15 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY167
  * Arduino-compatible "DigiSpark Pro" pin mapping
+ * Seriously? This is one of the dumbest pin mappings I have ever seen!
+ * The only one that's uglier is the legacy x7 pinout!
+ * What's rather impressive is how many consecutive numbers they managed to use, while
+ * still having the result be absoltely horrendous. I understand how the
+ * designers at Atmel-now-Microchip might come up witn a pinout that sucks to
+ * arduino-ize and results in page-wide macros with a million ternary statements.
+ * But how do you pull that off IN ARDUINO-LAND and not realize *as you're doing it*
+ * "Wait, digitalPinToPCICRBit() is gonna be like a page wide.... and all the other
+ * macros are gonna be huge too... maybe I'm making some dumb decisions?"
  *
  *                   +-\/-+
  *   RX   ( 6) PA0  1|a   |20  PB0 ( 0)*
@@ -273,7 +284,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  *   INT1 (10) PA4  7|a   |14  PB4 (14)* XTAL1
  *        (11) PA5  8|a  a|13  PB5 (15)* XTAL2
  *        (12) PA6  9|a  a|12  PB6 ( 3)* INT0
- *        ( 5) PA7 10|a  a|11  PB7 (13)*
+ *        ( 5) PA7 10|a  a|11  PB7 (13)* RESET
  *                   +----+
  *
  * * indicates PWM pin, a indicates ADC (analog input) pins
@@ -317,22 +328,22 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
-  _BV(0), /* 0 */
-  _BV(1),
-  _BV(2), /* 2 */
-  _BV(6), /* 3 */
-  _BV(3), /* 4 */
-  _BV(7),
-  _BV(0),
-  _BV(1),
-  _BV(2),
-  _BV(3),
-  _BV(4), /* 10 */
-  _BV(5),
-  _BV(6),
-  _BV(7),
-  _BV(4),
-  _BV(5),
+  _BV(0), /* PB0 */
+  _BV(1), /* PB1 */
+  _BV(2), /* PB2 */
+  _BV(6), /* PB6 */
+  _BV(3), /* PB3 */
+  _BV(7), /* PA7 */
+  _BV(0), /* PA0 */
+  _BV(1), /* PA1 */
+  _BV(2), /* PA2 */
+  _BV(3), /* PA3 */
+  _BV(4), /* PA4 */
+  _BV(5), /* PA5 */
+  _BV(6), /* PA6 */
+  _BV(7), /* PB7/reset */
+  _BV(4), /* PB4 */
+  _BV(5), /* PB5 */
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {

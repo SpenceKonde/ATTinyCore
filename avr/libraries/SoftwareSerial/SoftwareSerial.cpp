@@ -206,7 +206,7 @@ ISR(PCINT0_vect) {
   #endif
 #else
   #error "There is no PCINT vector known to this library; SoftwareSerial requires PCINT (pin change interrupts)"
-  #error "which are present on essenmtially all classic AVRs; are you using something ancient? The post-2016 (so called modern AVRs are not supported by this version)!"
+  #error "which are present on essentially all classic AVRs; are you using something ancient? The post-2016 (so called modern AVRs are not supported by this version)!"
 #endif
 
 
