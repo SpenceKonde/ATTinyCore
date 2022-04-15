@@ -269,16 +269,16 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * Arduino-compatible pin mapping
  *
  *                   +-\/-+
- *   RX   ( 0) PA0  1|a   |20  PB0 ( 8)
- *   TX   ( 1) PA1  2|a   |19  PB1 ( 9)
- *       *( 2) PA2  3|a   |18  PB2 (10)
+ *   RX   ( 0) PA0  1|a   |20  PB0 ( 8)*
+ *   TX   ( 1) PA1  2|a   |19  PB1 ( 9)*
+ *       *( 2) PA2  3|a   |18  PB2 (10)*
  *   INT1 ( 3) PA3  4|a   |17  PB3 (11)*
  *            AVCC  5|    |16  GND
  *            AGND  6|    |15  VCC
- *        ( 4) PA4  7|a   |14  PB4 (12)  XTAL1
- *        ( 5) PA5  8|a  a|13  PB5 (13)  XTAL2
+ *        ( 4) PA4  7|a   |14  PB4 (12)* XTAL1
+ *        ( 5) PA5  8|a  a|13  PB5 (13)* XTAL2
  *        ( 6) PA6  9|a  a|12  PB6 (14)* INT0
- *        ( 7) PA7 10|a  a|11  PB7 (15)  RESET
+ *        ( 7) PA7 10|a  a|11  PB7 (15)* RESET
  *                   +----+
  *
  * * indicates PWM pin, a indicates ADC (analog input) pins
