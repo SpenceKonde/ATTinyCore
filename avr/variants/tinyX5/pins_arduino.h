@@ -61,8 +61,8 @@ static const uint8_t A3 = ADC_CH(3);
 #define digitalPinToPCMSKbit(p)     (p)
 
 /* Analog Channel <-> Digital Pin macros */
-#define analogInputToDigitalPin(p)  (((p) == 0) ? 5 : (((p) == 1) ? 2 : (((p) == 2) ? 4 : (((p) == 3) ? 3 : -1))))
-#define digitalPinToAnalogInput(p)  (((p) == 5) ? 0 : (((p) == 2) ? 1 : (((p) == 4) ? 2 : (((p) == 3) ? 3 : -1))))
+#define analogInputToDigitalPin(p)  (((p) == 3) ? 3 : (((p) == 1) ? 2 : (((p) == 2) ? 4 : (((p) == 0) ? 5 : NOT_A_PIN))))
+#define digitalPinToAnalogInput(p)  (((p) == 3) ? 3 : (((p) == 2) ? 1 : (((p) == 4) ? 2 : (((p) == 5) ? 0 : NOT_A_PIN))))
 
 /* Which pins have PWM? */
 #define digitalPinHasPWM(p)         ((p) == 0 || (p) == 1 || (p) == 4)
@@ -145,24 +145,23 @@ static const uint8_t A3 = ADC_CH(3);
 #define INTERNAL2V56_CAP     ADC_REF(0x07) /* Connect a capacitor between AREF and ground for improved reference stability */
 #define INTERNAL2V56         INTERNAL2V56_NO_CAP
 #define INTERNAL             INTERNAL1V1 /* deprecated */
+/* Differential Analog Channels */
+#define DIFF_A2_A2_1X        ADC_CH(0x04) /* For offset cal? */
+#define DIFF_A2_A2_20X       ADC_CH(0x05) /* For offset cal? */
+#define DIFF_A2_A3_1X        ADC_CH(0x06)
+#define DIFF_A2_A3_20X       ADC_CH(0x07)
+#define DIFF_A3_A2_1X        ADC_CH(0x26) /* Reversed pins */
+#define DIFF_A3_A2_20X       ADC_CH(0x27) /* Reversed pins */
+#define DIFF_A0_A0_1X        ADC_CH(0x08) /* For offset cal? */
+#define DIFF_A0_A0_20X       ADC_CH(0x09) /* For offset cal? */
+#define DIFF_A0_A1_1X        ADC_CH(0x0A)
+#define DIFF_A0_A1_20X       ADC_CH(0x0B)
+#define DIFF_A1_A0_1X        ADC_CH(0x2A) /* Reversed pins */
+#define DIFF_A1_A0_20X       ADC_CH(0x2B) /* Reversed pins */
 /* Special Analog Channels */
 #define ADC_INTERNAL1V1      ADC_CH(0x0C)
 #define ADC_GROUND           ADC_CH(0x0D)
 #define ADC_TEMPERATURE      ADC_CH(0x0F)
-
-/* Differential Analog Channels */
-#define DIFF_A2_A2_1X        ADC_CH(0x04)
-#define DIFF_A2_A2_20X       ADC_CH(0x05)
-#define DIFF_A2_A3_1X        ADC_CH(0x06)
-#define DIFF_A2_A3_20X       ADC_CH(0x07)
-#define DIFF_A0_A0_1X        ADC_CH(0x08)
-#define DIFF_A0_A0_20X       ADC_CH(0x09)
-#define DIFF_A0_A1_1X        ADC_CH(0x0A)
-#define DIFF_A0_A1_20X       ADC_CH(0x0B)
-#define DIFF_A3_A2_1X        ADC_CH(0x26)
-#define DIFF_A3_A2_20X       ADC_CH(0x27)
-#define DIFF_A1_A0_1X        ADC_CH(0x2A)
-#define DIFF_A1_A0_20X       ADC_CH(0x2B)
 
 /* Analog Comparator - used for soft-serial*/
 #define ANALOG_COMP_DDR      DDRB
@@ -242,8 +241,8 @@ const uint8_t PROGMEM port_to_output_PGM[] = {
 };
 
 const uint8_t PROGMEM port_to_input_PGM[] = {
-  NOT_A_PIN,
-  NOT_A_PIN,
+  NOT_A_PORT,
+  NOT_A_PORT,
   (uint8_t)(uint16_t) &PINB,
 };
 
