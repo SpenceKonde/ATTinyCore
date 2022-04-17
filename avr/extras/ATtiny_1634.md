@@ -1,5 +1,5 @@
-### ATtiny 1634(R)
-![1634 Pin Mapping](Pinout_1634.jpg "Arduino Pin Mapping for ATtiny 1634")
+
+![#1634 Pin Mapping](Pinout_1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
 Specification         |    ATtiny1634  |    ATtiny1634  |    ATtiny1634  |
 ----------------------|----------------|----------------|----------------|
@@ -21,8 +21,12 @@ External Crystal      |   Up to 16 MHz |   Up to 16 MHz |   Up to 16 MHz |
 External Clock        |   Up to 16 MHz |   Up to 16 MHz |   Up to 16 MHz |
 LED_BUILTIN           |        PIN_PC0 |        PIN_PC0 |        PIN_PC2 |
 
+## Overview
+
 Unlike most classic ATtiny parts, the 1634 is only spec'ed for maximum clock speed of 12 MHz. However experience has shown that it generally works at 16 MHz @ 5V.
 The ATtiny1634R has a more tightly factory calibrated internal oscillator. It is otherwise identical, has the same signature, and is interchangible.
+
+This is one of the last three classic tinyAVRs to be released, and it you can see that they were playing around with the peripherals a bit.
 
 ### Warning: PB3 does not work as an input unless watchdog timer is running
 This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might say that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
@@ -57,7 +61,10 @@ We do still provide a >4.5v clock option in order to improve behavior of the run
 The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the slightly more expensive 1634R. +/- 2% is good enough for serial communication. However, this spec is only valid below 4v - above 4v, the oscillator runs significantly faster; enough so that serial communication does not work absent the above-described countermeasures.
 
 ### Tone Support
-Tone() uses Timer1. For best results, use pin 2 or 14 (PIN_PA6, PIN_PB3), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins 2 and 14
+Tone() uses Timer1. For best results, use pin 2 or 14 (PIN_PA6, PIN_PB3), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins PA6 (Arduino pin 2) and PB3 (Arduino pin 14).
+
+### Servo Support
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny1634 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Servp also needs a timer, and will use Timer1. This will disable all PWM pins except PIN_PA2, and is incompatible with tone().
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core. There is also a slave-only hardware TWI, however, the Wire.h library does not make use of this. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
@@ -114,7 +121,6 @@ void startSleep() { //call instead of sleep_cpu()
   WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt
 }
 ```
-
 
 
 ## Interrupt Vectors

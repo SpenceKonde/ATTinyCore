@@ -16,7 +16,7 @@ Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal, cloc
 
 Packages | DIP-20, SOIC-20, MLF-32
 
-# Overview
+## Overview
 The ATtiny26 is the predecessor to the 261a/461a/861a and are functionally very similar; the tiny26 was one of the very first ATtiny parts so their functionality is less advanced but they do have a similar differential ADC. It has been not recommended for new designs since 2007 and is supported only on behalf of a paying client who is apparently in possessing of a large quantity of them, will be introduced in the 2.0.0 version of ATTinyCore.
 
 
@@ -46,10 +46,10 @@ ACSR &= ~(1 << ACIE);
 ACSR |= ~(1 << ACD);
 ```
 ## Servo Support
-TBD
+Unlikely, flash too small, and servo library to inefficient.
 
 ## ADC Features
-The ATtiny26 has a surprisingly sophisticated ADC for it's time, being the first tinyAVR with a real differential ADC (which was not featured on any AVR released between 2016 and 2021 (the ones on the Dx-series domn't count). As of ATTinyCore 2.0.0, these are available through analogRead!  When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available.
+The ATtiny26 has a surprisingly sophisticated ADC for it's time, being the first tinyAVR with a real differential ADC (which was not featured on any AVR released between 2016 and 2021 (the ones on the Dx-series domn't count - they limiy ). As of ATTinyCore 2.0.0, these are available through analogRead!  When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available.
 
 ## ADC Reference options
 The ATtiny x61-series has two internal references, one of which can (optionally) use the AREF pin with an external capacitor for improved stability. It can also use an external reference voltage or the supply voltage. For historical reasons, there are several aliases available for some of these options.
@@ -111,9 +111,9 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 
 ### Temperature Measurement
 The ATtiny26 predates the usual temperature sensor. There is no temperature measurement.
+
 ## Purchasing ATtiny26 Boards
-The ATtiny 26 is ancient. I do shall not condone it's use in new procucts bt selling development boards. 
-Use a 261, (or better yet an 861)
+Don't, unles you've no other options during the Great Chip Shortage or you have
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny 26 as well as the name you refer to them as when using the `ISR()` macro. Be aware that, like on all other AVRs, a non-existent vector is just a "warning" not an "error" - however, the misspelled vector doesn't end up in the vector table, so if it is enabled and triggered, the device will (at best) immediately reset (often not cleanly). The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed" (that is, 0x0001 is bytes 0x0002 and 0x0003). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
