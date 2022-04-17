@@ -20,7 +20,7 @@ void pinMode(uint8_t pin, uint8_t mode) {
   check_valid_digital_pin(pin);
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
+  if (port == NOT_A_PORT) return;
 
   volatile uint8_t *reg, *out;
   reg = portModeRegister(port);
@@ -69,21 +69,21 @@ void turnOffPWM(uint8_t timer) {
     #if defined(TCCR0A) && defined(COM0A1)
       if( timer == TIMER0A) {
         TCCR0A &= ~(1 << COM0A1);
-        // TCCR0A &= ~(1 << COM0A0); /* no user cleanup */
+        // TCCR0A &= ~(1 << COM0A0); /* We do not clean up after user code that may have shat on a timer. */
       } else
     #endif
     #if defined(TCCR0A) && defined(COM0B1)
       if( timer == TIMER0B){
         TCCR0A &= ~(1 << COM0B1);
-        // TCCR0A &= ~(1 << COM0B0); /* no user cleanup */
+        // TCCR0A &= ~(1 << COM0B0); /* We do not clean up after user code that may have shat on a timer. */
       } else
     #endif
     #ifdef __AVR_ATtinyX7__
-      if (timer & 0xF1) { // It's one of the flex pins on timer1
+      if (timer & 0xF1) {               // It's one of the flex pins on timer1
       // Timer1 on x7                   // Likely implementation:
       uint8_t bitmask = timer & 0xF0;   // mov, andi
-      if (!(timer & 0x04)){           // sbrs
-        _SWAP(bitmask);               // swp
+      if (!(timer & 0x04)){             // sbrs
+        _SWAP(bitmask);                 // swp
       }
         TCCR1D &= (~bitmask);           // com, sts
       }
@@ -140,8 +140,9 @@ void digitalWrite(uint8_t pin, uint8_t val) {
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out;
 
-  if (port == NOT_A_PIN) return;
-
+  if (port == NOT_A_PIN) {
+    return;
+  }
   // If the pin that support PWM output, we need to turn it off
   // before doing a digital write.
   if (timer != NOT_ON_TIMER) turnOffPWM(timer);
@@ -215,10 +216,10 @@ void openDrain(uint8_t pin, uint8_t val) {
 
 int8_t digitalRead(uint8_t pin)
 {
-  check_valid_digital_pin(pin);
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
+  check_valid_digital_pin(pin);
   //uint8_t timer = digitalPinToTimer(pin);
   uint8_t port = digitalPinToPort(pin);
   if (port == NOT_A_PORT) return NOT_A_PIN;
@@ -231,6 +232,8 @@ int8_t digitalRead(uint8_t pin)
   // stage for auto-fast-digitalRead() for compile time known pins.
   // if (timer != NOT_ON_TIMER) turnOffPWM(timer);
 
-  if (*portInputRegister(port) & mask) return HIGH;
+  if (*portInputRegister(port) & mask) {
+    return HIGH;
+  }
   return LOW;
 }
