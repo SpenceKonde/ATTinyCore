@@ -25,13 +25,13 @@ Tiny flash, a poor featureset, and a relatively high price tag relegate the x313
 Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
 
 ### There is no bootloader
-Not enough space for it to make sense. The x313-series is a pair of essentially obsolete and overpriced stinkers. Their ongoing popularity is baffling
+Not enough space for it to make sense. The x313-series is a pair of essentially obsolete and overpriced parts being kept in production to milk companies who don't have time to redesign (and haven't for the past decade). Their ongoing popularity is baffling
 
 ### Tone Support
-Tone() uses Timer1. For best results, use pin 12, and 13, as this will use the hardware output compare to generate the square wave instead of using interrupts. In order to use Tone(), you must select Initialize Secondard Timers: Yes
+Tone() uses Timer1. For best results, use pin PB3 (12) or PB4 (13), as this will use the hardware output compare to generate the square wave instead of using interrupts. In order to use Tone(), you must select Initialize Secondard Timers: Yes. tone() will disable PWM on PB3 and PB4.
 
-### Initialize Secondard Timers option
-When an Arduino sketch runs, prior to Setup() being called, a hidden init() function is called to set up the hardware. One of the things it does is configure the timers. Timer0 (used for millis) is always configured, but on the x313 series, due to the extremely limited flash, it is optional whether to initialize Timer1. If Timer1 is not initialized, Tone() and PWM on pins 12 and 13 will not wo
+### Servo Support
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny 4313 though getting everything to fit may be challenging. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), it takes PWM on PB3 and PB4. It is not compatible wih Tone.
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.

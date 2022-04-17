@@ -65,6 +65,9 @@ The two channels of Timer1 can each output on one or more of 4 pins, albeit with
 ### Tone Support
 Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.
 
+### Servo Support
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x7 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. This will disable all PWM pins except PIN_PA2, and is incompatible with tone().
+
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
 
@@ -75,14 +78,14 @@ There is a full hardware SPI port and the normal SPI library can be used.
 There is one full hardware Serial port with LIN support, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. The ATtiny x7-family has LIN support, unique among the ATtiny linup; LIN (Local Interconnect Network) is frequently used in automotive and industrial applications. One consequence of this additional feature is that the baud rate generator is able to match baud rates much more closely than a "standard" UART module.
 
 ## ADC Features
-The ATtiny x7 series features a mid-range ADC - it has the second reference voltage, a built-in voltage divider on AVcc (which is nominally tied to Vcc, optionally with measures taken to reduce noise; nobody takes such measures in Arduino-land, and it generally appears somewhat rare in the wild - note that per datasheet AVcc must be within 0.3V of AVcc), and a modest selection of differential pairs. It also has the rare feature of being able to *OUTPUT* it's internal analog reference voltages.
+The ATtiny x7 series features a mid-range ADC - it has the second reference voltage, a built-in voltage divider on AVcc (which is nominally tied to Vcc, optionally with measures taken to reduce noise; nobody takes such measures in Arduino-land, and it generally appears somewhat rare in the wild - note that per datasheet AVcc must be within 0.3V of AVcc), and a modest selection of differential pairs. It also has the rare feature of being able to *OUTPUT* it's internal analog reference voltages with the expectation that other parts might be using them. It is not clear if the pin can be used for other purposes when an internal reference is used. It helpfully states "The internal voltage reference options may not be used if an external voltage is being applied to the AREF pin" - now, does that mean I can still use it as an output without concern? Or does that mean that if an external reference is used
 
 | Reference Option    | Reference Voltage           | Uses AREF Pin                 |
 |---------------------|-----------------------------|-------------------------------|
 | `DEFAULT`           | Vcc                         | No, pin available             |
 | `EXTERNAL`          | Voltage applied to AREF pin | Yes, ext. voltage             |
-| `INTERNAL1V1`       | Internal 1.1V reference     | No, pin available             |
-| `INTERNAL2V56`      | Internal 2.56V reference    | No, pin available             |
+| `INTERNAL1V1`       | Internal 1.1V reference     | Unclear, looks like yes?      |
+| `INTERNAL2V56`      | Internal 2.56V reference    | Unclear, looks like yes?      |
 | `INTERNAL1V1_XREF`  | Internal 1.1V reference     | Yes, reference output on AREF |
 | `INTERNAL2V56_XREF` | Internal 2.56V reference    | Yes, reference output on AREF |
 | `INTERNAL`          | Same as `INTERNAL1V1`       | No, pin available             |
@@ -141,7 +144,7 @@ Mironucleus used: Micronucleus boards are locked to the crystal, no oscillator c
 
 ### Purchasing ATtiny167 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your purchases support the continued development of this core. Unfortunately this design is currently out of stock; a revised version is in the works.
-* Micronucleus boards are readily available all over the internet, fairly cheaply, in several models. Search for things like "Digispark Pro", "Digispark ATtiny167", "ATtiny167 USB" and so on.
+* Micronucleus boards are readily available all over the internet, fairly cheaply, in several models. Search for things like "Digispark Pro", "Digispark ATtiny167", "ATtiny167 USB" and so on. Of course, these use the odious Digispark pinout... There are going to be at least a few Azduino 167 USB boards available in an "ultramini" formfactor that can be plugged into a
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses shown are "word addressed". The `#` column is the number you are shown in the event of a duplicate vector error, among other things.

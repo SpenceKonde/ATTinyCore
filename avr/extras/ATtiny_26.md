@@ -16,9 +16,10 @@ Clock options | Internal 1/8 MHz, Internal PLL at 16 MHz, external crystal, cloc
 
 Packages | DIP-20, SOIC-20, MLF-32
 
+# Overview
 The ATtiny26 is the predecessor to the 261a/461a/861a and are functionally very similar; the tiny26 was one of the very first ATtiny parts so their functionality is less advanced but they do have a similar differential ADC. It has been not recommended for new designs since 2007 and is supported only on behalf of a paying client who is apparently in possessing of a large quantity of them, will be introduced in the 2.0.0 version of ATTinyCore.
 
-## Programming
+
 Any of these parts can be programmed by use of an ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
 
 ### No bootloader is possible
@@ -110,36 +111,28 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 
 ### Temperature Measurement
 The ATtiny26 predates the usual temperature sensor. There is no temperature measurement.
+## Purchasing ATtiny26 Boards
+The ATtiny 26 is ancient. I do shall not condone it's use in new procucts bt selling development boards. 
+Use a 261, (or better yet an 861)
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny 26 as well as the name you refer to them as when using the `ISR()` macro. Be aware that, like on all other AVRs, a non-existent vector is just a "warning" not an "error" - however, the misspelled vector doesn't end up in the vector table, so if it is enabled and triggered, the device will (at best) immediately reset (often not cleanly). The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed" (that is, 0x0001 is bytes 0x0002 and 0x0003). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 
-### PCINTs are awful here
-There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs like normal. But the PCINTs are not divided by port (see colored boxes in preliminarey diagram) Like the x61 that followed it, and unlike anything more recent, both of them call the same PCINT vector when triggered - *there's ONLY ONE PCINT VECTOR!* But that's not all, and this drives a yet another nail into the coffin of any hope of using a library that relies on PCINTs: **THERE ARE NO PCMSK REGISTERS EITHER** - this is almost a guarantee that no library will work without modification if it relies on PCINTs!
-
-Instead interrupts are masked only by enabling a peripheral/alternate furnction on that pin.
-
- # | Address | Vector Name          | Interrupt Definition
----|---------|----------------------|-------------
- 0 |  0x0000 | RESET_vect           | Any reset (pin, WDT, power-on, BOD)
- 1 |  0x0001 | INT0_vect            | External Interrupt Request 0
- 2 |  0x0002 | PCINT_vect           | Pin Change Interrupt
- 3 |  0x0003 | TIMER1_COMPA_vect    | Timer/Counter1 Compare Match A
- 4 |  0x0004 | TIMER1_COMPB_vect    | Timer/Counter1 Compare Match B
- 5 |  0x0005 | TIMER1_OVF_vect      | Timer/Counter1 Overflow
- 6 |  0x0006 | TIMER0_OVF_vect      | Timer/Counter0 Overflow
- 7 |  0x0007 | USI_START_vect       | USI Start
- 8 |  0x0008 | USI_OVF_vect         | USI Overflow
- 9 |  0x0009 | EE_RDY_vect          | EEPROM Ready
-10 |  0x000A | ANA_COMP_vect        | Analog Comparator
-11 |  0x000B | ADC_vect             | ADC Conversion Complete
-12 |  0x000C | WDT_vect             | Watchdog Time-out (Interrupt Mode)
-13 |  0x000D | INT1_vect            | External Interrupt Request 1
-14 |  0x000E | TIMER0_COMPA_vect    | Timer/Counter0 Compare Match A
-15 |  0x000F | TIMER0_COMPB_vect    | Timer/Counter0 Compare Match B
-16 |  0x0010 | TIMER0_CAPT_vect     | Timer/Counter1 Capture Event
-17 |  0x0011 | TIMER1_COMPD_vect    | Timer/Counter1 Compare Match D
-18 |  0x0012 | FAULT_PROTECTION_vect| Timer/Counter1 Fault Protection
-
-## In conclusion
-These parts are really bad. Use them only if you've got piles of them kicking around, and you're desperate (at the time of writing in 2022, with the Great Pandemic Chip Shortage still in full swing, anything that can be programmed is relevant!) There is a reason that there are two follow-on versions to it, and even those look old by now. The follow-on (x61A) to the follow-on (x61) is old and unpopular. The only redeeming value this line had (the x61A is still weird, and it's PCINTs still only had one vector and it still only had one PWM capable timer - plus it's timer0 was wacky too in different ways) was an ADC that blew the rest of the non-megaAVR parts out of the water, and in practical conditions was on a par with the best megaAVR ones (sure, it the x61's "only" went to 32x gain, not 200x gain like megaAVR did later on - with 1.1v bandgap that would mean a 50 uV per lsb. Do you think those megaAVR parts with differential ADCs had a prayer of that being above the noise floor? I suspect the 32x gain of the 861(A) was, in practice, comparable in terms of how many readable bits could be achieved in real-world condions. I say the same about the 841's 100x gain, especially seeing as it didn't have a separate analog supply pin - at least these have that!
+| num | address| Vector Name        | Interrupt Definition
+|-----|--------|--------------------|--------------------------------------
+|   0 | 0x0000 | RESET_vect         | Any reset (pin, WDT, power-on, BOD)
+|   1 | 0x0001 | INT0_vect          | External Interrupt Request 0
+|   2 | 0x0002 | PCINT0_vect        | Pin Change Interrupt 0 (PORT A)
+|   3 | 0x0003 | PCINT1_vect        | Pin Change Interrupt 1 (PORT B)
+|   4 | 0x0004 | WDT_vect           | Watchdog Time-out (interrupt mode)
+|   5 | 0x0005 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A
+|   6 | 0x0006 | TIMER1_COMPB_vect  | Timer/Counter1 Compare Match B
+|   7 | 0x0007 | TIMER1_OVF_vect    | Timer/Counter1 Overflow
+|   8 | 0x0008 | TIMER0_COMPA_vect  | Timer/Counter0 Compare Match A
+|   9 | 0x0009 | TIMER0_COMPB_vect  | Timer/Counter0 Compare Match B
+|  10 | 0x000A | TIMER0_OVF_vect    | Timer/Counter0 Overflow
+|  11 | 0x000B | ANA_COMP_vect      | Analog Comparator
+|  12 | 0x000C | ADC_vect           | ADC Conversion Complete
+|  13 | 0x000D | EE_RDY_vect        | EEPROM Ready
+|  14 | 0x000E | USI_START_vect     | USI Start
+|  15 | 0x000F | USI_OVF_vect       | USI Overflow

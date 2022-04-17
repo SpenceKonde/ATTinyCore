@@ -23,11 +23,13 @@ Int. ULP Oscillator   |   32, 64, 128, |  Not supported |  Not supported |   32,
 Int. ULP Osc. Cont.   | 256 or 512 kHz |                |                | 256 or 512 kHz |                |
 Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
 
+
 Two pinout options are available, clockwise and counterclockwise, see below for more information. Be sure that the one you have selected is the one that you intend!
 
 These parts are available in a SOIC-14, 4x4mm QFN-20, or 3x3mm VQFN-20. No, I don't know why they didn't use a 16-pin QFN either.
 
 The ATtiny x41-family is a more advanced version of the ATtiny x4-family. It is pin compatible, though available only in surface mount packages, and offers an incredible array of peripherals, whilst costing only slightly more than an ATtiny 84. Tests have shown that despite manufacturer spec'ed max speed of 16 MHz, they typically work without issue at 20 MHz @ 5v and room temperature.
+
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.

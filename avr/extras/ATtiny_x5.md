@@ -19,7 +19,6 @@ Internal, with tuning |    16.5, 12, 8 |    16.5, 12, 8 |    16.5, 12, 8 |    16
 External Crystal      |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
 External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
 Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |
-Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
@@ -28,7 +27,7 @@ Any of these parts can be programmed by use of any ISP programmer. If using a ve
 This core includes an Optiboot bootloader for the ATtiny85/45, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 85/45, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
 ### Micronucleus VUSB Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched unless a slower clock speed is selected. These lower clock speeds are not compatible with USB libraries. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. D- is on pin 3, D+ is on pin 4.
+This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched unless a slower clock speed is selected. These lower clock speeds are not compatible with USB libraries. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. D- is on pin 3, D+ is on pin 4. Note that for the most part, libraries that make an ATtiny85 work as a USB device don't work correctly. See the aforementioned link for more information.
 
 ### LED_BUILTIN is on PB1
 Both optiboot and micronucleus will try to blink it in addition to user code that references LED_BUILTIN.
@@ -41,8 +40,8 @@ The ATtiny x5-family parts have an on-chip PLL. This is clocked off the internal
 ### Timer1 is a high speed timer
 This means it can be clocked at 64 MHz from the on-chip PLL. In the past a menu option was provided to configure this. It never worked, and in any event is insufficient to do much of practical use with. It was eliminated for 2.0.0. Instead, see the [ATTinyCore library](../libraries/ATTinyCore/README.md)
 
-### Tone Support
-Tone() uses Timer1. If the high speed functionality of Timer1 has been enabled (see link above), tone() will not produce the expected frequencies, but rather ones 2 or 4 times higher. For best results, use pin 1 or 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, "tones" can be generated up into the MHz range.  If using SoftwareSerial or the builtin software serial "Serial", tone() will work on pin 1 or 4 while the software serial is active but not on any other pins. Tone will disable PWM on pins 1 and 4.
+#### By default, PB1 uses timer1
+Since it is the more capable timer (it can be clocked at 64 MHz from an internal PLL and has every power of two as a prescling option. This can be overridden with the tools -> PB1 Timer menu.
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
@@ -57,9 +56,18 @@ Though TX defaults to AIN0, it can be moved to any pin using Serial.setTxBit(b) 
 
 To disable the RX channel (to use only TX), select "TX only" from the Builtin SoftSerial tools menu. To disable the TX channel, simply don't print anything to it, and set it to the desired pinMode after Serial.begin()
 
-### Servo Support
-Although the timers are quite different, and historically there have been issues with the Servo library, we include a builtin Servo library that supports the Tiny x5 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial).  On prior versions, a third party library must be used. The servo library will disable PWM on pin 4, regardless of which pin is used for output, and cannot be used at the same time as Tone. If you have installed a version of Servo through Library Manager, instead include `Servo_ATTinyCore.h` or it will use the incompatible library installed through library manager.
+### Tone Support
+Tone() uses Timer1. If the high speed functionality of Timer1 has been enabled (see link above), tone() will not produce the expected frequencies, but rather ones 2 or 4 times higher. For best results, use pin 1 or 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, "tones" can be generated up into the MHz range.  If using SoftwareSerial or the builtin software serial "Serial", tone() will work on pin 1 or 4 while the software serial is active but not on any other pins. Tone will disable PWM on pins 1 and 4.
 
+### Servo Support
+Although the timers are quite different, and historically there have been issues with the Servo library, we include a builtin Servo library that supports the Tiny x5 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial).
+
+### Servo and Tone break PB4 (and possibly PB1 for PWM)
+The servo library and the tone function require full control of timer1.  This has two unfortunate consequences:
+* There is no PWM available on the Timer1 pins (PB4 and - by default - PB1) if either tone() is outputting a tone, or the servo library is used.
+* The Servo library cannot be used at the same time as tone
+
+I realize that this is sometimes painful, but you're using an 8-pin tinyAVR that's over a decade old! Really, what do you expect? (this is not an issue on modern tinyAVRs (the ones supported by megaTinyCore))
 
 ## ADC Features
 The ATtiny85 has a differential ADC, unlike even some ATmega parts, but like many other ATtiny devices. Gain of 1x or 20x is available, and two differential pairs are available. The ADC supports both bipolar mode (-512 to 511) and unipolar mode (0-1023) when taking differential measurements; you can set this using `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available. All of the channels can have the positive and negative inputs swapped; they advise taking a measurement in bipolar mode, and then swapping the direction if needed and switching to unipolar mode to double the effective resoluition.

@@ -59,6 +59,9 @@ All pin mapping options assume that PB2 has the LED (bootloaders will blink that
 ### Tone Support
 Tone() uses Timer1. For best results, use PA6 and PA5, as this will use the hardware output compare to generate the square wave instead of using interrupts.
 
+### Servo Support
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x4 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), this will disable PWM on PA6 and PA6.
+
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
 
@@ -138,7 +141,7 @@ There are 12 differential pairs available, all with selectable gain. On A0, A3, 
 By default, differential measurements are taken with the gain stage in "unipolar" mode; in order to get meaningful data, the positive side must be higher than the negative side. This is great if you you know ahead of time that one of them will definitely be higher (and often you do). But you can also use it in bipolar mode - in this mode there are 9 bits of resolution, plus a sign bit; by letting it go negative,
 
 ### Temperature Measurement
-To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
+To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.s are stored). See the section below for the recommended locations for these.
 
 
 ## Purchasing ATtiny84 Boards
@@ -147,35 +150,38 @@ I (Spence Konde) sell a specialized prototyping board that combines an ISP heade
 * [ATtiny84 prototyping board](https://www.tindie.com/products/drazzy/attiny84-project-board/)
 * Micronucleus boards can be bought from one of my collaborators: [Micronucleus ATtiny84a](https://www.tindie.com/products/svdbor/tiniest-arduino-compatible-board-with-micronucleus/)
 
+
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x4-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things. As shown in the below table, the core provides aliases of the names timer interrupts with names starting with TIMn and TIMERn. During the era that these parts were released, Atmel was not naming their vectors consistently. The names starting with TIMERn are to be preferred.
 
-| vect_num | Vector Address |    Vector Name    |      Interrupt Definition           |
-|----------|----------------|-------------------|-------------------------------------|
-|        0 |        0x0000  | RESET_vect        | Any reset (pin, WDT, power-on, BOD) |
-|        1 |        0x0001  | INT0_vect         | External Interrupt Request 0        |
-|        2 |        0x0002  | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |
-|        3 |        0x0003  | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)     |
-|        4 |        0x0004  | WDT_vect          | Watchdog Time-out (Interrupt Mode)  |
-|        5 |        0x0005  |   TIM1_CAPT_vect  | Timer/Counter1 Capture Event        |
-|        5 |        0x0005  | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore      |
-|        6 |        0x0006  |   TIM1_COMPA_vect | Timer/Counter1 Compare Match A      |
-|        6 |        0x0006  | TIMER1_COMPA_vect | Alias - provided by ATTinyCore      |
-|        7 |        0x0007  |   TIM1_COMPB_vect | Timer/Counter1 Compare Match B      |
-|        7 |        0x0007  | TIMER1_COMPB_vect | Alias - provided by ATTinyCore      |
-|        8 |        0x0008  |   TIM1_OVF_vect   | Timer/Counter1 Overflow             |
-|        8 |        0x0008  | TIMER1_OVF_vect   | Alias - provided by ATTinyCore      |
-|        9 |        0x0009  |   TIM0_COMPA_vect | Timer/Counter0 Compare Match A      |
-|        9 |        0x0009  | TIMER0_COMPA_vect | Alias - provided by ATTinyCore      |
-|       10 |        0x000A  |   TIM0_COMPB_vect | Timer/Counter0 Compare Match B      |
-|       10 |        0x000A  | TIMER0_COMPB_vect | Alias - provided by ATTinyCore      |
-|       11 |        0x000B  |   TIM0_OVF_vect   | Timer/Counter0 Overflow             |
-|       11 |        0x000B  | TIMER0_OVF_vect   | Alias - provided by ATTinyCore      |
-|       12 |        0x000C  | ANA_COMP_vect     | Analog Comparator                   |
-|       13 |        0x000D  | ADC_vect          | ADC Conversion Complete             |
-|       14 |        0x000E  | EE_RDY_vect       | EEPROM Ready                        |
-|       16 |        0x000F  | USI_STR_vect      | USI START                           |
-|       17 |        0x0010  | USI_OVF_vect      | USI Overflow                        |
+
+
+| num | Vector Address |    Vector Name    |      Interrupt Definition           |
+|-----|----------------|-------------------|-------------------------------------|
+    0 |        0x0000  | RESET_vect        | Any reset (pin, WDT, power-on, BOD) |
+    1 |        0x0001  | INT0_vect         | External Interrupt Request 0        |
+    2 |        0x0002  | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |
+    3 |        0x0003  | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)     |
+    4 |        0x0004  | WDT_vect          | Watchdog Time-out (Interrupt Mode)  |
+    5 |        0x0005  |   TIM1_CAPT_vect  | Timer/Counter1 Capture Event        |
+    5 |        0x0005  | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore      |
+    6 |        0x0006  |   TIM1_COMPA_vect | Timer/Counter1 Compare Match A      |
+    6 |        0x0006  | TIMER1_COMPA_vect | Alias - provided by ATTinyCore      |
+    7 |        0x0007  |   TIM1_COMPB_vect | Timer/Counter1 Compare Match B      |
+    7 |        0x0007  | TIMER1_COMPB_vect | Alias - provided by ATTinyCore      |
+    8 |        0x0008  |   TIM1_OVF_vect   | Timer/Counter1 Overflow             |
+    8 |        0x0008  | TIMER1_OVF_vect   | Alias - provided by ATTinyCore      |
+    9 |        0x0009  |   TIM0_COMPA_vect | Timer/Counter0 Compare Match A      |
+    9 |        0x0009  | TIMER0_COMPA_vect | Alias - provided by ATTinyCore      |
+   10 |        0x000A  |   TIM0_COMPB_vect | Timer/Counter0 Compare Match B      |
+   10 |        0x000A  | TIMER0_COMPB_vect | Alias - provided by ATTinyCore      |
+   11 |        0x000B  |   TIM0_OVF_vect   | Timer/Counter0 Overflow             |
+   11 |        0x000B  | TIMER0_OVF_vect   | Alias - provided by ATTinyCore      |
+   12 |        0x000C  | ANA_COMP_vect     | Analog Comparator                   |
+   13 |        0x000D  | ADC_vect          | ADC Conversion Complete             |
+   14 |        0x000E  | EE_RDY_vect       | EEPROM Ready                        |
+   16 |        0x000F  | USI_STR_vect      | USI START                           |
+   17 |        0x0010  | USI_OVF_vect      | USI Overflow                        |
 
 ## 84 vs 84a - you said "almost" fully interchangible?
 Okay, there is one difference I'm aware of that makes them distinct: The older 861 design has the old, bifurcated calibration curve for the internal oscillator, that is, the speed jumps backwards as you increase the `OSCCAL` register from 127 to 128. The "bifurcated" oscillators are also generally less accurate and less stable than ones like the one in the ATtiny84A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (since USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts.
