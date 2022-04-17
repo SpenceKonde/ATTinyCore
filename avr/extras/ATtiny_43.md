@@ -20,23 +20,17 @@
 | External Clock          |              8 |
 | LED_BUILTIN             |            PA5 |
 
+## Overview
 The ATtiny43 is a very unusual microcontroller - the featureset is unremarkable, inferior to just about anything else in the ATtiny product line - except for one thing: A built-in boost converter that allows it to run off of just ~1.1v (startup - it will keep running as low as 0.7v) - so you can run a project off a single alkaline battery. It generates ~3v while in active mode, and can provide up to 30mA for peripherals. When using the boost converter, you must run at 4MHz or less. The "Internal 4MHz" option sets the fuses to start at 1MHz and then switches to 4MHz upon startup. See the datasheet for details of the layout, external components required, and further details of the boost converter operation.
 
-### Boost Converter Capability The boost converter will start up as long as
-the battery voltage is 1.2v or higher (according to the datasheet - in my
-testing, it seems to start at 1.1v), generating 3v. It will keep running as
-long as VBat is at least 0.8v, possibly even lower. It is capable of supplying
-30mA to external devices as long as VBat > 1.0v (at lower VBat, the maximum
-current is lower, and if overloaded, the 3v output is, of course, not
-guaranteed). The main benefit here as compared to an external boost converter
-is realized when there  is minimal external load, and the chip spends a large
-portion of it's time in sleep modes, during which the demands on the boost
-converter are relaxed: the voltage is allowed to fall over the course of a
-cycle i, permitting a very low dty cyv and the power consumption falls
-significantly.
+### Boost Converter Capability
+The boost converter will start up as long as the battery voltage is 1.2v or higher (according to the datasheet - in my testing, it seems to start at 1.1v), generating 3v. It will keep running as long as VBat is at least 0.8v, possibly even lower. It is capable of supplying 30mA to external devices as long as VBat > 1.0v (at lower VBat, the maximum current is lower, and if overloaded, the 3v output is, of course, not guaranteed). The main benefit here as compared to an external boost converter is realized when there  is minimal external load, and the chip spends a large portion of it's time in sleep modes, during which the demands on the boost converter are relaxed: the voltage is allowed to fall over the course of a cycle i, permitting a very low dty cyv and the power consumption falls significantly.
 
 ### Tone Support
-Tone() uses Timer1. For best results, use pin 5 or 6 (PIN_PB5, PIN_PB6) as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will take out PWM on pins 5 amd 6.
+Tone() uses Timer1. For best results, use pin 5 or 6 (PIN_PB5, PIN_PB6) as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will take out PWM on pins PB5 and PB5.
+
+### Servo support
+No. if you'ure using a 43, you have 1.8-2V. Servos take 5-6, and it has a uniquely bad timer so adding support would be difficult and the result unsatisfactory
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
@@ -69,7 +63,7 @@ ISP programming: Make sure to have EESAVE fuse set, stored in EEPROM
 ## Purchasing ATtiny43 Boards
 I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your purchases support the continued development of this core.
 * [Assembled Board, including boost converter](https://www.tindie.com/products/16617/)
-* **Bare Boards** Coming soon
+
 ### Temperature Measurement
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 ## Purchasing ATtiny84 Boards
