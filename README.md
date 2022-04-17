@@ -63,13 +63,13 @@ If you want to use Micronucleus (VUSB) boards on Windows, you must manually inst
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
 #### Timing or baud rates are wrong
-Typically 8x slower than expected - see below entry. 
+Typically 8x slower than expected - see below entry.
 
 #### When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader
 The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured, and so writing the .
 
 #### VUSB is not supported for USB functionality within the sketch
-It has been persuasively argued to me that it is not possible to get these parts to meet USB timing contstraints in an interrupt driven context without compromising on everything else. On the classical digispark, their core bent over backwards and got only mediocre results. The libraries floating around are stale, having rarely received updates, often dating back to the days of avr-gcc 4.8.x, and only ever worked on the digispark core - and even there they didn't work particularly well. USB timing constraints are very constraining. If anyone cared to put in the considerable amount of effort it would involve to port micronucleus and package the VUSB libraries, the pieces to make this viable *are actually present on the tinyAVR 0/1/2-series* (the key feature being the lvl 1 priority interrupt option though the improvements to instruction set timing don't hurt). But I don't know that anyone is showing much interest in taking that on. 
+It has been persuasively argued to me that it is not possible to get these parts to meet USB timing contstraints in an interrupt driven context without compromising on everything else. On the classical digispark, their core bent over backwards and got only mediocre results. The libraries floating around are stale, having rarely received updates, often dating back to the days of avr-gcc 4.8.x, and only ever worked on the digispark core - and even there they didn't work particularly well. USB timing constraints are very constraining. If anyone cared to put in the considerable amount of effort it would involve to port micronucleus and package the VUSB libraries, the pieces to make this viable *are actually present on the tinyAVR 0/1/2-series* (the key feature being the lvl 1 priority interrupt option though the improvements to instruction set timing don't hurt). But I don't know that anyone is showing much interest in taking that on.
 
 To make matters worse, much of the functionality you want on Windows (namely, low speed CDC for a serial port) requires drivers that don't exist in a fully working form. Unfortunately, even if you found a solution to meet the USB constraint and made the drivers work, that's still not enough because you need to bend over backwards to install them if they haven't been blessed with a digital signaure from Microsoft, so it is difficult to get a solution you could share with the world
 
@@ -84,7 +84,7 @@ These can occur if Arduino was installed through the Snap package manager. The A
 #### There are several problems encountered when using versions of Arduino older than 1.8.13
 That version has been out for over a year and a half. While we do not intentionally break things on older IDE versions, we also do not test on older versions.
 
-#### Windows store version sometimes experiences strange issues. 
+#### Windows store version sometimes experiences strange issues.
 The windows store issues are difficult to reproduce on other systems, and no reliable solutions to them are currently known. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version.
 
 #### Problems programming some parts for first time, especially ATtiny841/441
@@ -97,7 +97,7 @@ Enable verbose upload output, and it will tell you what sig it actually saw. **0
 This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
 
 #### When using analogRead(), use the A# constant to refer to the pin
-Previously (prior to 2.0.0) numbers were treated as analog channel numbers. Now they are treated as the digital pin number (the old behavior, when explained to people, generally got several incredulous clarifying questions, followed by something to the effect of "I consider that behavior to be incorrect", usually with some abbreviated profanity. Nobody liked the old behavior. 
+Previously (prior to 2.0.0) numbers were treated as analog channel numbers. Now they are treated as the digital pin number (the old behavior, when explained to people, generally got several incredulous clarifying questions, followed by something to the effect of "I consider that behavior to be incorrect", usually with some abbreviated profanity. Nobody liked the old behavior.
 
 #### When using I2C on anything other than the ATtiny48/88
 You **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). 4.7k or 10k is a good default value. On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. **Even on the 48/88 you should always use external pullups** as the internal pullups are not nearly as strong as the specification requires.
@@ -108,8 +108,8 @@ these are defined by the compiler-supplied headers, and not to what an arduino u
 #### All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling;
 this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.
 
-#### Extra ~270 uA current during sleep mode
-Turn off the ADC before entering sleep mode. 
+#### Extra aprox. 270 uA current during sleep mode
+Turn off the ADC before entering sleep mode.
 ```c++
 ADCSRA &= (~(1 << ADEN))
 ```
@@ -409,6 +409,9 @@ On all supported parts, timekeeping functions are on timer0. This means that rec
 On all parts except the tiny841/441 `tone()` is on timer1; on 841/441. tone() is on Timer2 to improve compatibility; with Tone moved onto timer2, the many libraries that use timer1 (Servo, TimerOne, and many others) can be used alongside `tone()` on the 841/441. Using `tone()` will prevent PWM from working on PWM pins controlled by Timer1 (Timer2 for 841/441), and manipulating it's registers will break `tone()`.
 
 Most of the ATtiny parts only have two timers. The attiny841 has a third timer, timer2, which is an exact copy of the lovely 16-bit timer1, and completely different from the timer2 that most atmega devices have. Libraries designed to work with "Timer2" will not work on any of these parts, even the 841/441.
+
+### printf() support
+Serial and similar classes support the printf syntax. This feature, common on third party cores, is absent from the official cores. Unlike more modern cores we do not provide a menu to configure printf mode.
 
 ### Built-in tinyNeoPixel library
 
