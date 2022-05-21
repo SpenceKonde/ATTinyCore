@@ -50,30 +50,33 @@ union USI_TWI_state {
 } USI_TWI_state;
 
 void USI_TWI_Master_Speed(uint8_t fm) {
-  USI_TWI_MASTER_SPEED = fm?1:0;
+  USI_TWI_MASTER_SPEED = fm ? 1 : 0;
 }
 
-/*---------------------------------------------------------------
+/*---------------------------------------------------------------------------
  USI TWI single master initialization function
----------------------------------------------------------------*/
+---------------------------------------------------------------------------*/
+/* The pin defines are from pins_arduino.h (in abbreviated form)*
+ * which is then used to generate the full suite of defines     *
+ * in Arduino.h, from whence pins_arduino.h was included.       */
 void USI_TWI_Master_Initialise(void) {
-  #ifdef USI_PUE
-  USI_PUE         |= (1 << USI_DI_BIT);
-  USI_CLOCK_PUE   |= (1 << USI_CLOCK_BIT);
-  #endif
-  USI_PORT        |= (1 << USI_DI_BIT);     // Enable pullup on SDA, to set high as released state.
-  USI_CLOCK_PORT  |= (1 << USI_CLOCK_BIT); // Enable pullup on SCL, to set high as released state.
+  #ifdef USI_PUE                                          // Turn on the pullups if it's the single example of a chip with USI and a PUE register (the 1634)
+  USI_PUE         |= (1 << USI_DI_BIT);                   // Pullup on SDA
+  USI_CLOCK_PUE   |= (1 << USI_CLOCK_BIT);                // Pullup on SCL - USI_CLOCK_* defines are to handle the case of SCL being on a different port than SDA, which is true on....
+  #endif                                                  // *drumroll* The 1634 - and nothing else!
+  USI_PORT        |= (1 << USI_DI_BIT);                   // Enable pullup on SDA, to set high as released state.
+  USI_CLOCK_PORT  |= (1 << USI_CLOCK_BIT);                // Enable pullup on SCL, to set high as released state.
 
-  USI_CLOCK_DDR   |= (1 << USI_CLOCK_BIT);  // Enable SCL as output.
-  USI_DDR         |= (1 << USI_DI_BIT);      // Enable SDA as output.
+  USI_CLOCK_DDR   |= (1 << USI_CLOCK_BIT);                // Enable SCL as output.
+  USI_DDR         |= (1 << USI_DI_BIT);                   // Enable SDA as output.
 
   USIDR = 0xFF;                                           // Preload dataregister with "released level" data.
   USICR = (0 << USISIE) | (0 << USIOIE) |                 // Disable Interrupts.
           (1 << USIWM1) | (0 << USIWM0) |                 // Set USI in Two-wire mode.
           (1 << USICS1) | (0 << USICS0) | (1 << USICLK) | // Software stobe as counter clock source
           (0 << USITC);
-  USISR = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF) | (1 << USIDC) | // Clear flags,
-          (0x0 << USICNT0);                                             // and reset counter.
+  USISR = (1 << USISIF) | (1 << USIOIF) | (1 << USIPF)  | // Clear flags,
+          (1 << USIDC)  | (0x0 << USICNT0);               // and reset counter.
 }
 
 /*---------------------------------------------------------------
@@ -151,15 +154,12 @@ unsigned char USI_TWI_Start_Transceiver_With_Data_Stop(unsigned char *msg, unsig
   /* Release SCL to ensure that (repeated) Start can be performed */
   USI_CLOCK_PORT |= (1 << USI_CLOCK_BIT);           // Release SCL.
   while (!(USI_CLOCK_PIN & (1 << USI_CLOCK_BIT)));  // Verify that SCL becomes high.
-  if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM;         // Delay for T4TWI if TWI_FAST_MODE
-  else DELAY_T2TWI;                                 // Delay for T2TWI if TWI_STANDARD_MODE
+  if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T2TWI;          // Delay for T4TWI if TWI_FAST_MODE,  T2TWI if TWI_STANDARD_MODE
                                                     /* Generate Start Condition */
-  USI_PORT &= ~(1 << USI_DI_BIT);              // Force SDA LOW.
-
+  USI_PORT &= ~(1 << USI_DI_BIT);                   // Force SDA LOW.
   if (USI_TWI_MASTER_SPEED) DELAY_T4TWI_FM; else DELAY_T4TWI;
-
   USI_CLOCK_PORT &= ~(1 << USI_CLOCK_BIT);          // Pull SCL LOW.
-  USI_PORT |= (1 << USI_DI_BIT);               // Release SDA.
+  USI_PORT |= (1 << USI_DI_BIT);                    // Release SDA.
 #ifdef SIGNAL_VERIFY
   if (!(USISR & (1 << USISIF))) {
     USI_TWI_state.errorState = USI_TWI_MISSING_START_CON;

@@ -36,14 +36,20 @@
 
 //********** Defines **********//
 // Generalized way of getting a correct delay that is acceptable by standard or fast mode I2C
-// round up to nearest 1mhz if not even multiple of 1 MHz and divide by 1000000 to get clock/us rounded up (safe)
-// these are the number of passes through _delay_loop1()
-#define CLKBASE ((F_CPU + 999999)/1000000)
-#define T2_TWI (5*CLKBASE) //5us
-#define T4_TWI (4*CLKBASE) //4us
+
+
+#define usToDelayLoopIter(us,usdivisor,roundfactor) ((((((us) * F_CPU)/(usdivisor))/3)+(roundfactor))/1000000)
+// this defines the number of passes through 3-clock simple loop that will give the requested runtime, in us.
+// The factor of 1 million is left in there until the very end to prevent integer math effects from building on eachother.
+// Rounding factor is the amounnt added after the rest of calculationr to the intermediate value before dividing by 1 million
+
+#define CLKBASE ((F_CPU)
+#define T2_TWI (usToDelayLoopIter(5,1,500000)) //5us
+#define T4_TWI (usToDelayLoopIter(4,1,500000)) //4us
 // these all err in the direction of being too slow, which is fine
-#define T2_TWI_FM (2*CLKBASE-(CLKBASE>>1)) //1.5us
-#define T4_TWI_FM (CLKBASE-(CLKBASE>>2)) //0.75us
+#define T2_TWI_FM (usToDelayLoopIter(3,2,500000)) //1.5us = 3/2 -> 3 is us passed, 2 is divisor
+#define T4_TWI_FM (usToDelayLoopIter(3,4,750000)) //0.75us = 3/4th -> 3 is the us passed, 4 us divisor.
+
 
 // Defines controlling code generating
 //#define PARAM_VERIFICATION
@@ -65,13 +71,15 @@
 #define USI_TWI_UE_START_CON 0x02      // Unexpected Start Condition
 #define USI_TWI_UE_STOP_CON 0x03       // Unexpected Stop Condition
 #define USI_TWI_UE_DATA_COL 0x04       // Unexpected Data Collision (arbitration)
-#define USI_TWI_NO_ACK_ON_DATA 0x05    // The slave did not acknowledge  all data
-#define USI_TWI_NO_ACK_ON_ADDRESS 0x06 // The slave did not acknowledge  the address
+#define USI_TWI_NO_ACK_ON_DATA 0x05    // The slave did not acknowledge all data
+#define USI_TWI_NO_ACK_ON_ADDRESS 0x06 // The slave did not acknowledge the address
 #define USI_TWI_MISSING_START_CON 0x07 // Generated Start Condition not detected on bus
 #define USI_TWI_MISSING_STOP_CON 0x08  // Generated Stop Condition not detected on bus
 
 
-#include "pins_arduino.h"
+// #include "pins_arduino.h"
+// This is already pulled in by Arduino.h on ATTinyCore. If it's not coming through correctly via Arduino.h, we're fucked anyway.
+// because this library **requires** the defines derived from it.
 
 // General defines
 #define TRUE 1
