@@ -29,7 +29,7 @@
  * AVR Only definitions
  * --------------------
  */
-
+/*
 // Say which 16 bit timers can be used and in what order
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #define _useTimer5
@@ -51,8 +51,12 @@ typedef enum { _timer3, _timer1, _Nbr_16timers } timer16_Sequence_t;
 #define _useTimer3
 #define _useTimer1
 typedef enum { _timer3, _timer1, _Nbr_16timers } timer16_Sequence_t;
+*/
+// not defined in tinyAVR devices.
+///#else  // everything else
 
-#else  // everything else
+#ifdef __AVR_ATtinyx41__
+#define _useTimer2
 #define _useTimer1
 typedef enum { _timer1, _Nbr_16timers } timer16_Sequence_t;
 #endif
