@@ -122,5 +122,5 @@
 #endif
 
 #ifndef round
-#define round(x)     ({ __typeof__ (x) _x = (x);  _x >= 0 ? (long)x + 0.5 : (long)x - 0.5 ;})
+#define round(x)     ({ __typeof__ (x) _x = (x);  _x >= 0.5 ? (long)(x + 0.5) : (long)(x - 0.5) ;})
 #endif

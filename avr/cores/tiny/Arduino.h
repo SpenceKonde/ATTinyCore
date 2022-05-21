@@ -131,13 +131,8 @@ void badArg(const char*) __attribute__((error("")));
 // badArg is when we can determine at compile time that an argument is inappropriate.
 
 void badCall(const char*) __attribute__((error("")));
-// badCall is used when the function should not be called, period, under those conditions.
-
-inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
-{
-  if(!__builtin_constant_p(pin))
-    badArg("Fast digital pin must be a constant");
-}
+// badCall is used when the function should not be called, period (for the selected part with the currently selected options for all tools submenus)
+// and calling it with different arguments can't change that.
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
@@ -180,13 +175,14 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #define PD 4
 
 #define NOT_ON_TIMER 0
-#define TIMER0A 1
-#define TIMER0B 2
-#define TIMER1A 3
-#define TIMER1B 4
-#define TIMER2A 5
-#define TIMER2B 6
-#define TIMER1D 7
+#define TIMER0A 1   /* most parts - but not x61, or x8. On the x61, normal timers wouldn't put up with the weird timer1, and they had to find a timer just as weird for timer0. In contrast, the x8 just cheaped out */
+#define TIMER0B 2   /* most parts - but not x61, x7, or x8. As above, but for reasons that I don't quite understand timer0 only got 1 channel on the x7 */
+#define TIMER1A 3   /* all parts? If not all, almost all */
+#define TIMER1B 4   /* all parts? If not all, almost all */
+#define TIMER2A 5   /* x41 only - nothing else has 3 timers */
+#define TIMER2B 6   /* x41 only - nothing else has 3 timers */
+
+#define TIMER1D 7   /* x61 only - the usable half of the third phase of the 3-phase motor driving functionality.  */
 
 /* This is TRICKY
   We need the bitmask, not bit position when we use this.
@@ -200,8 +196,8 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   c is the timer channel (see above defines)
   t is (1 << (TOCCnumber & 0x03)) - that is 0b0001, 0b0010, 0b0100, or 0b1000
   s is 0 if TOCCnumber < 4, otherwise 1
-  The left/rightshift 4 positions is only 2 clocks - 1 for a swp instruction
-  1 for andi 0xF0/0x0F (depending on direction of shift), whild 4 actual left/ri
+  The left/right shift 4 positions is only 2 clocks - 1 for a swp instruction
+  1 for andi 0xF0/0x0F (depending on direction of shift).
 
   So timer number = TOCCn & 0x07, and
   TOCC mask = TOCCn & 0xF0 >> (TOCCn & 0x08)?4:0
@@ -222,14 +218,14 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   channel. Implementing this was faster than making
   an actual "decision" */
 #if defined(OC1AX)
-  #define TIM1AU (0x18 | 3)
-  #define TIM1AV (0x28 | 3)
-  #define TIM1AW (0x48 | 3)
-  #define TIM1AX (0x88 | 3)
-  #define TIM1BU (0x14 | 4)
-  #define TIM1BV (0x24 | 4)
-  #define TIM1BW (0x44 | 4)
-  #define TIM1BX (0x84 | 4)
+  #define TIM1AU (0x18 | TIMER1A)
+  #define TIM1AV (0x28 | TIMER1A)
+  #define TIM1AW (0x48 | TIMER1A)
+  #define TIM1AX (0x88 | TIMER1A)
+  #define TIM1BU (0x14 | TIMER1B)
+  #define TIM1BV (0x24 | TIMER1B)
+  #define TIM1BW (0x44 | TIMER1B)
+  #define TIM1BX (0x84 | TIMER1B)
 #endif
 #include "pins_arduino.h"
 
@@ -246,15 +242,15 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   #define USI_CLOCK_PUE   USI_PUE
 #endif
 
-// If these are defined by pins_arduino, then it's not a USI-based part
+// If these are not defined in pins_arduino, and we have a USI, then that's what is used for these interfaces.
 
-#ifndef SCK
+#if !defined(SCK) && defined(USIDR)
   #define MOSI  USI_DO
   #define MISO  USI_DI
   #define SCK   USI_SCK
 #endif
 
-#ifndef SCL
+#if !defined(SCL) && defined(USIDR)
   #define SDA   USI_DI
   #define SCL   USI_SCK
 #endif
@@ -314,7 +310,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #else
   #if defined(INITIALIZE_ADC)
     #if INITIALIZE_ADC != 0
-      #error "STOP - Variant requested that the ADC be initialized, but this part does not have one (NUM_ANALOG_INPUTS == 0). This indicates a critical defect in ATTinyCore which should be reported promptly."
+      #error "STOP - Variant requested that the ADC be initialized, but it also said that the chip didn't have an ADC (NUM_ANALOG_INPUTS == 0). This indicates a critical defect in ATTinyCore which should be reported promptly"
     #endif
     #undef INITIALIZE_ADC
   #endif
@@ -341,6 +337,42 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   #endif
 #endif
 
+/* check_*_pin() truth table:
+ *
+ * pin       | pin constant? | return value | check_constant_pin() |
+ * ----------|---------------|--------------|----------------------|
+ * anything  | No            | True         | badArg()             |
+ * NOT_A_PIN | Yes           | False        | no error             |
+ * valid pin | Yes           | True         | no error             |
+ * other     | Yes           | badArg()     | no error             |
+ *
+ * Fast Digital I/O requires both to pass, and for check_valid_digital_pin() to return true.
+ *
+ * pinModeFast(pin, INPUT, OUTPUT, or INPUT_PULLUP)
+ * openDrainFast(pin,FLOATING or LOW)
+ * digitalReadFast(pin)
+ * digitalWriteFast(pin, value)
+ * digitalWriteFaster(pin, value)
+ *
+ * The fast digital I/O functions otherwise behave like their conventional brethren, but write the pin in the most optimal way possible
+ * typically via SBI or CBI, or SBIS or SBIC for digitalRead(), rather than using the lookup tables every time. The cost of this is in
+ * flexibility - they must used with a constant pin number. In the case of the two "hard" ones, (pinMode and openDrain) the mode must
+ * also be constant.
+ * These also make the assumption that a pin is not currently being used to output PWM, as that would add a considerable amount of code
+ * mostly to handle the case of turning off PWM. Note that the overhead to turnOffPWM is much smaller on the 828 and x41.
+ *
+ * turnOffPWM(timer) - does what it says on the package. Called by digitalWrite(). Takes a TIMER as argument, not a pin!
+ *      NOT called by digitalRead in a departure from the stock cores, because "read" doesn't mean "change it's state and then read"
+ * openDrain(pin, LOW or FLOATING) - LOW sets the pin OUTPUT and LOW. FLOATING sets the pin INPUT and LOW
+ *
+ *
+ */
+
+inline __attribute__((always_inline)) void check_constant_pin(uint8_t pin)
+{
+  if(!__builtin_constant_p(pin))
+    badArg("Fast digital pin must be a constant");
+}
 
 inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pin) {
   if(__builtin_constant_p(pin)) {
@@ -348,21 +380,24 @@ inline __attribute__((always_inline)) uint8_t check_valid_digital_pin(uint8_t pi
     // Exception made for NOT_A_PIN - code exists which relies on being able to pass this and have nothing happen.
     // While IMO very poor coding practice, these checks aren't here to prevent lazy programmers from intentionally
     // taking shortcuts we disapprove of, but to call out things that are virtually guaranteed to be a bug.
-    // Passing -1/255/NOT_A_PIN to the digital I/O functions is most likely intentional.
-      badArg("Digital pin is constant, but not a valid pin");
+    // Passing -1/255/NOT_A_PIN to the digital I/O functions is at least as likely as not to be fully intended and required for the desired behavior,
+    // not least because a few very popular libraries, including SoftwareSerial (it is not our policy to try to fix the implementation of that library.
+    // Largely because it's far beyond redemption.)
+      badArg("Digital pin is constant, and neither NOT_A_PIN nor a valid pin");
     return pin != NOT_A_PIN;
   }
   return 1;
 }
 inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode) {
   check_constant_pin(pin);
-  if (!check_valid_digital_pin(pin)) {
-    badArg("Fast I/O functions must be called with a valid pin number.");
-  }
-  if (!__builtin_constant_p(mode))
-    badArg("openDrainFast requires the mode to be compile time known");
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
+  }
+  if (!check_valid_digital_pin(pin)) {
+    badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
+  }
+  if (!__builtin_constant_p(mode)) {
+    badArg("pinModeFast requires the mode to be compile time known");
   }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
@@ -395,18 +430,17 @@ inline __attribute__((always_inline)) void pinModeFast(uint8_t pin, uint8_t mode
 }
 inline __attribute__((always_inline)) void openDrainFast(uint8_t pin, uint8_t mode) {
   check_constant_pin(pin);
-  if (!check_valid_digital_pin(pin)) {
-    badArg("Fast I/O functions must be called with a valid pin number.");
-  }
-  if (!__builtin_constant_p(mode))
-    badArg("openDrainFast requires the mode to be compile time known");
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
+  if (!check_valid_digital_pin(pin)) {
+    badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
+  }
+  if (!__builtin_constant_p(mode)) {
+    badArg("openDrainFast requires the mode to be compile time known");
+  }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
-  if (port == NOT_A_PIN) return;
-
   volatile uint8_t *ddr, *out;
   ddr = portModeRegister(port);
   out = portOutputRegister(port);
@@ -423,39 +457,15 @@ inline __attribute__((always_inline)) int8_t digitalReadFast(uint8_t pin) {
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
   }
-  check_valid_digital_pin(pin);
-
+  if (!check_valid_digital_pin(pin)) {
+    badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
+  }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   //if (port == NOT_A_PORT) return NOT_A_PIN;  // This check is not needed, as we reject non-constant pins but constant pins that are never valid get rejected by check valid digital pin!
   return !!(*portInputRegister(port) & mask);
 }
 
-#if defined(__AVR_ATtinyX41__)
-  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
-    // "Pullup enable? Never heard if it"
-    // writes the output register without touching the PUE register. Avail. on 841 and 441 only because that's the only place that the
-    // pullup register is not in the low I/O space and is thus painfully slow to access.
-    check_constant_pin(pin);
-    if (pin > 127) {
-      pin = analogInputToDigitalPin((pin & 127));
-    }
-    if (!check_valid_digital_pin(pin)) {
-      // check_valid_digital_pin returns 0 if the pin is explicitly NOT_A_PIN, 1 if it is a pin, and errors with badArg if it's not a pin.
-      return;
-    }
-    uint8_t mask = digitalPinToBitMask(pin);
-    uint8_t port = digitalPinToPort(pin);
-    volatile uint8_t *out;
-    if (port == NOT_A_PIN) return;
-    out = portOutputRegister(port);
-    if (val == LOW) {                  // 2 instruction
-      *out &= ~mask;                   // 1/1 atomic
-    } else {                           //
-      *out |= mask;                    // 1/1
-    }
-  }
-#endif
 
 inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t val) {
   check_constant_pin(pin);
@@ -463,13 +473,11 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
     pin = analogInputToDigitalPin((pin & 127));
   }
   if (!check_valid_digital_pin(pin)) {
-    // check_valid_digital_pin returns 0 if the pin is explicitly NOT_A_PIN, 1 if it is a pin, and errors with badArg if it's not a pin.
-    return;
+    badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
   }
   uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out;
-  if (port == NOT_A_PIN) return;
   out = portOutputRegister(port);
   #if defined(__AVR_ATtinyX41__)      //Uniquely bad
     volatile uint8_t *pue, *mode;     //
@@ -519,7 +527,34 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 }
 
 
-
+#if defined(__AVR_ATtinyX41__)
+  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
+    // "Pullup enable? Never heard if it!" option for x41 only, because access to the PUEx registers is slow and non-atomic on those parts, and it would not be surprising
+    // if someone wanted to avoid using them when doing straight digtial I/O. On all other parts - including other ones with PUEx registers (1634 and 828, which do have the
+    // registers at sane addresses) - it is a normal call to digitalWriteFast(), and does manipulate the pullup state. Only on the x41 where the overhead is significant does
+    // this have distinct functionality. Crucially, on the x41, you
+    check_constant_pin(pin);
+    if (pin > 127) {
+      pin = analogInputToDigitalPin((pin & 127));
+    }
+    if (!check_valid_digital_pin(pin)) {
+      badArg("Fast I/O functions must be called with a valid pin number. NOT_A_PIN is not a valid pin number for these purposes.");
+    }
+    uint8_t mask = digitalPinToBitMask(pin);
+    uint8_t port = digitalPinToPort(pin);
+    volatile uint8_t *out;
+    out = portOutputRegister(port);
+    if (val == LOW) {                  // 2 instruction
+      *out &= ~mask;                   // 1/1 atomic
+    } else {                           //
+      *out |= mask;                    // 1/1
+    }
+  }
+#else // silently fall back to standard implementation.
+  inline __attribute__((always_inline)) void digitalWriteFaster(uint8_t pin, uint8_t val) {
+    digitalWriteFast(pin,val);
+  }
+#endif
 
 #ifdef __cplusplus
   } // extern "C"
