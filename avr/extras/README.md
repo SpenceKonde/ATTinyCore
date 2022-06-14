@@ -1,16 +1,16 @@
 # Additional more detailed sections of documentation for ATTinyCore
 
 
-* [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
-* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
-* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
-* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
-* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
-* [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
+* [ATtiny441, 841](ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny1634](ATtiny_1634.md)  (With or without Optiboot bootloader)
+* [ATtiny87, 167](ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
+* [ATtiny25, 45, 85](ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny24, 44, 84](ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny261, 461, 861](ATtiny_x61.md) (With or without Optiboot bootloader)
+* [ATtiny48, 88](ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny828](ATtiny_828.md) (With or without Optiboot bootloader)
+* [ATtiny2313, 4313](ATtiny_x313.md) (no bootloader)
+* [ATtiny43](ATtiny_43.md) (no bootloader)
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
@@ -82,10 +82,10 @@ The ATtiny441/841, ATtiny1634, ATtiny44/84, ATtiny45/85, ATtiny461/861, ATtiny48
 #### A warning about Virtual Boot
 Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. See #398
 
-See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
+See the [Programming Guide](../../Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
-It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](avr/extras/UsingMicronucleus.md).
+It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](UsingMicronucleus.md).
 
 ### Changing the ATtiny clock speed and other settings
 
@@ -100,7 +100,7 @@ Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCor
 * Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
 * Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
 
-After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
+After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](../../Programming.md)
 
 #### Supported clock speeds:
 Supported clock speeds are shown in the menus in descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.
@@ -211,7 +211,7 @@ Link time optimization is enabled by default. If compiling with very old version
 
 ### Makefile Support
 
-For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with https://github.com/sudar/Arduino-Makefile - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
+For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with https://github.com/sudar/Arduino-Makefile - See the [makefile documentation](../../makefile.md) for more information on specific steps needed for this process.
 
 ### I2C support
 **You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work. In all cases, including parts with hardware I2C where it may work sometimes, you should **always** use external pullup resistors, as the internal ones are far weaker than the I2C standard requires for reliable operation.
@@ -256,7 +256,7 @@ On the following chips, full serial (UART) support is provided in hardware, as S
 * ATtiny1634 (two UARTs)
 * ATtiny828
 
-On the following chips, **no hardware serial is available**, however, a built-in software serial named `Serial` is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial. [See also the discussion of baud rates.](avr/extras/TinySoftSerialBaud.md)
+On the following chips, **no hardware serial is available**, however, a built-in software serial named `Serial` is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial. [See also the discussion of baud rates.](TinySoftSerialBaud.md)
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (261/461/861)
@@ -285,7 +285,7 @@ Most of the ATtiny parts only have two timers. The attiny841 has a third timer -
 
 ### Built-in tinyNeoPixel library
 
-The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. At speeds below 16MHz, you must select the port containing the pin you wish to use from the Tools -> tinyNeoPixel Port menu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](avr/extras/tinyNeoPixel.md) and included examples for more information.
+The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. At speeds below 16MHz, you must select the port containing the pin you wish to use from the Tools -> tinyNeoPixel Port menu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](tinyNeoPixel.md) and included examples for more information.
 
 ### Retain EEPROM configuration option
 All non-bootloader board definitions have a menu option to control whether the contents of the EEPROM are erased when programming. This only applies to ISP programming, and you must "burn bootloader" to set the fuses to apply this. Because it only applies to ISP programming, it is not available for Bootloader board definitions. On those, EEPROM is never retained, on the reasoning that if you are burning the bootloader to a chip, you are trying to restore it to a "fresh" state.
