@@ -16,7 +16,7 @@ It i **CRITICAL** that we get as much testing done as possible because **BASICAL
 
 Half of the tinyNeoPixel speeds have had the assembly routines modified in major ways (there's no more stupid menu for the port), but they are untested. I have a TON of irons in the fire right now, and I am trying to get this out and stop delaying it and delaying it. 
 
-If you find problems with 2.0.0-dev (you can just create a "hardware" folder in your sketchbook and sync the repo to that location to nanually install - no need to do anything wacky like on my other cores), create an issue, start a discusion, or hell even just email me with info, just get the information to me somehow.
+If you find problems with 2.0.0-dev (you can just create a "hardware" folder in your sketchbook and sync the repo to that location to nanually install - no need to do anything wacky like on my other cores), create an issue, start a discussion, or hell even just email me with info, just get the information to me somehow.
 
 Thank you users!
 

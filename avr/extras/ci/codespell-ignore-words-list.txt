@@ -1,3 +1,4 @@
 rcall
 hart
 aci
+statics
