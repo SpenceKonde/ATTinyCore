@@ -60,7 +60,7 @@ uint8_t resetcause = GPIOR0;
 if(resetcause == 0) {
   resetcause = MCUSR;
   MCUSR = 0;
-} 
+}
 // if you use GPIOR0 in your code
 else {
   GPIOR0 = 0;
