@@ -1,15 +1,22 @@
 ### ATTinyCore Migration Guide
-This document describes the considerations for users of the Arduino IDE when migrating to ATTinyCore from other hardware packages that support the ATtiny line or other 8-bit AVR devices, and from the ATtiny84 to the ATtiny841.
+This document describes the considerations for users of the Arduino IDE when migrating to ATTinyCore 2.0.0 from other hardware packages that support the ATtiny line or other 8-bit AVR devices, and from the ATtiny84 to the ATtiny841.
+
+### Issues when migrating to ATTinyCore 2.0.x from any other classic AVR core
+* Be sure to check the numbering of the analog pins - analogRead() directed at a straight number between 0 and 127 will assume that it is a digital pin, and proceed accordingly. In previous versions, analog channel number would be assumed, which was only the same as the digital pin number in special cases. To refer to analog pins either
+  * Use their digital pin number: `analogRead(5) (deprecated)` or `analogRead(PIN_PB5)`, etc.
+  * Use the An constants as shown on the pinout charts: `analogRead(A0)`
+  * If you must convert an analog channel number to a pin number programmatically, pass it through the ADC_CH() macro
+* There is no support for SerialEvent - nor was there ever.
 
 ### To ATTinyCore from other cores
-Migration to ATTinyCore from other ATtiny hardware packages is typically straightforward - no code modification is typically required, however there are a number of features that require code changes to take full advantage of.
-* Two different pin mappings have been used for the ATtiny84 on different cores. Both are supported by ATtinyCore; be sure to select the correct mapping from the Tools -> Pin Mapping menu.
-* In order to support the full range of ADC channels, you must use the A# constants, or the ADC channel number when calling analogRead(), not the digital pin number. You may read from differential ADC channels by specifying channel number specified in the datasheets. You may read from the on-board temperature sensor via analogRead(ADC_TEMPERATURE).
+Migration to ATTinyCore from other ATtiny hardware packages is typically straightforward - no code modification is typically required except to ensure that analog pin numbers are given correctly, though it may required to reap most of the benefits.
+* Many parts have two - or even three - pin mappings available. The recommended one was always chosen to make as much math as possible simplify out.
 * When using digitalRead/digitalWrite/pinMode, you must use the digital pin number, the A# constant, or the PIN_xn constants (for example PIN_B3 for PB3).
 * ATTinyCore features a builtin universal SPI and Wire library - with other cores, you need to use libraries like TinySPI, TinyWire, USIWire, etc, with any libraries for SPI or I2C devices modified to use these libraries. With ATTinyCore, you may simply include SPI.h or Wire.h, and use unmodified libraries (the ones that would be used on an ATMega device). For the '841/441/828, when using I2C, select from the tools menu whether you want to support master, slave, or both - selecting both will significantly increase flash usage when Wire.h is included.
 * ATTinyCore features a builtin Software Serial implementation named Serial on all parts except the '841/441/828/1634/2313/4313 (these parts have proper hardware serial). This uses the AIN1 and AIN0 pins (see the part-specific documentation pages for details); while this is named Serial to make it easy to port code from ATmega-based devices, it is still a software implementation: It is half-duplex (attempting to send and receive at the same time will result in sending and/or receiving gibberish), and sending and receiving is blocking (ie, the processor can do nothing else). Unlike SoftwareSerial, this uses the ACO vector instead of PCINTs, allowing PCINTs to be used by the application or other libraries. SoftwareSerial library may be used instead if desired.
 * When using a serial bootloader on any part except the ATtiny828, the EERDY vector may not be used by the application (this is not used by the EEPROM library, and is usually not an issue). Additionally, if the part is reset during the very start of a serial upload, the bootloader will be corrupted - if this happens, the sketch will not work and the bootloader cannot be entered. To resolve this, connect an ISP programmer and "Burn Bootloader" again. Neither of these caveats apply when the serial bootloader is not used.
 * When using direct port manipulation on the ATtiny828/841/441/1634, pullups are controlled by the PUEx register (see datasheet for details)
+
 
 ### From ATtiny84 to ATtiny841 (and from ATtiny44 to ATtiny441)
 The ATtiny841 is largely compatible with the ATtiny84, only with additional features. There are a few differences to be aware of:

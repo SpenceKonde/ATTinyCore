@@ -95,6 +95,14 @@ clocktobaud = {
   "lin":"9600",
   "soft":"4800",
   },
+  "500k": {
+  "f_cpu":"500000UL",
+  "name":"0.5 MHz",
+  "xl"  :True,
+  "hard":"4800",
+  "lin":"4800",
+  "soft":"2400",
+  },
   "7372k": {
   "f_cpu":"7372000UL",
   "name":"7.372 MHz",
@@ -144,22 +152,23 @@ clocktobaud = {
   "soft":"57600",
   }
 }
-#  F_CPU  |  Hard Baud  |  Soft Baud  |
-#  1 MHz  |   9600  |   4800  |
-#  2 MHz  |   9600  |   4800  |
-#  4 MHz  |   9600  |   4800  |
-#  6 MHz  |  57600  |  28800  |
-#  8 MHz  |  76800  |  28800  |
-#   12 MHz  |   115200  |  57600  |
-# 12.8 MHz  | Unsupported | Unsupported |
-#   16 MHz  |  76800  |  38400  |
-# 16.5 MHz  | Unsupported | Unsupported |
-# USART <=  8 |  76800  |  28800  |
-# USART >   8 |   115200  |  as below   |
-# USART <  12 |  as above   |  38400  |
-# USART >= 12 |  as above   |  57600  |
-# Up until > 12 MHz, this is the fastest standard speed expected to work with hardware serial (due to the way baud rates are generated)
-# Exception: The 167/87 has a better baud rate generator
+#    F_CPU    |  Hard Baud  |  Soft Baud  | LIN (x7) Baud | Notes
+#  0.5 MHz    |      4800   |     -       |        -      | x313 only
+#    1 MHz    |      9600   |   4800      |      9600     |
+#    2 MHz    |      9600   |   4800      |      9600     |
+#    4 MHz    |      9600   |   4800      |      9600     |
+#    4 MHz *  |     38400   |     -       |        -      | x313 only
+#    6 MHz    |     57600   |  28800      |     57600     |
+#    8 MHz    |     76800   |  28800      |     76800     |
+#   12 MHz    |    115200   |  57600      |    115200     |
+# 12.8 MHz    | Unsupported | Unsupported |   Unsupported | Micronucleus 84/841  Only
+#   16 MHz    |     76800   |  38400      |     76800     | The way the baud rates divide up is not favorable here.
+# 16.5 MHz    | Unsupported | Unsupported |   Unsupported | Micronucleus 85/861  Only
+# 3686 kHz    |     57600   |  14400      |     57600     | For minimum voltage operation with perfect USART clock
+# USART <=  8 |     76800   |  28800      |     76800     | Any USART crystal above 8 and below 12
+# USART >   8 |    115200   |  as below   |    115200     | All get 115.2k uploads via hardware serial.
+# USART <  12 |  as above*  |  38400      |    115200     | But not all get the same soft serial speeds.
+# USART >= 12 |  as above*  |  57600      |    115200     | Why are you using soft serial anyway with a USART crystal anyway?
 
 def printProp(board,string):
   print(board+string)
@@ -655,6 +664,21 @@ boards = {
     "haspll":False,
     "hasvoltdependance":False,
     "defaultvariant":"tinyx313",
+    "internalclock":[[[".menu.clock.internal_8m=8 MHz (internal)", ".menu.clock.internal_8m.bootloader.low_fuses=0xE4",
+       ".menu.clock.internal_8m.build.f_cpu=8000000UL", ".menu.clock.internal_8m.build.speed=8m",
+       ".menu.clock.internal_8m.build.clocksource=0"],getspeed(".menu.clock.internal_8m.upload.speed=","8")],
+      [[".menu.clock.internal_1m=1 MHz (internal)", ".menu.clock.internal_1m.bootloader.low_fuses=0x64",
+       ".menu.clock.internal_1m.build.f_cpu=1000000UL", ".menu.clock.internal_1m.build.speed=1m",
+       ".menu.clock.internal_1m.build.clocksource=0x10"], getspeed(".menu.clock.internal_1m.upload.speed=","1")],
+      [[".menu.clock.internal_4m=4 MHz (internal)", ".menu.clock.internal_4m.bootloader.low_fuses=0x62",
+        ".menu.clock.internal_4m.build.f_cpu=4000000UL", ".menu.clock.internal_4m.build.speed=4m",
+        ".menu.clock.internal_4m.build.clocksource=0x10"], getspeed(".menu.clock.internal_4m.upload.speed=","4")],
+      [[".menu.clock.internal_2m=2 MHz (internal)", ".menu.clock.internal_2m.bootloader.low_fuses=0x64",
+       ".menu.clock.internal_2m.build.f_cpu=2000000UL", ".menu.clock.internal_2m.build.speed=2m",
+       ".menu.clock.internal_2m.build.clocksource=0x10",".menu.clock.internal_2m.bootloader.f_cpu=1000000UL"], getspeed(".menu.clock.internal_2m.upload.speed=","2")],
+      [[".menu.clock.internal_500k=0.5 MHz (internal)", ".menu.clock.internal_500k.bootloader.low_fuses=0x62",
+       ".menu.clock.internal_500k.build.f_cpu=2000000UL", ".menu.clock.internal_500k.build.speed=500k",
+       ".menu.clock.internal_500k.build.clocksource=0x10",".menu.clock.internal_500k.bootloader.f_cpu=500000UL"], getspeed(".menu.clock.internal_2m.upload.speed=","2")]],
     "hasxtal":True,
     "lfuse_ext":"0xE0",
     "lfuse_xh":"0xFF",
@@ -664,7 +688,7 @@ boards = {
     "fancybod":False,
     "softser":False,
     "fancysoftser":False,
-    "hfuse":"0b{bootloader.rstbit}101{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "hfuse":"0b1{bootloader.eesave_bit}01{bootloader.bod_bits}1",
     "efuse":"0xFE",
   },
     "attiny43u":{
@@ -1075,6 +1099,10 @@ boards = {
       ".menu.clock.pll_1m.build.speed=1",
       ".menu.clock.pll_1m.build.clocksource=0x16"],
     "defaultvariant":"tinyx5",
+    "lfuse_int8":"0xE2",
+    "lfuse_int4":"0x62",
+    "lfuse_int2":"0x62",
+    "lfuse_int1":"0x62",
     "lfuse_ext":"0xE0",
     "lfuse_xh":"0xFF",
     "lfuse_xl":"0xFD",
@@ -1590,7 +1618,10 @@ for x in boards:
       printProp(x,".menu.clock.internal_8m_4v5.build.tuneorcal=-DCAL_NUDGE_DOWN")
       if boards[x]["bootloader"]=="Optiboot":
         printProp(x,".menu.clock.internal_8m_4v5.upload.speed=76800")
-    for y in intclocks:
+    internalclocks=intclocks
+    if "internalclock" in boards[x]:
+      internalclocks = boards[x]["internalclock"]
+    for y in internalclocks:
       for z in y[0]:
         printProp(x,z)
       if boards[x]["bootloader"]=="Optiboot":
@@ -1639,7 +1670,8 @@ for x in boards:
             printProp(x,temp["soft"])
           else:
             printProp(x,temp["hard"])
-    tunedclklist=tunedclocks;
+    if not "internalclock" in boards[x]:
+      tunedclklist=tunedclocks;
     if not("onlytunesto8" in boards[x] and boards[x]["onlytunesto8"]):
       #for a few parts we can't tune to anything higher than 8 and expect joy.
       for y in tunedclocks:
