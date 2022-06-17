@@ -50,7 +50,7 @@ The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the sligh
 Tone() uses Timer1. For best results, use pin 21 or 22 (PIN_PC5, PIN_PC6), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins 21 and 22.
 
 ### Servo Support
-The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x8 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), this will disable PWM on PC5 and PC6 . Tone and Servo cannot be used at the same time.
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x8 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.adoc) for more details. Like tone(), this will disable PWM on PC5 and PC6 . Tone and Servo cannot be used at the same time.
 
 ### I2C Support
 Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably. Furthermore, the slave functionality requires the WDT to be enabled, otherwise the SCL pin will be pulled low due to a silicon bug.
