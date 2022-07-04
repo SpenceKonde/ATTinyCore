@@ -65,45 +65,44 @@
 
 #define Servo_VERSION           2     // software version of this library
 #ifndef MIN_PULSE_WIDTH               // Let the user set min/max pulse lengths
-#if (F_CPU==16500000L)
-#define MIN_PULSE_WIDTH       561     // 1/32nd longer
-#else
-#define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
-#endif
+  #if (F_CPU==16500000L)
+    #define MIN_PULSE_WIDTH       561     // 1/32nd longer
+  #else
+    #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
+  #endif
 #endif
 #ifndef MAX_PULSE_WIDTH               // Let the user set min/max pulse lengths
-#if (F_CPU==16500000L)
-#define MAX_PULSE_WIDTH      2475     // 1/32nd longer
-#else
-#define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
-#endif
+  #if (F_CPU==16500000L)
+    #define MAX_PULSE_WIDTH      2475     // 1/32nd longer
+  #else
+    #define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
+  #endif
 #endif
 #define MAX_SERVOS              5
 #define INVALID_SERVO         255
 
-class Servo
-{
-public:
-  Servo();
-  ~Servo();
-  uint8_t attach(uint8_t pin);              // attach the given pin to the next free channel, returns channel number or 0 if failure
-  uint8_t attach(uint8_t pin, uint16_t newMin, uint16_t newMax); // as above but also sets min and max values for writes.
-  void detach();
+class Servo {
+  public:
+    Servo();
+    ~Servo();
+    uint8_t attach(uint8_t pin);              // attach the given pin to the next free channel, returns channel number or 0 if failure
+    uint8_t attach(uint8_t pin, uint16_t newMin, uint16_t newMax); // as above but also sets min and max values for writes.
+    void detach();
 
-  void write(uint16_t value);               // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds
-  void writeMicroseconds(uint16_t value);   // Write pulse width in microseconds
-  uint16_t read();                          // returns current pulse width as an angle between 0 and 180 degrees
-  uint16_t readMicroseconds();              // returns current pulse width in microseconds for this servo
-  bool attached();                          // return true if this servo is attached, otherwise false
+    void write(uint16_t value);               // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds
+    void writeMicroseconds(uint16_t value);   // Write pulse width in microseconds
+    uint16_t read();                          // returns current pulse width as an angle between 0 and 180 degrees
+    uint16_t readMicroseconds();              // returns current pulse width in microseconds for this servo
+    bool attached();                          // return true if this servo is attached, otherwise false
 
-private:
+  private:
 
-   //private variables
-   uint8_t  servoIndex;                  // Our ID number that we get from the ServoSequencer after we register with it
-   uint16_t min;                          // minimum pulse length that corresponds to the angle of 0 degrees
-   uint16_t max;                          // maximum pulse length that corresponds to the angle of 180 degrees
+    //private variables
+    uint8_t  servoIndex;                  // Our ID number that we get from the ServoSequencer after we register with it
+    uint16_t min;                          // minimum pulse length that corresponds to the angle of 0 degrees
+    uint16_t max;                          // maximum pulse length that corresponds to the angle of 180 degrees
 
-   //our own map function, so that we don't have to get it from some library
+     //our own map function, so that we don't have to get it from some library
 };
 
 
@@ -111,16 +110,16 @@ private:
 
 #include "avr/ServoTimers.h"
 
-#define Servo_VERSION           2     // software version of this library
+#define Servo_VERSION             2     // software version of this library
 
-#ifndef MIN_PULSE_WIDTH               // Let the user set min/max pulse lengths
-#define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
+#ifndef MIN_PULSE_WIDTH                 // Let the user set min/max pulse lengths
+  #define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo
 #endif
-#ifndef MAX_PULSE_WIDTH               // Let the user set min/max pulse lengths
-#define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
+#ifndef MAX_PULSE_WIDTH                 // Let the user set min/max pulse lengths
+  #define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo
 #endif
-#define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
-#define REFRESH_INTERVAL    20000     // minumim time to refresh servos in microseconds
+#define DEFAULT_PULSE_WIDTH    1500     // default pulse width when servo is attached
+#define REFRESH_INTERVAL      20000     // minumim time to refresh servos in microseconds
 
 #define SERVOS_PER_TIMER       12     // the maximum number of servos controlled by one timer
 #define MAX_SERVOS   (_Nbr_16timers  * SERVOS_PER_TIMER)
@@ -137,22 +136,21 @@ typedef struct {
   volatile unsigned int ticks;
 } servo_t;
 
-class Servo
-{
-public:
-  Servo();
-  uint8_t attach(int pin);           // attach the given pin to the next free channel, sets pinMode, returns channel number or 0 if failure
-  uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes.
-  void detach();
-  void write(int value);             // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds
-  void writeMicroseconds(int value); // Write pulse width in microseconds
-  int read();                        // returns current pulse width as an angle between 0 and 180 degrees
-  int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
-  bool attached();                   // return true if this servo is attached, otherwise false
-private:
-   uint8_t servoIndex;               // index into the channel data for this servo
-   int8_t min;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH
-   int8_t max;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH
+class Servo {
+  public:
+    Servo();
+    uint8_t attach(int pin);           // attach the given pin to the next free channel, sets pinMode, returns channel number or 0 if failure
+    uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes.
+    void detach();
+    void write(int value);             // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds
+    void writeMicroseconds(int value); // Write pulse width in microseconds
+    int read();                        // returns current pulse width as an angle between 0 and 180 degrees
+    int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
+    bool attached();                   // return true if this servo is attached, otherwise false
+  private:
+    uint8_t servoIndex;               // index into the channel data for this servo
+    int8_t min;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH
+    int8_t max;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH
 };
 #endif //end of non-8-bit avr servo header
 
