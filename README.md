@@ -74,7 +74,7 @@ Vaguely recent versions of AVRdude appear to have dropped a few versions of the 
 6. Select libusbK(v3.0.7.0) driver
 7. Click Install
 
-**This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
+**This core includes part-specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
 **problems dynamically linking libusb-0.1 on linux** can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
 
@@ -86,9 +86,9 @@ Vaguely recent versions of AVRdude appear to have dropped a few versions of the 
 
 **When using a chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader**
 
-**Problems programming some parts for first time, especially ATtiny841/441** These parts are less forgiving of the SCK clock rate. I'm not sure why USBAsp doesn't seem to be working anymore (it used to, and I haven't changed anything), looking into options there. Arduino as ISP or USBTinyISP SLOW will program without issue.
+**Problems programming some parts for the first time, especially ATtiny841/441** These parts are less forgiving of the SCK clock rate. I'm not sure why USBAsp doesn't seem to be working anymore (it used to, and I haven't changed anything), looking into options there. Arduino as ISP or USBTinyISP SLOW will program without issue.
 
-**Chips sold as "ATtiny85" with wrong signature** - enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
+**Chips sold as "ATtiny85" with the wrong signature** - enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is a wiring problem, or bricked chip from choosing clock source that isn't present). Apparently, one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
 
 **free(): invalid next size (normal) error** This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
 
