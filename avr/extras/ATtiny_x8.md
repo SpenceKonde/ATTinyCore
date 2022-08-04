@@ -60,7 +60,7 @@ Micronucleus is supported with an external 16 MHz external clock only. It may op
 Tone() uses Timer1. For best results, use PB1 or PB2, as this will use the hardware output compare to generate the square wave instead of using interrupts. Using tone will disable PWM functionality (as timer1 is the only PWM capable timer on these parts)
 
 ### Servo Support
-The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x8 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.adoc) for more details. Like tone(), this will disable PWM on PB1 or PB2. Tone and Servo cannot be used at the same time.
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x8 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), this will disable PWM on PB1 or PB2. Tone and Servo cannot be used at the same time.
 
 ### I2C Support
 There is full Hardware I2C! It is provided by Wire.h
