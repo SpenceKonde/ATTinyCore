@@ -66,7 +66,7 @@ The two channels of Timer1 can each output on one or more of 4 pins, albeit with
 Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.
 
 ### Servo Support
-The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x7 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.adoc) for more details. This will disable all PWM pins except PIN_PA2, and is incompatible with tone().
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x7 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. This will disable all PWM pins except PIN_PA2, and is incompatible with tone().
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
