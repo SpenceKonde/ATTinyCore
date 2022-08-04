@@ -40,7 +40,7 @@
 
 #define usToDelayLoopIter(us,usdivisor,roundfactor) ((((((us) * F_CPU)/(usdivisor))/3)+(roundfactor))/1000000)
 // this defines the number of passes through 3-clock simple loop that will give the requested runtime, in us.
-// The factor of 1 million is left in there until the very end to prevent integer math effects from building on eachother.
+// The factor of 1 million is left in there until the very end to prevent integer math effects from building on each other.
 // Rounding factor is the amounnt added after the rest of calculationr to the intermediate value before dividing by 1 million
 
 #define CLKBASE ((F_CPU)

@@ -113,7 +113,7 @@ I don't know how they count the channels to the the headline "8" or "7" numbers.
 The ATtiny26 predates the usual temperature sensor. There is no temperature measurement.
 
 ## Purchasing ATtiny26 Boards
-Don't, unles you've no other options during the Great Chip Shortage or you have
+Don't, unless you've no other options during the Great Chip Shortage or you have
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny 26 as well as the name you refer to them as when using the `ISR()` macro. Be aware that, like on all other AVRs, a non-existent vector is just a "warning" not an "error" - however, the misspelled vector doesn't end up in the vector table, so if it is enabled and triggered, the device will (at best) immediately reset (often not cleanly). The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed" (that is, 0x0001 is bytes 0x0002 and 0x0003). vect_num is the number you are shown in the event of a duplicate vector error, among other things.
