@@ -18,17 +18,18 @@
 | Int. Oscillator         |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |
 | Int. WDT Oscillator     |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |  Not supported |
 | Internal, with tuning   |          8, 12 |          8, 12 |  Not supported |          8, 12 |          8, 12 |  Not supported |
-| External Crystal        |   All Standard |   All Standard | **16**,8,4,2,1 |   All Standard |   All Standard | **16**,8,4,2,1 |
+| External Crystal        |   All Standard |   All Standard | **16** ** ,8,4,2,1 |   All Standard |   All Standard | **16** ** ,8,4,2,1 |
 | External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
 | Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
-| LED_BUILTIN             | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 |
-| Bootloader LED          |            n/a |            PA6 |     PB1 or PA6 |            n/a |            PA6 |     PB1 or PA6 |
+| LED_BUILTIN ***         | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 |
+| Bootloader LED *        |            n/a |            PA6 |     PB1 or PA6 |            n/a |            PA6 |     PB1 or PA6 |
 
 `*` - the bootloader will always use either PA6 or PB1 unless you build your own binaries. The legacy pinout that it was paired with is absolutely godawful, and nobody should ever use it!
 `**` - The bootloader will always run at this speed. The sketch may be set to run at a lower speed by prescaling this.
+`***` - The pin used for the builtin LED will depend on the selected pin mapping.
 
 ## Programming
-Any of these parts can be programmed by use of any supported ISP programmer. It is recommended to use Arduino 1.8.13 or later; earlier versions will show all programmers, instead of just the ones that will work with this core.
+Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on the hardware UART/LIN port at 115200 baud for 12 or 16 MHz clock speed, and 57600 when running at 8 MHz. In order to work on the x7 series, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application.  This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
@@ -45,7 +46,7 @@ Two versions of the bootloader are provided, one for use with Digispark Pro boar
 ## Features
 
 ### Alternate pinout options
-There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "Legacy" pinmapping option. It should be used only if you are trying to use an old sketch that was written for that pin mapping. The Digispark Pro boards have pins labeled with yet another pin mapping. All pin mappings can be chosen for both Digispark/VUSB and non-VUSB boards, for compatibility. This is selected from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 1.4.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
+There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "Legacy" pinmapping option. It should be used only if you are trying to use an old sketch that was written for that pin mapping. The Digispark Pro boards have pins labeled with yet another pin mapping. All pin mappings can be chosen for both Digispark/VUSB and non-VUSB boards, for compatibility. This is selected from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 2.0.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7 (don't use PIN_xn or Pxn, those mean different things that are rarely useful) - in this case the pin mapping won't appear to matter - however the size of the compiled binary and the speed of some internal options will still vary based on it.
 
 Example of a "guard" against wrong pin mapping:
 ```
@@ -55,12 +56,12 @@ Example of a "guard" against wrong pin mapping:
 ```
 The pin mapping for the Digispark Pro is very, very strange. Note that on the An constants for analogRead() n is the number of the digital pin, not the the ADC channel for that mapping.
 
-The legacy pin mapping is even stranger - and also really really bad. It is as if someone tried to make a pin mapping that precluded any sort of simplification of the math, anywhere - and they were largely successful. It's the only place where I had to use a lookup table to convert between analog and digital pin numbers....
+The legacy pin mapping is even stranger - and also really really bad. It is as if someone tried to make a pin mapping that precluded any sort of simplification of the math, anywhere - and they were largely successful. It's the only place where I had to use a lookup table to convert between analog and digital pin numbers.
 
 LED_BUILTIN is on PB0 on the legacy option, PB1 on digispark, and PA6 on the new pinout.
 
 ### Flexible PWM support
-The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
+The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle on PB0, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
 
 ### Tone Support
 Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.
@@ -69,13 +70,13 @@ Tone() uses Timer1. For best results, use a pin on port B - those will use the h
 The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x7 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. This will disable all PWM pins except PIN_PA2, and is incompatible with tone().
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
-There is a full hardware SPI port and the normal SPI library can be used.
+There is a full hardware SPI port and the normal SPI library can be used. Third party libraries that are designed for tinyAVR parts should not be expected to work because they are designed for parts without real hardware SPI.
 
 ### UART (Serial) with LIN support
-There is one full hardware Serial port with LIN support, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. The ATtiny x7-family has LIN support, unique among the ATtiny linup; LIN (Local Interconnect Network) is frequently used in automotive and industrial applications. One consequence of this additional feature is that the baud rate generator is able to match baud rates much more closely than a "standard" UART module.
+There is one full hardware Serial port with LIN support, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. The ATtiny x7-family has LIN support, unique among the classic ATtiny linup; LIN (Local Interconnect Network) is frequently used in automotive and industrial applications. One consequence of this additional feature is that the baud rate generator is able to match baud rates much more closely than a "standard" UART module.
 
 ## ADC Features
 The ATtiny x7 series features a mid-range ADC - it has the second reference voltage, a built-in voltage divider on AVcc (which is nominally tied to Vcc, optionally with measures taken to reduce noise; nobody takes such measures in Arduino-land, and it generally appears somewhat rare in the wild - note that per datasheet AVcc must be within 0.3V of AVcc), and a modest selection of differential pairs. It also has the rare feature of being able to *OUTPUT* it's internal analog reference voltages with the expectation that other parts might be using them. It is not clear if the pin can be used for other purposes when an internal reference is used. It helpfully states "The internal voltage reference options may not be used if an external voltage is being applied to the AREF pin" - now, does that mean I can still use it as an output without concern? Or does that mean that if an external reference is used
@@ -148,11 +149,11 @@ I (Spence Konde / Dr. Azzy) sell ATtiny167 boards through my Tindie store - your
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses shown are "word addressed". The `#` column is the number you are shown in the event of a duplicate vector error, among other things.
-Addresses are for 87 and 167 - the 167, having 16k of flash, has 4-byte vectors instead of 2-byte vectors.
+Addresses for 87 and 167 are different - the 167, having 16k of flash, has 4-byte vectors, because an rjmp instruction can only reach the entire flash on parts with not more than 16k of flash.
 
 |  # |87 addr |167 addr| Vector Name         | Interrupt Definition                |
 |----|--------|--------|---------------------|-------------------------------------|
-|  0 | 0x0000 | 0x0000 | `RESET_vect`        | External Pin, Power-on Reset        |
+|  0 | 0x0000 | 0x0000 | `RESET_vect`        | Not an interrupt - this is a jump to the start of your code.  |
 |  1 | 0x0001 | 0x0002 | `INT0_vect`         | External Interrupt Request 0        |
 |  2 | 0x0002 | 0x0004 | `INT1_vect`         | External Interrupt Request 1        |
 |  3 | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORTA)        |

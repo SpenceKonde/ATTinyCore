@@ -4,7 +4,7 @@
 Specification         |    ATtiny84    |      ATtiny84  |    ATtiny84    |     ATtiny44   |       ATtiny44 |      ATtiny24  |
 ----------------------|----------------|----------------|----------------|----------------|----------------|----------------|
 Bootloader (if any)   |                |       Optiboot |  Micronucleus  |                |       Optiboot |                |
-Uploading uses        |   ISP/SPI pins | Serial Adapter | USB (directly) |   ISP/SPI pins | Serial Adapter |   ISP/SPI pins |
+Uploading Hardware    | ISP programmer | Serial Adapter | USB (directly) | ISP programmer | Serial Adapter | ISP programmer |
 Flash available user  |     8192 bytes |     7552 bytes |     6522 bytes |     4096 bytes |     3456 bytes |           2048 |
 RAM                   |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |            128 |
 EEPROM                |      512 bytes |      512 bytes |      512 bytes |      256 bytes |      256 bytes |            128 |
@@ -20,7 +20,7 @@ External Crystal      |   All Standard |   All Standard |  Not supported |   All
 External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
 Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |
 Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
-LED_BUILTIN           |        PIN_PB2 |        PIN_PB2 |     PB2 or PB0 |        PIN_PB2 |        PIN_PB2 |     PB2 or PB0 |
+LED_BUILTIN           |        PIN_PB2 |        PIN_PB2 |     PB2 or PB0 |        PIN_PB2 |        PIN_PB2 |        PIN_PB2 |
 
 
 The 24/44/84 and 24a/44a/84a are functionally identical; the latter replaced the former in 2008, and uses slightly less power, and actual ATtiny84 parts are rarely seen in circulation today. They have the same signatures and are fully interchangible, except that the internal oscillator on the x4 not-A is worse (enough-so that the micronucleus bootloader may not be able to work on them). It is extremely common to refer to the ATtiny84a as an ATtiny84, and actual x4-not-A parts are exotic. Microchip still makes them, but charges a large premium for them to encourage people to migrate to less obsolete hardware.
@@ -30,17 +30,24 @@ These parts are available in DIP-14, SOIC-14, and 4mm x 4mm QFN-20.
 Two pinouts are available for compatibility with other cores, see below for more information. Be sure you are using the pinout you think you are!
 
 ## Programming
-All of these parts can be programmed via ISP
+Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny84/44, operating using software serial at at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md)) - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
-Programming the ATtiny84/44 via ISP without the bootloader is fully supported; the 24 is supported only for ISP programming.
+Due to a defect in Optiboot, it is possible for the bootloader to trash itself and the installed application; In this case ISP reprogramming is required to fix it. This means that **optiboot is not suitable for production systems on this part** - eventually, the bug will get triggered, and they will need to be rebootloaded; in a production setting this is simply not acceptable. I know an what must be done to fix this but getting from that to code which does that has proven extrordinarily difficult, I have attempted several times, each time reaching a point where I had no idea how to proceed to finish the fix. I know what value it needs to write to what address, but not  but have been unsuccessful figuring out how to implement it.
+
+Optiboot is available for the 84 and 44. It takes up more than 1/4th of the flash on the 24, guaranteeing a miserable user experience.
 
 ### Micronucleus Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny84A (it is not recommended for use on the tiny84-not-A), allowing sketches to be uploaded directly over USB. It runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz, but is set back down before running the sketch. USB libraries are not supported (yet). D- is on PIN_PB0, D+ is on PIN_PB1.
 
-**Currently the version of micronucleus supplied with ATTinyCore enters the bootloader for all reset sources. This will be made an option in a future release, as will higher clock frequencies, including ones high enough for USB libraries**
+In 2.0.0, all of the usual micronucleus entry methods are available. It is shockingly robust considering the hackjob it is built upon.
+
+Note that VUSB is only supported for loading code. After much very disappointing discussion with relevant experts and background research I am forced to say that VUSB is not supported for emulating other USB peripherals, as the hardware does not provide a means to meet the timing constraints in the context of an arduino sketch. Some people have gotten limited functionality to work. This is the exception not the rule.
+
+### LED_BUILTIN is on PB2
+Both optiboot and micronucleus will try to blink it to indicate bootloader status.
 
 ## Features
 
@@ -63,7 +70,7 @@ Tone() uses Timer1. For best results, use PA6 and PA5, as this will use the hard
 The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x4 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), this will disable PWM on PA6 and PA6.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
 There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported).
@@ -152,36 +159,36 @@ I (Spence Konde) sell a specialized prototyping board that combines an ISP heade
 
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x4-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things. As shown in the below table, the core provides aliases of the names timer interrupts with names starting with TIMn and TIMERn. During the era that these parts were released, Atmel was not naming their vectors consistently. The names starting with TIMERn are to be preferred.
+This table lists all of the interrupt vectors available on the ATtiny x4-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the handler will not exist, and the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging, which is one of the reasons I have done everything I can to make it impossible to turn off warnings. The addresses shown below are "word addressed" (1 word = 2 bytes - this is what is used internally by the hardware as well, since program memory is mostly read to read the next instruction, and the instructions are all 16 bits or 32 bits in length). As a part with 8k or less flash, these are 1 word vectors, all of which will always be an rjmp instruction pointing to the appropriate ISR (if any). vect_num is the number that you will be shown if you get a duplicate vector number. For more indepth treatment of this, see [my vector table description](https://github.com/SpenceKonde/AVRGuidance/LowLevel/VectorTable.md)
 
+As shown in the below table, the core provides aliases of the names timer interrupts with names starting with `TIMn` and `TIMERn`. During the era that these parts were released, Atmel was not naming the vectors consistently. The names starting with `TIMERn` are preferred - they are consistent with a majority of the extant hardware's vector names as defined by the IO headers. Within the IO headers for a few of the most popular parts, including these, for some reason the vectors are named starting with `TIMn_...` instead, making it more challenging to write portable code. To maximize portability, we recommend the `TIMERn_...` names. The `TIMn_...` names are shown in ~strikethrough~ on the below table.
 
-
-| num | Vector Address |    Vector Name    |      Interrupt Definition           |
-|-----|----------------|-------------------|-------------------------------------|
-    0 |        0x0000  | RESET_vect        | Any reset (pin, WDT, power-on, BOD) |
-    1 |        0x0001  | INT0_vect         | External Interrupt Request 0        |
-    2 |        0x0002  | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |
-    3 |        0x0003  | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)     |
-    4 |        0x0004  | WDT_vect          | Watchdog Time-out (Interrupt Mode)  |
-    5 |        0x0005  |   TIM1_CAPT_vect  | Timer/Counter1 Capture Event        |
-    5 |        0x0005  | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore      |
-    6 |        0x0006  |   TIM1_COMPA_vect | Timer/Counter1 Compare Match A      |
-    6 |        0x0006  | TIMER1_COMPA_vect | Alias - provided by ATTinyCore      |
-    7 |        0x0007  |   TIM1_COMPB_vect | Timer/Counter1 Compare Match B      |
-    7 |        0x0007  | TIMER1_COMPB_vect | Alias - provided by ATTinyCore      |
-    8 |        0x0008  |   TIM1_OVF_vect   | Timer/Counter1 Overflow             |
-    8 |        0x0008  | TIMER1_OVF_vect   | Alias - provided by ATTinyCore      |
-    9 |        0x0009  |   TIM0_COMPA_vect | Timer/Counter0 Compare Match A      |
-    9 |        0x0009  | TIMER0_COMPA_vect | Alias - provided by ATTinyCore      |
-   10 |        0x000A  |   TIM0_COMPB_vect | Timer/Counter0 Compare Match B      |
-   10 |        0x000A  | TIMER0_COMPB_vect | Alias - provided by ATTinyCore      |
-   11 |        0x000B  |   TIM0_OVF_vect   | Timer/Counter0 Overflow             |
-   11 |        0x000B  | TIMER0_OVF_vect   | Alias - provided by ATTinyCore      |
-   12 |        0x000C  | ANA_COMP_vect     | Analog Comparator                   |
-   13 |        0x000D  | ADC_vect          | ADC Conversion Complete             |
-   14 |        0x000E  | EE_RDY_vect       | EEPROM Ready                        |
-   16 |        0x000F  | USI_STR_vect      | USI START                           |
-   17 |        0x0010  | USI_OVF_vect      | USI Overflow                        |
+| num | Address | Vector Name         | Interrupt Definition                |
+|-----|---------|---------------------|-------------------------------------|
+|   0 | 0x0000  |  RESET_vect         | Not an interrupt - this is a jump to the start of your code. |
+|   1 | 0x0001  |  INT0_vect          | External Interrupt Request 0        |
+|   2 | 0x0002  |  PCINT0_vect        | Pin Change Interrupt 0 (PORT A)     |
+|   3 | 0x0003  |  PCINT1_vect        | Pin Change Interrupt 1 (PORT B)     |
+|   4 | 0x0004  |  WDT_vect           | Watchdog Time-out (Interrupt Mode)  |
+|   5 | 0x0005  |   ~TIM1_CAPT_vect~  | Timer/Counter1 Capture Event        |
+|   5 | 0x0005  |  TIMER1_CAPT_vect   | Alias - provided by ATTinyCore      |
+|   6 | 0x0006  |   ~TIM1_COMPA_vect~ | Timer/Counter1 Compare Match A      |
+|   6 | 0x0006  |  TIMER1_COMPA_vect  | Alias - provided by ATTinyCore      |
+|   7 | 0x0007  |   ~TIM1_COMPB_vect~ | Timer/Counter1 Compare Match B      |
+|   7 | 0x0007  |  TIMER1_COMPB_vect  | Alias - provided by ATTinyCore      |
+|   8 | 0x0008  |   ~TIM1_OVF_vect    | Timer/Counter1 Overflow             |
+|   8 | 0x0008  |  TIMER1_OVF_vect    | Alias - provided by ATTinyCore      |
+|   9 | 0x0009  |   ~TIM0_COMPA_vect~ | Timer/Counter0 Compare Match A      |
+|   9 | 0x0009  |  TIMER0_COMPA_vect  | Alias - provided by ATTinyCore      |
+|  10 | 0x000A  |   ~TIM0_COMPB_vect~ | Timer/Counter0 Compare Match B      |
+|  10 | 0x000A  |  TIMER0_COMPB_vect  | Alias - provided by ATTinyCore      |
+|  11 | 0x000B  |   ~TIM0_OVF_vect~   | Timer/Counter0 Overflow             |
+|  11 | 0x000B  |  TIMER0_OVF_vect    | Alias - provided by ATTinyCore      |
+|  12 | 0x000C  |  ANA_COMP_vect      | Analog Comparator                   |
+|  13 | 0x000D  |  ADC_vect           | ADC Conversion Complete             |
+|  14 | 0x000E  |  EE_RDY_vect        | EEPROM Ready                        |
+|  16 | 0x000F  |  USI_STR_vect       | USI START                           |
+|  17 | 0x0010  |  USI_OVF_vect       | USI Overflow                        |
 
 ## 84 vs 84a - you said "almost" fully interchangible?
-Okay, there is one difference I'm aware of that makes them distinct: The older 861 design has the old, bifurcated calibration curve for the internal oscillator, that is, the speed jumps backwards as you increase the `OSCCAL` register from 127 to 128. The "bifurcated" oscillators are also generally less accurate and less stable than ones like the one in the ATtiny84A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (since USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts.
+Okay, there is one difference I'm aware of that makes them distinct: The 84 has the old, bifurcated calibration curve for the internal oscillator, that is, there is a discontinuite in the speed vs `OSCCAL` value as you increase the `OSCCAL` register from 127 to 128, the oscillator speed, which is generally above the nominal frequency at 127 will jump down to below it at 128 (though remaining higher than it was at `OSCCAL = 0`); Further increases to the cal register will then increase the speed again to it's maximum at 255 (which is generally higher than it was at 127). The "bifurcated" oscillator is generally less accurate and less stable than the newer design found on the ATtiny84A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts, and they are now difficult to get legacy components (though supposedly still produced, they are sold at a heavy premium to encourage customers to use more modern parts). Because the vast majority of 84/84A parts have been 84As for many years, it has become very common for the parts to be called simply "ATtiny84" or "t84" when the writer is referring to the ATtiny84A.

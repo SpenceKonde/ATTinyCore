@@ -28,7 +28,7 @@ The 261/461/861 and 261a/461a/861a are functionally very similar; the latter rep
 The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control.  To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. For reasons that were never clear to me, in addition to the high speed timer, it also got a very fancy ADC, second only to the one in the ATtiny841 in the number of channels and programmable gain capabilities. Everything other than Timer1 and the ADC is sub-par, and frankly, most of us would be happier with a normal timer 0 and timer 1 too,  It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32
 
 ## Programming
-Any of these parts can be programmed by use of an ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny861/461, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 861/461, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
@@ -204,8 +204,6 @@ Mironucleus used: Micronucleus boards store a tuning value to the application se
 | Tuned OSCCAL 8.25 MHz  | FLASHEND - 1           |
 | Tuned OSCCAL 8 MHz     | FLASHEND               |
 
-On the boards with the prototype pinout, there is less flash available. Specifically, with the WDRF entry condition, there is no room for the temperature cal values, and external reset has no room for any calibration values (thought External Reset Only takes up an extra page of flash, leaving less for the application, but plenty of space for calbiration values. The one in the application section is in all cases present.
-
 
 ## Interrupt Vector Table
 This table lists all of the interrupt vectors available on the ATtiny x61-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
@@ -214,7 +212,7 @@ This table lists all of the interrupt vectors available on the ATtiny x61-family
 
  # | Address | Vector Name          | Interrupt Definition
 ---|---------|----------------------|-------------
- 0 |  0x0000 | RESET_vect           | Any reset (pin, WDT, power-on, BOD)
+ 0 |  0x0000 | RESET_vect           | Not an interrupt - this is a jump to the start of your code.
  1 |  0x0001 | INT0_vect            | External Interrupt Request 0
  2 |  0x0002 | PCINT_vect           | Pin Change Interrupt
  3 |  0x0003 | TIMER1_COMPA_vect    | Timer/Counter1 Compare Match A
