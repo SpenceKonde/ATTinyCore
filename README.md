@@ -1,6 +1,8 @@
 # ATTinyCore **Universal**
 Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43, 26 and 828.
 
+## ATTinyCore is at risk of death. We must have working CI here - there are hundreds of configurations that must be tested. Most issues would have been caught by CI. I do not know how to achieve this. I need help.
+
 Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus)
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
 Let's use that, not gitter.
