@@ -179,15 +179,15 @@ tools.avrdude.bootloader.pattern="{cmd.path}" "-C{config.path}" {erase.verbose} 
 # the VUSB bootloader of the same name  #
 #########################################
 
-tools.micronucleus.cmd.path={runtime.tools.micronucleus.path}/launcher
+tools.micronucleus.cmd.path={runtime.tools.micronucleus.path}/micronucleus
 
 tools.micronucleus.upload.params.verbose=
 tools.micronucleus.upload.params.quiet=
-tools.micronucleus.upload.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{build.path}/{build.project_name}.hex:i
+tools.micronucleus.upload.pattern="{cmd.path}" --run --dump-progress --timeout 60 {build.path}/{build.project_name}.hex
 
 tools.micronucleus.bootloader.params.verbose=
 tools.micronucleus.bootloader.params.quiet=
-tools.micronucleus.bootloader.pattern="{cmd.path}" -cdigispark --timeout 60 -Uflash:w:{bootloader.file}:i
+tools.micronucleus.bootloader.pattern="{cmd.path}" --run --dump-progress --timeout 60 {build.path}/{build.project_name}.hex
 
 tools.micronucleus.erase.params.verbose=
 tools.micronucleus.erase.params.quiet=

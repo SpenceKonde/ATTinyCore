@@ -28,7 +28,7 @@ This is a design flaw in the chip, as noted in the datasheet errata. Additionall
 See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT.... Worse still, that's the clock pin for the USI, hence I2C slave and SPI generally. I2C, being an open drain bus, will not function when the WDT is disabled because of this unwanted pulldown effect. It really is a crying shame how the 828 and 1634 were denied the fix they deserved - a fix for the pin errata. Note that, partly for this reason, when TWI is used in master-only mode (which is a software I2C master implementation) I2C is on PA4 and PA5, instead of PORTD, and is hence uneffected by this bug.
 
 ## Programming
-The ATtiny828 can be programmed with any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any ISP programmer. Optiboot is supported for uploading over serial. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny828, operating on the hardware UART at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md). The bootloader uses 512b of space, leaving 7680b available for user code. Unlike the other ATtiny parts supported by this core, the 828 has hardware bootloader support!
@@ -37,7 +37,6 @@ This core includes an Optiboot bootloader for the ATtiny828, operating on the ha
 These chips do not warrant the development effort to make that happen.
 
 ### There is no external crystal support, only external clock
-
 
 ### Internal Oscillator voltage dependence
 Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Internal, Vcc < 4.5v) and 8 MHz (Internal, Vcc > 4.5 MHz ) board definitions - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. The new baud rate changes in 2.0.0 should further improve bootloader reliability here (see the Optiboot reference linked above).
@@ -53,10 +52,10 @@ Tone() uses Timer1. For best results, use pin 21 or 22 (PIN_PC5, PIN_PC6), as th
 The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x8 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), this will disable PWM on PC5 and PC6 . Tone and Servo cannot be used at the same time.
 
 ### I2C Support
-Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably. Furthermore, the slave functionality requires the WDT to be enabled, otherwise the SCL pin will be pulled low due to a silicon bug.
+Slave I2C functionality is provided in hardware, but a software implementation must be used for master functionality. This is done automatically with the included version of the Wire.h library. **You must have external pullup resistors installed** in order for I2C functionality to work reliably. Furthermore, the slave functionality requires the WDT to be enabled, otherwise the SCL pin will be pulled low due to a silicon bug. Slave and master I2C use different pins because of this godawful bug. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
-There is full Hardware SPI support. However, PD3 is one of the pins used by the hardware SPI; you are advised to use the WDT workaround for the PD3 silicon bug if using SPI.
+There is full Hardware SPI support. However, PD3 is one of the pins used by the hardware SPI; you must use the WDT workaround for the PD3 silicon bug if using SPI. Third party SPI libraries designed for tinyAVRs are not supported by the hardware and will not work.
 
 ### UART (Serial) Support
 There is one hardware serial port, Serial. It works the same as Serial on any normal Arduino - it is not a software implementation.
@@ -129,7 +128,7 @@ This table lists all of the interrupt vectors available on the ATtiny828, as wel
 
 | vect_num | Addr.  | Vector Name        | Interrupt Definition                 |
 |----------|--------|--------------------|--------------------------------------|
-|        0 | 0x0000 | RESET_vect         | Any reset (pin, WDT, power-on, BOD)  |
+|        0 | 0x0000 | RESET_vect         | Not an interrupt - this is a jump to the start of your code.  |
 |        1 | 0x0001 | INT0_vect          | External Interrupt Request 0         |
 |        2 | 0x0002 | INT1_vect          | External Interrupt Request 1         |
 |        3 | 0x0003 | PCINT0_vect        | Pin Change Interrupt 0 (PORT A)      |
@@ -138,19 +137,12 @@ This table lists all of the interrupt vectors available on the ATtiny828, as wel
 |        6 | 0x0006 | PCINT3_vect        | Pin Change Interrupt 3 (PORT D)      |
 |        7 | 0x0007 | WDT_vect           | Watchdog Time-out (Interrupt Mode)   |
 |        8 | 0x0008 | TIMER1_CAPT_vect   | Timer/Counter1 Input Capture         |
-|        8 | 0x0008 |   TIM1_CAPT_vect   | Alias - provided by ATTinyCore       |
 |        9 | 0x0009 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A       |
-|        9 | 0x0009 |   TIM1_COMPA_vect  | Alias - provided by ATTinyCore       |
 |       10 | 0x000A | TIMER1_COMPB_vect  | Timer/Counter1 Compare Match B       |
-|       10 | 0x000A |   TIM1_COMPB_vect  | Alias - provided by ATTinyCore       |
 |       11 | 0x000B | TIMER1_OVF_vect    | Timer/Counter1 Overflow              |
-|       11 | 0x000B |   TIM1_OVF_vect    | Alias - provided by ATTinyCore       |
 |       12 | 0x000C | TIMER0_COMPA_vect  | Timer/Counter0 Compare Match A       |
-|       12 | 0x000C |   TIM0_COMPA_vect  | Alias - provided by ATTinyCore       |
 |       13 | 0x000D | TIMER0_COMPB_vect  | Timer/Counter0 Compare Match B       |
-|       13 | 0x000D |   TIM0_COMPB_vect  | Alias - provided by ATTinyCore       |
 |       14 | 0x000E | TIMER0_OVF_vect    | Timer/Counter0 Overflow              |
-|       14 | 0x000E |   TIM0_OVF_vect    | Alias - provided by ATTinyCore       |
 |       15 | 0x000F | SPI_vect           | SPI Serial Transfer Complete         |
 |       16 | 0x0010 | USART0_RXS_vect    | USART0 Rx Start                      |
 |       17 | 0x0011 | USART0_RXC_vect    | USART0 Rx Complete                   |

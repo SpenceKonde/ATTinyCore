@@ -18,11 +18,12 @@ Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |
 Internal, with tuning |    8, 12, 12.8 |    8, 12, 12.8 |    8, 12, 12.8 |
 External Crystal      |   All Standard |   All Standard |   All Standard |
 External Clock        |   All Standard |   All Standard |   All Standard |
+LED_BUILTIN           |        PIN_PB4 |        PIN_PB4 |        PIN_PB4 |
 
 Tiny flash, a poor featureset, and a relatively high price tag relegate the x313 to the realm of "desperation" processors. Or one would think it would - except they remain surprisingly popular despite having been obsolete for ages. We do not recommend use of these parts if you can avoid it. The 2313-not-A is a strictly worse version of the 2313, sold for a significant premium. Definitely avoid those.
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any ISP programmer. No bootloaders are supplied due to the small flash on these parts. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### There is no bootloader
 Not enough space for it to make sense. The x313-series is a pair of essentially obsolete and overpriced parts being kept in production to milk companies who don't have time to redesign (and haven't for the past decade). Their ongoing popularity is baffling
@@ -34,10 +35,10 @@ Tone() uses Timer1. For best results, use pin PB3 (12) or PB4 (13), as this will
 The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny 4313 though getting everything to fit may be challenging. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.adoc) for more details. Like tone(), it takes PWM on PB3 and PB4. It is not compatible with Tone.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported).
+There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported). As with I2C, we only support SPI through the included universal SPI library, not through any other libraries that may exist, and can provide no support for third party SPI libraries.
 
 ### UART (Serial) Support
 There is one full hardware Serial port, named Serial. It works the same as Serial on any normal Arduino - it is not a software implementation. Be aware that due to the limited memory on these chips the buffers are quite small.
@@ -51,15 +52,14 @@ UCSRB &= ~(1 << RXEN); // disable RX
 analogRead() is not defined on these parts.
 
 ### 2313-not-a does not have PCINT on ports A and D
-Not much more to say there. These parts are pretty primitive.
-
+Not much more to say there. These parts are pretty primitive, and have been almost universally replaced with the 2313A
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny x313-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
 
 |  # | Address | Vector Name        | Interrupt Definition              |
-|----|---------|--------------------| ----------------------------------|
-|  0 |  0x0000 | RESET_vect         | Any reset                         |
+|----|---------|--------------------|-----------------------------------|
+|  0 |  0x0000 | RESET_vect         | Not an interrupt - this is a jump to the start of your code.  |
 |  1 |  0x0001 | INT0_vect          | External Interrupt Request 0      |
 |  2 |  0x0002 | INT1_vect          | External Interrupt Request 1      |
 |  3 |  0x0003 | TIMER1_CAPT_vect   | Timer/Counter1 Capture Event      |
