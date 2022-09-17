@@ -558,6 +558,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.default.build.variant=tinyx61",
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
@@ -837,6 +838,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.default.build.variant=tinyx61",
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
@@ -1351,6 +1353,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.default.build.variant=tinyx61",
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
