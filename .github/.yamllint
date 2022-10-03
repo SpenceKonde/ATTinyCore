@@ -1,0 +1,74 @@
+---
+
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+
+rules:
+  # allow inline flow mappings, so long as they are empty
+  braces:
+    level: error
+    forbid: non-empty
+  # allow inline flow sequences, so long as they are empty
+  brackets:
+    level: error
+    forbid: non-empty
+  # default requires 0 spaces before the colon, and exactly 1 space after the colon
+  colons: enable
+  # default requires 0 spaces before the comma, and exactly 1 space after the comma
+  commas: enable
+  # default is { require-starting-space: true, ignore-shebangs: true, min-spaces-from-content: 2 }
+  comments:
+    level: warning
+  # requires comments to be indented
+  comments-indentation:
+    level: warning
+  # default allows 'document end marker' ('...')
+  document-end:
+    level: warning
+    present: false
+  # default warns about missing 'document start marker' ('---')
+  document-start: disable
+  # The default: { max: 2, max-start: 0, max-end: 0}
+  empty-lines: enable
+  # The default: { forbid-in-block-mappings: true, forbit-in-flow-mappings: true }
+  empty-values: disable
+  # The default (disable) allows +inf, -inf, NaN, ...
+  float-values:
+    level: error
+    forbid-inf: true
+    forbid-nan: true
+    forbid-scientific-notation: false
+    require-numeral-before-decimal: true
+  # The default: { max-spaces-after: 1 }
+  hyphens: enable
+  # The default: { spaces: consistent, indent-sequences: true, check-multi-line-strings: false }
+  indentation:
+    level: warning
+    spaces: 2  # require two-space indentation
+    indent-sequences: true
+    check-multi-line-strings: true
+  # enable/disable only, default is enable
+  key-duplicates: enable
+  # Don't enable this ... it's not user-friendly
+  key-ordering: disable
+  # Default: { max: 80, allow-non-breakable-words: true, allow-non-breakable-inline-mappings: false }
+  line-length: disable
+  # ALWAYS leave this enabled...
+  # POSIX defines a line as ending with a newline character
+  new-line-at-end-of-file: enable
+  # Default: { type: unix }
+  new-lines: enable
+  # Default: { forbid-implicit-octal: true, forbid-explicit-octal: true }
+  octal-values:
+    level: error
+    forbid-implicit-octal: true
+    forbid-explicit-octal: false
+  # Default: { quote-type: any, required: true, extra-required: [], extra-allowed: [], allow-quoted-quotes: false }
+  quoted-strings: disable
+  # Default: enabled ... forbids trailing spaces at end of lines
+  trailing-spaces: enable
+  # Default: { allowed-values: [ 'true', 'false' ], check-keys: true }
+  # if enabled, false positives due to 'on' used in GitHub Actions
+  truthy: disable
