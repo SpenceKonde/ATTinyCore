@@ -211,6 +211,7 @@ jobs:
             # Overwrite the ATTinyCore release version with the platform from the local path
             - source-path: avr
               name: ${{ env.platform-name }}
+            - name: "arduino:avr"
           libraries: |
             # The sketches don't have any external library dependencies, so just define an empty array
             -
