@@ -146,39 +146,39 @@ jobs:
         include:
           - device: attiny1634
             available-flash-kB: 16
-          - device: attinyx7,chip=167
+          - device: attinyx7:chip=167
             available-flash-kB: 16
-          - device: attinyx7,chip=87
+          - device: attinyx7:chip=87
             available-flash-kB: 8
-          - device: attinyx4,chip=84
+          - device: attinyx4:chip=84
             available-flash-kB: 8
-          - device: attinyx4,chip=44
+          - device: attinyx4:chip=44
             available-flash-kB: 4
-          - device: attinyx4,chip=24
+          - device: attinyx4:chip=24
             available-flash-kB: 2
-          - device: attinyx41,chip=841
+          - device: attinyx41:chip=841
             available-flash-kB: 8
-          - device: attinyx41,chip=441
+          - device: attinyx41:chip=441
             available-flash-kB: 4
-          - device: attinyx5,chip=85
+          - device: attinyx5:chip=85
             available-flash-kB: 5
-          - device: attinyx5,chip=45
+          - device: attinyx5:chip=45
             available-flash-kB: 4
-          - device: attinyx5,chip=25
+          - device: attinyx5:chip=25
             available-flash-kB: 2
-          - device: attinyx61,chip=861
+          - device: attinyx61:chip=861
             available-flash-kB: 8
-          - device: attinyx61,chip=461
+          - device: attinyx61:chip=461
             available-flash-kB: 4
-          - device: attinyx61,chip=261
+          - device: attinyx61:chip=261
             available-flash-kB: 2
-          - device: attinyx8,chip=88
+          - device: attinyx8:chip=88
             available-flash-kB: 8
-          - device: attinyx8,chip=48
+          - device: attinyx8:chip=48
             available-flash-kB: 4
-          - device: attinyx313,chip=4313
+          - device: attinyx313:chip=4313
             available-flash-kB: 4
-          - device: attinyx313,chip=2313a
+          - device: attinyx313:chip=2313a
             available-flash-kB: 2
           - device: attiny828
             available-flash-kB: 8
