@@ -29,27 +29,27 @@ jobs:
     env:
       platform-name: ATTinyCore:avr
 
-      available-flash-8kB-plus-true-sketch-paths: |
-        - avr/libraries/SPI/examples/BarometricPressureSensor
-        - avr/libraries/SoftwareSerial/examples/TwoPortReceive
-        - avr/libraries/Wire/examples/SFRRanger_reader
-        - avr/libraries/tinyNeoPixel/examples/RGBWstrandtest
-        - avr/extras/CompileTestSketches/test_analog_read
-      available-flash-4kB-plus-true-sketch-paths: |
-        - avr/libraries/EEPROM/examples/eeprom_crc
-        - avr/libraries/EEPROM/examples/eeprom_put
-        - avr/libraries/EEPROM/examples/eeprom_read
-        - avr/libraries/Wire/examples/digital_potentiometer
-        - avr/libraries/megaTinyCore/examples/ModernRevSer
-        - avr/libraries/SoftwareSerial/examples/SoftwareSerialExample
-        - avr/libraries/tinyNeoPixel/examples/buttoncycler
-        - avr/libraries/tinyNeoPixel/examples/simple
-        - avr/libraries/tinyNeoPixel/examples/strandtest
-        - avr/libraries/tinyNeoPixel_Static/examples/buttoncycler
-        - avr/libraries/tinyNeoPixel_Static/examples/strandtest
-        - avr/extras/ci/test_sketches_4k/serial_test
-      available-flash-2kB-plus-true-sketch-paths: |
-        - avr/extras/ci/test_sketches_2k/basic_test
+      available-flash-8kB-plus-true-sketch-paths:
+        avr/libraries/SPI/examples/BarometricPressureSensor
+        avr/libraries/SoftwareSerial/examples/TwoPortReceive
+        avr/libraries/Wire/examples/SFRRanger_reader
+        avr/libraries/tinyNeoPixel/examples/RGBWstrandtest
+        avr/extras/CompileTestSketches/test_analog_read
+      available-flash-4kB-plus-true-sketch-paths:
+        avr/libraries/EEPROM/examples/eeprom_crc
+        avr/libraries/EEPROM/examples/eeprom_put
+        avr/libraries/EEPROM/examples/eeprom_read
+        avr/libraries/Wire/examples/digital_potentiometer
+        avr/libraries/megaTinyCore/examples/ModernRevSer
+        avr/libraries/SoftwareSerial/examples/SoftwareSerialExample
+        avr/libraries/tinyNeoPixel/examples/buttoncycler
+        avr/libraries/tinyNeoPixel/examples/simple
+        avr/libraries/tinyNeoPixel/examples/strandtest
+        avr/libraries/tinyNeoPixel_Static/examples/buttoncycler
+        avr/libraries/tinyNeoPixel_Static/examples/strandtest
+        avr/extras/ci/test_sketches_4k/serial_test
+      available-flash-2kB-plus-true-sketch-paths:
+        avr/extras/ci/test_sketches_2k/basic_test
 
     strategy:
       fail-fast: false
