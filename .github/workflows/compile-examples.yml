@@ -29,27 +29,27 @@ jobs:
     env:
       platform-name: ATTinyCore:avr
 
-      available-flash-8kB-plus-true-sketch-paths:
-        avr/libraries/SPI/examples/BarometricPressureSensor
-        avr/libraries/SoftwareSerial/examples/TwoPortReceive
-        avr/libraries/Wire/examples/SFRRanger_reader
-        avr/libraries/tinyNeoPixel/examples/RGBWstrandtest
-        avr/extras/CompileTestSketches/test_analog_read
-      available-flash-4kB-plus-true-sketch-paths:
-        avr/libraries/EEPROM/examples/eeprom_crc
-        avr/libraries/EEPROM/examples/eeprom_put
-        avr/libraries/EEPROM/examples/eeprom_read
-        avr/libraries/Wire/examples/digital_potentiometer
-        avr/libraries/megaTinyCore/examples/ModernRevSer
-        avr/libraries/SoftwareSerial/examples/SoftwareSerialExample
-        avr/libraries/tinyNeoPixel/examples/buttoncycler
-        avr/libraries/tinyNeoPixel/examples/simple
-        avr/libraries/tinyNeoPixel/examples/strandtest
-        avr/libraries/tinyNeoPixel_Static/examples/buttoncycler
-        avr/libraries/tinyNeoPixel_Static/examples/strandtest
-        avr/extras/ci/test_sketches_4k/serial_test
-      available-flash-2kB-plus-true-sketch-paths:
-        avr/extras/ci/test_sketches_2k/basic_test
+      available-flash-8kB-plus-sketch-paths-true: |
+        - avr/libraries/SPI/examples/BarometricPressureSensor
+        - avr/libraries/SoftwareSerial/examples/TwoPortReceive
+        - avr/libraries/Wire/examples/SFRRanger_reader
+        - avr/libraries/tinyNeoPixel/examples/RGBWstrandtest
+        - avr/extras/CompileTestSketches/test_analog_read
+      available-flash-4kB-plus-sketch-paths-true: |
+        - avr/libraries/EEPROM/examples/eeprom_crc
+        - avr/libraries/EEPROM/examples/eeprom_put
+        - avr/libraries/EEPROM/examples/eeprom_read
+        - avr/libraries/Wire/examples/digital_potentiometer
+        - avr/libraries/megaTinyCore/examples/ModernRevSer
+        - avr/libraries/SoftwareSerial/examples/SoftwareSerialExample
+        - avr/libraries/tinyNeoPixel/examples/buttoncycler
+        - avr/libraries/tinyNeoPixel/examples/simple
+        - avr/libraries/tinyNeoPixel/examples/strandtest
+        - avr/libraries/tinyNeoPixel_Static/examples/buttoncycler
+        - avr/libraries/tinyNeoPixel_Static/examples/strandtest
+        - avr/extras/ci/test_sketches_4k/serial_test
+      available-flash-2kB-plus-sketch-paths-true: |
+        - avr/extras/ci/test_sketches_2k/basic_test
 
     strategy:
       fail-fast: false
@@ -200,10 +200,10 @@ jobs:
           sketch-paths: |
             # It's necessary to jump through some hoops to dynamically generate the env object keys to define the non-universal sketch paths
             # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#format
-            - avr/
-            #- ${{ env[format('available-flash-8kB-plus-{0}-sketch-paths', matrix.available-flash-kB >= 7.5)] }}
-            #- ${{ env[format('available-flash-4kB-plus-{0}-sketch-paths', matrix.available-flash-kB >= 4)] }}
-            #- ${{ env[format('available-flash-2kB-plus-{0}-sketch-paths', matrix.available-flash-kB >= 2)] }}
+            #- avr/
+            ${{ env[format('available-flash-8kB-plus-sketch-paths-{0}', matrix.available-flash-kB >= 7.5)] }}
+            ${{ env[format('available-flash-4kB-plus-sketch-paths-{0}', matrix.available-flash-kB >= 4)] }}
+            ${{ env[format('available-flash-2kB-plus-sketch-paths-{0}', matrix.available-flash-kB >= 2)] }}
           platforms: |
             # Install ATTinyCore via Boards Manager for the toolchain
             - source-url: http://drazzy.com/package_drazzy.com_index.json
