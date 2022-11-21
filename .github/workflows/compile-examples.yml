@@ -196,7 +196,7 @@ jobs:
       - name: Compile examples (all default)
         uses: arduino/compile-sketches@main
         with:
-          fqbn: ${{ env.platform-name }}:${{ matrix.device}},clock=internal_8m${{matrix.soft-serial}}
+          fqbn: ${{ env.platform-name }}:${{ matrix.device}}${{',' if contains(matrix.device, ':') else ':'}}$clock=internal_8m${{matrix.soft-serial}}
           sketch-paths: |
             # It's necessary to jump through some hoops to dynamically generate the env object keys to define the non-universal sketch paths
             # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#format
