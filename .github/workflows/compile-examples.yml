@@ -47,7 +47,7 @@ jobs:
         - avr/libraries/tinyNeoPixel/examples/strandtest
         - avr/libraries/tinyNeoPixel_Static/examples/buttoncycler
         - avr/libraries/tinyNeoPixel_Static/examples/strandtest
-        - avr/extras/ci/test_sketches_4k/serial_test
+        - avr/extras/ci/test_sketches_4k/test_serial
       available-flash-2kB-plus-sketch-paths-true: |
         - avr/extras/ci/test_sketches_2k/basic_test
 
