@@ -161,7 +161,7 @@ jobs:
           - device: attinyx41:chip=441
             available-flash-kB: 4
           - device: attinyx5:chip=85
-            available-flash-kB: 5
+            available-flash-kB: 8
           - device: attinyx5:chip=45
             available-flash-kB: 4
           - device: attinyx5:chip=25
