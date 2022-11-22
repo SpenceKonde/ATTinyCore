@@ -1,4 +1,3 @@
-
 ![#1634 Pin Mapping](Pinout_1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
 Specification         |    ATtiny1634  |    ATtiny1634  |    ATtiny1634  |
