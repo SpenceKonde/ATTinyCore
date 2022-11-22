@@ -114,6 +114,7 @@ extern "C"{
 #if defined(SOFT_TX_ONLY)
 TinySoftwareSerial::TinySoftwareSerial() {
   _txmask   = _BV(SOFTSERIAL_TXBIT);
+  _txunmask = ~_txmask;
 
   _delayCount = 0;
 }
