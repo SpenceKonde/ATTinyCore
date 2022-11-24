@@ -100,7 +100,7 @@
   class TinySoftwareSerial : public Stream
   {
     public: //should be private but needed by extern "C" {} functions.
-    uint8_t _txmask;
+      uint8_t _txmask;
     #if !defined(SOFT_TX_ONLY)
       soft_ring_buffer *_rx_buffer;
     #endif
