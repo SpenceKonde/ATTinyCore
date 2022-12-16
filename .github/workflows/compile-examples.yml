@@ -24,31 +24,33 @@ on:
 
 jobs:
   compile-examples:
+    # same name as the fqbn (without the platform-name):
+    name: ${{ matrix.device}}clock=internal_8m${{matrix.soft-serial}}
     runs-on: ubuntu-latest
 
     env:
       platform-name: ATTinyCore:avr
 
-      available-flash-8kB-plus-true-sketch-paths: |
+      available-flash-8kB-plus-sketch-paths-true: |
         - avr/libraries/SPI/examples/BarometricPressureSensor
         - avr/libraries/SoftwareSerial/examples/TwoPortReceive
         - avr/libraries/Wire/examples/SFRRanger_reader
         - avr/libraries/tinyNeoPixel/examples/RGBWstrandtest
-        - avr/extras/CompileTestSketches/test_analog_read
-      available-flash-4kB-plus-true-sketch-paths: |
+        #- avr/extras/CompileTestSketches/test_analog_read
+      available-flash-4kB-plus-sketch-paths-true: |
         - avr/libraries/EEPROM/examples/eeprom_crc
         - avr/libraries/EEPROM/examples/eeprom_put
         - avr/libraries/EEPROM/examples/eeprom_read
         - avr/libraries/Wire/examples/digital_potentiometer
-        - avr/libraries/megaTinyCore/examples/ModernRevSer
+        #- avr/libraries/megaTinyCore/examples/ModernRevSer
         - avr/libraries/SoftwareSerial/examples/SoftwareSerialExample
         - avr/libraries/tinyNeoPixel/examples/buttoncycler
         - avr/libraries/tinyNeoPixel/examples/simple
         - avr/libraries/tinyNeoPixel/examples/strandtest
         - avr/libraries/tinyNeoPixel_Static/examples/buttoncycler
         - avr/libraries/tinyNeoPixel_Static/examples/strandtest
-        - avr/extras/ci/test_sketches_4k/serial_test
-      available-flash-2kB-plus-true-sketch-paths: |
+        - avr/extras/ci/test_sketches_4k/test_serial
+      available-flash-2kB-plus-sketch-paths-true: |
         - avr/extras/ci/test_sketches_2k/basic_test
 
     strategy:
@@ -56,153 +58,153 @@ jobs:
 
       matrix:
         device:
-          - attinyx4:chip=84
-          - attinyx4:chip=44
-          - attinyx4:chip=24
-          - attinyx41:chip=841
-          - attinyx41:chip=441
-          - attinyx5:chip=85
-          - attinyx5:chip=45
-          - attinyx5:chip=25
-          - attinyx61:chip=861
-          - attinyx61:chip=461
-          - attinyx61:chip=261
-          - attinyx7:chip=167
-          - attinyx7:chip=87
-          - attinyx8:chip=88
-          - attinyx8:chip=48
-          - attiny1634
-          - attinyx313:chip=4313
-          - attinyx313:chip=2313a
-          - attiny828
-          - attiny43u
-          - attiny26
+          - attinyx4:chip=84,
+          - attinyx4:chip=44,
+          - attinyx4:chip=24,
+          - attinyx41:chip=841,
+          - attinyx41:chip=441,
+          - attinyx5:chip=85,
+          - attinyx5:chip=45,
+          - attinyx5:chip=25,
+          - attinyx61:chip=861,
+          - attinyx61:chip=461,
+          - attinyx61:chip=261,
+          - attinyx7:chip=167,
+          - attinyx7:chip=87,
+          - attinyx8:chip=88,
+          - attinyx8:chip=48,
+          - "attiny1634:"
+          - attinyx313:chip=4313,
+          - attinyx313:chip=2313a,
+          - "attiny828:"
+          - "attiny43u:"
+          - "attiny26:"
         soft-serial:
-          -
-          - softserial=enable
-          - softserial=txonly
+          - ""
+          - ",softserial=enable"
+          - ",softserial=txonly"
 
 
         # Filter out these matrix combinations
         exclude:
           - soft-serial: softserial=enable
-            device: attinyx41:chip=841
+            device: attinyx41:chip=841,
           - soft-serial: softserial=enable
-            device: attinyx41:chip=441
+            device: attinyx41:chip=441,
           - soft-serial: softserial=txonly
-            device: attinyx41:chip=841
+            device: attinyx41:chip=841,
           - soft-serial: softserial=txonly
-            device: attinyx41:chip=441
+            device: attinyx41:chip=441,
           - soft-serial: softserial=enable
-            device: attinyx7:chip=87
+            device: attinyx7:chip=87,
           - soft-serial: softserial=enable
-            device: attinyx7:chip=167
+            device: attinyx7:chip=167,
           - soft-serial: softserial=txonly
-            device: attinyx7:chip=87
+            device: attinyx7:chip=87,
           - soft-serial: softserial=txonly
-            device: attinyx7:chip=167
+            device: attinyx7:chip=167,
           - soft-serial: softserial=enable
-            device: attinyx313:chip=4313
+            device: attinyx313:chip=4313,
           - soft-serial: softserial=enable
-            device: attinyx313:chip=2313a
+            device: attinyx313:chip=2313a,
           - soft-serial: softserial=txonly
-            device: attinyx313:chip=4313
+            device: attinyx313:chip=4313,
           - soft-serial: softserial=txonly
-            device: attinyx313:chip=2313a
+            device: attinyx313:chip=2313a,
           - soft-serial: softserial=enable
-            device: attiny1634
+            device: "attiny1634:"
           - soft-serial: softserial=enable
-            device: attiny1634
+            device: "attiny1634:"
           - soft-serial: softserial=txonly
-            device: attiny828
+            device: "attiny828:"
           - soft-serial: softserial=txonly
-            device: attiny828
+            device: "attiny828:"
           - soft-serial:
-            device: attinyx4:chip=84
+            device: attinyx4:chip=84,
           - soft-serial:
-            device: attinyx4:chip=44
+            device: attinyx4:chip=44,
           - soft-serial:
-            device: attinyx4:chip=24
+            device: attinyx4:chip=24,
           - soft-serial:
-            device: attinyx5:chip=85
+            device: attinyx5:chip=85,
           - soft-serial:
-            device: attinyx5:chip=45
+            device: attinyx5:chip=45,
           - soft-serial:
-            device: attinyx5:chip=25
+            device: attinyx5:chip=25,
           - soft-serial:
-            device: attinyx61:chip=861
+            device: attinyx61:chip=861,
           - soft-serial:
-            device: attinyx61:chip=461
+            device: attinyx61:chip=461,
           - soft-serial:
-            device: attinyx61:chip=261
+            device: attinyx61:chip=261,
           - soft-serial:
-            device: attinyx8:chip=88
+            device: attinyx8:chip=88,
           - soft-serial:
-            device: attinyx8:chip=48
+            device: attinyx8:chip=48,
           - soft-serial:
-            device: attiny43u
+            device: "attiny43u:"
           - soft-serial:
-            device: attiny26
+            device: "attiny26:"
         include:
-          - device: attiny1634
+          - device: "attiny1634:"
             available-flash-kB: 16
-          - device: attinyx7,chip=167
+          - device: attinyx7:chip=167,
             available-flash-kB: 16
-          - device: attinyx7,chip=87
+          - device: attinyx7:chip=87,
             available-flash-kB: 8
-          - device: attinyx4,chip=84
+          - device: attinyx4:chip=84,
             available-flash-kB: 8
-          - device: attinyx4,chip=44
+          - device: attinyx4:chip=44,
             available-flash-kB: 4
-          - device: attinyx4,chip=24
+          - device: attinyx4:chip=24,
             available-flash-kB: 2
-          - device: attinyx41,chip=841
+          - device: attinyx41:chip=841,
             available-flash-kB: 8
-          - device: attinyx41,chip=441
+          - device: attinyx41:chip=441,
             available-flash-kB: 4
-          - device: attinyx5,chip=85
-            available-flash-kB: 5
-          - device: attinyx5,chip=45
+          - device: attinyx5:chip=85,
+            available-flash-kB: 8
+          - device: attinyx5:chip=45,
             available-flash-kB: 4
-          - device: attinyx5,chip=25
+          - device: attinyx5:chip=25,
             available-flash-kB: 2
-          - device: attinyx61,chip=861
+          - device: attinyx61:chip=861,
             available-flash-kB: 8
-          - device: attinyx61,chip=461
+          - device: attinyx61:chip=461,
             available-flash-kB: 4
-          - device: attinyx61,chip=261
+          - device: attinyx61:chip=261,
             available-flash-kB: 2
-          - device: attinyx8,chip=88
+          - device: attinyx8:chip=88,
             available-flash-kB: 8
-          - device: attinyx8,chip=48
+          - device: attinyx8:chip=48,
             available-flash-kB: 4
-          - device: attinyx313,chip=4313
+          - device: attinyx313:chip=4313,
             available-flash-kB: 4
-          - device: attinyx313,chip=2313a
+          - device: attinyx313:chip=2313a,
             available-flash-kB: 2
-          - device: attiny828
+          - device: "attiny828:"
             available-flash-kB: 8
-          - device: attiny43u
+          - device: "attiny43u:"
             available-flash-kB: 4
-          - device: attiny26
+          - device: "attiny26:"
             available-flash-kB: 2
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # See: https://github.com/arduino/compile-sketches/README.md
 
       - name: Compile examples (all default)
         uses: arduino/compile-sketches@main
         with:
-          fqbn: ${{ env.platform-name }}:${{ matrix.device}},clock=internal_8m,${{matrix.soft-serial}}
+          fqbn: ${{ env.platform-name }}:${{ matrix.device}}clock=internal_8m${{matrix.soft-serial}}
           sketch-paths: |
             # It's necessary to jump through some hoops to dynamically generate the env object keys to define the non-universal sketch paths
             # https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#format
-            ${{ env[format('available-flash-8kB-plus-{0}-sketch-paths', matrix.available-flash-kB >= 7.5)] }}
-            ${{ env[format('available-flash-4kB-plus-{0}-sketch-paths', matrix.available-flash-kB >= 4)] }}
-            ${{ env[format('available-flash-2kB-plus-{0}-sketch-paths', matrix.available-flash-kB >= 2)] }}
+            ${{ env[format('available-flash-8kB-plus-sketch-paths-{0}', matrix.available-flash-kB >= 7.5)] }}
+            ${{ env[format('available-flash-4kB-plus-sketch-paths-{0}', matrix.available-flash-kB >= 4)] }}
+            ${{ env[format('available-flash-2kB-plus-sketch-paths-{0}', matrix.available-flash-kB >= 2)] }}
           platforms: |
             # Install ATTinyCore via Boards Manager for the toolchain
             - source-url: http://drazzy.com/package_drazzy.com_index.json
