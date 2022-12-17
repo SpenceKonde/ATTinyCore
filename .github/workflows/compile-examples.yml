@@ -75,7 +75,7 @@ jobs:
           - attinyx8:chip=48,
           - "attiny1634:"
           - attinyx313:chip=4313,
-          - attinyx313:chip=2313a,
+          - attinyx313:chip=2313,
           - "attiny828:"
           - "attiny43u:"
           - "attiny26:"
@@ -106,7 +106,7 @@ jobs:
           - soft-serial: ",softserial=enable"
             device: attinyx313:chip=4313,
           - soft-serial: ",softserial=enable"
-            device: attinyx313:chip=2313a,
+            device: attinyx313:chip=2313,
           - soft-serial: ",softserial=txonly"
             device: attinyx313:chip=4313,
           - soft-serial: ",softserial=txonly"
