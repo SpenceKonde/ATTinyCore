@@ -91,17 +91,17 @@ jobs:
             device: attinyx41:chip=841,
           - soft-serial: ",softserial=enable"
             device: attinyx41:chip=441,
-          - soft-serial: ",softserial=enable"
+          - soft-serial: ",softserial=txonly"
             device: attinyx41:chip=841,
-          - soft-serial: ",softserial=enable"
+          - soft-serial: ",softserial=txonly"
             device: attinyx41:chip=441,
           - soft-serial: ",softserial=enable"
             device: attinyx7:chip=87,
           - soft-serial: ",softserial=enable"
             device: attinyx7:chip=167,
-          - soft-serial: ",softserial=enable"
+          - soft-serial: ",softserial=txonly"
             device: attinyx7:chip=87,
-          - soft-serial: ",softserial=enable"
+          - soft-serial: ",softserial=txonly"
             device: attinyx7:chip=167,
           - soft-serial: ",softserial=enable"
             device: attinyx313:chip=4313,
@@ -115,7 +115,7 @@ jobs:
             device: "attiny1634:"
           - soft-serial: ",softserial=enable"
             device: "attiny1634:"
-          - soft-serial: ",softserial=enable"
+          - soft-serial: ",softserial=txonly"
             device: "attiny828:"
           - soft-serial: ",softserial=txonly"
             device: "attiny828:"
