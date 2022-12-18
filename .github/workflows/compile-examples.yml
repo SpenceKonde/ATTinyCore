@@ -113,7 +113,7 @@ jobs:
             device: attinyx313:chip=2313a,
           - soft-serial: ",softserial=enable"
             device: "attiny1634:"
-          - soft-serial: ",softserial=enable"
+          - soft-serial: ",softserial=txonly"
             device: "attiny1634:"
           - soft-serial: ",softserial=txonly"
             device: "attiny828:"
@@ -145,7 +145,22 @@ jobs:
             device: "attiny43u:"
           - soft-serial: ""
             device: "attiny26:"
+          - soft-serial: ",softserial=enable"
+            device: attinyx61:chip=861,
+          - soft-serial: ",softserial=enable"
+            device: attinyx61:chip=461,
+          - soft-serial: ",softserial=enable"
+            device: attinyx61:chip=261,
         include:
+          - device: attinyx61:chip=861,
+            soft-serial: ",softserial=enable_AIN1"
+            available-flash-kB: 8
+          - device: attinyx61:chip=461,
+            soft-serial: ",softserial=enable_AIN1"
+            available-flash-kB: 4
+          - device: attinyx61:chip=261,
+            soft-serial: ",softserial=enable_AIN1"
+            available-flash-kB: 2
           - device: "attiny1634:"
             available-flash-kB: 16
           - device: attinyx7:chip=167,
