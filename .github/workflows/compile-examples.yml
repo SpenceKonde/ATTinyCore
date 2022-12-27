@@ -231,6 +231,6 @@ jobs:
             # The sketches don't have any external library dependencies, so just define an empty array
             -
           verbose: false
-          enable-deltas-report: true
+          enable-deltas-report: false
           enable-warnings-report: true
           sketches-report-path: sketches-reports
