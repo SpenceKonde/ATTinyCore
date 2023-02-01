@@ -256,23 +256,23 @@ uint8_t SPIClass::interruptSave = 0;
 void SPIClass::begin(void) {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
     USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
-    USI_SCK_PORT |= _BV(USCK_DD_PIN);   //set the USCK pin as output
-    USI_DDR_PORT |= _BV(DO_DD_PIN);     //set the DO pin as output
-    USI_DDR_PORT &= ~_BV(DI_DD_PIN);    //set the DI pin as input
+    USI_CLOCK_DDR |= USI_USCK_BIT;   //set the USCK pin as output
+    USI_DDR |=  USI_DO_BIT;     //set the DO pin as output
+    USI_DDR &= ~USI_DI_BIT;    //set the DI pin as input
     applySettings(SPISettings());
 }
 
 void SPIClass::setDataMode(uint8_t spiDataMode) {
-    if (spiDataMode == SPI_MODE1) {
-        USICR |= _BV(USICS0);
-    } else {
-        USICR &= ~_BV(USICS0);
-    }
-    if (spiDataMode == SPI_MODE2 || spiDataMode == SPI_MODE3) {
-        digitalWrite(SCK, HIGH);
-    } else {
-        digitalWrite(SCK, LOW);
-    }
+  if (spiDataMode == SPI_MODE1) {
+    USICR |= _BV(USICS0);
+  } else {
+    USICR &= ~_BV(USICS0);
+  }
+  if (spiDataMode == SPI_MODE2 || spiDataMode == SPI_MODE3) {
+    USI_CLOCK_PORT |= USI_USCK_BIT;
+  } else {
+    USI_CLOCK_PORT &= ~USI_USCK_BIT;
+  }
 }
 
 USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay) {
@@ -280,8 +280,7 @@ USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay) 
 }
 
 static byte reverse (byte x) {
- byte result;
- asm("mov __tmp_reg__, %[in] \n\t"
+ asm("mov __tmp_reg__, %[out] \n\t"
   "lsl __tmp_reg__  \n\t"   /* shift out high bit to carry */
   "ror %[out] \n\t"  /* rotate carry __tmp_reg__to low bit (eventually) */
   "lsl __tmp_reg__  \n\t"   /* 2 */
@@ -298,7 +297,7 @@ static byte reverse (byte x) {
   "ror %[out] \n\t"
   "lsl __tmp_reg__  \n\t"   /* 8 */
   "ror %[out] \n\t"
-  : [out] "=r" (result) : [in] "r" (x));
+  : [out] "+r" (x)
   return(result);
 }
 
@@ -306,8 +305,10 @@ uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t) {
     // Unlike other clockout methods, this one cannot rely on the
     // "external" clock source (USICS1) because it is too slow and
     // glitches. Instead, it uses software strobe explicitly.
-    uint8_t strobe1 = _BV(USIWM0) | _BV(USITC);
-    uint8_t strobe2 = _BV(USIWM0) | _BV(USITC) | _BV(USICLK);
+    uint8_t strobe1;
+    uint8_t strobe2;
+    strobe1 = _BV(USIWM0) | _BV(USITC);
+    strobe2 = _BV(USIWM0) | _BV(USITC) | _BV(USICLK);
     uint8_t usicr = USICR;
     bool mode1 = usicr & _BV(USICS0);
     USISR = _BV(USIOIF);  //clear counter and counter overflow interrupt flag
@@ -334,10 +335,7 @@ uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t) {
                         [strobe1] "r" (strobe1),
                         [strobe2] "r" (strobe2));
     } else {
-        asm volatile("out %[usicr], %[strobe1] \n\t"
-                     "out %[usicr], %[strobe1] \n\t"
-                     "out %[usicr], %[strobe1] \n\t"
-                     "out %[usicr], %[strobe2] \n\t"
+        asm volatile("out %[usicr], %[strobe2] \n\t"
                      "out %[usicr], %[strobe1] \n\t"
                      "out %[usicr], %[strobe2] \n\t"
                      "out %[usicr], %[strobe1] \n\t"
@@ -350,6 +348,10 @@ uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t) {
                      "out %[usicr], %[strobe2] \n\t"
                      "out %[usicr], %[strobe1] \n\t"
                      "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+                     "out %[usicr], %[strobe2] \n\t"
+                     "out %[usicr], %[strobe1] \n\t"
+
                      :: [usicr] "I" (_SFR_IO_ADDR(USICR)),
                         [strobe1] "r" (strobe1),
                         [strobe2] "r" (strobe2));
@@ -431,35 +433,35 @@ void SPIClass::transfer(void* _buf, size_t count) {
 }
 
 void SPIClass::applySettings(SPISettings settings) {
-    USICR = settings.usicr;
-    msb1st = settings.msb1st ;
-    delay = settings.delay;
-    clockoutfn = settings.clockoutfn;
-    if (settings.cpol) {
-        digitalWrite(SCK, HIGH);
-    } else {
-        digitalWrite(SCK, LOW);
-    }
+  USICR = settings.usicr;
+  msb1st = settings.msb1st ;
+  delay = settings.delay;
+  clockoutfn = settings.clockoutfn;
+  if (settings.cpol) {
+    USI_CLOCK_PORT |= USI_USCK_BIT;
+  } else {
+    USI_CLOCK_PORT &= ~USI_USCK_BIT;
+  }
 }
 
 void SPIClass::beginTransaction(SPISettings settings) {
-    if (interruptMode > 0) {
-      uint8_t sreg = SREG;
-      noInterrupts();
+  if (interruptMode > 0) {
+    uint8_t sreg = SREG;
+    noInterrupts();
 
-      #ifdef SPI_AVR_EIMSK
-      if (interruptMode == 1) {
-        interruptSave = SPI_AVR_EIMSK;
-        SPI_AVR_EIMSK &= ~interruptMask;
-        SREG = sreg;
-      } else
-      #endif
-      {
-        interruptSave = sreg;
-      }
+    #ifdef SPI_AVR_EIMSK
+    if (interruptMode == 1) {
+      interruptSave = SPI_AVR_EIMSK;
+      SPI_AVR_EIMSK &= ~interruptMask;
+      SREG = sreg;
+    } else
+    #endif
+    {
+      interruptSave = sreg;
     }
-    applySettings(settings);
   }
+  applySettings(settings);
+}
 
 void SPIClass::endTransaction(void) {
   if (interruptMode > 0) {
@@ -479,13 +481,13 @@ void SPIClass::endTransaction(void) {
   }
 }
 #ifdef INT0
-#define SPI_INT0_MASK  (1<<INT0)
+  #define SPI_INT0_MASK  (1<<INT0)
 #endif
 #ifdef INT1
-#define SPI_INT1_MASK  (1<<INT1)
+  #define SPI_INT1_MASK  (1<<INT1)
 #endif
 #ifdef INT2
-#define SPI_INT2_MASK  (1<<INT2)
+  #define SPI_INT2_MASK  (1<<INT2)
 #endif
 
 void SPIClass::usingInterrupt(uint8_t interruptNumber) {
@@ -494,13 +496,13 @@ void SPIClass::usingInterrupt(uint8_t interruptNumber) {
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
   switch (interruptNumber) {
   #ifdef SPI_INT0_MASK
-  case 0: mask = SPI_INT0_MASK; break;
+    case 0: mask = SPI_INT0_MASK; break;
   #endif
   #ifdef SPI_INT1_MASK
-  case 1: mask = SPI_INT1_MASK; break;
+    case 1: mask = SPI_INT1_MASK; break;
   #endif
   #ifdef SPI_INT2_MASK
-  case 2: mask = SPI_INT2_MASK; break;
+    case 2: mask = SPI_INT2_MASK; break;
   #endif
   default:
     interruptMode = 2;
@@ -514,20 +516,21 @@ void SPIClass::usingInterrupt(uint8_t interruptNumber) {
 
 void SPIClass::notUsingInterrupt(uint8_t interruptNumber) {
   // Once in mode 2 we can't go back to 0 without a proper reference count
-  if (interruptMode == 2)
+  if (interruptMode == 2) {
     return;
+  }
   uint8_t mask = 0;
   uint8_t sreg = SREG;
   noInterrupts(); // Protect from a scheduler and prevent transactionBegin
   switch (interruptNumber) {
   #ifdef SPI_INT0_MASK
-  case 0: mask = SPI_INT0_MASK; break;
+    case 0: mask = SPI_INT0_MASK; break;
   #endif
   #ifdef SPI_INT1_MASK
-  case 1: mask = SPI_INT1_MASK; break;
+    case 1: mask = SPI_INT1_MASK; break;
   #endif
   #ifdef SPI_INT2_MASK
-  case 2: mask = SPI_INT2_MASK; break;
+    case 2: mask = SPI_INT2_MASK; break;
   #endif
   default:
     break;
@@ -539,7 +542,7 @@ void SPIClass::notUsingInterrupt(uint8_t interruptNumber) {
   SREG = sreg;
 }
 void SPIClass::end(void) {
-    USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
+  USICR &= ~(_BV(USIWM1) | _BV(USIWM0));
 }
 
 SPIClass SPI = SPIClass();                //instantiate a tinySPI object

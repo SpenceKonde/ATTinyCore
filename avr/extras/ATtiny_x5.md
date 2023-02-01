@@ -11,7 +11,7 @@ EEPROM                |      512 bytes |      512 bytes |      512 bytes |      
 GPIO Pins             |      5 + RESET |      5 + RESET |      5 + RESET |      5 + RESET |      5 + RESET |      5 + RESET |
 ADC Channels          |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |   4 (incl RST) |
 Differential ADC      |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |     1/20x gain |
-PWM Channels          |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |  4: PA5-7, PB2 |
+PWM Channels          |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |  3: PB0, PB1/2 |
 Interfaces            |            USI |            USI |      vUSB, USI |            USI |            USI |            USI |
 Clocking Options:     |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |         in MHz |
 Int. Oscillator or PLL| 16, 8, 4, 2, 1 | 16, 8, 4, 2, 1 |    16.5. 16, 8 | 16, 8, 4, 2, 1 | 16, 8, 4, 2, 1 | 16, 8, 4, 2, 1 |
@@ -36,7 +36,20 @@ This core includes a Micronucleus bootloader that supports the ATtiny85, allowin
 
 In 2.0.0, all of the usual micronucleus entry methods are available. It is shockingly robust considering the hackjob it is built upon.
 
-Note that VUSB is only supported for loading code. After much very disappointing discussion with relevant experts and background research I am forced to say that VUSB is not supported for emulating other USB peripherals, as the hardware does not provide a means to meet the timing constraints in the context of an arduino sketch. Some people have gotten limited functionality to work. This is the exception not the rule.
+#### VUSB from within the sketch? Not so much
+Note that VUSB is only supported for loading code. After much very disappointing discussion with relevant experts and background research I am forced to say that VUSB is not supported for emulating other USB peripherals, as the hardware does not provide a means to meet the timing constraints in the context of an arduino sketch. Some people have gotten limited functionality to work. Those is the exception not the rule. The official digispark core contorted itself into pretzens and jumped through hoops (sacrificing ordinary functionality) in order to get VUSB functionality that was by most accounts quite flaky. This core has not "climbed into that rathole", and it should not be expected for VUSB in sketches to work under normal conditions. The difference between bootloader and sketch is that the bootloader - because that's all it does, operates in "polled mode" and is very careful to check the USB pins directly when needed. On the other hand, in a sketch you need to opperate in "interrupt driven" mode. The necessary response time of the USB interrupt is very close to the ceiling of what the processors are capable of generating in response to an interrupt, and while the interrupt handler is written with great care in asm, it still has to fire immediately in order to make the timing constraints. That can only happen when there is no other interrupt running (which disables interrupts. Millis requires a periodic interrupt) nor are interrupts disabled for any other reason (but interrupts often have to be briefly disabled - for example during a write to any multibyte variable that is used by an interrupt), or a read-modify-write of a register that might be written by an interrupt. The pin output registers are such a register - and digitalWrite() and similar API calls perform R-M-W sequences and thus must briefly disable interrupts, and even that half dozen clock cycles is enough to miss the timing constraints.
+
+##### If you're going attempt to make it work anyway
+For those brave souls who wish to try, your best hope is:
+* Millis should be disabled by the tools submenu.
+* Digital I/O functions should be avoided. They must be replaced with fast digital I/O, which writes to the pins with the atomic CBI or SBI instruction.
+* It may be most practical if USB is dynamically enabled and disabled, as the above constraints apply only while the device is connected and acting as a USB device (notice how a digispark disappears from device manager when a non-USB sketch is run).
+* Some research will be required to realize that sort of intermittant USB. I belive it to be possible, but don't know how to implement it. What I do know is that if you wish to to intermittently run VUSB in interrupt driven mode, you must disable all interrupts *except* the USB one. My approach would be, after all interrupts are in place but this is not yet done, compile and export the hex (which gets you the assembly listing and memory map too). Open the memory map in your favorite text editor (see , and make note of all `_vector` functions with non-zero size. Crossreference with the interrupt list at the bottom of this document, and write down a list of the interrupt routines present, and hence which interrupts the sketch uses, and crossreference that with the datasheet to find the bit which enables said interrupt.
+
+* The libraries you find may require modification as many of them were written for AVR-GCC 4.3 (not 7.3). Among other things, since AVR-GCC 5, a variable declared PROGMEM must also be declared const. If trying to compile gives errors about that, you've got a very old version of the library - try to find a newer one to work from. There are also problems with mismatches between versions of VUSB and the libraries that make use of it (typically they supply their own copy of VUSB).
+
+##### Background and hope for the future
+The crux of the problem is that USB requires that the chip be able to respond within a very very short time (a number of clock cycles in the low double digits) to certain USB events. This is easy in polled mode micronucleus uses - it is a bootloader fit into the gaps between when USB has to be serviced, written with an intimate knowledge of USB. This barely scrapes by in interrupt mode if there are no other interrupts that fire and interupts are never disabled when USB comms has to happen. Now, on the newer modern AVR devices, those have a two level interrupt controller - thus, all that should be necessary is to run at a sufficiently high clock speed (which those parts are eminantly capable of, especially if you take advantage of the overclocking headroom) - I don't know the current status of ports to that platform, I don't think there's a ready micronucleus bootloader available, let alone VUSB libraries - but my assessment is that an arduino-y environment that admits VUSB would be entirely viable on modern AVRs, with the sacrifice of a single port's worth of pin interrupts to service USB, and with that interrupt given LVL1 priority. If/when I become aware of any port of micronucleus to modern AVRs, I would be eager to add it to megaTinyCore and DxCore, which would generate enough interest to hopefully stimulate development of VUSB libraries there, where they have a chance of working there
 
 ### LED_BUILTIN is on PB1
 Both optiboot and micronucleus will try to blink it to indicate bootloader status.
@@ -49,10 +62,14 @@ The ATtiny x5-family parts have an on-chip PLL. This is clocked off the internal
 ### Timer1 is a high speed timer
 This means it can be clocked at 64 MHz from the on-chip PLL. In the past a menu option was provided to configure this. It never worked, and in any event is insufficient to do much of practical use with. It was eliminated for 2.0.0. Instead, see the [ATTinyCore library](../libraries/ATTinyCore/README.md)
 
-#### By default, PB1 uses timer1
-Since it is the more capable timer (it can be clocked at 64 MHz from an internal PLL and has every power of two as a prescling option. This can be overridden with the tools -> PB1 Timer menu.
-
-### I2C Support
+### PWM configuration
+The core configures PWM output as described below
+* The inverted outputs are not used, as the hardware provides no means to use them without also using the corresponding non-inverted output.
+* Timer0 is the bog standard timer0 that the vast majority of classic AVRs use. It is an 8 bit timer that can generatre PWM on PB0 and PB1 with independant duty cycles.
+* Timer1 is a unique timer which is more complicated to configure but also more capable.
+  * Inverted outputs are not supported by the core (you must configure it manually by register writes, and refrain from using digitalWrite() or analogWrite() on any associated pin as those may have undesired effects on the configuration of the timer.
+  * The timer by default is clocked from the the main peripheral clock (F_CPU), but it can be configured to use the PLL instead using the included [ATTinyCore library](../libraries/ATTinyCore/README.md). The PLL clock is generated from the internal oscillator kicked up by a factor of 8 by the on-chip PLL, for a nominal frequency of 64 MHz, or 65 MHz with the 16.5 MHz tuned oscillator option (sometimes used by digispark-like configurations)
+  *
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support

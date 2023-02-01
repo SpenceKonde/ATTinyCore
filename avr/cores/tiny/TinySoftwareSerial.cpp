@@ -112,20 +112,19 @@ extern "C"{
   }
 }
 #if defined(SOFT_TX_ONLY)
-TinySoftwareSerial::TinySoftwareSerial() {
-  _txmask   = _BV(SOFTSERIAL_TXBIT);
-  _txunmask = ~_txmask;
+  TinySoftwareSerial::TinySoftwareSerial() {
+    _txmask   = _BV(SOFTSERIAL_TXBIT);
 
-  _delayCount = 0;
-}
+    _delayCount = 0;
+  }
 #else
-TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
-  _rx_buffer = rx_buffer;
+  TinySoftwareSerial::TinySoftwareSerial(soft_ring_buffer *rx_buffer) {
+    _rx_buffer = rx_buffer;
 
-  _txmask   = _BV(SOFTSERIAL_TXBIT);
+    _txmask   = _BV(SOFTSERIAL_TXBIT);
 
-  _delayCount = 0;
-}
+    _delayCount = 0;
+  }
 #endif
 
 void TinySoftwareSerial::setTxBit(uint8_t txbit) {
@@ -219,28 +218,34 @@ int TinySoftwareSerial::read(void) {
   #endif
 }
 bool TinySoftwareSerial::listen() {
-  if (!_delayCount) {
-    return false;
-  }
-  if (ACSR & (1 << ACD)) {
-    _rx_buffer->head = 0;
-    _rx_buffer->tail = 0;
-    ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI); // must not have ACIE set while changing ACD
-    #if defined(__AVR_ATtiny_x8__) // not in the low I/O space so use LDI, OUT
-      ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE);
-    #else // we can use sbi. on 88/48 this would result in a 3 instruction IN, ORI, OUT sequence.
-      ACSR |= 1 << ACIE;
-    #endif
+  #ifndef SOFT_TX_ONLY
+    if (!_delayCount) {
+      return false;
     }
-  return true;
+    if (ACSR & (1 << ACD)) {
+      _rx_buffer->head = 0;
+      _rx_buffer->tail = 0;
+      ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI); // must not have ACIE set while changing ACD
+      #if defined(__AVR_ATtiny_x8__) // not in the low I/O space so use LDI, OUT
+        ACSR = (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI) | (1 << ACIE);
+      #else // we can use sbi. on 88/48 this would result in a 3 instruction IN, ORI, OUT sequence.
+        ACSR |= 1 << ACIE;
+      #endif
+      }
+    return true;
+  #else
+    return false;
+  #endif
 }
 
 // Stop listening. Returns true if we were actually listening.
 bool TinySoftwareSerial::stopListening() {
-  if (ACSR & (1 << ACD)) {
-    ACSR = (1 << ACD) | (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
-    return true;
-  }
+  #ifndef SOFT_TX_ONLY
+    if (ACSR & (1 << ACD)) {
+      ACSR = (1 << ACD) | (1 << ACBG) | (1 << ACIS1) | (1 << ACIS0) | (1 << ACI);
+      return true;
+    }
+  #endif
   return false;
 }
 
