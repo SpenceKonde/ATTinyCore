@@ -138,7 +138,7 @@ jobs:
           - name: attinyx8:chip=48,
             available-flash-kB: 4
             soft-serial: softserial=txonly
-          - name: attiny1634:
+          - name: "attiny1634:"
             available-flash-kB: 16
             soft-serial: ""
           - name: attinyx313:chip=4313,
@@ -147,19 +147,19 @@ jobs:
           - name: attinyx313:chip=2313a,
             available-flash-kB: 2
             soft-serial: ""
-          - name: attiny828:
+          - name: "attiny828:"
             available-flash-kB: 8
             soft-serial: ""
-          - name: attiny43u:
+          - name: "attiny43u:"
             available-flash-kB: 4
             soft-serial: softserial=enable
-          - name: attiny43u:
+          - name: "attiny43u:"
             available-flash-kB: 4
             soft-serial: softserial=txonly
-          - name: attiny26:
+          - name: "attiny26:"
             available-flash-kB: 2
             soft-serial: softserial=enable
-          - name: attiny26
+          - name: "attiny26:"
 
             available-flash-kB: 2
             soft-serial: softserial=txonly
