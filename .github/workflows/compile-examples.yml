@@ -177,7 +177,7 @@ jobs:
       - name: Build fqbn without soft serial
         if: ${{ matrix.device.soft-serial == 0}}
         run: |
-          export job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }},clock=internal_8m
+          export job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_8m
           echo "job_fqbn=$job_fqbn" >> $GITHUB_ENV
 
       # See: https://github.com/arduino/compile-sketches/README.md
