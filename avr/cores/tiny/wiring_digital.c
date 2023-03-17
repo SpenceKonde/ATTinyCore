@@ -69,13 +69,13 @@ void turnOffPWM(uint8_t timer) {
     #if defined(TCCR0A) && defined(COM0A1)
       if( timer == TIMER0A) {
         TCCR0A &= ~(1 << COM0A1);
-        // TCCR0A &= ~(1 << COM0A0); /* We do not clean up after user code that may have that on a timer. */
+        // TCCR0A &= ~(1 << COM0A0); /* We do not clean up after user code that may have shit on a timer. */
       } else
     #endif
     #if defined(TCCR0A) && defined(COM0B1)
       if( timer == TIMER0B){
         TCCR0A &= ~(1 << COM0B1);
-        // TCCR0A &= ~(1 << COM0B0); /* We do not clean up after user code that may have that  on a timer. */
+        // TCCR0A &= ~(1 << COM0B0); /* We do not clean up after user code that may have shit on a timer. */
       } else
     #endif
     #ifdef __AVR_ATtinyX7__

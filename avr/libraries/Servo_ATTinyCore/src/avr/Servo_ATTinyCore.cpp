@@ -407,7 +407,7 @@ void ServoSequencer::servoTimerSetup() {
 // FUNCTION:    void setupTimerPrescaler()
 //
 // DESCRIPTION: Helper function that sets up the timer prescaller based on what
-//              timer is selected and the F_CPU frequence.
+//              timer is selected and the F_CPU frequency.
 //
 // INPUT:       Nothing
 //

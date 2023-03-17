@@ -596,6 +596,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.default.build.variant=tinyx61",
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
@@ -708,7 +709,7 @@ boards = {
       [[".menu.clock.internal_1m=1 MHz (internal)", ".menu.clock.internal_1m.bootloader.low_fuses=0x64",
        ".menu.clock.internal_1m.build.f_cpu=1000000UL", ".menu.clock.internal_1m.build.speed=1m",
        ".menu.clock.internal_1m.build.clocksource=0x10"], getspeed(".menu.clock.internal_1m.upload.speed=","1")],
-      [[".menu.clock.internal_4m=4 MHz (internal)", ".menu.clock.internal_4m.bootloader.low_fuses=0x62",
+      [[".menu.clock.internal_4m=4 MHz (internal)", ".menu.clock.internal_4m.bootloader.low_fuses=0xE2",
         ".menu.clock.internal_4m.build.f_cpu=4000000UL", ".menu.clock.internal_4m.build.speed=4m",
         ".menu.clock.internal_4m.build.clocksource=0x10"], getspeed(".menu.clock.internal_4m.upload.speed=","4")],
       [[".menu.clock.internal_2m=2 MHz (internal)", ".menu.clock.internal_2m.bootloader.low_fuses=0x64",
@@ -875,6 +876,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.default.build.variant=tinyx61",
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
@@ -1389,6 +1391,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.legacy=Legacy",
+      ".menu.pinmap.default.build.variant=tinyx61",
       ".menu.pinmap.legacy.build.variant=tinyx61_legacy",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.legacy.build.pinmapabr=.old"],
