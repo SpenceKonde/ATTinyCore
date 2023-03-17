@@ -104,22 +104,22 @@ jobs:
             soft-serial: softserial=txonly
           - name: attinyx61:chip=861,
             available-flash-kB: 8
-            soft-serial: softserial=enable
+            soft-serial: softserial861=enable_AIN0
           - name: attinyx61:chip=861,
             available-flash-kB: 8
-            soft-serial: softserial=txonly
+            soft-serial: softserial861=txonly
           - name: attinyx61:chip=461,
             available-flash-kB: 4
-            soft-serial: softserial=enable
+            soft-serial: softserial861=enable_AIN2
           - name: attinyx61:chip=461,
             available-flash-kB: 4
-            soft-serial: softserial=txonly
+            soft-serial: softserial861=txonly
           - name: attinyx61:chip=261,
             available-flash-kB: 2
-            soft-serial: softserial=enable
+            soft-serial: softserial861=enable_AIN1
           - name: attinyx61:chip=261,
             available-flash-kB: 2
-            soft-serial: softserial=txonly
+            soft-serial: softserial861=txonly
           - name: attinyx7:chip=167,
             available-flash-kB: 16
             soft-serial: ""
@@ -172,19 +172,70 @@ jobs:
         if: ${{ matrix.device.soft-serial != 0 }}
         run: |
           export job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_8m,${{ matrix.device.soft-serial }}
+          export xtal_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=crystal_9216k,${{ matrix.device.soft-serial }}
+          export minspeed_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_1m,${{ matrix.device.soft-serial }}
           echo "job_fqbn=$job_fqbn" >> $GITHUB_ENV
-
+          echo "xtal_job_fqbn=$xtal_job_fqbn" >> $GITHUB_ENV
+          echo "minspeed_job_fqbn=$minspeed_job_fqbn" >> $GITHUB_ENV
       - name: Build fqbn without soft serial
         if: ${{ matrix.device.soft-serial == 0}}
         run: |
           export job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_8m
+          export xtal_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=crystal_9216k
+          export minspeed_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_1m
           echo "job_fqbn=$job_fqbn" >> $GITHUB_ENV
+          echo "xtal_job_fqbn=$xtal_job_fqbn" >> $GITHUB_ENV
+          echo "minspeed_job_fqbn=$minspeed_job_fqbn" >> $GITHUB_ENV
 
       # See: https://github.com/arduino/compile-sketches/README.md
       - name: Compile examples
         uses: arduino/compile-sketches@main
         with:
           fqbn: ${{ env.job_fqbn }}
+          sketch-paths: |
+            ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
+            ${{ env[format('available-flash-4kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 4)] }}
+            ${{ env[format('available-flash-2kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 2)] }}
+          platforms: |
+            # Install ATTinyCore via Boards Manager for the toolchain
+            - source-url: http://drazzy.com/package_drazzy.com_index.json
+              name: ${{ env.platform-name }}
+            # Overwrite the ATTinyCore release version with the platform from the local path
+            - source-path: avr
+              name: ${{ env.platform-name }}
+          libraries: |
+            # The sketches don't have any external library dependencies, so just define an empty array
+            -
+          verbose: false
+          enable-deltas-report: false
+          enable-warnings-report: true
+          sketches-report-path: sketches-reports
+      - name: Compile examples 1mhz internal
+        uses: arduino/compile-sketches@main
+        with:
+          fqbn: ${{ env.minspeed_job_fqbn }}
+          sketch-paths: |
+            ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
+            ${{ env[format('available-flash-4kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 4)] }}
+            ${{ env[format('available-flash-2kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 2)] }}
+          platforms: |
+            # Install ATTinyCore via Boards Manager for the toolchain
+            - source-url: http://drazzy.com/package_drazzy.com_index.json
+              name: ${{ env.platform-name }}
+            # Overwrite the ATTinyCore release version with the platform from the local path
+            - source-path: avr
+              name: ${{ env.platform-name }}
+          libraries: |
+            # The sketches don't have any external library dependencies, so just define an empty array
+            -
+          verbose: false
+          enable-deltas-report: false
+          enable-warnings-report: true
+          sketches-report-path: sketches-reports
+      - name: Compile examples external uart xtal
+        uses: arduino/compile-sketches@main
+        with:
+          fqbn: ${{ env.xtal_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
             ${{ env[format('available-flash-4kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 4)] }}
