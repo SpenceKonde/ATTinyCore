@@ -524,9 +524,47 @@ boards = {
     "flash":"2048",
     "sram":"128",
     "bootloader":"",
-    "haspll":True,
+    "haspll":False,
     "hasvoltdependance":False,
     "defaultvariant":"tiny26",
+    "internalclock":[
+      [[".menu.clock.internal_1m=1 MHz (internal) Start-up time: 6 CK + 64ms",
+        ".menu.clock.internal_1m.bootloader.low_fuses=0xE1",
+        ".menu.clock.internal_1m.build.f_cpu=1000000UL",
+        ".menu.clock.internal_1m.build.speed=1m",
+        ".menu.clock.internal_1m.build.clocksource=0x10"],
+        getspeed(".menu.clock.internal_1m.upload.speed=","1")],
+      [[".menu.clock.internal_2m=2 MHz (internal) Start-up time: 6 CK + 64ms",
+        ".menu.clock.internal_2m.bootloader.low_fuses=0xD2",
+        ".menu.clock.internal_2m.build.f_cpu=2000000UL",
+        ".menu.clock.internal_2m.build.speed=2m",
+        ".menu.clock.internal_2m.build.clocksource=0x10"],
+        getspeed(".menu.clock.internal_2m.upload.speed=","2")],
+      [[".menu.clock.internal_4m=4 MHz (internal) Start-up time: 6 CK + 64ms",
+        ".menu.clock.internal_4m.bootloader.low_fuses=0xE3",
+        ".menu.clock.internal_4m.build.f_cpu=4000000UL",
+        ".menu.clock.internal_4m.build.speed=4m",
+        ".menu.clock.internal_4m.build.clocksource=0x10"],
+        getspeed(".menu.clock.internal_4m.upload.speed=","4")],
+      [[".menu.clock.internal_8m=8 MHz (internal) Start-up time: 6 CK + 64ms",
+        ".menu.clock.internal_8m.bootloader.low_fuses=0xE4",
+        ".menu.clock.internal_8m.build.f_cpu=8000000UL",
+        ".menu.clock.internal_8m.build.speed=8m",
+        ".menu.clock.internal_8m.build.clocksource=0x10"],
+        getspeed(".menu.clock.internal_8m.upload.speed=","8")],
+      [[".menu.clock.pll_16m=16 MHz (PLL) Start-up time: 1k CK + 64ms",
+        ".menu.clock.pll_16m.bootloader.low_fuses=0x61",
+        ".menu.clock.pll_16m.build.f_cpu=16000000UL",
+        ".menu.clock.pll_16m.build.speed=16m",
+        ".menu.clock.pll_16m.build.clocksource=6"],
+        getspeed(".menu.clock.pll_16m.upload.speed=","16")],
+    ],
+    "bodmenu": [
+      ".menu.bod.disable=B.O.D. Disabled (saves power)", ".menu.bod.disable.bootloader.bod_bits=11",
+      ".menu.bod.2v7=B.O.D. Enabled (2.7v)", ".menu.bod.2v7.bootloader.bod_bits=10",
+      ".menu.bod.4v3=B.O.D. Enabled (4.3v)", ".menu.bod.4v3.bootloader.bod_bits=00"
+    ],
+    "notunedclocks":True,
     "hasxtal":True,
     "lfuse_ext":"0xE0",
     "lfuse_xh":"0xFF",
@@ -538,8 +576,8 @@ boards = {
     "ssport":"A",
     "ssrx":"7",
     "sstx":"6",
-    "hfuse":"0b{bootloader.rstbit}1110{bootloader.eesave_bit}{bootloader.bod_bits}",
-    "efuse":"0xFE",
+    "hfuse":"0b111{bootloader.rstbit}0{bootloader.eesave_bit}{bootloader.bod_bits}",
+    "efuse":"0xFF",
   },
     "attinyx61":{
     "title":True,
@@ -1674,17 +1712,18 @@ for x in boards:
           else:
             printProp(x,temp["hard"])
     if not "internalclock" in boards[x]:
-      tunedclklist=tunedclocks;
-    if not("onlytunesto8" in boards[x] and boards[x]["onlytunesto8"]):
-      #for a few parts we can't tune to anything higher than 8 and expect joy.
-      for y in tunedclocks:
-        for z in y[0]:
-          printProp(x,z)
-        if boards[x]["bootloader"]=="Optiboot":
-          if boards[x]["softser"]:
-            printProp(x,y[1]["soft"])
-          else:
-            printProp(x,y[1]["hard"])
+      tunedclklist=tunedclocks
+    if not "notunedclocks" in boards[x] or ("notunedclocks" in boards[x] and not boards[x]["notunedclocks"]):
+      if not("onlytunesto8" in boards[x] and boards[x]["onlytunesto8"]):
+        #for a few parts we can't tune to anything higher than 8 and expect joy.
+        for y in tunedclocks:
+          for z in y[0]:
+            printProp(x,z)
+          if boards[x]["bootloader"]=="Optiboot":
+            if boards[x]["softser"]:
+              printProp(x,y[1]["soft"])
+            else:
+              printProp(x,y[1]["hard"])
     if boards[x]["hasvoltdependance"]:
       for y in tune8vdepclk:
         for z in y[0]:
@@ -1695,14 +1734,15 @@ for x in boards:
           else:
             printProp(x,y[1]["hard"])
     else:
-      for y in tune8stdclk:
-        for z in y[0]:
-          printProp(x,z)
-        if boards[x]["bootloader"]=="Optiboot":
-          if boards[x]["softser"]:
-            printProp(x,y[1]["soft"])
-          else:
-            printProp(x,y[1]["hard"])
+      if not "notunedclocks" in boards[x] or ("notunedclocks" in boards[x] and not boards[x]["notunedclocks"]):
+        for y in tune8stdclk:
+          for z in y[0]:
+            printProp(x,z)
+          if boards[x]["bootloader"]=="Optiboot":
+            if boards[x]["softser"]:
+              printProp(x,y[1]["soft"])
+            else:
+              printProp(x,y[1]["hard"])
     if boards[x]["haswdt"]:
       for y in wdtclocks:
         printProp(x,y)
@@ -1759,12 +1799,16 @@ for x in boards:
       for y in softsermenu:
         printProp(x,y)
   printSubMenuHeader("BrownOut Detect menu ")
-  if boards[x]["fancybod"]:
-    for y in fancybodmenu:
+  if "bodmenu" in boards[x]:
+    for y in boards[x]["bodmenu"]:
       printProp(x,y)
   else:
-    for y in plainbodmenu:
-      printProp(x,y)
+    if boards[x]["fancybod"]:
+      for y in fancybodmenu:
+        printProp(x,y)
+    else:
+      for y in plainbodmenu:
+        printProp(x,y)
   printSubMenuHeader("millis/micros menu ")
   for y in millismenu:
     printProp(x,y)
