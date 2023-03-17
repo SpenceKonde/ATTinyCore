@@ -5,9 +5,9 @@ void setup() {
   pinMode(3,INPUT);
   pinMode(3,INPUT_PULLUP);
   pinMode(3,OUTPUT);
-  digitalWrite(GPIO0,HIGH);
-  digitalRead(GPIO0);
-  pinMode(GPIO0,OUTPUT);
+  digitalWrite(LED_BUILTIN ,HIGH);
+  digitalRead(LED_BUILTIN);
+  pinMode(LED_BUILTIN ,OUTPUT);
 }
 
 void loop() {

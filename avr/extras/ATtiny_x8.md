@@ -21,6 +21,7 @@ Internal, with tuning |          8, 12 |          8, 12 |  Not supported |      
 External Crystal      |  Not supported |  Not supported |  Not supported |  Not supported |  Not supported |
 External Clock        |   All Standard |  All* Standard | **16**,8,4,2,1 |  All* Standard |   All Standard |
 Default Pin Mapping   |       Standard |       Standard |        MH-Tiny |       Standard |       Standard |
+LED_BUILTIN           |
 
 `*` 20 MHz operation not supported. These parts are not even rated for 16!
 
@@ -29,7 +30,7 @@ USB only available at **BOLD** clock. Other frequencies when using Micronucleus 
 The ATtiny x8-family is intended as a low cost option compatible with the popular ATmega x8 series. As such, they have a nearly identical pinout (with a couple of extra GPIO pins in the TQFP version). Although these have the full hardware I2C and SPI peripherals, they lack both a hardware serial port and the option to use a crystal as a clock source. A Micronucleus board is available with a 16 MHz external CLOCK under the name "MH Tiny" (yes, that is overclocked, maximum is spec'ed at 12 MHz. But they seem to work under typical conditions though). They use a pin numbering scheme that differs significantly from the standard one; a pin mapping is provided which matches the markings on the board.
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer. This core includes a version of ArduinoAsISP with support for two additional features
+Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny88/48, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 88/48, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
@@ -63,10 +64,10 @@ Tone() uses Timer1. For best results, use PB1 or PB2, as this will use the hardw
 The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny x8 series. As always, while a software serial port (including the builtin one, Serial, on these ports, see below) is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md) for more details. Like tone(), this will disable PWM on PB1 or PB2. Tone and Servo cannot be used at the same time.
 
 ### I2C Support
-There is full Hardware I2C! It is provided by Wire.h
+There is full Hardware I2C! It is provided by Wire.h Do not attempt to use third party I2C libraries designed for ATtiny parts, they are designed for parts that have other hardware instead of a proper I2C port, that is not the case for these devices.
 
 ### SPI Support
-There is full Hardware SPI! It is provided by SPI.h
+There is full Hardware SPI! It is provided by SPI.h. Do not attempt to use third party SPI libraries designed for ATtiny parts, they are designed for parts that have other hardware instead of a proper SPI port, that is not the case for these devices.
 
 ### UART (Serial) Support
 There is no hardware UART. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is defaults to AIN0 (PD6), RX is always AIN1 (PD7). Although it is named Serial, it is still a software implementation, so you cannot send and receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART).
@@ -127,7 +128,7 @@ Mironucleus used: Micronucleus boards are locked to the external clock, no oscil
 This table lists all of the interrupt vectors available on the ATtiny x8-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 num| Address|     Vector Name   | Interrupt Definition
 ---|------- | ------------------| -------------------------
-0  | 0x0000 | RESET_vect        | Any reset (pin, WDT, power-on, BOD)
+0  | 0x0000 | RESET_vect        | Not an interrupt - this is a jump to the start of your code.
 1  | 0x0001 | INT0_vect         | External interrupt request 0
 2  | 0x0002 | INT1_vect         | External interrupt request 1
 3  | 0x0003 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)

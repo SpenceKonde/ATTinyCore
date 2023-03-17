@@ -24,14 +24,14 @@ on:
 
 jobs:
   compile-examples:
+    # same name as the fqbn (without the platform-name):
+    name: ${{ matrix.device}}clock=internal_8m${{matrix.soft-serial}}
     runs-on: ubuntu-latest
 
     env:
       platform-name: ATTinyCore:avr
 
-      # The "-true" postfix is a hack to with Github action expressions. We need to select a list of
-      # sketch paths based on a conditional.
-      available-flash-8kB-sketch-paths-true: |
+      available-flash-8kB-plus-sketch-paths-true: |
         - avr/libraries/SPI/examples/BarometricPressureSensor
         - avr/libraries/SoftwareSerial/examples/TwoPortReceive
         - avr/libraries/Wire/examples/SFRRanger_reader
@@ -160,12 +160,13 @@ jobs:
             available-flash-kB: 2
             soft-serial: softserial=enable
           - name: attiny26
+
             available-flash-kB: 2
             soft-serial: softserial=txonly
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build fqbn with soft serial
         if: ${{ matrix.device.soft-serial != 0 }}

@@ -66,6 +66,4 @@ jobs:
       - name: Check YAML
         continue-on-error: ${{ matrix.configuration.continue-on-error }}
         run: |
-          yamllint \
-            --format ${{ matrix.configuration.format }} \
-            .
+          yamllint -c ./.github/.yamllint --format ${{ matrix.configuration.format }} .

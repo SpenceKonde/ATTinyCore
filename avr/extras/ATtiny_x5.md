@@ -19,18 +19,27 @@ Internal, with tuning |    16.5, 12, 8 |    16.5, 12, 8 |    16.5, 12, 8 |    16
 External Crystal      |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
 External Clock        |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |   All Standard |
 Int. WDT Oscillator   |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |        128 kHz |
+LED_BUILTIN           |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |        PIN_PB1 |
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
-This core includes an Optiboot bootloader for the ATtiny85/45, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 85/45, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+This core includes an Optiboot bootloader for the ATtiny85/45, operating using software serial at at the standard ATTinyCore baud rates (which have changed in 2.0.0 for improved reliability see [the Optboot reference](./Ref_Optiboot.md)) - the software serial uses the AIN0 and AIN1 pins (see UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
+
+Due to a defect in Optiboot, it is possible for the bootloader to trash itself and the installed application; In this case ISP reprogramming is required to fix it. This means that **optiboot is not suitable for production systems on this part** - eventually, the bug will get triggered, and they will need to be rebootloaded; in a production setting this is simply not acceptable. I know an what must be done to fix this but getting from that to code which does that has proven extrordinarily difficult, I have attempted several times, each time reaching a point where I had no idea how to proceed to finish the fix. I know what value it needs to write to what address, but not now to get from where I was to there.
+
+Optiboot is available for the 85 and 45. It would fill more than 1/4th of the flash on the 25 and make the device very difficult to do anything useful with, and so we do not provide false hope by offering support.
 
 ### Micronucleus VUSB Bootloader
-This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched unless a slower clock speed is selected. These lower clock speeds are not compatible with USB libraries. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. D- is on pin 3, D+ is on pin 4. Note that for the most part, libraries that make an ATtiny85 work as a USB device don't work correctly. See the aforementioned link for more information.
+This core includes a Micronucleus bootloader that supports the ATtiny85, allowing sketches to be uploaded directly over USB. The board definition runs at 16.5 MHz via the internal PLL, adjusting the clock speed up slightly to get 16.5 MHz, and leaves it that way when the sketch is launched unless a slower clock speed is selected. These lower clock speeds are not compatible with USB libraries. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. D- is on pin 3, D+ is on pin 4. Note that for the most part, libraries that make an ATtiny85 work as a USB device don't work correctly.
+
+In 2.0.0, all of the usual micronucleus entry methods are available. It is shockingly robust considering the hackjob it is built upon.
+
+Note that VUSB is only supported for loading code. After much very disappointing discussion with relevant experts and background research I am forced to say that VUSB is not supported for emulating other USB peripherals, as the hardware does not provide a means to meet the timing constraints in the context of an arduino sketch. Some people have gotten limited functionality to work. This is the exception not the rule.
 
 ### LED_BUILTIN is on PB1
-Both optiboot and micronucleus will try to blink it in addition to user code that references LED_BUILTIN.
+Both optiboot and micronucleus will try to blink it to indicate bootloader status.
 
 ## Features
 
@@ -44,15 +53,15 @@ This means it can be clocked at 64 MHz from the on-chip PLL. In the past a menu 
 Since it is the more capable timer (it can be clocked at 64 MHz from an internal PLL and has every power of two as a prescling option. This can be overridden with the tools -> PB1 Timer menu.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. There is no need for libraries like TinyWire or USIWire or that kind of thing.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported).
+There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported). As with I2C, we only support SPI through the included universal SPI library, not through any other libraries that may exist, and can provide no support for third party SPI libraries.
 
 ### UART (Serial) Support
 There is no hardware UART. If running off the internal oscillator, you may need to calibrate it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. The SoftwareSerial library may be used; if it is used at the same time as the built-in software Serial, only one of them can send *or* receive at a time (if you need to be able to use both at the same time, or send and receive at the same time, you must use a device with a hardware UART). While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](Ref_TinySoftSerial.md)
 
-Though TX defaults to AIN0, it can be moved to any pin using Serial.setTxBit(b) where b is the number in the pin name using Pxn notation (in this case, also the arduino pin number) (2.0.0+ only - was broken in earlier versions)..
+Though TX defaults to AIN0, it can be moved to any pin using Serial.setTxBit(n) where n is the number in the pin name using Pxn notation (in this case, also the arduino pin number) (2.0.0+ only - was broken in earlier versions)..
 
 To disable the RX channel (to use only TX), select "TX only" from the Builtin SoftSerial tools menu. To disable the TX channel, simply don't print anything to it, and set it to the desired pinMode after Serial.begin()
 
@@ -151,7 +160,7 @@ This table lists all of the interrupt vectors available on the ATtiny x5-family,
 
 |vect_num | Address| Vector Name        | Interrupt Definition                |
 |---------|--------|--------------------|-------------------------------------|
-|       0 | 0x0000 | RESET_vect         | Any reset (pin, WDT, power-on, BOD) |
+|       0 | 0x0000 | RESET_vect         | Not an interrupt - this is a jump to the start of your code.  |
 |       1 | 0x0001 | INT0_vect          | External Interrupt Request 0        |
 |       2 | 0x0002 | PCINT0_vect        | Pin Change Interrupt 0              |
 |       3 | 0x0003 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A      |

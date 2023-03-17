@@ -22,6 +22,7 @@ External Clock        |   All Standard |   All Standard |  Not supported |   All
 Int. ULP Oscillator   |   32, 64, 128, |  Not supported |  Not supported |   32, 64, 128, |  Not supported |
 Int. ULP Osc. Cont.   | 256 or 512 kHz |                |                | 256 or 512 kHz |                |
 Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      Clockwise |      Clockwise |
+LED_BUILTIN           |        PIN_PB2 |
 
 
 Two pinout options are available, clockwise and counterclockwise, see below for more information. Be sure that the one you have selected is the one that you intend!
@@ -32,7 +33,7 @@ The ATtiny x41-family is a more advanced version of the ATtiny x4-family. It is 
 
 
 ## Programming
-Any of these parts can be programmed by use of any ISP programmer. If using a version of Arduino prior to 1.8.13, be sure to choose a programmer with (ATTinyCore) after it's name (in 1.8.13 and later, only those will be shown), and connect the pins as normal for that ISP programmer.
+Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny841/441, operating on the hardware UART0 (Serial) port at 115200 baud for 12 MHz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the booloader).

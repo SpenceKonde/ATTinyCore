@@ -1,4 +1,3 @@
-
 ![#1634 Pin Mapping](Pinout_1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
 Specification         |    ATtiny1634  |    ATtiny1634  |    ATtiny1634  |
@@ -26,7 +25,7 @@ LED_BUILTIN           |        PIN_PC0 |        PIN_PC0 |        PIN_PC2 |
 Unlike most classic ATtiny parts, the 1634 is only spec'ed for maximum clock speed of 12 MHz. However experience has shown that it generally works at 16 MHz @ 5V.
 The ATtiny1634R has a more tightly factory calibrated internal oscillator. It is otherwise identical, has the same signature, and is interchangible.
 
-This is one of the last three classic tinyAVRs to be released, and it you can see that they were playing around with the peripherals a bit.
+This is one of the last three classic tinyAVRs to be released, and you can see that they were playing around with things a bit, not always successfully.
 
 ### Warning: PB3 does not work as an input unless watchdog timer is running
 This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might say that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
@@ -67,10 +66,10 @@ Tone() uses Timer1. For best results, use pin 2 or 14 (PIN_PA6, PIN_PB3), as thi
 The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny1634 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md). Tone and Servo both reqire the same hardware resources are cannot be used at the same time.
 
 ### I2C Support
-There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. As of version 1.1.3 this is handled transparently via the special version of the Wire library included with this core. There is also a slave-only hardware TWI, however, the Wire.h library does not make use of this. **You must have external pullup resistors installed** in order for I2C functionality to work at all.
+There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
-There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI - as of version 1.1.3 of this core, this should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common).
+There is no hardware SPI peripheral. SPI functionality can be achieved with the hardware USI. This should be handled transparently via the SPI library. Take care to note that the USI does not have MISO/MOSI, it has DI/DO; when operating in master mode, DI is MISO, and DO is MOSI. When operating in slave mode, DI is MOSI and DO is MISO. The #defines for MISO and MOSI assume master mode (as this is much more common, and the only mode that the SPI library has ever supported). As with I2C, we only support SPI through the included universal SPI library, not through any other libraries that may exist, and can provide no support for third party SPI libraries.
 
 ### UART (Serial) Support
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
@@ -88,6 +87,8 @@ Note that **when using the Internal 1.1v reference, you must not apply an extern
 * EXTERNAL: External voltage applied to AREF pin
 * INTERNAL1V1: Internal 1.1v reference, AREF may have added capacitor for improved ADC stability.
 * INTERNAL: synonym for INTERNAL1V1
+
+Notice that the ADC is quite basic, I suspect that they had hoped to use something like what the 841 got, but were not able to have it ready in time to meet deadline.
 
 ### Overclocking
 Experience has shown that the ATtiny1634, operating at 5v and room temperature, will typically function at 16 MHz at 5v and room temperature without issue, although this is outside of the manufacturer's specification.
@@ -127,7 +128,7 @@ void startSleep() { //call instead of sleep_cpu()
 This table lists all of the interrupt vectors available on the ATtiny1634, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
 vect_num | Addr.  | Vector Name       | Interrupt Definition                  |
 |--------|--------|-------------------|---------------------------------------|
-|      0 | 0x0000 | RESET_vect        | Any reset (pin, WDT, power-on, BOD)   |
+|      0 | 0x0000 | RESET_vect        | Not an interrupt - this is a jump to the start of your code.  |
 |      1 | 0x0002 | INT0_vect         | External Interrupt Request 0          |
 |      2 | 0x0004 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)       |
 |      3 | 0x0006 | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)       |
