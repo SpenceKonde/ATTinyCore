@@ -1,4 +1,4 @@
-# ATtiny 26 - SUPPOT PLANNED BUT NOT YET AVAILABLE
+# ATtiny 26 - SUPPORT PLANNED BUT NOT YET AVAILABLE
 ![tiny26 pin mapping](Pinout26_PRELIMINARY.png "Arduino Pin Mapping for ATtiny 26");
 
 Specifications |  .
