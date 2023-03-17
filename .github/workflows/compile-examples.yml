@@ -75,7 +75,7 @@ jobs:
           - attinyx8:chip=48,
           - "attiny1634:"
           - attinyx313:chip=4313,
-          - attinyx313:chip=2313a,
+          - attinyx313:chip=2313,
           - "attiny828:"
           - "attiny43u:"
           - "attiny26:"
@@ -87,65 +87,80 @@ jobs:
 
         # Filter out these matrix combinations
         exclude:
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=enable"
             device: attinyx41:chip=841,
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=enable"
             device: attinyx41:chip=441,
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: attinyx41:chip=841,
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: attinyx41:chip=441,
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=enable"
             device: attinyx7:chip=87,
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=enable"
             device: attinyx7:chip=167,
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: attinyx7:chip=87,
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: attinyx7:chip=167,
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=enable"
             device: attinyx313:chip=4313,
-          - soft-serial: softserial=enable
-            device: attinyx313:chip=2313a,
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=enable"
+            device: attinyx313:chip=2313,
+          - soft-serial: ",softserial=txonly"
             device: attinyx313:chip=4313,
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: attinyx313:chip=2313a,
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=enable"
             device: "attiny1634:"
-          - soft-serial: softserial=enable
+          - soft-serial: ",softserial=txonly"
             device: "attiny1634:"
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: "attiny828:"
-          - soft-serial: softserial=txonly
+          - soft-serial: ",softserial=txonly"
             device: "attiny828:"
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx4:chip=84,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx4:chip=44,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx4:chip=24,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx5:chip=85,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx5:chip=45,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx5:chip=25,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx61:chip=861,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx61:chip=461,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx61:chip=261,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx8:chip=88,
-          - soft-serial:
+          - soft-serial: ""
             device: attinyx8:chip=48,
-          - soft-serial:
+          - soft-serial: ""
             device: "attiny43u:"
-          - soft-serial:
+          - soft-serial: ""
             device: "attiny26:"
+          - soft-serial: ",softserial=enable"
+            device: attinyx61:chip=861,
+          - soft-serial: ",softserial=enable"
+            device: attinyx61:chip=461,
+          - soft-serial: ",softserial=enable"
+            device: attinyx61:chip=261,
         include:
+          - device: attinyx61:chip=861,
+            soft-serial: ",softserial=enable_AIN1"
+            available-flash-kB: 8
+          - device: attinyx61:chip=461,
+            soft-serial: ",softserial=enable_AIN1"
+            available-flash-kB: 4
+          - device: attinyx61:chip=261,
+            soft-serial: ",softserial=enable_AIN1"
+            available-flash-kB: 2
           - device: "attiny1634:"
             available-flash-kB: 16
           - device: attinyx7:chip=167,
@@ -180,7 +195,7 @@ jobs:
             available-flash-kB: 4
           - device: attinyx313:chip=4313,
             available-flash-kB: 4
-          - device: attinyx313:chip=2313a,
+          - device: attinyx313:chip=2313,
             available-flash-kB: 2
           - device: "attiny828:"
             available-flash-kB: 8
@@ -216,6 +231,6 @@ jobs:
             # The sketches don't have any external library dependencies, so just define an empty array
             -
           verbose: false
-          enable-deltas-report: true
+          enable-deltas-report: false
           enable-warnings-report: true
           sketches-report-path: sketches-reports

@@ -469,7 +469,7 @@ uint8_t i2c_read(bool last) {
      " sbic %[SDAIN],%[SDAPIN]  ; if SDA is high        ; 11C + 2X\n\t"
      " sec              ; set carry flag        ; 12C + 2X\n\t"
      " rol  r23           ; store bit             ; 13C + 2X\n\t"
-     " brcc _Li2c_read_bit          ; while receiv reg not full \n\t"
+     " brcc _Li2c_read_bit          ; while receive reg not full \n\t"
      "                         ; 15C + 2X for one bit loop \n\t"
 
      "_Li2c_put_ack: \n\t"
