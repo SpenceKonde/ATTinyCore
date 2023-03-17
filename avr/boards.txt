@@ -1569,6 +1569,7 @@ attinyx61.menu.clock.extclk_3686k.build.clocksource=2
 ################################
 attinyx61.menu.pinmap.default=Standard
 attinyx61.menu.pinmap.legacy=Legacy
+attinyx61.menu.pinmap.default.build.variant=tinyx61
 attinyx61.menu.pinmap.legacy.build.variant=tinyx61_legacy
 attinyx61.menu.pinmap.default.build.pinmapabr=
 attinyx61.menu.pinmap.legacy.build.pinmapabr=.old
@@ -4131,6 +4132,7 @@ attinyx61opti.menu.clock.extclk_3686k.upload.speed=14400
 ################################
 attinyx61opti.menu.pinmap.default=Standard
 attinyx61opti.menu.pinmap.legacy=Legacy
+attinyx61opti.menu.pinmap.default.build.variant=tinyx61
 attinyx61opti.menu.pinmap.legacy.build.variant=tinyx61_legacy
 attinyx61opti.menu.pinmap.default.build.pinmapabr=
 attinyx61opti.menu.pinmap.legacy.build.pinmapabr=.old
@@ -6073,6 +6075,7 @@ attiny861micr.menu.clock.pll_1m.build.clocksource=0x16
 ################################
 attiny861micr.menu.pinmap.default=Standard
 attiny861micr.menu.pinmap.legacy=Legacy
+attiny861micr.menu.pinmap.default.build.variant=tinyx61
 attiny861micr.menu.pinmap.legacy.build.variant=tinyx61_legacy
 attiny861micr.menu.pinmap.default.build.pinmapabr=
 attiny861micr.menu.pinmap.legacy.build.pinmapabr=.old
