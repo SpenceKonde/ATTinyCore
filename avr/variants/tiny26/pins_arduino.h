@@ -75,7 +75,7 @@ static const uint8_t A10 = ADC_CH(10);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)        ((((p) >= 6 && (p) <= 15) || (p)==3) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICR(p)        ((((p) >= 6 && (p) <= 15) || (p)==3) ? (volatile uint8_t *)(&GIMSK) : ((volatile uint8_t *)NULL))
 #define digitalPinToPCICRbit(p)     ( ((p) >= 8 && (p) <  12)  ?  5 : 4)
 #define digitalPinToPCMSK(p)        (badCall("there IS NO PCMSK HERE. You can enable PCINTs on PB0:3 and on all the other PCINT pins."))
 #define digitalPinToPCMSKbit(p)     (badCall("there IS NO PCMSK HERE. You can enable PCINTs on PB0:3 and on all the other PCINT pins."))

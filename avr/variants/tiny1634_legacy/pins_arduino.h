@@ -86,9 +86,9 @@ static const uint8_t A11 = ADC_CH(11);
  * why), either do it manually or use other pin mapping.
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)      ((((p) >= 0) && ((p) < 17)) ? (GIFR) : ((uint8_t *)NULL))
+#define digitalPinToPCICR(p)      ((((p) >= 0) && ((p) < 17)) ? (volatile uint8_t *)(&GIFR) : ((volatile uint8_t *)NULL))
 #define digitalPinToPCICRbit(p)   (((p) > 13 || (p) == 0)? 4 : (p) < 9 ? 3 : 5) /* note: checking if it's a valid pin is done by the digitalPinToPCICR macro. */
-#define digitalPinToPCMSK(p)      (((p) > 0 && (p) < 9) ? (&PCMSK0) : (((p) < 14 || (p) == 0) ? (&PCMSK2) : ((p) < 17) ? (&PCMSK1) : ((uint8_t *)NULL)))
+#define digitalPinToPCMSK(p)      (((p) > 0 && (p) < 9) ? (volatile uint8_t *)(&PCMSK0) : (((p) < 14 || (p) == 0) ? (volatile uint8_t *)(&PCMSK2) : ((p) < 17) ? (volatile uint8_t *)(&PCMSK1) : ((volatile uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p)   (((p) == 0) ? 0 : (((p) < 9) ? : (8 - (p)) : (((p) > 13) ? (17 - (p)) : (((p) > 11) ? (13 - (p)) : (14 - (p))))))
 
 #define digitalPinToInterrupt(p)    ((p)==PIN_PC2 ? 0 : NOT_AN_INTERRUPT)

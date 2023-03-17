@@ -67,9 +67,9 @@ static const uint8_t A3 = ADC_CH(3);
  * digitalPinToInterrupt gets the number of the "full service" pin interrupt
  *---------------------------------------------------------------------------*/
 
-#define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 15) ? (&GIMSK) : ((uint8_t *)NULL))
+#define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 15) ? (volatile uint8_t *)(&GIMSK) : ((volatile uint8_t *)NULL))
 #define digitalPinToPCICRbit(p)     (((p) >= 0 && (p) <= 7) ? 5 : 4)
-#define digitalPinToPCMSK(p)        (((p) >= 0 && (p) <= 7) ? (&PCMSK1) : ((p) <= 15) ? (&PCMSK0) : ((uint8_t *)NULL))
+#define digitalPinToPCMSK(p)        (((p) >= 0 && (p) <= 7) ? (volatile uint8_t *)(&PCMSK1) : ((p) <= 15) ? (volatile uint8_t *)(&PCMSK0) : ((volatile uint8_t *)NULL))
 #define digitalPinToPCMSKbit(p)     ((p) & 0x07)
 
 #define digitalPinToInterrupt(p)    ((p) == PIN_PB7 ? 0 : NOT_AN_INTERRUPT)
