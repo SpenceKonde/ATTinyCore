@@ -5,7 +5,6 @@
 
 #ifndef Pins_Arduino_h
 #define Pins_Arduino_h
-#include <avr/pgmspace.h>
 
 /*===========================================================================
  * Microchip ATtiny841, ATtiny441
@@ -20,24 +19,25 @@
 #define ATTINYX41 1
 #define __AVR_ATtinyX41__
 
-#define NUM_DIGITAL_PINS            12
-#define NUM_ANALOG_INPUTS           12
+#include <avr/pgmspace.h>
+
+#define NUM_DIGITAL_PINS    (12)
+#define NUM_ANALOG_INPUTS   (12)
 
 /* Basic Pin Numbering - PIN_Pxn notation is always recommended
  * as it is totally unambiguous, but numbers may be used too */
-
-#define PIN_PB0  ( 0) /* XTAL2 */
-#define PIN_PB1  ( 1) /* XTAL1 */
-#define PIN_PB2  ( 2)
-#define PIN_PA7  ( 3)
-#define PIN_PA6  ( 4)
-#define PIN_PA5  ( 5)
-#define PIN_PA4  ( 6)
-#define PIN_PA3  ( 7)
-#define PIN_PA2  ( 8)
-#define PIN_PA1  ( 9)
-#define PIN_PA0  (10)
-#define PIN_PB3  (11)  /* RESET */
+#define PIN_PB0             ( 0) /* XTAL2 */
+#define PIN_PB1             ( 1) /* XTAL1 */
+#define PIN_PB2             ( 2)
+#define PIN_PA7             ( 3)
+#define PIN_PA6             ( 4)
+#define PIN_PA5             ( 5)
+#define PIN_PA4             ( 6)
+#define PIN_PA3             ( 7)
+#define PIN_PA2             ( 8)
+#define PIN_PA1             ( 9)
+#define PIN_PA0             (10)
+#define PIN_PB3             (11)  /* RESET */
 
 #ifndef LED_BUILTIN
   #ifndef USB_TWOPLUS
@@ -356,6 +356,12 @@ const uint8_t PROGMEM port_to_output_PGM[] = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &PORTA,
   (uint8_t)(uint16_t) &PORTB,
+};
+
+const uint8_t PROGMEM port_to_pullup_PGM[] = {
+  NOT_A_PORT,
+  (uint8_t)(uint16_t) &PUEA,
+  (uint8_t)(uint16_t) &PUEB,
 };
 
 const uint8_t PROGMEM port_to_input_PGM[] = {
