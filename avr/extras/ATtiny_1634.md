@@ -63,7 +63,7 @@ The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the sligh
 Tone() uses Timer1. For best results, use pin 2 or 14 (PIN_PA6, PIN_PB3), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins PA6 (Arduino pin 2) and PB3 (Arduino pin 14).
 
 ### Servo Support
-The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny1634 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md). Tone and Servo both reqire the same hardware resources are cannot be used at the same time.
+The standard Servo library is hardcoded to work on specific parts only, we include a builtin Servo library that supports the Tiny1634 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch. See [the Servo/Servo_ATTinyCore library](../libraries/Servo/README.md). Tone and Servo both require the same hardware resources are cannot be used at the same time.
 
 ### I2C Support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
