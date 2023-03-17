@@ -104,22 +104,22 @@ jobs:
             soft-serial: softserial=txonly
           - name: attinyx61:chip=861,
             available-flash-kB: 8
-            soft-serial: softserial861=enable_AIN0
+            soft-serial: softserial=enable_AIN0
           - name: attinyx61:chip=861,
             available-flash-kB: 8
-            soft-serial: softserial861=txonly
+            soft-serial: softserial=txonly
           - name: attinyx61:chip=461,
             available-flash-kB: 4
-            soft-serial: softserial861=enable_AIN2
+            soft-serial: softserial=enable_AIN2
           - name: attinyx61:chip=461,
             available-flash-kB: 4
-            soft-serial: softserial861=txonly
+            soft-serial: softserial=txonly
           - name: attinyx61:chip=261,
             available-flash-kB: 2
-            soft-serial: softserial861=enable_AIN1
+            soft-serial: softserial=enable_AIN1
           - name: attinyx61:chip=261,
             available-flash-kB: 2
-            soft-serial: softserial861=txonly
+            soft-serial: softserial=txonly
           - name: attinyx7:chip=167,
             available-flash-kB: 16
             soft-serial: ""
