@@ -16,6 +16,7 @@ arduinoasisp32u4.program.speed=19200
 arduinoasisp32u4.program.tool=avrdude
 arduinoasisp32u4.program.extra_params=-P{serial.port} -b{program.speed}
 
+
 ## Notes about Dangerous Prototypes Bus Pirate as ISP
 ## Bus Pirate V3 need Firmware v5.10 or later
 ## Bus Pirate V4 need Firmware v6.3-r2151 or later
