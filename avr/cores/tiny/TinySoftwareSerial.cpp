@@ -362,7 +362,7 @@ TinySoftwareSerial::operator bool() {
 }
 
 #if defined(SOFT_TX_ONLY)
-  TinySoftwareSerial Serial();
+  TinySoftwareSerial Serial;
 #else
   TinySoftwareSerial Serial(&rx_buffer);
 #endif
