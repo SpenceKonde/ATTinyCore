@@ -76,6 +76,15 @@
 .global countPulseASM
 
 countPulseASM:
+
+.LM0:
+.LFBB1:
+    push r12   ;   ;  130 pushqi1/1 [length = 1]
+    push r13   ;   ;  131 pushqi1/1 [length = 1]
+    push r14   ;   ;  132 pushqi1/1 [length = 1]
+    push r15   ;   ;  133 pushqi1/1 [length = 1]
+    push r16   ;   ;  134 pushqi1/1 [length = 1]
+    push r17   ;   ;  135 pushqi1/1 [length = 1]
 /* prologue: function */
     push r12;
     push r13;
@@ -87,6 +96,7 @@ countPulseASM:
 /* stack size = 6 */
 .L__stack_usage = 6
     movw r30,r24  ; this was a mov instead of movw. Whyyy?
+
 /*     unsigned long width = 0;
 ***     // wait for any previous pulse to end
 ***     while ((*port & bit) == stateMask)
@@ -162,6 +172,7 @@ countPulseASM:
     and r24,r22  ; bitwise and with the pin bitmask we are looking at
     cp r24,r20   ; and compare it to what the pulse would be
     breq .L10    ; As long as they are the same we restart this loop and keep going
+
 /*             return 0;
 ***     }
 ***     return width;

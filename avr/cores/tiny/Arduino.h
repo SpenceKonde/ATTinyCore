@@ -22,6 +22,7 @@
   #define ATTINYCORE "2.x.x+ unknown"
 #endif
 
+void yield(void);
 
 #define ADC_ERROR_NO_ADC          -32768
 #define ADC_ERROR_DISABLED        -32767 /* ADC_ERROR_NO_ADC + 1 */
@@ -46,7 +47,6 @@
 
 //#define clockCyclesToMicroseconds(a) (((a) * 1000L) / (F_CPU / 1000L))
 //#define microsecondsToClockCycles(a) (((a) * (F_CPU / 1000L)) / 1000L)
-
 
 
 typedef unsigned int word;
@@ -76,16 +76,16 @@ int analogRead(uint8_t pinNumber);
 #else
   int _analogRead(uint8_t pin);
 #endif
+
 void analogReference(uint8_t mode);
-void analogWrite(uint8_t pinNumber, int16_t val);
+void analogWrite(uint8_t, int);
 
 void setADCDiffMode(bool bipolar);
 void analogGain(uint8_t gain);
 
 unsigned long millis(void);
 unsigned long micros(void);
-
-void yield(void);
+#endif
 void delay(unsigned long);
 
 // Shamelessly stolen from @nerdralph's picoCore
@@ -114,13 +114,15 @@ static inline void delayMicroseconds(uint16_t us)
 
 
 unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout);
+#ifndef DISABLEMILLIS
 unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout);
+#endif
 
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
 uint8_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder);
 
-void attachInterrupt(uint8_t interrupt, void (*)(void), int mode);
-void detachInterrupt(uint8_t interrupt);
+void attachInterrupt(uint8_t, void (*)(void), int mode);
+void detachInterrupt(uint8_t);
 
 void setup(void);
 void loop(void);
@@ -150,8 +152,9 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
+//
 // These perform slightly better as macros compared to inline functions
-
+//
 #define const_array_or_pgm_(FUNC,ARR,IDX) ({size_t idx_ = (IDX); __builtin_constant_p((ARR)[idx_]) ? (ARR)[idx_] : FUNC((ARR)+idx_); })
 #define digitalPinToPort(P)     (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_port_PGM, (P)) : NOT_A_PORT)
 #define digitalPinToBitMask(P)  (((P) < NUM_DIGITAL_PINS) ? const_array_or_pgm_(pgm_read_byte, digital_pin_to_bit_mask_PGM, (P)) : NOT_A_PIN)
@@ -261,6 +264,7 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
  * options, determine which features to enable.
 =============================================================================*/
 
+
 #ifndef USE_SOFTWARE_SERIAL
   // Don't use builtin software serial unless the variant asked for it because there wasn't a hardware one.
   #define USE_SOFTWARE_SERIAL                       0
@@ -316,6 +320,10 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
   #endif
   #define INITIALIZE_ADC                            0
 #endif
+
+/*=============================================================================
+  Allow the "secondary timers" to be optional for low-power applications
+=============================================================================*/
 
 #ifndef INITIALIZE_SECONDARY_TIMERS
   #ifdef DEFAULT_INITIALIZE_SECONDARY_TIMERS
@@ -561,26 +569,27 @@ inline __attribute__((always_inline)) void digitalWriteFast(uint8_t pin, uint8_t
 #endif
 
 #ifdef __cplusplus
-  #include "WCharacter.h"
-  #include "WString.h"
-  #include "HardwareSerial.h"
-  #include "TinySoftwareSerial.h"
+#include "WCharacter.h"
+#include "WString.h"
+#include "HardwareSerial.h"
+#include "TinySoftwareSerial.h"
 
-  uint16_t makeWord(uint16_t w);
-  uint16_t makeWord(byte h, byte l);
+uint16_t makeWord(uint16_t w);
+uint16_t makeWord(byte h, byte l);
 
   #define word(...) makeWord(__VA_ARGS__)
   unsigned long pulseIn(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
   unsigned long pulseInLong(uint8_t pin, uint8_t state, unsigned long timeout = 1000000L);
 
-  void tone(uint8_t _pin, unsigned long frequency, unsigned long duration = 0);
-  void noTone(uint8_t _pin = 255);
 
-  // WMath prototypes
-  long random(long);
-  long random(long, long);
-  void randomSeed(unsigned int);
-  long map(long, long, long, long, long);
+void tone(uint8_t _pin, unsigned long frequency, unsigned long duration = 0);
+void noTone(uint8_t _pin = 255);
+
+// WMath prototypes
+long random(long);
+long random(long, long);
+void randomSeed(unsigned int);
+long map(long, long, long, long, long);
 
 #endif
 

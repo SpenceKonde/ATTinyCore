@@ -338,7 +338,6 @@ inline int analogRead(uint8_t pin) {
   #endif
 }
 
-
 void analogWrite(uint8_t pin, int val) {
   if(__builtin_constant_p(pin)) {
     // No stupid exception here - nobody analogWrite()'s to pins that don't exist!
@@ -347,9 +346,13 @@ void analogWrite(uint8_t pin, int val) {
   // let's wait until the end to set pinMode - why output an unknown value for a few dozen clock cycles while we sort out the pwm channel?
   if (val <= 0) {
     digitalWrite(pin, LOW);
-  } else if (val >= 255) {
+  }
+  else if (val >= 255)
+  {
     digitalWrite(pin, HIGH);
-  } else {
+  }
+  else
+  {
     uint8_t timer = digitalPinToTimer(pin);
     #if defined(TOCPMCOE)
       if (timer) {

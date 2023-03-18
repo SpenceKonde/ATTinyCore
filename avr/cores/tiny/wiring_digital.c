@@ -11,8 +11,6 @@
 #include "wiring_private.h"
 #include "pins_arduino.h"
 
-
-
 void pinMode(uint8_t pin, uint8_t mode) {
   if (pin > 127) {
     pin = analogInputToDigitalPin((pin & 127));
@@ -33,25 +31,23 @@ void pinMode(uint8_t pin, uint8_t mode) {
 
   if (mode == INPUT) {
     uint8_t oldSREG = SREG;
-    cli();
-    *reg &= ~mask;
-    *out &= ~mask;
+                cli();
+    *reg &= ~bit;
+    *out &= ~bit;
     SREG = oldSREG;
   } else if (mode == INPUT_PULLUP) {
     uint8_t oldSREG = SREG;
-    cli();
-    *reg &= ~mask;
-    *out |= mask;
+                cli();
+    *reg &= ~bit;
+    *out |= bit;
     SREG = oldSREG;
   } else {
     uint8_t oldSREG = SREG;
-    cli();
-    *reg |= mask;
+                cli();
+    *reg |= bit;
     SREG = oldSREG;
   }
 }
-
-
 
 void turnOffPWM(uint8_t timer) {
   #if defined(TOCPMCOE)
@@ -70,6 +66,7 @@ void turnOffPWM(uint8_t timer) {
       if( timer == TIMER0A) {
         TCCR0A &= ~(1 << COM0A1);
         // TCCR0A &= ~(1 << COM0A0); /* We do not clean up after user code that may have shit on a timer. */
+
       } else
     #endif
     #if defined(TCCR0A) && defined(COM0B1)
@@ -136,7 +133,7 @@ void digitalWrite(uint8_t pin, uint8_t val) {
   if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
   uint8_t timer = digitalPinToTimer(pin);
-  uint8_t mask = digitalPinToBitMask(pin);
+  uint8_t bit = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out;
 
@@ -210,8 +207,6 @@ void openDrain(uint8_t pin, uint8_t val) {
     SREG = oldSREG;
   }
 }
-
-
 
 
 int8_t digitalRead(uint8_t pin)
