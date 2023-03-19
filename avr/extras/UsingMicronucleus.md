@@ -55,12 +55,12 @@ Micronucleus provides an "upgrade" function - by uploading a program which conta
 
 ### Micronucleus and MCUSR (reset cause)
 In order to make the entry modes work correctly - regardless of sketch behavior - Micronucleus must reset MCUSR prior to exiting. It stashes the value of MCUSR in the GPIOR0 register - in the unlikely event that your sketch needs to know the reset cause, check GPIOR0, not MCUSR. This is currently done on the supplied bootloader for the ATtiny84, 85, and 88 parts; in a future release, it will be done for all parts. To ensure your sketch gets the correct reset cause whether or not the bootloader does this, know that one of these will be zero when the bootloader exits after any sort of reset, and the other will be non-zero. The non-zero one is the correct one. .
-```
+```c
 uint8_t resetcause = GPIOR0;
 if(resetcause == 0) {
   resetcause = MCUSR;
   MCUSR = 0;
-} 
+}
 // if you use GPIOR0 in your code
 else {
   GPIOR0 = 0;

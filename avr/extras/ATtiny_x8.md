@@ -1,4 +1,4 @@
-### ATtiny 48/88
+# ATtiny 48/88
 ![x8 Pin Mapping](http://drazzy.com/e/img/PinoutT88.jpg "Arduino Pin Mapping for ATtiny 88/48 in TQFP")
 ![x8 Pin Mapping](Pinout_x8-PU.jpg "Arduino Pin Mapping for ATtiny 88/48 in DIP")
 ![x8 Pin Mapping](MHET_Tiny.png "Arduino Pin Mapping for MH-ET Tiny88")

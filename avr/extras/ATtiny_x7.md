@@ -1,4 +1,4 @@
-### ATtiny 87/167
+# ATtiny 87/167
 ![x7 pin mapping](Pinout_x7.jpg "Arduino Pin Mapping for ATtiny x7-family")
 
 | Specification           |    ATtiny167   |    ATtiny167   |    ATtiny167   |    ATtiny87    |    ATtiny87    |    ATtiny87    |
@@ -18,7 +18,7 @@
 | Int. Oscillator         |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |
 | Int. WDT Oscillator     |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |  Not supported |
 | Internal, with tuning   |          8, 12 |          8, 12 |  Not supported |          8, 12 |          8, 12 |  Not supported |
-| External Crystal        |   All Standard |   All Standard | **16** ** ,8,4,2,1 |   All Standard |   All Standard | **16** `**` ,8,4,2,1 |
+| External Crystal        |   All Standard |   All Standard | **16** `**` ,8,4,2,1 |   All Standard |   All Standard | **16** `**` ,8,4,2,1 |
 | External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
 | Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
 | LED_BUILTIN ***         | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 |
@@ -34,7 +34,7 @@ Any of these parts can be programmed by use of any ISP programmer. 4k and 8k par
 ### Optiboot Bootloader
 This core includes an Optiboot bootloader for the ATtiny87 and 167, operating on the hardware UART/LIN port at 115200 baud for 12 or 16 MHz clock speed, and 57600 when running at 8 MHz. In order to work on the x7 series, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the WDT vector gets pointed to the start of the application.  This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
-#### Supported Entry Conditions:
+#### Supported Entry Conditions
 * Reset only, upload must start w/in 1 second (for use with autoreset)
 * Reset and Power On, with 8-secind wait (for use without autoreset)
 

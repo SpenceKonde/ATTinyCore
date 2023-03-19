@@ -1,6 +1,5 @@
 # Additional more detailed sections of documentation for ATTinyCore
 
-
 * [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
 * [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
 * [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
@@ -14,7 +13,7 @@
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
-### Non-supported parts
+## Non-supported parts
 * [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great parts and work well with Arduino.
 * [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude
 * ATtiny26 are not supported by any Arduino core. They are the obsolete predecessor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such old and uninspiring parts.
@@ -25,13 +24,13 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 **Windows users must install Micronucleus drivers manually**
 If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries (though I am told they recognized how nonsensical this is - a malicious core could still run whatever commands it wanted to by telling the IDE that was how to compile sketches for these boards - and will be changing this in the future. Note also that the 1.5.0 release does not include working micronucleus upload tool for Windows, this is resolved in 1.5.2.
 
-During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
+During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from: [https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip]. Unzip, run the installation batch file.
 
 
 **avrdude: error: could not find USB device with vid=0x16c0 pid=0x5dc vendor=`www.fischl.de` product='USBasp'**
 Vaguely recent versions of AVRdude appear to have dropped a few versions of the firmware. If this is the first time you'd installed something that triggered an update here, you may have problems with AVRdude. The solution, thankfully, is straightforward..
 .
-1. Download Zadig from http://zadig.akeo.ie
+1. Download [Zadig from http://zadig.akeo.ie](http://zadig.akeo.ie)
 2. Plug in USBasp
 3. Start zadig
 4. Options > List all devices
@@ -41,7 +40,7 @@ Vaguely recent versions of AVRdude appear to have dropped a few versions of the 
 
 **This core includes part specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
 
-**problems dynamically linking libusb-0.1 on linux** can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
+**problems dynamically linking libusb-0.1 on linux** can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from [http://arduino.cc](http://arduino.cc), never from a package manager.
 
 **There is a bug in the IDE that causes compilation errors with some combinations of boards and submenu options** on 1.8.5 and earlier on Windows. The symptom of this is an error ending in something like C:\Users\yourusername\AppData\Local\Temp\arduino_build_131884/..\arduino_cache_186227\core\core_ATTinyCore_avr_attinyx4_LTO_enable,chip_84,clock_8internal,eesave_aenable,bod_disable,pinmapping_anew,millis_enabled,neopixelport_porta_1bc5d2d7fe299bbd4d4a668366e76c74.a: No such file or directory - this is caused by the way it includes all options in the name of the file; where there are many menu options, this will exceed the maximum file name length under windows. This issue impacts many parts on ATTinyCore 1.3.0 and later, and the 841/441 on ATTinyCore 1.2.2 and later. To fix this issue without downgrading ATTinyCore, update to 1.8.6 or later of the IDE - 1.8.13 is STRONGLY recommended
 
@@ -55,7 +54,7 @@ Vaguely recent versions of AVRdude appear to have dropped a few versions of the 
 
 **Chips sold as "ATtiny85" with wrong signature** - enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
 
-**free(): invalid next size (normal) error** This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
+**free(): invalid next size (normal) error** This error is due to a bug in [AVRdude](https://savannah.nongnu.org/bugs/?48776) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
 
 **When using analogRead(), use the A# constant to refer to the pin, not the digital pin number.** Analog channel number (see table in datasheet entry for ADMUX register) can also be used - unlike the official core, you can use analogRead() with the differential ADC channels (for example).
 
@@ -102,7 +101,7 @@ Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCor
 
 After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
 
-#### Supported clock speeds:
+### Supported clock speeds
 Supported clock speeds are shown in the menus in descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.
 
 Internal:
@@ -154,10 +153,10 @@ All available clock options for the selected processor will be shown in the Tool
 
 This differs from the behavior of official Arduino core - the "stock" micros() executes equally fast at all clock speeds, and instead returns wrong values for "weird" clock speeds (64/(clock speed in microseconds, rounded down to integer), rounded down to integer. 12.8 MHz is a special case and is handled exactly.
 
-Thanks to @cburstedde for his work this his work towards making this suck less in the 1.5.0 release!
+Thanks to @cburstedde for his work on this.
 
-#### Using external CLOCK on 48, 88, and 828 (new in 1.3.3)
-These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE only for parts which don't support an external crystal. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6~5.5v (ie, the entire operating range of these parts!). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%, though some work from wider ranges). Through-hole units are available, but expensive, and all have the restrictive supply voltage requirements. If selecting your own oscillator, you want an "XO" type.
+#### Using external CLOCK (new in 1.3.3 for on 48, 88, and 828, expanded everywhere for 2.0.0)
+These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE; in previous versions this was limited to parts which didn't support a crystal. With greater recognition that unbricking the parts is straightforward (we include an appriopriate sketch in the examples), as of 2.0.0, we now support this on all parts. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we would recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6-5.5v (ie, the entire operating range of these parts - but they're discontinued and there is no longer any external clock for sale from any western manufacturer or subsidiary thereof that is openly marketing an external oscillator with such  a wide voltage range). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%, though some work from wider ranges). Through-hole units are available, but expensive, and all have the restrictive supply voltage requirements. If selecting your own oscillator, you want an "XO" type.
 
 #### Using external CLOCK (instead of crystal) on other parts
 The use of an external clock - that is, a single wire with an appropriate clock signal is supplied to the XTAL1 pin from an external source, is possible using this core. This is an advanced feature, and is not supported directly through the IDE (except as noted above) to reduce the risk of people confusing it with external crystal and bricking their chips (if external clock is set as clock source when actually using external crystal, you must supply a clock signal on XTAL1 to program the chip again, including to set it to use a crystal again). To use an external clock:
@@ -176,26 +175,18 @@ The clock speed is made available via the F_CPU #define - you can test this usin
 
 In version 1.3.3 and later, the clock source is also made available via the CLOCK_SOURCE #define. CLOCK_SOURCE can take one of the following values (as of 1.4.0, it is expanded to cover a few weird clocking situations: the low 4 bits identify the source, and high 4 bits identify special things regarding it:
 
-> 0 - Internal 8MHz oscillator, not prescaled, or prescaled to 1 MHz (ie, fully set by fuses)
-
-> 1 - External Crystal
-
-> 2 - External Clock (only available within the core on the 48, 88 and 828, as described above - note that above steps to use external clock on other parts, this will still be 1, not 2; as far as the core knows, it's a crystal)
-
-> 3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
-
-> 4 - Internal ULP oscillator (available only on the x41, 1634, and 828)
-
-> 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
-
-> 6 - Internal PLL (x5 and x61 only)
-
-> 15 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
-
-> 17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
-
-> 18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
-
+```text
+0 - Internal 8MHz oscillator, not prescaled, or prescaled to 1 MHz (ie, fully set by fuses)
+1 - External Crystal
+2 - External Clock (only available within the core on the 48, 88 and 828, as described above - note that above steps to use external clock on other parts, this will still be 1, not 2; as far as the core knows, it's a crystal)
+3 - Internal WDT oscillator  (not available on the x41, 1634, and 828)
+4 - Internal ULP oscillator (available only on the x41, 1634, and 828)
+5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0, not 5)
+6 - Internal PLL (x5 and x61 only)
+15 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
+17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
+18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
+```
 
 
 ### Refer to pins by port/pin
@@ -206,12 +197,10 @@ Instead of referring to pins by the digital pin numbers, it is now (as of 1.4.0)
 In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions.
 
 ### Link-time Optimization (LTO) support
-
-Link time optimization is enabled by default. If compiling with very old versions of the IDE, this must be disabled. Cases do exist where this setting can change behavior of a sketch; in all cases where this has been observed, a bug in the code was hidden by one setting or the other, and/or undefined behavior was invoked. This is a problem with your code, not the core.
+As of 2.0.0, we no longer support use without Link Time Optimization. It is required for some of the tricks I use to ensure that useful compile errors appear instead of mysterious broken behavior at runtime when we know at compile time that it won't work, and link time optimization is a stunning reduction in sketch size as well.
 
 ### Makefile Support
-
-For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with https://github.com/sudar/Arduino-Makefile - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
+For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with [https://github.com/sudar/Arduino-Makefile](https://github.com/sudar/Arduino-Makefile) - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
 
 ### I2C support
 **You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work. In all cases, including parts with hardware I2C where it may work sometimes, you should **always** use external pullup resistors, as the internal ones are far weaker than the I2C standard requires for reliable operation.
@@ -231,7 +220,7 @@ On the following chips, slave I2C functionality is provided in hardware, but a s
 On the following chips, full master/slave I2C functionality is provided in hardware and the Wire library uses it:
 * ATtiny x8 (48, 88)
 
-### SPI support:
+### SPI support
 
 On the following chips, full SPI functionality is provided in hardware, and works identically to SPI on Atmega chips:
 * ATtiny828
@@ -307,4 +296,3 @@ The Tools -> millis()/micros() allows you to enable or disable the millis() and 
 ## Memory Lock Bits, disabling Reset
 
 ATTinyCore will never set lock bits automatically, nor will it set fuses to disable ISP programming (it is intentionally not made available as an option, since after doing that, an HVSP programmer is needed to further reprogram the chip, and inexperienced users would be at risk of bricking their chips this way). The usual workflow when these bits are in use is Set other fuses -> Upload -> Test -> set the lockbits and/or fuses. This can be done from the command line using AVRdude. To expedite the process, you can enable "Verbose Upload" in preferences, do "burn bootloader" (the board and/or programmer does not need to be present), scroll to the top of the output window - the first line is the avrdude command used to burn the bootloader, including the paths to all the relevant files. It can be used as a template for the command you execute to set the fuse/lock bits. Disabling of reset is currently not an option, either - but for bootloader boards, this may change - VUSB bootloaders which disable reset are in widespread use, seemingly without issue. It will never be an option for non-bootloader boards because of the convoluted workflow required.
-

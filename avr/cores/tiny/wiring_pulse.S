@@ -156,7 +156,7 @@ countPulseASM:
     mov r12, r1  ; and we zero out the registers where we store the result
     mov r13, r1  ;
     movw r14, r12 ;
-/*  SAVE A WORD - replace preceeding pair of mov isns, mov r14, r1, and this one,  mov r15, r1 with a single movw. */
+/*  SAVE A WORD - replace preceding pair of mov isns, mov r14, r1, and this one,  mov r15, r1 with a single movw. */
     rjmp .L9     ; and jump to the middle of the third loop...
 /* START LOOP THREE - TIMING THE PULSE */
 .L10:

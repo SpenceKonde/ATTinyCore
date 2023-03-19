@@ -269,7 +269,8 @@ I (Spence Konde / Dr. Azzy) sell ATtiny841 boards through my Tindie store - your
 ![Picture of ATtiny841 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2015-06-16T05:30:56.533Z-T841RA_Assembled.png.855x570_q85_pad_rcrop.png)
 ### [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny841-dev-board-woptiboot-assembled/)
 ### [Bare Boards](https://www.tindie.com/products/DrAzzy/attiny84184-breakout-wserial-header-bare-board/)
-### ATTiny841 DIP-14 TODO: List product and add links.
+### ATTiny841 DIP-14 TODO: List product and add links
+
 The Wattuino board does not support maintenance of this core, but it does support the work they did to get that working:
 ### [Wattuino Nanite (VUSB)](https://shop.watterott.com/Wattuino-Nanite-841-ATtiny841-with-USB-Bootloader)
 
