@@ -1,3 +1,4 @@
+# ATtiny1634
 ![#1634 Pin Mapping](Pinout_1634.jpg "Arduino Pin Mapping for ATtiny 1634")
 
 Specification         |    ATtiny1634  |    ATtiny1634  |    ATtiny1634  |
@@ -27,9 +28,8 @@ The ATtiny1634R has a more tightly factory calibrated internal oscillator. It is
 
 This is one of the last three classic tinyAVRs to be released, and you can see that they were playing around with things a bit, not always successfully.
 
-### Warning: Pin 14 (PB3) does not work as an input unless watchdog timer is running
-This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things is not running, it is "internally pulled down"; phrased more pessimistically, one might say that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
-
+### Warning: PB3 does not work as an input unless watchdog timer is running
+This is a design flaw in the chip, as noted in the datasheet errata. Additionally, when the "ULP" oscillator (used by the WDT, among other things) is not running, it is "internally pulled down"; phrased more pessimistically, one might say that "if pin is output and high, it will continually draw current even without an external load. Definitely don't try to use power-saving sleep mode with PB3 set OUTPUT and HIGH.
 See code for "workaround" below - but the pin is still less useful than it should be; it is best limited to active output while the chip is awake (such as via it's PWM capability). Unless of course you want to use the ULP/WDT....
 
 ## Programming

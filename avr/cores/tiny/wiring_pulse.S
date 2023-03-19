@@ -69,6 +69,16 @@
  * Except maybe that nobody charged with dealing with this knew how to write assembly?
  */
 
+ /* Registers:
+  * r12:r15 - temporary storage of result.
+  * r16:r19 - stores remaining timeout time. In first two phases we decrement this.
+  *           In final phase, we increment r12:r15 while comparing with this.
+  * r24:r25 - port pointer address copied to Z.
+  * r20:    - positive pulse ? bitmask : 0
+  * r22:    - bitmask
+  *
+  */
+
 #include <avr/io.h>
 
 .section .text
@@ -132,7 +142,7 @@ countPulseASM:
     rjmp .+0     ;
     nop          ;
     subi r16,1   ; Decrement maxloops
-    sbc r17, r1  ; could these two be a sbiw? I think so... would save a word. timing is the same.
+    sbc r17, r1  ;
     sbc r18, r1  ;
     sbc r19, r1  ;
     breq .L13    ; If that was zero, we timed out, so branch to where we zero out the value we return.
@@ -145,8 +155,8 @@ countPulseASM:
 /* END LOOP TWO - PULSE HAS STARTED */
     mov r12, r1  ; and we zero out the registers where we store the result
     mov r13, r1  ;
-    mov r14, r1  ; Could we movw r14, r12? I think we could.
-    mov r15, r1  ; it is not part of loop so the timing impact is negligible.
+    movw r14, r12 ;
+/*  SAVE A WORD - replace preceeding pair of mov isns, mov r14, r1, and this one,  mov r15, r1 with a single movw. */
     rjmp .L9     ; and jump to the middle of the third loop...
 /* START LOOP THREE - TIMING THE PULSE */
 .L10:
@@ -158,8 +168,8 @@ countPulseASM:
 */
     ldi r24,-1   ; If this was not timing critical, we could save 2 bytes and a clock with subi.
     sub r12,r24  ; this is an add-one...
-    sbc r13,r24  ; three be a nop + sbiw? I think so... would save a word.
-    sbc r14,r24  ; we need the nop to keep the timing the same.
+    sbc r13,r24  ;
+    sbc r14,r24  ;
     sbc r15,r24  ;
     cp r16,r12   ;  compare with remaining time until timeout
     cpc r17,r13  ;

@@ -39,7 +39,6 @@ These chips do not warrant the development effort to make that happen.
 ### There is no external crystal support, only external clock
 
 ### Internal Oscillator voltage dependence
-
 Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Internal, Vcc < 4.5v) and 8 MHz (Internal, Vcc > 4.5 MHz ) board definitions - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. The new baud rate changes in 2.0.0 should further improve bootloader reliability here (see the Optiboot reference linked above).
 
 We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate chargeing powerhungry devices), and millis()/micros() will keep better time than in previous versions.
@@ -62,7 +61,7 @@ There is full Hardware SPI support. However, PD3 is one of the pins used by the 
 There is one hardware serial port, Serial. It works the same as Serial on any normal Arduino - it is not a software implementation.
 
 To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels
-```
+```c
 UCSRB &=~(1<<TXEN); // disable TX
 UCSRB &=~(1<<RXEN); // disable RX
 
@@ -108,7 +107,7 @@ void startSleep() { //call instead of sleep_cpu()
 #### Special "high sink" port
 All pins on PORTC have unusually high sink capability - when sinking a given amount of current, the voltage on these pins is about half that of typical pins. Using the `PHDE` register, these can be set to sink even more aggressively.
 
-```
+```c
 PHDE=(1<<PHDEC);
 ```
 
@@ -121,8 +120,8 @@ Like the ATtinyx41 and ATtiny1634, these have a fourth register for each port, P
 I (Spence Konde / Dr. Azzy) sell ATtiny828 boards through my Tindie store - your purchases support the continued development of this core.
 
 ![Picture of ATtiny828 boards](https://d3s5r33r268y59.cloudfront.net/77443/products/thumbs/2016-05-18T04:57:39.963Z-AZB-8_V2_Asy.png.855x570_q85_pad_rcrop.png)
-###[Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
-###[Bare Boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/)
+### [Assembled Boards](https://www.tindie.com/products/DrAzzy/attiny88-or-828-breakout-board-assembled/)
+### [Bare Boards](https://www.tindie.com/products/DrAzzy/atmega-x8attiny-x8828atmega-x8pb-breakout/)
 
 ## Interrupt Vectors
 This table lists all of the interrupt vectors available on the ATtiny828, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Addresses are in the program space, and are word addresses (not byte addresses). vect_num is the number you are shown in the event of a duplicate vector error, among other things.

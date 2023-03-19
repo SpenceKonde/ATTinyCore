@@ -18,7 +18,7 @@
 | Int. Oscillator         |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |     8, 4, 2, 1 |     8, 4, 2, 1 |  Not supported |
 | Int. WDT Oscillator     |        128 kHz |  Not supported |  Not supported |        128 kHz |  Not supported |  Not supported |
 | Internal, with tuning   |          8, 12 |          8, 12 |  Not supported |          8, 12 |          8, 12 |  Not supported |
-| External Crystal        |   All Standard |   All Standard | **16** ** ,8,4,2,1 |   All Standard |   All Standard | **16** ** ,8,4,2,1 |
+| External Crystal        |   All Standard |   All Standard | **16** ** ,8,4,2,1 |   All Standard |   All Standard | **16** `**` ,8,4,2,1 |
 | External Clock          |   All Standard |   All Standard |  Not supported |   All Standard |   All Standard |  Not supported |
 | Default Pin Mapping     |       Standard |       Standard |      Digispark |       Standard |       Standard |      Digispark |
 | LED_BUILTIN ***         | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 | PA6 PB1 or PB0 | PA6 PB1 or PB0 | PB1 PA6 or PB0 |
@@ -49,7 +49,7 @@ Two versions of the bootloader are provided, one for use with Digispark Pro boar
 There was an old ATtiny x7 core with a different and more awkward pinout. This is supported, for compatibility purposes, via the "Legacy" pinmapping option. It should be used only if you are trying to use an old sketch that was written for that pin mapping. The Digispark Pro boards have pins labeled with yet another pin mapping. All pin mappings can be chosen for both Digispark/VUSB and non-VUSB boards, for compatibility. This is selected from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for `PINMAPPING_OLD`, `PINMAPPING_NEW`, or `PINMAPPING_DIGI` macro (eg, `#ifdef PINMAPPING_OLD` - I would recommend checking if the compatible one is not defined and immediately #error'ing in that case). Alternately, also as of 2.0.0, with any pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7 (don't use PIN_xn or Pxn, those mean different things that are rarely useful) - in this case the pin mapping won't appear to matter - however the size of the compiled binary and the speed of some internal options will still vary based on it.
 
 Example of a "guard" against wrong pin mapping:
-```
+```c
 #ifndef PINMAPPING_NEW
 #error "Sketch was written for new pinmapping!"
 #endif

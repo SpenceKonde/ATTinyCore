@@ -1,26 +1,9 @@
 # ATTinyCore **Universal**
+Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43, 26 and 828.
 
-Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43 and 828. Supports programming vis ISP, Serial (Optiboot - all parts with >4k flash, and all parts with 4k flash for which an 8k version is available) or VUSB (Micronucleus - where appropriate)
-## State of ATTinyCore
-Development of ATTinyCore is proceeding in the v2.0.0-dev branch.
+## ATTinyCore is at risk of death. We must have working CI here - there are hundreds of configurations that must be tested. Most issues would have been caught by CI. I do not know how to achieve this. I need help.
 
-**PLEASE DO NOT SUBMIT PR's AGAINST the "MASTER" BRANCH
-YOUR CHANGES WILL BE LOST UPON THE NEXT RELEASE IF YOU DO
-NEW CHANGES NEED TO GO INTO v2.0.0-dev** )
-
-## We desperately need testing help here
-**THE 2.0.0-dev branch IS NOW READY FOR PUBLIC TESTING VIA MANUAL INSTALLATION**
-It i **CRITICAL** that we get as much testing done as possible because **BASICALLY NOTHING HAS BEEN TESTED**, and virtually no files are without major fundamnental changes!
-
-*There are 272 different versions of micronucleus built (and part of the 2.0.0-dev branch now), and optiboot will dwarf that number!*
-0 of those have been teted. Obviously we are leaning *very* heavily on automation of configuration generation for this release.
-
-## ATTinyCore 2.0.0 may DROP optiboot support, in favor of URBOOT since it appears to correctly handle the issues with the vector bootloader that caused breakage for optiboot.
-As those are critcal issues, and since we have previously said, you will need to reburn all bootloaders from pre-2.0.0 when 2.0.0 comes out anyway. If - as appears to be the case, I was just handed a "get out of fixing optiboot's vector bootloader-free" card, I intend to play it immediately.
-
-If you find problems with 2.0.0-dev (you can just create a "hardware" folder in your sketchbook and sync the repo to that location to nanually install - no need to do anything wacky like on my other cores), create an issue, start a discusion, email me, or scrawl the bug report on a piece of paper, wrap it around a brick, and throw it through my bedroom window (er, don't do that last bit - else you'll be hearing from our lawyer - none of us wants to lose any of the damage deposit over that.). Anyway, whatever means you have to communicate a bug report to me, if you know of bugs, report it.
-
-
+Supports programming vis ISP, Serial (Optiboot) or VUSB (Micronucleus)
 ## [Check it out, we have "discussions" now!](https://github.com/SpenceKonde/ATTinyCore/discussions)
 Let's use that, not gitter.
 
@@ -36,10 +19,8 @@ The most significant changes are:
 5. `PIN_Pxn` constants are in for all supported parts to refer to pins by port and bit. This is the recommended way to refer to pins, as it frees you from the need to consider which pin mapping is in use. If you soldered the LED to pin PB2, PIN_PB2 is going to control the LED no matter which pin mapping you have selected.
 6. For various historical reasons, some parts have up to 3 pin mappings. These are now named consistently, and listed and described in the part specific documentation - All parts have a recommended pin mapping, some of them have a second one for a specific VUSB board (digispark pro, MH-ET) with the pins numbered differently, and some of them have a "legacy" pin mapping with the pins in an order that makes less sense, and which makes converting between analog and digital pins harder (as in, if there is stuff determined at runtime, it uses more flash and is slower), but which has been widely used in the past and is what existing code may have been written for. A number of inconsistencies between these pin mappings (where information was missing from one or the other) have been fixed, and they are now formatted and commented consistently.
 7. The ATtiny1634 and ATtiny861 are now supported for Micronucleus. Test and demonstration boards will be available from my Tindie store. New versions of bootloader for all existing Micronucleus boards. Users should use the bootloader upgrade functionality to ensure that they have the latest version of the bootloader, and that it has their desired entry conditions (on reset pin, power on reset, power-on with pin held down, reset/power on w/reset held high (in case of disabled reset, holding the reset pin high during power on will make it enter bootloader - takes advantage of the fact that reset PIN bit always reads 0 when reset is not disabled... Actually, one wonders if it would work if you did PORTx |= 1 << RESETBIT; then test if that bit is set - does disabling reset actually make registers not store the value? If so, that would be even better - no dependence on hardware, clear the bit if could set it and run app, otherwise run bootloader. )
-8. **BREAKING NEWS** Optiboot, it is very likely, will be DROPPED from 2.0.0. The serial bootloader role will be replaced with URBOOT. At present, the optiboot virtualboot implementation was unfit for purpose.  be replaced with urboot, because optiboot's virtual bootloader mode will always eventually misfire and brick all parts, and urboot does it correctly. Since what we have now has a critical bug that I would have called a release blocker had I not tried unsuccessfully to figure out how to architect a fix several times..
 
-### Current **strongly** recommended IDE version: 1.8.13 or later.
-Users of 1.6.x versions should use caution with any board manager packages as the handling of dependency versions, at least under 1.6.9, appears to be severely broken, such that installing one packages can break others. For example, DxCore won't work if ATYTinyCore is installed on 1.6.9! - both cores correctly specify their requirements, but the IDE does not use the correct versions of the toochain. It is likely that similar bugs involving other tools also manifest here. Use 1.8.13 or similar recent version if at all possible; if you are unwilling or unable to update your main Arduino IDE version, a "portable" installation is recommended - the separate copy of IDE *with portable installation* should ensure that what you do in that version does not effect the other version - if you can't use 1.8.13, a portable 1.6.9 version will achieve the same thing, only without the other fixes and improvements that went into the IDE since then.
+
 
 
 ### [Installation](Installation.md)
@@ -73,79 +54,61 @@ ATTinyCore supports classic ATtiny parts. It does not support any other AVR devi
 * [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and many of them have a peripheral selection to make most classic AVRs turn gteen with envy (like a 3227 or 3226's peripera;s beat the stuffing out of many classic AVR parts, including the 328pb
 * [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude - 2k of flash is the lower cutoff for ATTinyCore.
 * The ATtiny28L is not supported by any Arduino core. It is older than the hills, weirder than quantum physics... AND IT DOESN'T HAVE RAM! IT ONLY HAS REGISTERS! Put it back into the museum case where you got it before the security guards notice it missing from the "prehistoric man and computing" exhibit.
-* ATtiny 4/5/10/11 and the 10x tinyAVRs, or any other "AVRrc" (reduced core) parts/ these combine minuscule memory sizes with a gimped CPU. [Try this core](https://github.com/technoblogy/attiny10core) if you are a masochist and extremely space constrained. The core has to cut significant parts of the API in order to fit. These parts are kinda lousy - there is a point when trying to use smaller and smaller microcontrollers stops being fun and starts being just annoying. These parts, for example. With the exception of the ATtiny28L, and some discontinued parts not included on this list, any other AVR more capable that these things, and it's not like the discount for losing all that functionality is worth it.
+* ATtiny 4/5/10/11 and the 10x tinyAVRs, or any other "AVRrc" (reduced core) parts/ these combine minuscule memory sizes with a gimped CPU. [Try this core](https://github.com/technoblogy/attiny10core) if you are a masochist and extremely space constrained. The core has to cut significant parts of the API in order to fit. These parts are kinda lousy - there is a point when trying to use smaller and smaller microcontrollers stops being fun and starts being just annoying. These parts, for example. With the exception of the ATtiny28L, and some discontinued parts not included on this list, any other AVR more capable that these things, and it's not like the discount for losing all that functionality is worth it. 
 * Anything with "ATmega" in the name - you want [one of MCUDude's cores](https://github.com/MCUdude/) - he has one for almost every ATmega part. '
 * The ATmegaXXcN and XXmN where X is the flash size and N is a small number. There is no core supporting these rarely seen or discussed classic AVRs. The c's are a follow-on to the ATCAN series (the older CAN parts are supported by some of MCUDude's cores) and the m series the follow-on to the PWM-centric parts of the same vintage (The more recent modern AVRs - namely the tinyAVR 1-series and Dx-series - have a Type D timer, which was clearly inspired by the PWM controller on those parts, making it interesting to those who study feature evolution semiconductors).
 * AVR Dx-series (AVR128DA64, etc) - [the crown jewel of the AVR product line](https://github.com/SpenceKonde/), supported by my DxCore.
-* AVR Ex-series (AVR64EA48, AVR32EB32, not yet for sale) will also be supported by DxCore ones the datasheets is available to clear up a few remaining questions about the EA and a ton of questions about the EB.
+* AVR Ex-series (AVR64EA48, AVR32EB32, not yet for sale) will also be supported by DxCore ones the datasheets is available to clear up a few remaining questions about the EA and a ton of questions about the EB. 
 
-## Quick Gotcha list - having trouble, read these!
-
-### I'm on windows, but the micronucleus boards don't work - no driver?
-**Windows users must install Micronucleus drivers manually**
-If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries (though I am told they recognized how nonsensical this is - a malicious core could still run whatever commands it wanted to by telling the IDE that was how to compile sketches for these boards - and will be changing this in the future. Note also that the 1.5.0 release does not include working micronucleus upload tool for Windows, this is resolved in 1.5.2.
+## Quick Gotchas/FAQ list
+### Having trouble? read these first!
+#### Windows users must install Micronucleus drivers manually
+If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries, due to "security" considerations. This is of course nonsensical - if the core was malicious, it could do just as much by running the malicious command as part of a compile or upload recipe. I have gotten word that I am not the first person to raise this objection and that restriction will be removed from a future version of the IDE.
 
 During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from the following URL https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip . Unzip, run the installation batch file.
 
-### Timing or baud rates are wrong
-Typically 8x slower than expected? You didn't burn bootloader to set the fuses! - see below entry.
+#### Timing or baud rates are wrong
+Typically 8x slower than expected - see below entry.
 
-### When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses and apply those changes, even if you are not using a bootloader.
-The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured, and so writing them should not be done on every upload like we can on modern AVRs where the fuses mostly can't brick the part, with generally only 1-2 fuses potentially able to block programming. That's just the same number as on classic AVRs - except they only had 3 fusebytes total, and all of them could brick the chip if set wrong. On modern AVR, DA and mega0 parts cannot be bricked by any configuration other than enabluing brown-out detection for a voltage higher than what is supplied to the chip, and higher than the maximum voltage that those other parts soldered to the same power rail will tolerate.
-**avrdude: error: could not find USB device with vid=0x16c0 pid=0x5dc vendor=`www.fischl.de` product='USBasp'**
-Vaguely recent versions of AVRdude appear to have dropped a few versions of the firmware. If this is the first time you'd installed something that triggered an update here, you may have problems with AVRdude. The solution, thankfully, is straightforward..
-.
-1. Download Zadig from http://zadig.akeo.ie
-2. Plug in USBasp
-3. Start zadig
-4. Options > List all devices
-5. Select USBasp from the drop down menu
-6. Select libusbK(v3.0.7.0) driver
-7. Click Install
-
-**This core includes part-specific documentation - click the links above for your family of chips and READ IT** These describe issues and "gotchas" specific to certain chips. Be sure to review this documentation!
+#### When using an individual chip for the first time, or after changing the clock speed, EESAVE or BOD settings, you must do "burn bootloader" to set the fuses, even if you are not using the chip with a bootloader
+The option should really be named "Set fuses and install bootloader (if any)" rather than "burn bootloader", which makes it sound irreversible (it's not), and by not mentioning the fuses, many users think that it isn't needed if a bootloader is being used. But it is, because this is the only time fuses are set; this is the same behavior as all other classic AVR cores, because it is possible to soft-brick the parts if the fuses are misconfigured, and so writing the .
 
 #### VUSB is not supported for USB functionality within the sketch
 It has been persuasively argued to me that it is not possible to get these parts to meet USB timing contstraints in an interrupt driven context without compromising on everything else. On the classical digispark, their core bent over backwards and got only mediocre results. The libraries floating around are stale, having rarely received updates, often dating back to the days of avr-gcc 4.8.x, and only ever worked on the digispark core - and even there they didn't work particularly well. USB timing constraints are very constraining. If anyone cared to put in the considerable amount of effort it would involve to port micronucleus and package the VUSB libraries, the pieces to make this viable *are actually present on the tinyAVR 0/1/2-series* (the key feature being the lvl 1 priority interrupt option though the improvements to instruction set timing don't hurt). But I don't know that anyone is showing much interest in taking that on.
 
+To make matters worse, much of the functionality you want on Windows (namely, low speed CDC for a serial port) requires drivers that don't exist in a fully working form. Unfortunately, even if you found a solution to meet the USB constraint and made the drivers work, that's still not enough because you need to bend over backwards to install them if they haven't been blessed with a digital signaure from Microsoft, so it is difficult to get a solution you could share with the world
+
 I concluded that there are far too many obstacles here, and that it is dishonest to act as though this functionality works. There are a few cases that some people report success with (USB MIDI being one of them, IIRC); these are exceptions, not the rule. You may need to disable millis() timekeeping for reliable functioning.
 
-If you were to run in polled mode rather than interrupt driven mode, you could perhapse have something that manifested as a USB device for a short time, did what it needed to do, then "disconnected"
+#### This core includes part specific documentation - click the links above for your family of chips and READ IT
+The classic tinyAVR parts are a motley bunch - some of them are very mundane, with little to distinguish them other than the fact that they just work like you'd expect, while others are just bizarre. The part specific documentation covers most of the relevant topics that apply specifically to a given family of parts.
 
-### This core includes part specific documentation - READ IT
-click the links above for your family of chips. The classic tinyAVR parts are a motley bunch - some of them are very mundane, with little to distinguish them other than the fact that they just work like you'd expect, while others are elaborate sideshows of unique peripherals, one-shot gimmicks, adhoc halfassed solutionsm, Again and again and again.
-
-### problems dynamically linking libusb-0.1 on linux
+#### problems dynamically linking libusb-0.1 on linux
 These can occur if Arduino was installed through the Snap package manager. The Arduino IDE should always be installed from the tarball available from http://arduino.cc, never from a package manager.
 
-### There are several problems encountered when using versions of Arduino older than 1.8.13
+#### There are several problems encountered when using versions of Arduino older than 1.8.13
 That version has been out for over a year and a half. While we do not intentionally break things on older IDE versions, we also do not test on older versions.
 
-### Windows store version sometimes experiences strange issues.
+#### Windows store version sometimes experiences strange issues.
 The windows store issues are difficult to reproduce on other systems, and no reliable solutions to them are currently known. We recommend using the .zip package or standard installer version of the IDE, not the Windows Store version.
 
+#### Problems programming some parts for first time, especially ATtiny841/441
+These parts are less forgiving of the SCK clock rate being on the high edge of the spec.  Arduino as ISP or USBTinyISP SLOW will program without issue.
 
-### Problems programming some parts for the first time, especially ATtiny841/441**
-These parts are less forgiving of the SCK clock rate. I'm not sure why USBAsp doesn't seem to be working anymore (it used to, and I haven't changed anything), looking into options there. Arduino as ISP or USBTinyISP SLOW will program without issue.
-
-#### Counterfeit/mismarked "ATtiny85" with wrong signatures
-Enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently it is actually WORTH THE TIME AND EFFORT to grind away the markings from cheaper ATtiny13 parts, and inscribe them with markings saying they're tiny85's, and then sell them as that...
+#### Counterfeit/mismarked "ATtiny85" with wrong signatures.
+Enable verbose upload output, and it will tell you what sig it actually saw. **0x1e9005** means you got scammed (all 0's or all F's is wiring problem, or bricked chip from choosing clock source that isn't present). Apparently one or more foreign sellers have been remarking the much cheaper ATtiny12 as an 85 and ripping people off on ebay/etc.
 
 #### free(): invalid next size (normal) error
 This error is due to a bug in AVRdude ( https://savannah.nongnu.org/bugs/?48776 ) - and it's a spurious error, as when it is displayed, the programming operation has actually completed successfully (you can see for yourself by enabling verbose upload, and noting the successful write before this error is shown. It is unknown under what conditions this error appears, though it has been recorded on a USBTinyISP on Linux when bootloading an attiny88 with optiboot.
 
 #### When using analogRead(), use the A# constant to refer to the pin
-Previously (prior to 2.0.0) numbers were treated as analog channel numbers. Now they are treated as the digital pin number (the old behavior, when explained to people, generally got several incredulous clarifying questions, assorted profanity and intiialisms containing it, and are typically flabbergasted when they see what it has been doing, and declare that the current behavior is categorically wrong. Nobody has ever gone off saying "Huh, I guess that does make sense after all... ". They go off , usually with some abbreviated profanity. Nobody liked the old behavior.
+Previously (prior to 2.0.0) numbers were treated as analog channel numbers. Now they are treated as the digital pin number (the old behavior, when explained to people, generally got several incredulous clarifying questions, followed by something to the effect of "I consider that behavior to be incorrect", usually with some abbreviated profanity. Nobody liked the old behavior.
 
 #### When using I2C on anything other than the ATtiny48/88
 You **must** use an I2C pullup resistor on SCL and SDA (if there isn't already one on the I2C device you're working with - many breakout boards include them). 4.7k or 10k is a good default value. On parts with real hardware I2C, the internal pullups are used, and this is sometimes good enough to work without external pullups; this is not the case for devices without hardware I2C (all devices supported by this core except 48/88) - the internal pullups can't be used here, so you must use external ones. **Even on the 48/88 you should always use external pullups** as the internal pullups are not nearly as strong as the specification requires.
 
 #### You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins
-**You CAN use PIN_Pxn** in 2.0.0 however!
-Long live PIN_Pxn!
-Down with `An`! Down with `arduino pin numbers`!
-
-Pxn constants themselves are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use `PIN_Pxn` (ex, `PIN_PB2`); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used. **We recommend this method of referring to pins, always**, especially on parts with multiple pinmapping options
+these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use `PIN_Pxn` (ex, `PIN_PB2`); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used. We recommend this method of referring to pins, especially on parts with multiple pinmapping options
 
 #### All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling;
 this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.
@@ -157,7 +120,7 @@ ADCSRA &= (~(1 << ADEN))
 ```
 otherwise it will waste 270 uA
 
-#### When in power down sleep mode, the clock is stopped - **using a slower clock speed does not save power while sleeping**
+#### When in power down sleep mode, the clock is stopped - using a slower clock speed does not save power while sleeping
 I am asked very frequently about using very low clock speeds in low-power applications. Almost invariably, upon further interrogation, the user reveals that they plan to have the part in power-down sleep mode almost all the time. In this case, there is often little to be gained from running at a lower clock speed, since it only effects power use in the brief moments that the chip is awake - even more so because these moments may well be shorter when running at a higher clock speed. Halving the clock speed generally reduces power consumption by less than half while awake, so if you are spending almost all the time in sleep, you will in fact see very little change in battery life as you reduce the clock speed - and what change you do see will not be in the direction you were hoping for. Clock speeds below 1MHz can present problems while programming due to the programmer using an SCK clock speed too fast for the target chip running at such a low system clock speed.
 
 #### When using the WDT as a reset source and NOT using a bootloader
@@ -203,12 +166,12 @@ AVRs.
 
 16.5 and 12.8 MHz are not supported for Optiboot. Those speeds are achieved by tuning performed by the bootloader (if micronucleus, which of course isn't optiboot) or by the initialization code that runs before setup (but after the bootloader). Even when the target speed is 16.5 or 12.8 via tuning, Optiboot will run at 16.0 or 8.0 MHz.
 
-### A warning about Virtual Boot
+#### A warning about Virtual Boot
 Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed. The board will run neither the application nor bootloader until ISP programming is used to reinstall the bootloader. A solution is possible - and it is well known and tested on Micronucleus. But bringing that to optiboot is non-trivial.
 
-**Because of this issue, Optiboot should not be used for production systems - And this is why it may be dropped in favor of urboot**
+**Because of this issue, Optiboot should not be used for production systems**
 
-See the [Programming Guide](Programming.md) for more information on programming parts using the serial bootloader.
+See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
 It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](avr/extras/Ref_Micronucleus.md).
@@ -229,12 +192,9 @@ After changing the clock source, BOD settings, or whether to save EEPROM on chip
 #### Supported clock speeds:
 Supported clock speeds are shown in the menus in approximate descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.
 
-Serial bootloaders are supported only on speeds of 1 MHz or more.
+Optiboot is supported only on speeds of 1 MHz or more.
 
 Micronucleus boards have highly constrained options for clock speed, and the exact parameters depend on the part - refer to the part-specific documentation for more information.
-
-For everything else:
-
 Internal:
 * 8 MHz
 * 1 MHz
@@ -322,9 +282,9 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 5 - Internal 4MHz oscillator (present only on the x313 parts - if the 8MHz internal oscillator is prescaled to 4MHz, CLOCK_SOURCE will be 0x10, not 5.)
 6 - Internal PLL (x5 and x61 only)
 16 or 0x10 (ie, 0x10 | 0) - Internal oscillator with prescaling not set by fuses (ie, not 1 MHz or 8 MHz - ie, 2 or 4 MHz)
-17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, prescaled to get lower frequencies (for Digispark Pro ATtiny167)
-18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, prescaled to get lower frequencies (for MH Tiny ATtiny88)
-22 or 0x16 (ie, 0x10 | 6) - Internal PLL at 16/16.5 MHz, prescaled to get a lower frequency (for Digispark et. al.)
+17 or 0x11 (ie, 0x10 | 1) - External crystal at 16MHz, which may be prescaled to get lower frequencies (for Digispark Pro ATtiny167)
+18 or 0x12 (ie, 0x10 | 2) - External clock  at 16MHz, which may be prescaled to get lower frequencies (for MH Tiny ATtiny88)
+22 or 0x16 (ie, 0x10 | 6) - Internal PLL prescaled to get a lower frequency (for Digispark et. al.)
 ```
 ### Assembler Listing generation
 
@@ -385,7 +345,7 @@ Most other devices must use the USI for I2C. In these cases:
 A small number of devices have support for hardware slave I2C **but neither a USI nor hardware TWI for master operation**. On THOSE parts, some additional considerations apply:
 * I2C slave works great through the included Wire.h library.
   * You can even do an alternate address or masked address (where several of the bits of the incoming address are ignored) by setting the `TWSAM` register. That register works the same way as it does on modern (post-2016) AVRs - however, no wrapper is provided around setting it, unlike the modern AVRs (ex, megaTinyCore and DxCore)
-  * On the ATtiny828, you must have the watchdog timer enabled in order for the USI to work in I2C mode; one of the pins in afflicted with one of the nastiest silicon bugs in a pre-2016 tinyAVR, and when the WDT is not enabled (interrupt mode with an empty interrupt is fine), one of the I2C lines is forced low all the time.
+  * On the ATtiny828, you must have the watchdog timer enabled in order for the USI to work in I2C mode; one of the pins in afflicted with one of the nastiest silicon bugs in a pre-2016 tinyAVR, and when the WDT is not enabled (interrupt mode with an empty interrupt is fine),
 * Software I2C Master, on the other hand is... a little flaky on these parts, most notably, it's not possible to tell whether a transaction timed out, or if the slave just responded with a bunch of 0's. There is no clock configuration functionality here either. If planning a new project, consider using a different device (might I recommend a [modern tinyAVR](https://github.com/SpenceKonde/megaTinyCore/)?) if I2C master mode is a big part of your application.
 
 Regardless of the implementation, simultaneously acting as both a master and a slave is never supported here. The hardware doesn't support it like it does on modern AVRs.
@@ -396,7 +356,7 @@ On all parts with more than 128b of SRAM, the buffer size in 32 bytes. On smalle
 #### Serial Support
 To most of us, the Serial interface is the most important of the big three serial protocols. All parts, whether or not they have hardware serial, will have an object named `Serial` that provides serial interface functionality. Where there is hardware serial, the Serial object is a normal fully featured, full duplex serial port that works just like any other AVR. The lucky chips that have two serial ports will also have Serial1 defined.
 
-Unfortunately, that's only 8 of the 21 parts supported by this core. The rest must use some form of software serial. While this core is fully compatible with the usual SoftwareSerial library, it comes with the usual disadvantages, most notably the fact that it grabs all the PCINT vectors for itself. To address that on the parts not blessed with hardware serial, we include a software serial implementation with a fixed (on the x61, there are three options, selected from a tools menu.) RX pin, and a TX pin with a limited number of options - it uses the analog comparator and it's interrupt, leaving the PCINTs free for your own use!
+Unfortunately, that's only 8 of the 21 parts supported by this core. The rest must use some form of software serial. While this core is fully compatible with the usual SoftwareSerial library, it comes with the usual disadvantages, most notably the fact that it grabs all the PCINT vectors for itself. To address that on the parts not blessed with hardware serial, we include a software serial implementation with a fixed (on the x61, there are three options, selected from a tools menu.) RX pin, and a TX pin with a limited number of options - but which leaves the PCINT vectors available. It uises the analog comparator interrupt, and requires that the RX pin be the AIN1 pin. TX defaults to the AIN0 pin.
 
 Regardless of how you achieve the software serial, however, you can still only transmit or receive on a single software serial instance at a time (SoftwareSerial or the builtin tinySoftSerial). Transmit is always blocking - a call that writes via software serial will not return until the data is sent unlike hardware serial which puts it into a buffer to send in the background.
 
@@ -482,7 +442,7 @@ Unless the power consumption of the BOD is a show-stopper, **it is strongly reco
 
 In all cases, the selected BOD option(s) is/are configured by the fuses, so after changing these, you must "burn bootloader" to set the fuses.
 
-Be aware that we do not check whether the clock speed and BOD threshold you selected make sense together. If you want to run at 16 MHz with a 1.8v BOD (which won't do a damned bit of good), we won't stop you, but don't come crying to us when the 1.8V BOD doesn't keep it from malfunctioning without a BOR when the voltage drops too low tto run at the target speed without executing instructions incorrectly.
+Be aware that we do not check whether the clock speed and BOD threshold you selected make sense together. If you want to run at 16 MHz with a 1.8v BOD (which won't do a damned bit of good), we won't stop you.
 
 #### Option to disable millis()/micros()
 
@@ -546,19 +506,16 @@ Except for the x5, x4, x61, and x313-family, these are only available in surface
 * ATtiny43 (including boost converter) [Assembled Boards](https://www.tindie.com/products/16617/)
 * SMD/DIP or DIP [ATtiny85 prototyping board](https://www.tindie.com/products/DrAzzy/attiny85-project-board/)
 * SMD or DIP [ATtiny84 prototyping board](https://www.tindie.com/products/DrAzzy/attiny84-project-board/)
-* ATtiny841 chips on adapter boards that fit into DIP14 socketts (Listing shortly)
-* ATtiny1634 chips on adapter boards that fit into DIP24 sockets (listing shortly)
-* ATtiny167 chips on adapter boards tht fit into a DIP24 socket. (listing shortly)
-* ATtiny861, 1634, or 167's on adapter boards that can fit DIP sockets, but also have a USB port for VUSB uploads.
 
 
 ## Caveats
 * Some people have problems programming the 841 and 1634 with USBAsp and TinyISP - but this is not readily reproducible. ArduinoAsISP works reliably. In some cases, it has been found that connecting reset to ground while using the ISP programmer fixes things (particularly when using the USBAsp with eXtremeBurner AVR) - if doing this, you must release reset (at least momentarily) after each programming operation. This may be due to bugs in USBAsp firmware - See this thread on the Arduino forums for information on updated USBAsp firmware: http://forum.arduino.cc/index.php?topic=363772 (Links to the new firmware are on pages 5-6 of that thread - the beginning is largely a discussion of the inadequacies of the existing firmware)
-* At >4v, the speed of the internal oscillator on 828, 1634 and 841 parts increases significantly - enough that serial (and hence the bootloader) does not work. Significant enhancements have been made on this front in 1.4.0; reburning bootloader should sort it out. These are further improved in 2.0.0. Avoid 115200 and 57600 baud rates like the plague,
+* At >4v, the speed of the internal oscillator on 828, 1634 and 841 parts increases significantly - enough that serial (and hence the bootloader) does not work. Significant enhancements have been made on this front in 1.4.0; reburning bootloader should sort it out. These are further improved in 2.0.0. Avoid using 115200 baud and 57600 baud if using the internal oscillator and running an 828, 1634, or x41 at 4V or higher - those speeds are over 2% off due to baud calculation error in the same direction that the clock speed is off.
+* For that matter, don't use 115200 baud or 57600 baud on any classic AVR with a hardware serial port at 8/16 MHz, especially if they or the thing they are communicating with is using an internal oscillator. Don't use 115200 without a hardware serial port at all. and either a "USART crystal" as clock source, or a 12 MHz or 20 MHz clock source. For 8 and 16 MHz with hardware serial, 38400, 76800, and (at 16 MHz) 153600 get much better baud rate accuracy.
 * There is a right and a wrong way to perform a software reset.
-   `__asm__ __volatile__ (jmp 0)` is the WRONG WAY. DO NOT DO THAT. It is a "dirty reset". This is now caught and detected, and we react to it by forcing a WDT reset.
+  * Unless you are using Optiboot and wish to reset *and* have the bootloader run, do not reset from software via `__asm__ __volatile__ (jmp 0)` - that performs a "dirty reset". After a dirty reset, it is expected that all core initialization functions may incorrectly initialize any aspect(s) of core functionality, resulting in failure modes ranging from subtle and confusing to hangs or bootloops. Instead, enable the watchdog timer, set to reset the device on timeout, and then enter an infinite loop and wait for the reset 16ms later.
   * Do not attempt to generate a software reset by connecting an I/O pin to reset and driving it low; this is specifically warned about in the datasheet.
-  * If using the WDT reset on an Optiboot board, no additional actions are necessary; The bootloader will see that the reset cause was the WDT, assume that it was the thing that generated the reset, turn off the WDT and start the application. There is no way to make teh
+  * If using the WDT reset on an Optiboot board, no additional actions are necessary; The bootloader will see that the reset cause was the WDT, assume that it was the thing that generated the reset, turn off the WDT and start the application.
   * If using the WDT reset on a non-optiboot board definition, you must turn it off at the very start of setup() - the chip will reset with the watchdog still running at the minimum timeout.
   * The only time that a dirty reset is acceptable (it is never recommended) is when Optiboot is in use and you need to make the bootloader run from within the app.
 
@@ -574,7 +531,7 @@ Tools and third party programs used by ATTinyCore are governed by their own lice
 ## Acknowledgements
 
 This core was originally based on TCWorld's ATTinyCore, which is in turn based on the arduino-tiny core here: http://code.google.com/p/arduino-tiny/
-The ATtiny841 support is based on shimniok's ATtiny x41 core, and the 1634 support on Rambo's ATtiny1634 core.\
+The ATtiny841 support is based on shimniok's ATtiny x41 core, and the 1634 support on Rambo's ATtiny1634 core.
 
 @per1234, who has been an invaluable resource for myself and others within the Arduino community, specifically having set up the Travis-based CI testing system (which will cease to be used once the other foot drops wrt. Travis terms) and his years of assistance with board manager releases and more.
 

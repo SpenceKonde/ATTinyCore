@@ -1,4 +1,4 @@
-### GNU LESSER GENERAL PUBLIC LICENSE
+# GNU LESSER GENERAL PUBLIC LICENSE
 
 Version 2.1, February 1999
 
@@ -12,7 +12,7 @@ Version 2.1, February 1999
      as the successor of the GNU Library Public License, version 2, hence
      the version number 2.1.]
 
-### Preamble
+## Preamble
 
 The licenses for most software are designed to take away your freedom
 to share and change it. By contrast, the GNU General Public Licenses
@@ -115,7 +115,7 @@ modification follow. Pay close attention to the difference between a
 former contains code derived from the library, whereas the latter must
 be combined with the library in order to run.
 
-### TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+## TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
 **0.** This License Agreement applies to any software library or other
 program which contains a notice placed by the copyright holder or
@@ -453,9 +453,9 @@ FAILURE OF THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
 SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGES.
 
-### END OF TERMS AND CONDITIONS
+## END OF TERMS AND CONDITIONS
 
-### How to Apply These Terms to Your New Libraries
+## How to Apply These Terms to Your New Libraries
 
 If you develop a new library, and you want it to be of the greatest
 possible use to the public, we recommend making it free software that

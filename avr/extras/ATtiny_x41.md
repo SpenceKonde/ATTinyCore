@@ -1,6 +1,5 @@
-### ATtiny 441/841
-![x41 Pin Mapping](ATtiny_x41.png "Arduino Pin Mapping for ATtiny x41")
-
+# ATtiny 441/841
+![x41 Pin Mapping](Pinout_x41.jpg "Arduino Pin Mapping for ATtiny x41")
 
 Specification         |    ATtiny841   |      ATtiny841 |    ATtiny841   |     ATtiny441  |      ATtiny441 |
 ----------------------|----------------|----------------|----------------|----------------|----------------|
@@ -26,19 +25,17 @@ Default Pin Mapping   |      Clockwise |      Clockwise |      Clockwise |      
 LED_BUILTIN           |        PIN_PB2 |
 
 
-
 Two pinout options are available, clockwise and counterclockwise, see below for more information. Be sure that the one you have selected is the one that you intend!
 
 These parts are available in a SOIC-14, 4x4mm QFN-20, or 3x3mm VQFN-20. No, I don't know why they didn't use a 16-pin QFN either.
 
 The ATtiny x41-family is a more advanced version of the ATtiny x4-family. It is pin compatible, though available only in surface mount packages, and offers an incredible array of peripherals, whilst costing only slightly more than an ATtiny 84. Tests have shown that despite manufacturer spec'ed max speed of 16 MHz, they typically work without issue at 20 MHz @ 5v and room temperature.
 
-
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
 
 ### Optiboot Bootloader
-This core includes an Optiboot bootloader for the ATtiny841/441, operating on the hardware UART0 (Serial) port at 115200 baud for 12 MHz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the bootloader).
+This core includes an Optiboot bootloader for the ATtiny841/441, operating on the hardware UART0 (Serial) port at 115200 baud for 12 MHz or higher, or 57600 when running at lower speeds. The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on these parts, which do not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application (versions of the core prior to 1.2.0 used WDT vector, so WDT cannot be used as an interrupt - we recommend burning bootloader with the new version if this is an issue). A version of the bootloader that operates on Serial1 is included as well (choose the desired UART when burning the booloader).
 
 ### Micronucleus VUSB Bootloader
 This core includes a Micronucleus bootloader that supports the ATtiny841, allowing sketches to be uploaded directly over USB. The board definition runs at 8 MHz via the internal oscillator. For low power applications, it can be prescaled as listed in the table, or cranked up to 16 MHz for the adventurous. See the document on [Micronucleus usage](Ref_Micronucleus.md) for more information. In order to achieve the 12 MHz clock during USB operation, the OSCCAL is drastically increased to 12MHz while the bootloader is running, but is set back down before running the sketch.
@@ -48,9 +45,9 @@ Three USB pin mapping options are provided, with D+ on PB0, PB1 or PB2, with D- 
 ## Features
 
 ### Internal Oscillator voltage dependence
-Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Vcc < 4.5v) and 8 MHz (Vcc > 4.5 MHz ) board definitions, as well as the 16 MHz Internal option (albeit running at 8MHz) - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate charging powerhungry devices), and millis()/micros() will keep better time than in previous versions.
+Prior to 1.4.0, many users had encountered issues due to the voltage dependence of the oscillator. While the calibration is very accurate between 2.7 and 4v, as the voltage rises above 4.5v, the speed increases significantly. Although the magnitude of this is larger than on many of the more common parts, the issue is not as severe as had long been thought - the impact had been magnified by the direction of baud rate error, and the fact that many US ports actually supply 5.2-5.3v. As of 1.4.0, a simple solution was implemented to enable the same bootloader to work across the 8 MHz (Vcc < 4.5v) and 8 MHz (Vcc > 4.5 MHz ) board definitions, as well as the 16 MHz Internal option (albeit running at 8MHz) - it should generally work between 2.7v and 5.25v - though the extremes of that range may be dicey. We do still provide a >4.5v clock option in order to improve behavior of the running sketch - it will nudge the oscillator calibration down to move it closer to the nominal 8MHz clock speed; sketches uploaded with the higher voltage option. This is not perfect, but it is generally good enough to work with Serial on around 5v (including 5.25v often found on USB ports to facilitate chargeing powerhungry devices), and millis()/micros() will keep better time than in previous versions.
 
-### Internal 16 MHz oscillator?!
+### Internal 16 MHz oscillator?
 The oscillator on the ATtiny841 and ATtiny441 is very unusual in terms of how high the frequency can be turned up. While the datasheet only claims 7.3 - 8.1 MHz - it is in fact possible to crank it up all the way to a full 16 MHz! Furthermore, the behavior is consistent enough that the vast majaority work without individual tuning, so this is now available from the tools submenu with the other options.
 
 ~Unfortunately, because the same oscillator is used to time Flash and EEPROM writes, these should never be written to or erased while the device is running at 16 MHz (or for that matter, faster than 8.8, according to the datasheet). For the bootloader, this is handled by simply using the same bootloader as used for the 8 MHz Internal options - the oscillator is reconfigured by the sketch, not the bootloader); when the part is reset to run the bootloader, k. **The EEPROM is a more complicated issue** - this was addressed in the EEPROM.h library included with the core by calling newly provided functions to slow the oscillator back down while each byte is written, and speed it back up and correct the millis()/micros() timekeeping for the disruption. **During the write, all PWM frequencies will be halved, and on pins driven by Timer0, after this 3.3-3.4ms disruption a brief glitch can be seen on the PWM pins as the timer is put back in a state consistent with where it would have been had the disruption not occurred.** Due to this clock disruption, **Serial data sent or received during this time will be mangled**. When writing to the EEPROM, ensure that all data has been sent with Serial.flush(), and that it is not expected to receive any serial data during the write.~
@@ -61,7 +58,7 @@ Note that Optiboot is never run at the full 16 MHz; if the chip has been tuned w
 Throughout the history of ATtiny Arduino support, two pin mappings have been used. Here, they are referred to descriptively: the clockwise, and counterclockwise pinout. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for PINMAPPING_CCW or PINMAPPING_CW macro (eg, `#ifdef PINMAPPING_CCW` - I would recommend checking for the incompatible one, and immediately #error'ing if you find it). Alternately, also as of 1.4.0, with either pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn) - in this case the pin mapping won't matter.
 
 Example of a "guard" against wrong pin mapping:
-```
+```c
 #ifdef PINMAPPING_CCW
 #error "Sketch was written for clockwise pin mapping!"
 #endif
@@ -82,7 +79,7 @@ There is hardware SPI support. Use the normal SPI module.
 There are **two** hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
 
 To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead) - Note that this works on any hardware serial port from any classic AVR, with *very* few exceptions. (off the top of my head, some very early ATmegas don't have the 0 in the register names for their only USART, and the ATtiny87/167, because it doesn't have a USART, it has a fancypants LIN thing that makes a killer UART (no S - it doesn't support the rarely used synchronous mode, nor can you turn it into an SPI module like you can a normal USART) if you turn off all the LIN stuff)
-```
+```c
 UCSR0B &=~(1<<TXEN0); // disable TX
 UCSR0B &=~(1<<RXEN0); // disable RX
 ```
@@ -214,7 +211,7 @@ Like the ATtiny828 and ATtiny1634, these have a fourth register for each port, P
 ### Special "high sink" pins
 PA5 and PA7 have stronger sink capability than other pins - that is, the output voltage rises less when sinking a given amount of current.
 
-```
+```c
 PHDE=(1<<PHDEA0)|(1<<PHDEA1); //PHDEA0 controls PA5, PHDEA1 controls PA7.
 ```
 
@@ -225,7 +222,7 @@ This is no great shakes - the Absolute Maximum current rating of 40mA still appl
 ### Break-before-make
 The ATtiny x41 family also has a "Break-Before-Make" mode that can be enabled on a per-port basis with the `PORTCR` register, which will keep the pin tristated for 1 system clock cycle when a DDR bit is set from input to output. This is not used by the core, and I'm not sure what the intended use case was... (other than that it must have involved output values being set ahead of time on PORTx registers, and more than one of those pins being enabled and/or disabled simultaneously with a write to DDRx)
 
-```
+```c
 PORTCR=(1<<BBMA)|(1<<BBMB); //BBMA controls PORTA, BBMB controls PORTB.
 ```
 

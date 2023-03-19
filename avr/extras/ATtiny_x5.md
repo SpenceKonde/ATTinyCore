@@ -1,7 +1,5 @@
-
 # ATtiny 25/45/85
 ![x5 pin mapping](Pinout_x5.jpg "Arduino Pin Mapping for ATtiny x5-family")
-
 
 Specification         |    ATtiny85    |      ATtiny85  |    ATtiny85    |     ATtiny45   |       ATtiny45 |      ATtiny25  |
 ----------------------|----------------|----------------|----------------|----------------|----------------|----------------|
@@ -86,7 +84,6 @@ To disable the RX channel (to use only TX), select "TX only" from the Builtin So
 
 ### Tone Support
 Tone() uses Timer1. If the high speed functionality of Timer1 has been enabled (see link above), tone() will not produce the expected frequencies, but rather ones 2 or 4 times higher. For best results, use pin 1 or 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, "tones" can be generated up into the MHz range.  If using SoftwareSerial or the builtin software serial "Serial", tone() will work on pin 1 or 4 while the software serial is active but not on any other pins. Tone will disable PWM on pins 1 and 4.
-
 
 ### Servo Support
 Although the timers are quite different, and historically there have been issues with the Servo library, we include a builtin Servo library that supports the Tiny x5 series. As always, while a software serial port is receiving or transmitting, the servo signal will glitch (this includes the builtin software serial "Serial).

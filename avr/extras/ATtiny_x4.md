@@ -1,5 +1,5 @@
-### ATtiny 24/44/84(a)
-![x4 pin mapping](ATtiny_x4.png "Arduino Pin Mapping for ATtiny x4-family")
+# ATtiny 24/44/84(a)
+![x4 pin mapping](http://drazzy.com/e/img/PinoutT84a.jpg "Arduino Pin Mapping for ATtiny x4-family")
 
 Specification         |    ATtiny84    |      ATtiny84  |    ATtiny84    |     ATtiny44   |       ATtiny44 |      ATtiny24  |
 ----------------------|----------------|----------------|----------------|----------------|----------------|----------------|
@@ -55,7 +55,7 @@ Both optiboot and micronucleus will try to blink it to indicate bootloader statu
 Throughout the history of ATtiny Arduino support, two pin mappings have been used. Here, they are referred to descriptively: the clockwise, and counterclockwise pinout. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. As of 1.4.0, your sketch can check for PINMAPPING_CCW or PINMAPPING_CW macro (eg, `#ifdef PINMAPPING_CCW` - I would recommend checking for the incompatible one, and immediately #error'ing if you find it). Alternately, also as of 1.4.0, with either pin mapping selected, you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 3 in the counterclockwise mapping (don't use PIN_xn or Pxn). The clockwise mapping is strictly better - not only is it more coherent lgivally,
 
 Example of a "guard" against wrong pin mapping:
-```
+```c
 #ifdef PINMAPPING_CCW
 #error "Sketch was written for clockwise pin mapping!"
 #endif

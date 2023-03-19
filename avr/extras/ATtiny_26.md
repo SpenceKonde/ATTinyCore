@@ -1,4 +1,4 @@
-# ATtiny 26 - SUPPORT PLANNED BUT NOT YET AVAILABLE
+# ATtiny 26
 ![tiny26 pin mapping](Pinout26_PRELIMINARY.png "Arduino Pin Mapping for ATtiny 26");
 
 Specifications |  .
@@ -41,7 +41,7 @@ There is no hardware SPI peripheral. SPI functionality can be achieved with the 
 There is no hardware UART. If running off the internal oscillator, you may need to tune it to get the speed close enough to the correct speed for UART communication to work. The core incorporates a built-in software serial named Serial - this uses the analog comparator pins, in order to use the Analog Comparator's interrupt, so that it doesn't conflict with libraries and applications that require PCINTs.  TX is AIN0, RX is AIN1. Although it is named Serial, it is still a software implementation, so you cannot send or receive at the same time. While one should not attempt to particularly high baud rates out of the software serial port, [there is also a minimum baud rate as well](Ref_TinySoftSerial.md). SoftwareSerial library is not supported. It uses PCINTs. which aren't readily usable on these parts (there is no PCMSK register)
 
 To disable the RX channel (to use only TX), the following commands should be used after calling Serial.begin(). No special action is needed to disable the TX line if only RX is needed.
-```
+```c
 ACSR &= ~(1 << ACIE);
 ACSR |= ~(1 << ACD);
 ```
