@@ -1,15 +1,15 @@
 # Additional more detailed sections of documentation for ATTinyCore
 
-* [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader)
-* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
-* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader)
-* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
-* [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader)
-* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader)
-* [ATtiny43](avr/extras/ATtiny_43.md) (no bootloader)
+* [ATtiny441, 841](ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny1634](ATtiny_1634.md)  (With or without Optiboot bootloader)
+* [ATtiny87, 167](ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader)
+* [ATtiny25, 45, 85](ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny24, 44, 84](ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny261, 461, 861](ATtiny_x61.md) (With or without Optiboot bootloader)
+* [ATtiny48, 88](ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader)
+* [ATtiny828](ATtiny_828.md) (With or without Optiboot bootloader)
+* [ATtiny2313, 4313](ATtiny_x313.md) (no bootloader)
+* [ATtiny43](ATtiny_43.md) (no bootloader)
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
@@ -24,7 +24,7 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 **Windows users must install Micronucleus drivers manually**
 If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries (though I am told they recognized how nonsensical this is - a malicious core could still run whatever commands it wanted to by telling the IDE that was how to compile sketches for these boards - and will be changing this in the future. Note also that the 1.5.0 release does not include working micronucleus upload tool for Windows, this is resolved in 1.5.2.
 
-During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from: [https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip]. Unzip, run the installation batch file.
+During the install process it will print the path of a post_install.bat that it skipped running. Running that will install the drivers - it's easiest if you copy/paste it, as after installation the drivers will be located in `C:\Users\YourUserName\AppData\Local\Arduino15\packages\ATTinyCore\tools\micronucleus\2.5-azd1\`  Or they can be downloaded from: [https://azduino.com/bin/micronucleus/Drivers-Digistump(win).zip](https://azduino.com/bin/micronucleus/Drivers-Digistump%28win%29.zip). Unzip, run the installation batch file.
 
 
 **avrdude: error: could not find USB device with vid=0x16c0 pid=0x5dc vendor=`www.fischl.de` product='USBasp'**
@@ -84,7 +84,7 @@ Virtual boot relies on rewriting the vector table, such that the RESET vector po
 See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
-It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](avr/extras/UsingMicronucleus.md).
+It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](UsingMicronucleus.md).
 
 ### Changing the ATtiny clock speed and other settings
 
@@ -156,7 +156,7 @@ This differs from the behavior of official Arduino core - the "stock" micros() e
 Thanks to @cburstedde for his work on this.
 
 #### Using external CLOCK (new in 1.3.3 for on 48, 88, and 828, expanded everywhere for 2.0.0)
-These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE; in previous versions this was limited to parts which didn't support a crystal. With greater recognition that unbricking the parts is straightforward (we include an appriopriate sketch in the examples), as of 2.0.0, we now support this on all parts. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we would recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6-5.5v (ie, the entire operating range of these parts - but they're discontinued and there is no longer any external clock for sale from any western manufacturer or subsidiary thereof that is openly marketing an external oscillator with such  a wide voltage range). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%, though some work from wider ranges). Through-hole units are available, but expensive, and all have the restrictive supply voltage requirements. If selecting your own oscillator, you want an "XO" type.
+These parts do not support using an external crystal. External Clock, however, is supported - this requires an external clock source (not just a crystal) connected to the CLKI pin. **DANGER** if this clock source is not present, you must supply a clock source to CLKI pin before it can be reprogrammed, including to use a different clock source. The external CLOCK option is available through the IDE; in previous versions this was limited to parts which didn't support a crystal. With greater recognition that unbricking the parts is straightforward (we include an appropriate sketch in the examples), as of 2.0.0, we now support this on all parts. **This is not the same as external crystal - do not use this option if you are unsure about the difference between external clock and external crystal!** External clock sources are commonly sold as "oscillators", we would recommend the KC5032A-series for it's low cost and wide operating voltage range of 1.6-5.5v (ie, the entire operating range of these parts - but they're discontinued and there is no longer any external clock for sale from any western manufacturer or subsidiary thereof that is openly marketing an external oscillator with such  a wide voltage range). Every other oscillator available from Digikey has a narrower voltage range (often 3.3v or 5v +/- 10%, though some work from wider ranges). Through-hole units are available, but expensive, and all have the restrictive supply voltage requirements. If selecting your own oscillator, you want an "XO" type.
 
 #### Using external CLOCK (instead of crystal) on other parts
 The use of an external clock - that is, a single wire with an appropriate clock signal is supplied to the XTAL1 pin from an external source, is possible using this core. This is an advanced feature, and is not supported directly through the IDE (except as noted above) to reduce the risk of people confusing it with external crystal and bricking their chips (if external clock is set as clock source when actually using external crystal, you must supply a clock signal on XTAL1 to program the chip again, including to set it to use a crystal again). To use an external clock:
@@ -245,7 +245,7 @@ On the following chips, full serial (UART) support is provided in hardware, as S
 * ATtiny1634 (two UARTs)
 * ATtiny828
 
-On the following chips, **no hardware serial is available**, however, a built-in software serial named `Serial` is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial. [See also the discussion of baud rates.](avr/extras/TinySoftSerialBaud.md)
+On the following chips, **no hardware serial is available**, however, a built-in software serial named `Serial` is provided to maximize compatibility. This uses the analog comparator pins (to take advantage of the interrupt, since very few sketches/libraries use it, while lots of sketches/libraries use PCINTs). **TX is AIN0, RX is AIN1** -  This is a software implementation - as such, you cannot receive and send at the same time. If you try, you'll get gibberish, just like using SoftwareSerial. [See also the discussion of baud rates.](TinySoftSerialBaud.md)
 * ATtiny x5 (25/45/85)
 * ATtiny x4 (24/44/84)
 * ATtiny x61 (261/461/861)
@@ -274,7 +274,7 @@ Most of the ATtiny parts only have two timers. The attiny841 has a third timer -
 
 ### Built-in tinyNeoPixel library
 
-The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. At speeds below 16MHz, you must select the port containing the pin you wish to use from the Tools -> tinyNeoPixel Port menu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](avr/extras/tinyNeoPixel.md) and included examples for more information.
+The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. At speeds below 16MHz, you must select the port containing the pin you wish to use from the Tools -> tinyNeoPixel Port menu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](tinyNeoPixel.md) and included examples for more information.
 
 ### Retain EEPROM configuration option
 All non-bootloader board definitions have a menu option to control whether the contents of the EEPROM are erased when programming. This only applies to ISP programming, and you must "burn bootloader" to set the fuses to apply this. Because it only applies to ISP programming, it is not available for Bootloader board definitions. On those, EEPROM is never retained, on the reasoning that if you are burning the bootloader to a chip, you are trying to restore it to a "fresh" state.

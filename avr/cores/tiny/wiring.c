@@ -446,40 +446,40 @@ static void initToneTimerInternal(void);
       return ((m << 8) + t) * 5;
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 16500000L) //(16500000) - (16500000 >> 5) = approx 16000000
       m = (((m << 8) + t) << 2 ); // multiply by 4 - this gives us the value it would be if it were 16 MHz
-      return (m - (m>>5));        // but it's not - we want 32/33nds of that. We can't divide an unsigned long by 33 in a time sewnsitive function. So we do 31/32nds, and that's goddamned close.
+      return (m - (m >> 5));        // but it's not - we want 32/33nds of that. We can't divide an unsigned long by 33 in a time sewnsitive function. So we do 31/32nds, and that's goddamned close.
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 24000000L) // 2.6875 vs real value 2.67
       m = (m << 8) + t;
-      return (m<<1) + (m >> 1) + (m >> 3) + (m >> 4); // multiply by 2.6875
+      return (m << 1) + (m >> 1) + (m >> 3) + (m >> 4); // multiply by 2.6875
     #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 20) // 3.187 vs real value 3.2
       m=(m << 8) + t;
-      return m+(m<<1)+(m>>2)-(m>>4);
+      return m | (m << 1) | (m >> 2) | (m >> 4);
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU == 18432000L) // 3.5 vs real value 3.47
       m=(m << 8) + t;
-      return m+(m<<1)+(m>>1);
+      return m | (m << 1) | (m >> 1);
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU==14745600L) //4.375  vs real value 4.34
       m=(m << 8) + t;
-      return (m<<2)+(m>>1)-(m>>3);
+      return (m << 2) | (m >> 1) | (m >> 3);
     #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 14) //4.5 - actual 4.57 for 14.0mhz, 4.47 for the 14.3 crystals scrappable from everything
       m=(m << 8) + t;
-      return (m<<2)+(m>>1);
+      return (m << 2) | (m >> 1);
     #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 12) // 5.3125 vs real value 5.333
       m=(m << 8) + t;
-      return m+(m<<2)+(m>>2)+(m>>4);
+      return m | (m << 2) | (m >> 2) | (m >> 4);
     #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 11) // 5.75 vs real value 5.818 (11mhz) 5.78 (11.059)
       m=(m << 8) + t;
-      return m+(m<<2)+(m>>1)+(m>>2);
+      return m | (m << 2) | (m >> 1) | (m >> 2);
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU==7372800L) // 8.625, vs real value 8.68
       m=(m << 8) + t;
-      return (m<<3)+(m>>2)+(m>>3);
+      return (m << 3) | (m >> 2) | (m >> 3);
     #elif (MillisTimer_Prescale_Value == 64 && F_CPU==6000000L) // 10.625, vs real value 10.67
       m=(m << 8) + t;
-      return (m<<3)+(m<<1)+(m>>2)+(m>>3);
+      return (m << 3) | (m << 1) | (m >> 2) | (m >> 3);
     #elif (MillisTimer_Prescale_Value == 32 && F_CPU==7372800L) // 4.3125, vs real value 4.34 - x7 now runs timer0 twice as fast at speeds under 8 MHz
       m=(m << 8) + t;
-      return (m<<2)+(m>>3)+(m>>4);
+      return (m << 2) | (m >> 3) | (m >> 4);
     #elif (MillisTimer_Prescale_Value == 32 && F_CPU==6000000L) // 5.3125, vs real value 5.33 - x7 now runs timer0 twice as fast at speeds under 8 MHz
       m=(m << 8) + t;
-      return (m<<2)+(m)+(m>>3)+(m>>4);
+      return (m << 2) | (m) | (m >> 3) | (m >> 4);
     #elif (MillisTimer_Prescale_Value == 64 && clockCyclesPerMicrosecond() == 9) // For 9mhz, this is a little off, but for 9.21, it's very close!
       return ((m << 8) + t) * (MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
     #else
@@ -490,7 +490,7 @@ static void initToneTimerInternal(void);
       //We can't just remove the parens, because then it will overflow (MillisTimer_Prescale_Value) times more often than unsigned longs should, so overflows would break everything.
       //So what we do here is:
       //the high part gets divided by cCPuS then multiplied by the prescaler. Then take the low 8 bits plus the high part modulo-cCPuS to correct for the division, then multiply that by the prescaler value first before dividing by cCPuS, and finally add the two together.
-      //return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + ((t+(((m<<8)%clockCyclesPerMicrosecond())) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()));
+      //return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + ((t | (((m << 8)%clockCyclesPerMicrosecond())) * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond()));
       return ((m << 8 )/clockCyclesPerMicrosecond()* MillisTimer_Prescale_Value) + (t * MillisTimer_Prescale_Value / clockCyclesPerMicrosecond());
     #endif
   #endif
@@ -537,7 +537,9 @@ static void initToneTimerInternal(void);
 #endif
 
 /* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
+//Not used anymore, we have the version we stole from nerdralph's picocore!
 
+/*
 void delayMicroseconds(uint16_t us)
 {
   #define _MORENOP_ "" // redefine to include NOPs depending on frequency
@@ -827,7 +829,7 @@ void delayMicroseconds(uint16_t us)
   );
   // return = 4 cycles
 }
-
+*/
 // This clears up the timer settings, and then calls the tone timer initialization function (unless it's been disabled - but in this case, whatever called this isn't working anyway!
 void initToneTimer(void) {
   // Ensure the timer is in the same state as power-up
@@ -849,8 +851,8 @@ void initToneTimer(void) {
     TIFR   = 0x66;
   #elif (TIMER_TO_USE_FOR_TONE == 0)
     // Just zero the registers out, instead of trying to name all the bits, as there are combinations of hardware and settings where that doesn't work
-    TCCR0B = 0; //  (0<<FOC0A) | (0<<FOC0B) | (0<<WGM02) | (0<<CS02) | (0<<CS01) | (0<<CS00);
-    TCCR0A = 0; // (0<<COM0A1) | (0<<COM0A0) | (0<<COM0B1) | (0<<COM0B0) | (0<<WGM01) | (0<<WGM00);
+    TCCR0B = 0; //  (0 << FOC0A) | (0 << FOC0B) | (0 << WGM02) | (0 << CS02) | (0 << CS01) | (0 << CS00);
+    TCCR0A = 0; // (0 << COM0A1) | (0 << COM0A0) | (0 << COM0B1) | (0 << COM0B0) | (0 << WGM01) | (0 << WGM00);
     // Reset the count to zero
     TCNT0 = 0;
     // Set the output compare registers to zero
@@ -860,24 +862,24 @@ void initToneTimer(void) {
       // Disable all Timer0 interrupts
       // Clear the Timer0 interrupt flags
       #if defined(TICIE0) // x61-series has an additional input capture interrupt vector...
-        TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)|(1<<TICIE0));
-        TIFR = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0)|(1<<ICF0));
+        TIMSK &= ~((1 << OCIE0B) | (1 << OCIE0A) | (1 << TOIE0) | (1 << TICIE0));
+        TIFR = ((1 << OCF0B) | (1 << OCF0A) | (1 << TOV0) | (1 << ICF0));
       #else
-        TIMSK &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0));
-        TIFR = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0));
+        TIMSK &= ~((1 << OCIE0B) | (1 << OCIE0A) | (1 << TOIE0));
+        TIFR = ((1 << OCF0B) | (1 << OCF0A) | (1 << TOV0));
       #endif
     #elif defined(TIMSK0)
       // Disable all Timer0 interrupts
       TIMSK0 = 0; //can do this because all of TIMSK0 is timer 0 interrupt masks
       // Clear the Timer0 interrupt flags
-      TIFR0 = ((1<<OCF0B) | (1<<OCF0A) | (1<<TOV0)); //no ICF0 interrupt on any supported part with TIMSK0
+      TIFR0 = ((1 << OCF0B) | (1 << OCF0A) | (1 << TOV0)); //no ICF0 interrupt on any supported part with TIMSK0
     #endif
   #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1)
     // Turn off Clear on Compare Match, turn off PWM A, disconnect the timer from the output pin, stop the clock
-    TCCR1 = (0<<CTC1) | (0<<PWM1A) | (0<<COM1A1) | (0<<COM1A0) | (0<<CS13) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+    TCCR1 = (0 << CTC1) | (0 << PWM1A) | (0 << COM1A1) | (0 << COM1A0) | (0 << CS13) | (0 << CS12) | (0 << CS11) | (0 << CS10);
     // 0 out TCCR1
     // Turn off PWM A, disconnect the timer from the output pin, no Force Output Compare Match, no Prescaler Reset
-    GTCCR &= ~((1<<PWM1B) | (1<<COM1B1) | (1<<COM1B0) | (1<<FOC1B) | (1<<FOC1A) | (1<<PSR1));
+    GTCCR &= ~((1 << PWM1B) | (1 << COM1B1) | (1 << COM1B0) | (1 << FOC1B) | (1 << FOC1A) | (1 << PSR1));
     // Reset the count to zero
     TCNT1 = 0;
     // Set the output compare registers to zero
@@ -885,9 +887,9 @@ void initToneTimer(void) {
     OCR1B = 0;
     OCR1C = 0;
     // Disable all Timer1 interrupts
-    TIMSK &= ~((1<<OCIE1A) | (1<<OCIE1B) | (1<<TOIE1));
+    TIMSK &= ~((1 << OCIE1A) | (1 << OCIE1B) | (1 << TOIE1));
     // Clear the Timer1 interrupt flags
-    TIFR = ((1<<OCF1A) | (1<<OCF1B) | (1<<TOV1));
+    TIFR = ((1 << OCF1A) | (1 << OCF1B) | (1 << TOV1));
   #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E)
     TCCR1A = 0;
     TCCR1B = 0;
@@ -908,10 +910,10 @@ void initToneTimer(void) {
   #elif (TIMER_TO_USE_FOR_TONE == 1)
     // Normal, well-behaved 16-bit Timer 1.
     // Turn off Input Capture Noise Canceler, Input Capture Edge Select on Falling, stop the clock
-    TCCR1B = (0<<ICNC1) | (0<<ICES1) | (0<<WGM13) | (0<<WGM12) | (0<<CS12) | (0<<CS11) | (0<<CS10);
+    TCCR1B = (0 << ICNC1) | (0 << ICES1) | (0 << WGM13) | (0 << WGM12) | (0 << CS12) | (0 << CS11) | (0 << CS10);
     // TCCR1B=0; But above is compile time known, so optimized out, and will fail if
     // Disconnect the timer from the output pins, Set Waveform Generation Mode to Normal
-    TCCR1A = (0<<COM1A1) | (0<<COM1A0) | (0<<COM1B1) | (0<<COM1B0) | (0<<WGM11) | (0<<WGM10);
+    TCCR1A = (0 << COM1A1) | (0 << COM1A0) | (0 << COM1B1) | (0 << COM1B0) | (0 << WGM11) | (0 << WGM10);
     // TCCR1A = 0, same logic as above
     // Reset the count to zero
     TCNT1 = 0;
@@ -920,14 +922,14 @@ void initToneTimer(void) {
     OCR1B = 0;
     // Disable all Timer1 interrupts
     #if defined(TIMSK)
-    TIMSK &= ~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
+    TIMSK &= ~((1 << TOIE1) | (1 << OCIE1A) | (1 << OCIE1B) | (1 << ICIE1));
     // Clear the Timer1 interrupt flags
-    TIFR = ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<ICF1));
+    TIFR = ((1 << TOV1) | (1 << OCF1A) | (1 << OCF1B) | (1 << ICF1));
     #elif defined(TIMSK1)
     // Disable all Timer1 interrupts
-    TIMSK1 = 0; //~((1<<TOIE1) | (1<<OCIE1A) | (1<<OCIE1B) | (1<<ICIE1));
+    TIMSK1 = 0; //~((1 << TOIE1) | (1 << OCIE1A) | (1 << OCIE1B) | (1 << ICIE1));
     // Clear the Timer1 interrupt flags
-    TIFR1 = ((1<<TOV1) | (1<<OCF1A) | (1<<OCF1B) | (1<<ICF1));
+    TIFR1 = ((1 << TOV1) | (1 << OCF1A) | (1 << OCF1B) | (1 << ICF1));
     #endif
   #endif
 
@@ -979,21 +981,21 @@ void initToneTimer(void) {
       #warning "ATTinyCore only supports using Timer1 for tone - this is untested code!"
 
       // Use the Tone Timer for phase correct PWM
-      TCCR0A = (1<<WGM00) | (0<<WGM01);
-      TCCR0B = (ToneTimer_Prescale_Index << CS00) | (0<<WGM02);
+      TCCR0A = (1 << WGM00) | (0 << WGM01);
+      TCCR0B = (ToneTimer_Prescale_Index << CS00) | (0 << WGM02);
     #elif defined(__AVR_ATtiny43__)
       TCCR1A = 3; //WGM 10=1, WGM11=1
       TCCR1B = 3; //prescaler of 64
     #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1) // ATtiny x5
       // Use the Tone Timer for fast PWM as phase correct not supported by this timer
-      GTCCR = (1<<PWM1B);
+      GTCCR = (1 << PWM1B);
       OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
-      TCCR1 = (1<<CTC1) | (1<<PWM1A) | (ToneTimer_Prescale_Index << CS10);
+      TCCR1 = (1 << CTC1) | (1 << PWM1A) | (ToneTimer_Prescale_Index << CS10);
     #elif (TIMER_TO_USE_FOR_TONE == 1) && defined(TCCR1E) // ATtiny x61
       // Use the Tone Timer for phase correct PWM
-      TCCR1A = (1<<PWM1A) | (1<<PWM1B);
-      TCCR1C = (1<<PWM1D);
-      TCCR1D = (1<<WGM10) | (0<<WGM11);
+      TCCR1A = (1 << PWM1A) | (1 << PWM1B);
+      TCCR1C = (1 << PWM1D);
+      TCCR1D = (1 << WGM10) | (0 << WGM11);
       TCCR1B = (ToneTimer_Prescale_Index << CS10);
     #elif (TIMER_TO_USE_FOR_TONE == 1 ) && defined(__AVR_ATtinyX7__)
       /* Like the 841/441/828 we turn on the output compare, and analogWrite() only twiddles the enable bits */
@@ -1005,8 +1007,8 @@ void initToneTimer(void) {
       TCCR1B = ToneTimer_Prescale_Index;
     #elif (TIMER_TO_USE_FOR_TONE == 1) // x4, x8, x313,
       // Use the Tone Timer for phase correct PWM
-      TCCR1A = (1<<WGM10);
-      TCCR1B = (0<<WGM12) | (0<<WGM13) | (ToneTimer_Prescale_Index << CS10); //set the clock
+      TCCR1A = (1 << WGM10);
+      TCCR1B = (0 << WGM12) | (0 << WGM13) | (ToneTimer_Prescale_Index << CS10); //set the clock
     #endif
   }
 #endif
@@ -1249,7 +1251,7 @@ void init_clock() {
           #ifdef CCP
             CCP=0xD8; //enable change of protected register
           #else
-            CLKPR=1<<CLKPCE; //enable change of protected register
+            CLKPR=1 << CLKPCE; //enable change of protected register
           #endif
           #if   (F_CPU ==  8000000L)
             CLKPR = 1;                // prescale by 2 for 8MHz
@@ -1287,7 +1289,7 @@ void init_clock() {
       #if defined(ENABLE_TUNING) && ((ENABLE_TUNING) & 3) // if tuning is enabled, grab the tuning constant, if present
       if (!check_tuning())                                // and only grab default and guess if we didn't find one.
       #endif
-      { // if that fails, or tuning isn't enabled, we do the guess :-(
+      { // if that fails, or tuning isn't enabled, we do the guess :-/
         #if defined(__SPM_REG)
           if (OSCCAL == read_factory_calibration()) { // adjust the calibration up from 16.0mhz to 16.5mhz
             if (OSCCAL >= 128) {
@@ -1380,7 +1382,7 @@ void init_clock() {
         #ifdef CCP
           CCP=0xD8; //enable change of protected register
         #else
-          CLKPR=1<<CLKPCE; //enable change of protected register
+          CLKPR=1 << CLKPCE; //enable change of protected register
         #endif
         // One really wonders why someone would use the PLL as clock source if they weren't using VUSB or running at 16MHz, it's got to burn more power...
         #if (F_CPU ==8000000L)
@@ -1435,7 +1437,7 @@ void init_clock() {
         #endif
       #endif
     #else
-      CLKPR=1<<CLKPCE; //enable change of protected register
+      CLKPR=1 << CLKPCE; //enable change of protected register
     #endif
     /* End of internal osc prescale and tuning */
   #elif (CLOCK_SOURCE == 0x11 || CLOCK_SOURCE == 0x12)
@@ -1451,7 +1453,7 @@ void init_clock() {
       #ifdef CCP
         CCP=0xD8; //enable change of protected register
       #else
-        CLKPR=1<<CLKPCE; //enable change of protected register
+        CLKPR=1 << CLKPCE; //enable change of protected register
       #endif
       #if (F_CPU ==8000000L)
         CLKPR=1; //prescale by 2 for 8MHz
@@ -1474,7 +1476,7 @@ void init_clock() {
       #endif //end handling of individual frequencies
     #endif //end if not 16 MHz (default speed)
   #endif //end handling for the two types of internal oscillator derived clock source and 16MHz ext clock of MH-ET tiny88
-
+}
 void init() {
   init_clock(); // initialize the main system clock
   #ifdef SET_REMAP
@@ -1486,7 +1488,7 @@ void init() {
   /* Initialize Primary Timer */
   #if (TIMER_TO_USE_FOR_MILLIS == 0)
     #if defined(WGM01) // if Timer0 has PWM
-      TCCR0A = (1<<WGM01) | (1<<WGM00);
+      TCCR0A = (1 << WGM01) | (1 << WGM00);
     #endif
     #if defined(TCCR0B) //The x61 has a wacky Timer0!
       TCCR0B = (MillisTimer_Prescale_Index << CS00);
@@ -1497,19 +1499,19 @@ void init() {
       TCCR0 = (MillisTimer_Prescale_Index << CS00);
     #endif
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1) //ATtiny x5
-    TCCR1 = (1<<CTC1) | (1<<PWM1A) | (MillisTimer_Prescale_Index << CS10);
-    GTCCR = (1<<PWM1B);
+    TCCR1 = (1 << CTC1) | (1 << PWM1A) | (MillisTimer_Prescale_Index << CS10);
+    GTCCR = (1 << PWM1B);
     OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1E) //ATtiny x61
-    TCCR1C = 1<<PWM1D;
+    TCCR1C = 1 << PWM1D;
     TCCR1B = (MillisTimer_Prescale_Index << CS10);
-    TCCR1A = (1<<PWM1A) | (1<<PWM1B);
+    TCCR1A = (1 << PWM1A) | (1 << PWM1B);
     //cbi(TCCR1E, WGM10); //fast pwm mode
     //cbi(TCCR1E, WGM11);
     OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
   #elif (TIMER_TO_USE_FOR_MILLIS == 1)
-    TCCR1A = 1<<WGM10;
-    TCCR1B = (1<<WGM12) | (MillisTimer_Prescale_Index << CS10);
+    TCCR1A = 1 << WGM10;
+    TCCR1B = (1 << WGM12) | (MillisTimer_Prescale_Index << CS10);
   #endif
 
   // this needs to be called before setup() or some functions won't work there
@@ -1534,11 +1536,11 @@ void init() {
   #endif
   #ifdef PLLTIMER1 // option on x5 and x61
     if (!PLLCSR) {
-      PLLCSR = (1<<PLLE);
+      PLLCSR = (1 << PLLE);
         while (!(PLLCSR&1)) {
           ; //wait for lock
         }
-      PLLCSR = (1<<PCKE)|(1<<PLLE);
+      PLLCSR = (1 << PCKE) | (1 << PLLE);
     }
   #endif
   #if defined(LOWPLLTIMER1) && ((CLOCK_SOURCE==6) || (!defined(PLLCSR)))
@@ -1546,12 +1548,12 @@ void init() {
   #endif
   #ifdef LOWPLLTIMER1 // option on x5 and x61
     if (!PLLCSR) {
-      PLLCSR = (1<<LSM) | (1<<PLLE);
+      PLLCSR = (1 << LSM) | (1 << PLLE);
       while (!(PLLCSR&1)) {
         ; //wait for lock
       }
       // faster than |= since we know the value we want (OUT vs )
-      PLLCSR = (1<<PCKE)|(1<<LSM)|(1<<PLLE);
+      PLLCSR = (1 << PCKE) | (1 << LSM) | (1 << PLLE);
     }
   #endif
   // Initialize the timer used for Tone
@@ -1560,12 +1562,12 @@ void init() {
   #endif
 
   // Initialize the ADC
-  #if defined( INITIALIZE_ADC ) && INITIALIZE_ADC
+  #if defined(INITIALIZE_ADC) && INITIALIZE_ADC
     #if defined(ADCSRA)
       // set a2d prescale factor
-      // ADCSRA = (ADCSRA & ~((1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0))) | (ADC_ARDUINO_PRESCALER << ADPS0) | (1<<ADEN);
+      // ADCSRA = (ADCSRA & ~((1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0))) | (ADC_ARDUINO_PRESCALER << ADPS0) | (1 << ADEN);
       // dude, this is being called on startup. We know that ADCSRA is 0! Why add a RMW cycle?!
-      ADCSRA = (ADC_ARDUINO_PRESCALER << ADPS0) | (1<<ADEN);
+      ADCSRA = (ADC_ARDUINO_PRESCALER << ADPS0) | (1 << ADEN);
       // enable a2d conversions
       // sbi(ADCSRA, ADEN); //we already set this!!!
     #endif

@@ -32,19 +32,19 @@ void pinMode(uint8_t pin, uint8_t mode) {
   if (mode == INPUT) {
     uint8_t oldSREG = SREG;
                 cli();
-    *reg &= ~bit;
-    *out &= ~bit;
+    *reg &= ~mask;
+    *out &= ~mask;
     SREG = oldSREG;
   } else if (mode == INPUT_PULLUP) {
     uint8_t oldSREG = SREG;
                 cli();
-    *reg &= ~bit;
-    *out |= bit;
+    *reg &= ~mask;
+    *out |= mask;
     SREG = oldSREG;
   } else {
     uint8_t oldSREG = SREG;
                 cli();
-    *reg |= bit;
+    *reg |= mask;
     SREG = oldSREG;
   }
 }
@@ -133,7 +133,7 @@ void digitalWrite(uint8_t pin, uint8_t val) {
   if (pin > 127) {pin = analogInputToDigitalPin((pin & 127));}
   check_valid_digital_pin(pin);
   uint8_t timer = digitalPinToTimer(pin);
-  uint8_t bit = digitalPinToBitMask(pin);
+  uint8_t mask = digitalPinToBitMask(pin);
   uint8_t port = digitalPinToPort(pin);
   volatile uint8_t *out;
 

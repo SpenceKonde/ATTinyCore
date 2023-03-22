@@ -48,6 +48,14 @@ void yield(void);
 //#define clockCyclesToMicroseconds(a) (((a) * 1000L) / (F_CPU / 1000L))
 //#define microsecondsToClockCycles(a) (((a) * (F_CPU / 1000L)) / 1000L)
 
+// Compile-time error checking functions
+
+void badArg(const char*) __attribute__((error("")));
+// badArg is when we can determine at compile time that an argument is inappropriate.
+
+void badCall(const char*) __attribute__((error("")));
+// badCall is used when the function should not be called, period (for the selected part with the currently selected options for all tools submenus)
+// and calling it with different arguments can't change that.
 
 typedef unsigned int word;
 
@@ -83,8 +91,21 @@ void analogWrite(uint8_t, int);
 void setADCDiffMode(bool bipolar);
 void analogGain(uint8_t gain);
 
-unsigned long millis(void);
-unsigned long micros(void);
+#if !defined(DISABLE_MILLIS)
+  unsigned long millis(void);
+  unsigned long micros(void);
+// So you can test #ifdef millis
+  #define millis millis
+  #define micros micros
+#else
+  unsigned long millis(void) {
+    bagCall("Millis is disabled from tthe tools menu");
+    return -1;
+  }
+  unsigned long micros(void) {
+    bagCall("Millis is disabled from tthe tools menu");
+    return -1;
+  }
 #endif
 void delay(unsigned long);
 
@@ -127,14 +148,7 @@ void detachInterrupt(uint8_t);
 void setup(void);
 void loop(void);
 
-// Compile-time error checking functions
 
-void badArg(const char*) __attribute__((error("")));
-// badArg is when we can determine at compile time that an argument is inappropriate.
-
-void badCall(const char*) __attribute__((error("")));
-// badCall is used when the function should not be called, period (for the selected part with the currently selected options for all tools submenus)
-// and calling it with different arguments can't change that.
 
 // Get the bit location within the hardware port of the given virtual pin.
 // This comes from the pins_*.c file for the active board configuration.
@@ -285,10 +299,6 @@ extern const uint8_t PROGMEM digital_pin_to_timer_PGM[];
 #if defined(DISABLE_MILLIS)
   #define MILLIS_USE_TIMERNONE
   // forwards compatibility
-#else
-  // So you can test #ifdef millis
-  #define millis millis
-  #define micros micros
 #endif
 
 #if TIMER_TO_USE_FOR_MILLIS != 0
@@ -757,4 +767,5 @@ void loop() {
 #if defined(TIMER2_OVF_vect)    && !defined(TIM2_OVF_vect)
   #define TIM2_OVF_vect TIMER2_OVF_vect
 #endif
+
 #endif
