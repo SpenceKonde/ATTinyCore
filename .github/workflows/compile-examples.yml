@@ -504,7 +504,7 @@ jobs:
           echo "minspeed_job_fqbn=$minspeed_job_fqbn" >> $GITHUB_ENV
           echo "extclk_job_fqbn=$extclk_job_fqbn" >> $GITHUB_ENV
           echo "pll_job_fqbn=$pll_job_fqbn" >> $GITHUB_ENV
-          echo "pll_job_fqbn=$pll165_job_fqbn" >> $GITHUB_ENV
+          echo "pll165_job_fqbn=$pll165_job_fqbn" >> $GITHUB_ENV
           echo "specclk_job_fqbn=$specclk_job_fqbn" >> $GITHUB_ENV
       # See: https://github.com/arduino/compile-sketches/README.md
       - name: Compile examples 8 MHz internal
