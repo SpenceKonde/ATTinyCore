@@ -1,4 +1,4 @@
-## Programming the ATtiny parts
+# Programming the ATtiny parts
 
 All parts supported by ATTinyCore can be programmed using ISP (also called ICSP or SPI programming), using the SCK, MISO, MOSI and Reset pins. Most breakout boards (including all the ones I sell) provide a 6-pin (2x3) ISP programming header that matches the 6-pin connector used on common programmers. You will need an ISP programmer - the USBAsp and USBTinyISP programmers are readily available from ebay, amazon, aliexpress and many other vendors, typically for prices of around $3. If you get a USBAsp, be sure to get one with the 10-pin to 6-pin adapter. You can also use another Arduino (I know the AVR-based ones work, eg, nano, uno, pro mini - I can't make any promises about the fancier, non-AVR boards) using the Arduino as ISP sketch; upload this sketch to the board, and then place a approx. 10uF (within a factor of 10) capacitor between reset and ground on that Arduino (this disables autoreset - it must be removed before you try to upload a different sketch).
 
@@ -8,7 +8,7 @@ In the following sections, the "programmer" is the ISP programmer or Arduino run
 
 We recommend that everyone enable Verbose Uploads - in Preferences, under "Show Verbose Output During", check "Upload" (we recommend unchecking "Compiling" unless chasing down a mysterious compile failure, as it produces a lot of output that usually isn't relevant).
 
-### Programming via ISP (for burning bootloader, and uploading to non-optiboot boards)
+## Programming via ISP (for burning bootloader, and uploading to non-optiboot boards)
 Ensure that you have connected all necessary external components (see [Wiring Guide](Wiring.md). If you have an ISP programmer with the 6-pin header, and a 6-pin header on the board, connect it to the board. If you are using Arduino as ISP, the connections are:
 
 * Vcc of programmer to Vcc of target
@@ -43,7 +43,7 @@ If burning the bootloader, do Tools -> Burn Bootloader. You should see output on
 
 If uploading a sketch, click upload. You should see output on the console reporting that the sketch was successfully uploaded.
 
-#### FTDI in bitbang mode?
+## FTDI in bitbang mode?
 Go search aliexpress, or ebay, or whatever the equivalent is in your country. You will find a blue "FTDI" serial adapter. Look through the designs on offer until you see one with a mini USB connector a switch to select voltage, an unmarked 2x3 set of pins in the middle, and the normal FTDI pinout. The build quality is abysmal, the last batch I got, it felt like the solder had been severely oxidized, the chip was off center on most of them, and obviously the FTDI chip is one of the counterfeits (which seem to work just as well as any that I've tried.... they run under $2 US on aliexpress. That mysterious 2x3 header? Yeah, that's for ISP programming using synchronous bitbang mode. This option enables it, a feature that in and of it self makes this the best of the FT232 clone adapter boards, and quite an appealing package. It can have the added diode and/or resistors to act as a UPDI programmer on modern AVRs connected permanently and still do ISP like this!
 For other FT232RL adapters that break out the modem control lines, it's:
 
@@ -58,7 +58,7 @@ Note that this can only be done with FT232RL's.
 
 This is not the same as the protocols that involve any-old-serial-adapter's modem control lines, generally using a pulse on TX in place of SCK, and reading one bit at a time from a modem control input amd semdomg the same. Those are agonizingly slow, only a desperation tactic to get optiboot onto something when you've just got nothing. They are not supported by this core.
 
-### Programming via Serial (Optiboot)
+## Programming via Serial (Optiboot)
 
 Ensure that you have connected all necessary external components (see [Wiring Guide](Wiring.md)), including the autoreset circuit. Unless you are using a breakout/development board where the bootloader was preinstalled, you must use an ISP programmer to "burn bootloader" as described above before you can reprogram it via serial. If you have a board with the 1x6 pin "FTDI" serial header, and a programmer with the same pinout, they can be connected directly, otherwise, make the following connections:
 
@@ -76,7 +76,7 @@ On the t841, t441, t1634, and t828, pages are erased on blocks of four. The boot
 **Warning about Optiboot on non ATtiny828 devices**
 On parts that do not have hardware bootloader support (only the 828 has that), Optiboot uses "Virtual Boot" to rewrite the vector table as it writes the flash, using the EE_RDY vector to store the address that the program starts at. The problem arises if there is a very poorly timed interruption - for example, a mis-timed reset pulse after programming has started, or a brownout that causes a reset. If this happens at just the wrong moment, the first page of flash can be erased, but not rewritten. While that sounds unlikely, it has been encountered twice in internal testing. When this happens, the part will require ISP programming to unbrick. See #398. Until this issue is resolved, **Optiboot is not for production.** That is to say, if devices are to be deployed in a situation where they will be reprogrammed via serial "in the field", but where ISP programming is impractical, this is not a safe solution.
 
-### Tips and Tricks
+## Tips and Tricks
 * If you have a breakout board with holes for the 6-pin header, but don't want to solder pin header onto it, no problem. Just put a plug a piece of pin header into the connector on the programmer, insert it in the holes, and hold it at an angle, applying gentle pressure to make sure the pins make contact while you run the programming command. I use this technique routinely - it's how I used to bootload the boards I sell; you can also buy a "pogo-pin adapter" which has 6 spring loaded pins, which is a bit easier to handle (this is what I use now).
 
 * Be sure you are plugging in the connector on the top of the board - if it is plugged in backwards, but on the correct side, it will not damage the board; if you don't know which way to orient the connector, you can try them both, and the one that works is correct. However, if you were to put the header in on the wrong side of the board, it would likely damage the board.
