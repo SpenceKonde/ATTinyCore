@@ -94,16 +94,16 @@ void analogGain(uint8_t gain);
 #if !defined(DISABLE_MILLIS)
   unsigned long millis(void);
   unsigned long micros(void);
-// So you can test #ifdef millis
+  // So you can test #ifdef millis
   #define millis millis
   #define micros micros
 #else
   unsigned long millis(void) {
-    bagCall("Millis is disabled from tthe tools menu");
+    badCall("Millis is disabled from tthe tools menu");
     return -1;
   }
   unsigned long micros(void) {
-    bagCall("Millis is disabled from tthe tools menu");
+    badCall("Millis is disabled from tthe tools menu");
     return -1;
   }
 #endif
