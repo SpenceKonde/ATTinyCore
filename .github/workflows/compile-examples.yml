@@ -334,7 +334,7 @@ jobs:
             soft-serial: ""
             pll: 0
             extclk: 0
-            specialclock: "internal_4m"
+            specialclock: "internal_2m"
             haspecialclock: 1
             hasinternal: 1
             crystal: 1
@@ -409,7 +409,7 @@ jobs:
             crystalspeed: ""
           - name: "attiny167micr:"
             available-flash-kB: 14.5
-            soft-serial: softserial=enable
+            soft-serial: ""
             pll: 0
             extclk: 0
             specialclock: "crystal_8m"
@@ -459,7 +459,7 @@ jobs:
             crystalspeed: ""
           - name: "attiny841micr:"
             available-flash-kB: 6.5
-            soft-serial: softserial=enable
+            soft-serial: ""
             pll: 0
             extclk: 0
             specialclock: "internal_16m"
