@@ -1,13 +1,10 @@
 # Using ATTinyCore with Makefiles
 
-The highly popular [Sudar
-makefile](https://github.com/sudar/Arduino-Makefile) works with
-ATTinyCore once properly installed and configured. The Sudar
-makefile suite consists of two main parts – a file named
-“Arduino.mk” that resides in a folder named Arduino-Makefile and a
+The highly popular [Sudar makefile](https://github.com/sudar/Arduino-Makefile) works with ATTinyCore once properly installed and configured. The Sudar
+makefile suite consists of two main parts – a file named `Arduino.mk` that resides in a folder named `Arduino-Makefile` and a
 Makefile that you create for your project and locate in your
 project's folder.  You don't need to change anything in the Arduino
-sketches. What compiles with the Arduion IDE will also compile with
+sketches. What compiles with the Arduino IDE will also compile with
 the Sudar makefile suite.
 
 ## Prerequisite:
@@ -16,50 +13,38 @@ If you have not already do so, **install the Arduino IDE** according
 to the instructions at the [Arduino.cc
 website](https://www.arduino.cc/en/Main/Software).
 
-If you have not already do so, **install SpenceKonde/ATTinyCore**
-according to the instructions in the
-[SpenceKonde/ATTinyCore](https://github.com/SpenceKonde/ATTinyCore)
-GitHub file *Installation.md*.
+If you have not already do so, **install SpenceKonde/ATTinyCore** according to the instructions in the [SpenceKonde/ATTinyCore](https://github.com/SpenceKonde/ATTinyCore)GitHub file *Installation.md*.
 
-**Install the Sudar makefile suite** by following the installation
-instructions at the [sudar/Arduino-Makefile
-Github](https://github.com/sudar/Arduino-Makefile).
+**Install the Sudar makefile suite** by following the installation instructions at the [sudar/Arduino-Makefile Github](https://github.com/sudar/Arduino-Makefile).
 
-The most complex part of installation is creating your project
-Makefile. You need to know the installation  pathnames of
-SpenceKonde/ATTinyCore and  sudar/Arduino-Makefile. These locations
-can vary depending on your operating system and system
-configuration.
+The most complex part of installation is creating your project Makefile. You need to know the installation pathnames of 'SpenceKonde/ATTinyCore' and 'sudar/Arduino-Makefile'. These locations can vary depending on your operating system and system configuration.
 
-Examining the Makefile below as well as its
-console output, also below, will provide one example to help guide
-you.
+Examining the Makefile below as well as its console output, also below, will provide one example to help guide you.
 
 Assuming that your installation of ATTinyCore resides at `~/Arduino/hardware` then entering this grep command will provide a useful list of ATTinyCore options for your chosen processor (selected from the list below).
-**NOTE:** this Linux command requires [Cygwin](https://www.cygwin.com/) on Microsoft Windows.
-`grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt`
+**NOTE:** this Linux command requires [Cygwin](https://www.cygwin.com/) on Microsoft Windows. `grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt`
 
-~At the time this was written~ Updated late Q1 2023, and it is not expected that any additional classic tinyAVRs will be released. these are the ATtiny chips supported by ATTinyCore:
+~At the time this was written~ As of 2/23/22, these are the ATtiny chips supported by ATTinyCore 2.0.0. It is not anticipated that any additional parts that would fall under the perview of ATTinyCore will be released.:
 
 * attinyx4
-* attinyx41
+* attinyx4opti
 * attinyx5
-* attinyx61
-* attinyx7
+* attinyx5opti
 * attinyx8
-* attiny1634
-* attinyx313
+* attinyx8opti
+* attinyx7
+* attinyx7opti
+* attinyx61
+* attinyx61opti
+* attinyx41
+* attiny841opti
 * attiny828
+* attiny828opti
+* attiny1634
+* attiny1634opti
+* attinyx313
 * attiny43u
 * attiny26
-* attinyx4opti
-* attinyx41opti
-* attinyx5opti
-* attinyx61opti
-* attinyx7opti
-* attinyx8opti
-* attiny1634opti
-* attiny828opti
 * attiny85micr
 * attiny167micr
 * attiny88micr
@@ -70,14 +55,18 @@ Assuming that your installation of ATTinyCore resides at `~/Arduino/hardware` th
 * attiny84mi12
 * attiny84micr
 
+Board names ending in micr (and mi12 - that's micronucleus with out-of-spec but more flash-efficient F_CPU of 12 MHz instead of 12.8 MHz). are for use with the Micronucleus (digispark) bootloader. Only parts with at least 8k of flash are supported for this bootloader.
+Board names ending in opti are for use with the Optiboot bootloader. Only parts with at least 4k of flash are supported. No parts are supported if there is not a version of the part differing only in flash size with at least 8k of flash.
+
 You can obtain a new copy of the list above by entering this command in a serial console:
 
 **awk -F. '/att/ {print $1}' ~/Arduino/hardware/ATTinyCore/avr/boards.txt|uniq**
 
+As noted above however, it is belived that this list is comprehensive.
 
 An example of a working Makefile is shown below.
 <br>
-```
+```makefile
 ### DISCLAIMER
 ### This Makefile is designed for use with the sudar Arduino.mk
 ### Refer to https://github.com/sudar/Arduino-Makefile
@@ -109,7 +98,6 @@ USER_LIB_PATH     :=  $(realpath $(PROJECT_DIR)/arduino-1.6.10/hardware/tools/av
 ### For Arduino IDE 1.0.x Only BOARD_TAG is needed.
 ### BOARD_TAG         = mega2560 (example)
 ### For Arduino IDE 1.6.x Both BOARD_TAG and BOARD_SUB are needed.
-### They must be set to the board you are currently using.
 ### Note: for the Arduino Uno, only BOARD_TAG is mandatory
 ### BOARD_TAG         = mega (example)
 ### BOARD_SUB         = atmega2560 (example)
@@ -163,7 +151,7 @@ include $(ARDMK_DIR)/Arduino.mk
 **Below, is the console output from this Makefile:**
 <br>
 
-```
+```text
 $ make
 -------------------------
 Arduino.mk Configuration:

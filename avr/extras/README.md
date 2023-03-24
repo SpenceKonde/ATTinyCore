@@ -200,7 +200,7 @@ In version 1.2.2 and later, Sketch -> Export compiled binary will generate an as
 As of 2.0.0, we no longer support use without Link Time Optimization. It is required for some of the tricks I use to ensure that useful compile errors appear instead of mysterious broken behavior at runtime when we know at compile time that it won't work, and link time optimization is a stunning reduction in sketch size as well.
 
 ### Makefile Support
-For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with [https://github.com/sudar/Arduino-Makefile](https://github.com/sudar/Arduino-Makefile) - See the [makefile documentation](makefile.md) for more information on specific steps needed for this process.
+For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with [https://github.com/sudar/Arduino-Makefile](https://github.com/sudar/Arduino-Makefile) - See the [makefile documentation](Ref_Makefile.md) for more information on specific steps needed for this process.
 
 ### I2C support
 **You must have external pullup resistors installed** - unlike devices with a real hardware TWI port, the internal pullups cannot be used with USI-based I2C to make simple cases (short wires, small number of tolerant slave devices) work. In all cases, including parts with hardware I2C where it may work sometimes, you should **always** use external pullup resistors, as the internal ones are far weaker than the I2C standard requires for reliable operation.
