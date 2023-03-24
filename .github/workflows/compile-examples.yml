@@ -201,7 +201,7 @@ jobs:
             crystalspeed: "9216k"
           - name: attinyx61:chip=861,
             available-flash-kB: 8
-            soft-serial: softserial=enable_AIN0
+            soft-serial: softserial861=enable_AIN0
             pll: 1
             extclk: 0
             specialclock: ""
@@ -211,7 +211,7 @@ jobs:
             crystalspeed: "9216k"
           - name: attinyx61:chip=861,
             available-flash-kB: 8
-            soft-serial: softserial=txonly
+            soft-serial: softserial861=txonly
             pll: 1
             extclk: 0
             specialclock: ""
@@ -221,7 +221,7 @@ jobs:
             crystalspeed: "9216k"
           - name: attinyx61:chip=461,
             available-flash-kB: 4
-            soft-serial: softserial=enable_AIN2
+            soft-serial: softserial861=enable_AIN2
             pll: 1
             extclk: 0
             specialclock: ""
@@ -231,7 +231,7 @@ jobs:
             crystalspeed: "9216k"
           - name: attinyx61:chip=461,
             available-flash-kB: 4
-            soft-serial: softserial=txonly
+            soft-serial: softserial861=txonly
             pll: 1
             extclk: 0
             specialclock: ""
@@ -241,7 +241,7 @@ jobs:
             crystalspeed: "9216k"
           - name: attinyx61:chip=261,
             available-flash-kB: 2
-            soft-serial: softserial=enable_AIN1
+            soft-serial: softserial861=enable_AIN1
             pll: 1
             extclk: 0
             specialclock: ""
@@ -251,7 +251,7 @@ jobs:
             crystalspeed: "9216k"
           - name: attinyx61:chip=261,
             available-flash-kB: 2
-            soft-serial: softserial=txonly
+            soft-serial: softserial861=txonly
             pll: 1
             extclk: 0
             specialclock: ""
@@ -419,7 +419,7 @@ jobs:
             crystalspeed: "16m"
           - name: "attiny861micr:"
             available-flash-kB: 6.5
-            soft-serial: softserial=enable
+            soft-serial: softserial861=enable_AIN2
             pll: 1
             extclk: 0
             specialclock: "pll_8m"
@@ -493,7 +493,7 @@ jobs:
         if: ${{ matrix.device.soft-serial == 0}}
         run: |
           export job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_8m
-          export xtal_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=crystal_9216k
+          export xtal_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=crystal_${{ matrix.device.crystalspeed }}
           export minspeed_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=internal_1m
           export pll_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=pll_16
           export pll165_job_fqbn=${{ env.platform-name }}:${{ matrix.device.name }}clock=pll_16m5
