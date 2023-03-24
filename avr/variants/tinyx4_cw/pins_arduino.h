@@ -75,7 +75,7 @@ static const uint8_t A7 = ADC_CH(7);
 
 #define digitalPinToPCICR(p)        (((p) >= 0 && (p) <= 11) ? (&GIMSK) : ((uint8_t *)NULL))
 #define digitalPinToPCICRbit(p)     (((p) <= 7) ? PCIE0 : PCIE1 )
-#define digitalPinToPCMSK(p)        (((p) <= 7) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK1) : ((uint8_t *)NULL) )
+#define digitalPinToPCMSK(p)        (((p) <= 7) ? (&PCMSK0) : (((p) <= 11) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p)     (((p) <= 7) ? (p) : (10 - (p)))
 
 #define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
