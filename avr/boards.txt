@@ -1591,16 +1591,20 @@ attinyx61.menu.remap.alternate.build.remapabr=rU
 ################################
 # Software Serial menu         #
 ################################
-attinyx61.menu.softserial.enable_AIN1=RX on PA7, TX on PA (default PA6)
-attinyx61.menu.softserial.enable_AIN0=RX on PA6, TX on PA (default PA7)
-attinyx61.menu.softserial.enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0
-attinyx61.menu.softserial.enable_AIN0.build.softserabr=ssAIN0
-attinyx61.menu.softserial.enable_AIN2=RX on PA5, TX on PA (default PA6)
-attinyx61.menu.softserial.enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2
-attinyx61.menu.softserial.enable_AIN2.build.softserabr=ssAIN2
-attinyx61.menu.softserial.txonly=No receiving, transmit only. TX on PA, default PA6.
-attinyx61.menu.softserial.txonly.build.softserabr=ssTX
-attinyx61.menu.softserial.txonly.build.softser=-DSOFT_TX_ONLY
+attinyx61.menu.softserial861.enable_AIN1=RX on PA7, TX on PA (default PA6)
+attinyx61.menu.softserial861.enable_AIN0=RX on PA6, TX on PA (default PA7)
+attinyx61.menu.softserial861.enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0
+attinyx61.menu.softserial861.enable_AIN0.build.softserabr=ssAIN0
+attinyx61.menu.softserial861.enable_AIN2=RX on PA5, TX on PA (default PA6)
+attinyx61.menu.softserial861.enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2
+attinyx61.menu.softserial861.enable_AIN2.build.softserabr=ssAIN2
+attinyx61.menu.softserial861.txonly=No receiving, transmit only. TX on PA, default PA6.
+attinyx61.menu.softserial861.txonly.build.softserabr=ssTX
+attinyx61.menu.softserial861.txonly.build.softser=-DSOFT_TX_ONLY
+attinyx61.menu.softserial861.enable_AIN1.bootloader.uart=_rx7tx6
+attinyx61.menu.softserial861.enable_AIN0.bootloader.uart=_rx6tx7
+attinyx61.menu.softserial861.enable_AIN2.bootloader.uart=_rx5tx6
+attinyx61.menu.softserial861.txonly.bootloader.uart=_rx7tx6
 
 ################################
 # BrownOut Detect menu         #
@@ -2462,10 +2466,10 @@ attinyx313.menu.chip.4313=ATtiny4313
 attinyx313.menu.chip.4313.build.mcu=attiny4313
 attinyx313.menu.chip.4313.upload.maximum_size=4096
 attinyx313.menu.chip.4313.upload.maximum_data_size=256
-attinyx313.menu.chip.2313a=ATtiny2313/ATtiny2313A
-attinyx313.menu.chip.2313a.build.mcu=attiny2313a
-attinyx313.menu.chip.2313a.upload.maximum_size=2048
-attinyx313.menu.chip.2313a.upload.maximum_data_size=128
+attinyx313.menu.chip.2313=ATtiny2313/ATtiny2313A
+attinyx313.menu.chip.2313.build.mcu=attiny2313a
+attinyx313.menu.chip.2313.upload.maximum_size=2048
+attinyx313.menu.chip.2313.upload.maximum_data_size=128
 
 ################################
 # Clocking menu options        #
@@ -2481,7 +2485,7 @@ attinyx313.menu.clock.internal_1m.build.f_cpu=1000000UL
 attinyx313.menu.clock.internal_1m.build.speed=1m
 attinyx313.menu.clock.internal_1m.build.clocksource=0x10
 attinyx313.menu.clock.internal_4m=4 MHz (internal)
-attinyx313.menu.clock.internal_4m.bootloader.low_fuses=0x62
+attinyx313.menu.clock.internal_4m.bootloader.low_fuses=0xE2
 attinyx313.menu.clock.internal_4m.build.f_cpu=4000000UL
 attinyx313.menu.clock.internal_4m.build.speed=4m
 attinyx313.menu.clock.internal_4m.build.clocksource=0x10
@@ -5283,6 +5287,12 @@ attiny84micr.menu.clock.internal_12m8.build.f_cpu=12800000L
 attiny84micr.menu.clock.internal_12m8.build.speed=12m8
 attiny84micr.menu.clock.internal_12m8.build.clocksource=0
 attiny84micr.menu.clock.internal_12m8.build.extra_flags=-DBOOT_TUNED128
+attiny84micr.menu.clock.internal_1m=1 MHz internal
+attiny84micr.menu.clock.internal_1m.bootloader.low_fuses=0x62
+attiny84micr.menu.clock.internal_1m.build.f_cpu=1000000UL
+attiny84micr.menu.clock.internal_1m.build.speed=1m
+attiny84micr.menu.clock.internal_1m.build.clocksource=0
+attiny84micr.menu.clock.internal_1m.build.extra_flags=-DBOOT_TUNED128
 
 ################################
 # Pin Mapping menu             #
@@ -6216,6 +6226,12 @@ attiny841micr.menu.clock.internal_12m.build.f_cpu=12000000UL
 attiny841micr.menu.clock.internal_12m.build.speed=12m
 attiny841micr.menu.clock.internal_12m.build.clocksource=0
 attiny841micr.menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120
+attiny841micr.menu.clock.internal_1m=1 MHz internal
+attiny841micr.menu.clock.internal_1m.bootloader.low_fuses=0x62
+attiny841micr.menu.clock.internal_1m.build.f_cpu=1000000UL
+attiny841micr.menu.clock.internal_1m.build.speed=1m
+attiny841micr.menu.clock.internal_1m.build.clocksource=0
+attiny841micr.menu.clock.internal_1m.build.extra_flags=-DBOOT_TUNED120
 
 ################################
 # Pin Mapping menu             #
@@ -6392,6 +6408,12 @@ attiny1634micr.menu.clock.internal_12m.build.f_cpu=12000000UL
 attiny1634micr.menu.clock.internal_12m.build.speed=12m
 attiny1634micr.menu.clock.internal_12m.build.clocksource=0
 attiny1634micr.menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120
+attiny1634micr.menu.clock.internal_1m=1 MHz internal
+attiny1634micr.menu.clock.internal_1m.bootloader.low_fuses=0x62
+attiny1634micr.menu.clock.internal_1m.build.f_cpu=1000000UL
+attiny1634micr.menu.clock.internal_1m.build.speed=1m
+attiny1634micr.menu.clock.internal_1m.build.clocksource=0
+attiny1634micr.menu.clock.internal_1m.build.extra_flags=-DBOOT_TUNED120
 
 ################################
 # Pin Mapping menu             #
