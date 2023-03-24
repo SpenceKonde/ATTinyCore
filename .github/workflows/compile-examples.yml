@@ -25,7 +25,7 @@ on:
 jobs:
   compile-examples:
     # same name as the fqbn (without the platform-name):
-    name: ${{ matrix.device}}clock=internal_8m${{matrix.soft-serial}}
+    name: ${{ matrix.device.name}}-${matrix.device.soft-serial}}
     runs-on: ubuntu-latest
 
     env:
