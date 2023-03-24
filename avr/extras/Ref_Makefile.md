@@ -24,7 +24,7 @@ Examining the Makefile below as well as its console output, also below, will pro
 Assuming that your installation of ATTinyCore resides at `~/Arduino/hardware` then entering this grep command will provide a useful list of ATTinyCore options for your chosen processor (selected from the list below).
 **NOTE:** this Linux command requires [Cygwin](https://www.cygwin.com/) on Microsoft Windows. `grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt`
 
-~At the time this was written~ As of 2/23/22, these are the ATtiny chips supported by ATTinyCore 2.0.0. It is not anticipated that any additional parts that would fall under the perview of ATTinyCore will be released.:
+~At the time this was written~ As of 2/23/22, these are the ATtiny chips supported by ATTinyCore 2.0.0. It is not anticipated that any additional parts that would fall under the purview of ATTinyCore will be released.:
 
 * attinyx4
 * attinyx4opti
@@ -62,7 +62,7 @@ You can obtain a new copy of the list above by entering this command in a serial
 
 **awk -F. '/att/ {print $1}' ~/Arduino/hardware/ATTinyCore/avr/boards.txt|uniq**
 
-As noted above however, it is belived that this list is comprehensive.
+As noted above however, it is believed that this list is comprehensive.
 
 An example of a working Makefile is shown below.
 <br>

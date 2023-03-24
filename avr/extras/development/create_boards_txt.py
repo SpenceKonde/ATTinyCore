@@ -1792,8 +1792,8 @@ for x in boards:
         for y in softsermenu_861:
           printProp(x, ".menu.softserial861."+y)
       else:
-        for y in softsermenu_861[:-4]:
-          printProp(x, ".menu.softserial."+y)
+        for y in softsermenu_861:
+          printProp(x, ".menu.softserial861."+y)
     else:
       printProp(x,".menu.softserial.enable=RX on P"+boards[x]["ssport"]+boards[x]["ssrx"]+", TX on P"+boards[x]["ssport"]+" (default P"+boards[x]["ssport"]+boards[x]["sstx"]+")")
       for y in softsermenu:

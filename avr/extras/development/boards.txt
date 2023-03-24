@@ -1569,6 +1569,7 @@ attinyx61.menu.clock.extclk_3686k.build.clocksource=2
 ################################
 attinyx61.menu.pinmap.default=Standard
 attinyx61.menu.pinmap.legacy=Legacy
+attinyx61.menu.pinmap.default.build.variant=tinyx61
 attinyx61.menu.pinmap.legacy.build.variant=tinyx61_legacy
 attinyx61.menu.pinmap.default.build.pinmapabr=
 attinyx61.menu.pinmap.legacy.build.pinmapabr=.old
@@ -1590,16 +1591,20 @@ attinyx61.menu.remap.alternate.build.remapabr=rU
 ################################
 # Software Serial menu         #
 ################################
-attinyx61.menu.softserial.enable_AIN1=RX on PA7, TX on PA (default PA6)
-attinyx61.menu.softserial.enable_AIN0=RX on PA6, TX on PA (default PA7)
-attinyx61.menu.softserial.enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0
-attinyx61.menu.softserial.enable_AIN0.build.softserabr=ssAIN0
-attinyx61.menu.softserial.enable_AIN2=RX on PA5, TX on PA (default PA6)
-attinyx61.menu.softserial.enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2
-attinyx61.menu.softserial.enable_AIN2.build.softserabr=ssAIN2
-attinyx61.menu.softserial.txonly=No receiving, transmit only. TX on PA, default PA6.
-attinyx61.menu.softserial.txonly.build.softserabr=ssTX
-attinyx61.menu.softserial.txonly.build.softser=-DSOFT_TX_ONLY
+attinyx61.menu.softserial861.enable_AIN1=RX on PA7, TX on PA (default PA6)
+attinyx61.menu.softserial861.enable_AIN0=RX on PA6, TX on PA (default PA7)
+attinyx61.menu.softserial861.enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0
+attinyx61.menu.softserial861.enable_AIN0.build.softserabr=ssAIN0
+attinyx61.menu.softserial861.enable_AIN2=RX on PA5, TX on PA (default PA6)
+attinyx61.menu.softserial861.enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2
+attinyx61.menu.softserial861.enable_AIN2.build.softserabr=ssAIN2
+attinyx61.menu.softserial861.txonly=No receiving, transmit only. TX on PA, default PA6.
+attinyx61.menu.softserial861.txonly.build.softserabr=ssTX
+attinyx61.menu.softserial861.txonly.build.softser=-DSOFT_TX_ONLY
+attinyx61.menu.softserial861.enable_AIN1.bootloader.uart=_rx7tx6
+attinyx61.menu.softserial861.enable_AIN0.bootloader.uart=_rx6tx7
+attinyx61.menu.softserial861.enable_AIN2.bootloader.uart=_rx5tx6
+attinyx61.menu.softserial861.txonly.bootloader.uart=_rx7tx6
 
 ################################
 # BrownOut Detect menu         #
@@ -2480,7 +2485,7 @@ attinyx313.menu.clock.internal_1m.build.f_cpu=1000000UL
 attinyx313.menu.clock.internal_1m.build.speed=1m
 attinyx313.menu.clock.internal_1m.build.clocksource=0x10
 attinyx313.menu.clock.internal_4m=4 MHz (internal)
-attinyx313.menu.clock.internal_4m.bootloader.low_fuses=0x62
+attinyx313.menu.clock.internal_4m.bootloader.low_fuses=0xE2
 attinyx313.menu.clock.internal_4m.build.f_cpu=4000000UL
 attinyx313.menu.clock.internal_4m.build.speed=4m
 attinyx313.menu.clock.internal_4m.build.clocksource=0x10
@@ -4131,6 +4136,7 @@ attinyx61opti.menu.clock.extclk_3686k.upload.speed=14400
 ################################
 attinyx61opti.menu.pinmap.default=Standard
 attinyx61opti.menu.pinmap.legacy=Legacy
+attinyx61opti.menu.pinmap.default.build.variant=tinyx61
 attinyx61opti.menu.pinmap.legacy.build.variant=tinyx61_legacy
 attinyx61opti.menu.pinmap.default.build.pinmapabr=
 attinyx61opti.menu.pinmap.legacy.build.pinmapabr=.old
@@ -6073,6 +6079,7 @@ attiny861micr.menu.clock.pll_1m.build.clocksource=0x16
 ################################
 attiny861micr.menu.pinmap.default=Standard
 attiny861micr.menu.pinmap.legacy=Legacy
+attiny861micr.menu.pinmap.default.build.variant=tinyx61
 attiny861micr.menu.pinmap.legacy.build.variant=tinyx61_legacy
 attiny861micr.menu.pinmap.default.build.pinmapabr=
 attiny861micr.menu.pinmap.legacy.build.pinmapabr=.old
