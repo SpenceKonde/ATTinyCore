@@ -113,14 +113,7 @@ static const uint8_t  A3 =  ADC_CH(3);
  * to derive a quick test of whether the normal stuff will work.
  *---------------------------------------------------------------------------*/
 
-#define PWM_CHANNEL_REMAPPING       (0) /*analogWrite() pin to enable PWM
-After doing that, the normal ways of manipulating registers for PWM will
-work for it unless or until digitalWrite() us called on it.
-Methods that use the standard ways to turn off PWM will prevent it from working
-afterwards if you then try to go back to core-provided PWM functions. The
-"standard" way uses the COMnx0 and COMnx1 bits in the TCCRny registers. We set
-those at power on only (so it has no space cost because we have to set them
-anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
+#define PWM_CHANNEL_REMAPPING       (0)
 
 #define TIMER0_TYPICAL              (1)
 #define PIN_TIMER_OC0A              (PIN_PB1)
@@ -130,7 +123,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 #define TIMER1_TYPICAL              (0)
 #define PIN_TIMER_T1                (NOT_A_PIN)
 #define PIN_TIMER_ICP1              (NOT_A_PIN)
-/*
+
 #if !defined(PWM_PB1_TIM0) {
   #define PWM_TIMER1
 }
@@ -276,10 +269,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   TIMER1B, /*OC1B*/
   NOT_ON_TIMER,
 };
-
-#endif
-
 #endif
 #endif
-
+#endif
 #endif

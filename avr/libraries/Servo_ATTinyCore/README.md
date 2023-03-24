@@ -1,4 +1,4 @@
-2 Servo Library for Arduino
+# Servo Library for Arduino
 
 This library allows an Arduino board to control RC (hobby) servo motors.
 
@@ -9,7 +9,7 @@ not support all of these parts, has been installed.
 It presents the same API.
 
 For more information about this library please visit us at
-http://www.arduino.cc/en/Reference/Servo
+[http://www.arduino.cc/en/Reference/Servo](http://www.arduino.cc/en/Reference/Servo)
 
 ## License
 

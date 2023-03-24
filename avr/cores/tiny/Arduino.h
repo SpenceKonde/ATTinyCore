@@ -99,11 +99,11 @@ void analogGain(uint8_t gain);
   #define micros micros
 #else
   unsigned long millis(void) {
-    badCall("Millis is disabled from tthe tools menu");
+    badCall("Millis is disabled from the tools menu");
     return -1;
   }
   unsigned long micros(void) {
-    badCall("Millis is disabled from tthe tools menu");
+    badCall("Millis is disabled from the tools menu");
     return -1;
   }
 #endif

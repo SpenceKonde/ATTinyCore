@@ -82,7 +82,7 @@ The classic tinyAVR parts are a motley bunch - some of them are very mundane, wi
 
 
 #### Linux Package Manager versions should not be used
-The maintainers of the package managers (despite being largely clueless about embedded software) frequently modify the IDE supplied with the pacakge. Unfortunately this is done in ways that (because like I said, they are don't know what they're doing) which break the IDE. This breakage most often impacts third party hardware packages more severely (but not always). The Arduino IDE should always be installed from the tarball available from [http://arduino.cc](http://arduino.cc), never from a package manager.
+The maintainers of the package managers (despite being largely clueless about embedded software) frequently modify the IDE supplied with the package. Unfortunately this is done in ways that (because like I said, they are don't know what they're doing) which break the IDE. This breakage most often impacts third party hardware packages more severely (but not always). The Arduino IDE should always be installed from the tarball available from [http://arduino.cc](http://arduino.cc), never from a package manager.
 
 #### problems dynamically linking libusb-0.1 on linux
 See above. This can occur if Arduino, or certain versions of Arduino, was installed through the Snap package manager.
