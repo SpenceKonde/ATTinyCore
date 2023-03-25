@@ -81,7 +81,7 @@ The ATtiny441/841, ATtiny1634, ATtiny44/84, ATtiny45/85, ATtiny461/861, ATtiny48
 #### A warning about Virtual Boot
 Virtual boot relies on rewriting the vector table, such that the RESET vector points to the bootloader. This presents a potential issue: If the bootloader starts to write the first page, but then - for some reason - fails (such as a poorly timed reset right after the programming process begins), the page containing the reset vectors will be erased but not rewritten, with the result being that both the sketch and bootloader are hosed resulting in ISP programming being required to revive the chip. See #398
 
-See the [Programming Guide](Programming.md) for more information on programming parts using Optiboot.
+See the [Programming Guide](Ref_Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
 It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](UsingMicronucleus.md).
@@ -99,7 +99,7 @@ Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCor
 * Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
 * Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
 
-After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
+After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Ref_Programming.md)
 
 ### Supported clock speeds
 Supported clock speeds are shown in the menus in descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.

@@ -22,27 +22,27 @@ The most significant changes are:
 
 
 ### [Installation](Installation.md)
-### [Wiring and required external components](Wiring.md)
-### [Using with Micronucleus boards](avr/extras/Ref_Micronucleus.md)
-### [Programming Guide](avr/extras/Programming.md)
-### [Migration Guide - moving to ATTinyCore from a different ATtiny board package](avr/extras/Ref_Migration.md)
+### [Wiring and required external components](/https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Wiring.md)
+### [Using with Micronucleus boards](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Micronucleus.md)
+### [Programming Guide](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Programming.md)
+### [Migration Guide - moving to ATTinyCore from a different ATtiny board package, or to ATTinyCore 2.0.0 from an earlier version](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Migration.md)
 ### Current **strongly** recommended IDE version: 1.8.13
 
 
 ## Supported devices
 This core supports the following processors - essentially every "classic" tinyAVR processor that makes sense to use with Arduino. The modern (post-2016 release) tinyAVR parts have [their own core](https://github.com/SpenceKonde/megaTinyCore), as there is practically zero code at the core level that can be shared with classic parts (porting application code (sketches) typically poses fewer challenges - code that did not stray from the Arduino API functions can be ported easily, while code that interacts with registers directly does need to be modified). Porting application code between different parts supported by this core is generally a matter of pin adapting to the different arrangement of peripherals among the pins on the two parts
 
-* [ATtiny441, 841](avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader) - One of the last classic tinyAVR parts released, and probably the single best of them. This has a second 16-bit timer (like Timer1) giving it a total of 6 PWM channels, two hardware serial ports, analog input on every pin with differential capability with programmable gain. On top of that, if you tune the internal oscillator to nearly the maximum, 90+% of these will run at 16 MHz.
-* [ATtiny1634](avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader - Micronucleus probably coming soon) - One of the last classic tinyAVR parts released. Sporting 16k of flash, 1k of RAM, and dual hardware serial ports spread across it's 18 I/O pins, this is one of the stars of the classic AVR line, though it would have really benefited if it got the same featureset that the 841 did.
-* [ATtiny87, 167](avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader) - originally targeted at automotive applications, the x7-series offers 16 I/O pins, a hardware serial port with an advanced baud rate generator (it's intended for LIN, an automotive communication protocol, which requires flexible baud rate adjustment) and a differential ADC. TimerB is highly flexible about which pins it uses. A Digispark Pro was made with the Micronucleus bootloader (and the second-stupidest pin mapping I have ever seen on an AVR), and those are now available cheaply online. Before you ask - the stupidest pinpapping? That would be the one that the old ATTinyCore-with-167-support used before I took it over.
-* [ATtiny25, 45, 85](avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader) - The most popular tinyAVR, with just 5 I/O pins, and available in a DIP package, this was popular even before the advent of the Digispark which paired it with the Micronucleus vUSB bootloader - those boards have now been widely cloned and are available for dirt cheap. This popularity is in spite of the tightly constrained pincount and weird Timer1 that is incompatible with many libraries. Can run from internal oscillator at 16 MHz using the on-chip PLL.
-* [ATtiny24, 44, 84](avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader) - Probably the second most popular of the classic tinyAVR parts, being available in a 14-pin DIP package. There's nothing particularly exotic or standout about this, but it checks most of the boxes, having 2 PWM channels from each timer (both of which are normal and well-behaved), a modest differential ADC, and so on. No surprises really, either good or bad, and overall exactly what you'd expect from a 14-pin classic tinyAVR.
-* [ATtiny261, 461, 861](avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader - Micronucleus probably coming soon) - One of the stranger tinyAVR parts, this was designed with two tasks in mind: making differential ADC measurements, and controlling 3-phase BLDC motors. Timer1 is weird - a 10-bit variation on the high-speed timer that the x5 used (complete with the deadtime generator and PLL), with a third output compare channel. The differential ADC is arguably the best one on a classic tinyAVR (the t841 is the one one that could put up a fight, but lacks a separate AVCC pin, so I can't say I have much faith that the 100x gain isn't just amplifying noise), and until the release of the tinyAVR 2-series in 2021, was in the top tier of ADC capability (that top tier has now been replaced with a top tier composed of the 2-series alone, as they wait for the AVR EA's to join them)
-* [ATtiny26](avr/extras/ATtiny_x61.md) (No bootloader. The predecessor of the already long-in-the-tooth x61-series). Added in 2.0.0 by commission from someone with a huge stash of them. Don't use these unless they're all you can get. Two PWM pins, and all the quirks of the x61, only more so. At least it's got a differential ADC that is on the same level as most classic tinyAVRs with differential ADC.
-* [ATtiny48, 88](avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader) - a 32-pin (or 28-pin in DIP) tiny-ified version of the ATmega x8-series. Hardware TWI and SPI, lots of pins, and cheap - but no crystal, no hardware serial, and only timer1 can do PWM (at least it's a normal timer1). It should come as no surprise that the ADC the same boring 8-channel single-ended one the m328p has. Available with Micronucleus support as the "MH-tiny" or "MHET tiny" on eBay and Aliexpress.
-* [ATtiny828](avr/extras/ATtiny_828.md) (With or without Optiboot bootloader) - A 32-pin (28 I/O pin) part with hardware serial and an analog input on every pin - and a mysterious and tragic history that left it far less powerful than it could have been.
-* [ATtiny2313, 4313](avr/extras/ATtiny_x313.md) (no bootloader) - An expensive, ancient chip with tiny amount of flash. For a long time it was the only tinyAVR with a USART. There are far better choices now.
-* [ATtiny43U](avr/extras/ATtiny_43.md) (no bootloader) - An otherwise rather dismal part: 16 I/O pins, but only 2 PWM channels, timer1 is 8-bit not 16, and it only has a few ADC channels - with one unique feature: *an on-chip boost converter* allowing operation from a single, partly discharged, alkaline battery. Unlike using an external boost converter, this can use it's knowledge of the chip state to inform the boost converter's tradeoff between power consumption and accurate regulation, saving significant power while lowering part count. It still requires an external schottky diode, inductor, and capacitor.
+* [ATtiny441, 841](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x41.md) (With or without Optiboot or Micronucleus bootloader) - One of the last classic tinyAVR parts released, and probably the single best of them. This has a second 16-bit timer (like Timer1) giving it a total of 6 PWM channels, two hardware serial ports, analog input on every pin with differential capability with programmable gain. On top of that, if you tune the internal oscillator to nearly the maximum, 90+% of these will run at 16 MHz.
+* [ATtiny1634](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_1634.md)  (With or without Optiboot bootloader - Micronucleus probably coming soon) - One of the last classic tinyAVR parts released. Sporting 16k of flash, 1k of RAM, and dual hardware serial ports spread across it's 18 I/O pins, this is one of the stars of the classic AVR line, though it would have really benefited if it got the same featureset that the 841 did.
+* [ATtiny87, 167](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x7.md) (with or without Optiboot or Micronucleus bootloader) - originally targeted at automotive applications, the x7-series offers 16 I/O pins, a hardware serial port with an advanced baud rate generator (it's intended for LIN, an automotive communication protocol, which requires flexible baud rate adjustment) and a differential ADC. TimerB is highly flexible about which pins it uses. A Digispark Pro was made with the Micronucleus bootloader (and the second-stupidest pin mapping I have ever seen on an AVR), and those are now available cheaply online. Before you ask - the stupidest pinpapping? That would be the one that the old ATTinyCore-with-167-support used before I took it over.
+* [ATtiny25, 45, 85](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x5.md) (With or without Optiboot or Micronucleus bootloader) - The most popular tinyAVR, with just 5 I/O pins, and available in a DIP package, this was popular even before the advent of the Digispark which paired it with the Micronucleus vUSB bootloader - those boards have now been widely cloned and are available for dirt cheap. This popularity is in spite of the tightly constrained pincount and weird Timer1 that is incompatible with many libraries. Can run from internal oscillator at 16 MHz using the on-chip PLL.
+* [ATtiny24, 44, 84](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x4.md) (With or without Optiboot or Micronucleus bootloader) - Probably the second most popular of the classic tinyAVR parts, being available in a 14-pin DIP package. There's nothing particularly exotic or standout about this, but it checks most of the boxes, having 2 PWM channels from each timer (both of which are normal and well-behaved), a modest differential ADC, and so on. No surprises really, either good or bad, and overall exactly what you'd expect from a 14-pin classic tinyAVR.
+* [ATtiny261, 461, 861](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x61.md) (With or without Optiboot bootloader - Micronucleus probably coming soon) - One of the stranger tinyAVR parts, this was designed with two tasks in mind: making differential ADC measurements, and controlling 3-phase BLDC motors. Timer1 is weird - a 10-bit variation on the high-speed timer that the x5 used (complete with the deadtime generator and PLL), with a third output compare channel. The differential ADC is arguably the best one on a classic tinyAVR (the t841 is the one one that could put up a fight, but lacks a separate AVCC pin, so I can't say I have much faith that the 100x gain isn't just amplifying noise), and until the release of the tinyAVR 2-series in 2021, was in the top tier of ADC capability (that top tier has now been replaced with a top tier composed of the 2-series alone, as they wait for the AVR EA's to join them)
+* [ATtiny26](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x61.md) (No bootloader. The predecessor of the already long-in-the-tooth x61-series). Added in 2.0.0 by commission from someone with a huge stash of them. Don't use these unless they're all you can get. Two PWM pins, and all the quirks of the x61, only more so. At least it's got a differential ADC that is on the same level as most classic tinyAVRs with differential ADC.
+* [ATtiny48, 88](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x8.md) (With or without Optiboot or Micronucleus bootloader) - a 32-pin (or 28-pin in DIP) tiny-ified version of the ATmega x8-series. Hardware TWI and SPI, lots of pins, and cheap - but no crystal, no hardware serial, and only timer1 can do PWM (at least it's a normal timer1). It should come as no surprise that the ADC the same boring 8-channel single-ended one the m328p has. Available with Micronucleus support as the "MH-tiny" or "MHET tiny" on eBay and Aliexpress.
+* [ATtiny828](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_828.md) (With or without Optiboot bootloader) - A 32-pin (28 I/O pin) part with hardware serial and an analog input on every pin - and a mysterious and tragic history that left it far less powerful than it could have been.
+* [ATtiny2313, 4313](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x313.md) (no bootloader) - An expensive, ancient chip with tiny amount of flash. For a long time it was the only tinyAVR with a USART. There are far better choices now.
+* [ATtiny43U](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_43.md) (no bootloader) - An otherwise rather dismal part: 16 I/O pins, but only 2 PWM channels, timer1 is 8-bit not 16, and it only has a few ADC channels - with one unique feature: *an on-chip boost converter* allowing operation from a single, partly discharged, alkaline battery. Unlike using an external boost converter, this can use it's knowledge of the chip state to inform the boost converter's tradeoff between power consumption and accurate regulation, saving significant power while lowering part count. It still requires an external schottky diode, inductor, and capacitor.
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
@@ -172,10 +172,10 @@ Virtual boot relies on rewriting the vector table, such that the RESET vector po
 
 **Because of this issue, Optiboot should not be used for production systems**
 
-See the [Programming Guide](avr/extras/Programming.md) for more information on programming parts using Optiboot.
+See the [Programming Guide](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
-It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](avr/extras/Ref_Micronucleus.md).
+It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Micronucleus.md).
 
 ### Changing the ATtiny clock speed and other settings
 
@@ -188,7 +188,7 @@ Changing the ATtiny clock speed, B.O.D. settings etc, is easy. When an ATTinyCor
 * Tools > B.O.D. Mode (active): (441, 841, 1634, 828 only - see B. O. D. section below)
 * Tools > B.O.D. Mode (sleep): (441, 841, 1634, 828 only - see B. O. D. section below)
 
-After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](Programming.md)
+After changing the clock source, BOD settings, or whether to save EEPROM on chip erase), you must do "Burn Bootloader" with an ISP programmer. See [Programming Guide](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Programming.md)
 
 #### Supported clock speeds
 Supported clock speeds are shown in the menus in approximate descending order of usefulness, ie, the popular clock speeds/sources are at the top, and the weird ones are at the bottom. See the notes for caveats specific to certain clock speeds.
@@ -297,7 +297,7 @@ Link time optimization is enabled by default. If compiling with very old version
 
 ### Makefile Support
 
-For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with [https://github.com/sudar/Arduino-Makefile](https://github.com/sudar/Arduino-Makefile) - See the [makefile documentation](avr/extras/Ref_Makefile.md) for more information on specific steps needed for this process.
+For those who prefer to compile with a makefile instead of the IDE, sketches can be compiled with [https://github.com/sudar/Arduino-Makefile](https://github.com/sudar/Arduino-Makefile) - See the [makefile documentation](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Ref_Makefile.md) for more information on specific steps needed for this process.
 
 ### I2C, SPI and Serial
 Most of these parts do not have hardware support for I2C, SPI, and/or UART (Serial) like an ATmega device would. **As much as possible we try to paper over the differences - you can include Wire.h or SPI.h and expect things to just work except as noted below** - this is achieved by a special version of Wire.h and SPI.h which presents the same API, but implements it very differebtly depending on the underlying hardeware. Hence **the use of libraries like USIWire, tinyWire, WireS, and so on is unnecessary** These libraries are also considered unsupported, as they should never be necessary. In the case of Serial/UART, where there is no hardware serial, the SoftwareSerial library can be used, but it is often undesirable because of how it takes over all the PCINTs. To address this, we provide a different software serial implementation which uses the analog comparator interrupt instead of a PCINT, allowing the PCINTs to be used freely. The RX pin is fixed, but the TX pin can be moved around to a limited subset of pins. See the serial section below for more information. The following table shows what hardware interface is available on each of these part.
@@ -391,7 +391,7 @@ ATTinyCore 2.0.0 includes proper support for using the differential ADC - which 
 
 Some parts will additionally have one or two additional configuration functions related to the differential mode:
 ##### analogGain()
-analogGain() is unique to the tiny841/441, which has too many differential channels and gain setting combinations to fit into a single byte. It is documented in the [ATtiny841/441 page](./avr/extras/ATtiny_x41.md). as it only applies to those devices. All others with programmable gain pass the gain setting as part of the constant.
+analogGain() is unique to the tiny841/441, which has too many differential channels and gain setting combinations to fit into a single byte. It is documented in the [ATtiny841/441 page](./https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/ATtiny_x41.md). as it only applies to those devices. All others with programmable gain pass the gain setting as part of the constant.
 
 ##### setADCBipolarMode(bool bipolar)
 This function is available on four families of parts including a total of 11 devices. These parts included an option to configure the differential ADC in either Unipolar mode or Bipolar mode. In bipolar mode, the value returned is signed. If reference was 1.0 V and you were looking at a pair of pins with voltages of 2.75 V and 2.5 V on them, your positive pin is 0.25 times the reference voltage above the negative pin and hence, the value returned would be 128. If the pins were reversed, it would be -128. In Unipolar mode, you gain an additional bit of precision.... if the positive pin is indeed larger. If it's not, you'll just get 0's back This is why some of the part have two options for a pair of pins, differing only in which one is positive vs negative - it's so you can swap the pins and use unipolar mode for higher accuracy. The argument is a boolean value indicating whether bipolar mode should be enabled (true = bipolar mode, false = unipolar mode. )
@@ -421,7 +421,7 @@ Serial and similar classes support the printf syntax. This feature, common on th
 
 ### Built-in tinyNeoPixel library
 
-The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. Prior to 2.0.0, a tools submemu was needed to select the port. This is no longer required (the adafruit code was written with zero tolerance for any divergances from ideal timing; allowing for tiny divergences at points where it doesn't matter was all it took to reimplememt this without the need for that submenu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](avr/extras/tinyNeoPixel.md) and included examples for more information.
+The standard NeoPixel (WS2812/etc) libraries do not support all the clock speeds that this core supports, and some of them only support certain ports. This core includes two libraries for this, both of which are tightly based on the Adafruit_NeoPixel library, tinyNeoPixel and tinyNeoPixel_Static - the latter has a few differences from the standard library (beyond supporting more clocks speeds and ports), in order to save flash. Prior to 2.0.0, a tools submemu was needed to select the port. This is no longer required (the adafruit code was written with zero tolerance for any divergances from ideal timing; allowing for tiny divergences at points where it doesn't matter was all it took to reimplememt this without the need for that submenu. This code is not fully tested at "odd" clock speeds, but definitely works at 8/10/12/16/20 MHz, and will probably work at other speeds, as long as they are 7.3728 MHz or higher. See the [tinyNeoPixel documentation](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/tinyNeoPixel.md) and included examples for more information.
 
 ### Additional configuration options
 These are available from tools submenus
@@ -461,35 +461,35 @@ Disabling of reset is only an option for boards definitions with a bootloader wh
 
 
 ### ATtiny441/841
-![x41 pin mapping](avr/extras/Pinout_x41.jpg "Arduino Pin Mapping for ATtiny841/441")
+![x41 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x41.jpg "Arduino Pin Mapping for ATtiny841/441")
 
 ### ATtiny1634
-![1634 pin mapping](avr/extras/Pinout_1634.jpg "Arduino Pin Mapping for ATtiny1634")
+![1634 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_1634.jpg "Arduino Pin Mapping for ATtiny1634")
 
 ### ATtiny828
-![828 Pin Mapping](avr/extras/Pinout_828.jpg "Arduino Pin Mapping for ATtiny828")
+![828 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_828.jpg "Arduino Pin Mapping for ATtiny828")
 
 ### ATtiny25/45/85
-![x5 pin mapping](avr/extras/Pinout_x5.jpg "Arduino Pin Mapping for ATtiny85/45/25")
+![x5 pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x5.jpg "Arduino Pin Mapping for ATtiny85/45/25")
 
 ### ATtiny24/44/84
-![x4 Pin Mapping](avr/extras/Pinout_x4.jpg "Arduino Pin Mapping for ATtiny84/44/24")
+![x4 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x4.jpg "Arduino Pin Mapping for ATtiny84/44/24")
 
 ### ATtiny261/461/861
-![x61 Pin Mapping](avr/extras/Pinout_x61.jpg "Arduino Pin Mapping for ATtiny861/461/261")
+![x61 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x61.jpg "Arduino Pin Mapping for ATtiny861/461/261")
 
 ### ATtiny87/167
-![x7 Pin Mapping](avr/extras/Pinout_x7.jpg "Arduino Pin Mapping for ATtiny167/87")
+![x7 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x7.jpg "Arduino Pin Mapping for ATtiny167/87")
 
 ### ATtiny48/88
-![x8 SMD Pin Mapping](avr/extras/Pinout_x8.jpg "Arduino Pin Mapping for ATtiny88/48 in TQFP")
-![x8 DIP Pin Mapping](avr/extras/Pinout_x8-PU.jpg "Arduino Pin Mapping for ATtiny88/48 in DIP")
+![x8 SMD Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x8.jpg "Arduino Pin Mapping for ATtiny88/48 in TQFP")
+![x8 DIP Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x8-PU.jpg "Arduino Pin Mapping for ATtiny88/48 in DIP")
 
 ### ATtiny2313/4313
-![x313 Pin Mapping](avr/extras/Pinout_x313.jpg "Arduino Pin Mapping for ATtiny4313/2313")
+![x313 Pin Mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_x313.jpg "Arduino Pin Mapping for ATtiny4313/2313")
 
 ### ATtiny43U
-![ATtiny43U pin mapping](avr/extras/Pinout_43.jpg "Arduino Pin Mapping for ATtiny43")
+![ATtiny43U pin mapping](https://github.com/SpenceKonde/ATTinyCore/blob/v2.0.0-devThis-is-the-head-submit-PRs-against-this/avr/extras/Pinout_43.jpg "Arduino Pin Mapping for ATtiny43")
 
 
 Note that two pin mappings are supported for some devices to retain backwards compatibility with other cores - the pin mapping may be chosen from a menu.

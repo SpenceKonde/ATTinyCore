@@ -9,7 +9,7 @@ In the following sections, the "programmer" is the ISP programmer or Arduino run
 We recommend that everyone enable Verbose Uploads - in Preferences, under "Show Verbose Output During", check "Upload" (we recommend unchecking "Compiling" unless chasing down a mysterious compile failure, as it produces a lot of output that usually isn't relevant).
 
 ## Programming via ISP (for burning bootloader, and uploading to non-optiboot boards)
-Ensure that you have connected all necessary external components (see [Wiring Guide](Wiring.md). If you have an ISP programmer with the 6-pin header, and a 6-pin header on the board, connect it to the board. If you are using Arduino as ISP, the connections are:
+Ensure that you have connected all necessary external components (see [Wiring Guide](Ref_Wiring.md). If you have an ISP programmer with the 6-pin header, and a 6-pin header on the board, connect it to the board. If you are using Arduino as ISP, the connections are:
 
 * Vcc of programmer to Vcc of target
 * Gnd of programmer to Gnd of target
@@ -60,7 +60,7 @@ This is not the same as the protocols that involve any-old-serial-adapter's mode
 
 ## Programming via Serial (Optiboot)
 
-Ensure that you have connected all necessary external components (see [Wiring Guide](Wiring.md)), including the autoreset circuit. Unless you are using a breakout/development board where the bootloader was preinstalled, you must use an ISP programmer to "burn bootloader" as described above before you can reprogram it via serial. If you have a board with the 1x6 pin "FTDI" serial header, and a programmer with the same pinout, they can be connected directly, otherwise, make the following connections:
+Ensure that you have connected all necessary external components (see [Wiring Guide](Ref_Wiring.md)), including the autoreset circuit. Unless you are using a breakout/development board where the bootloader was preinstalled, you must use an ISP programmer to "burn bootloader" as described above before you can reprogram it via serial. If you have a board with the 1x6 pin "FTDI" serial header, and a programmer with the same pinout, they can be connected directly, otherwise, make the following connections:
 
 * Gnd of serial adapter to Gnd of target
 * Vcc of serial adapter to Gnd of target (many adapters have a switch to select the voltage)
