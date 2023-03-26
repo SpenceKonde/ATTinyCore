@@ -823,7 +823,7 @@ attinyx8.menu.clock.extclk_3686k.build.clocksource=2
 ################################
 attinyx8.menu.pinmap.default=Standard
 attinyx8.menu.pinmap.mhet=MH-ET Tiny
-attinyx8.menu.pinmap.mhet.build.variant=tinyx8_MH
+attinyx8.menu.pinmap.mhet.build.variant=tinyx8_mh
 attinyx8.menu.pinmap.default.build.pinmapabr=
 attinyx8.menu.pinmap.mhet.build.pinmapabr=.mhet
 
@@ -5138,6 +5138,12 @@ attiny84mi12.menu.clock.internal_12m.build.f_cpu=12000000UL
 attiny84mi12.menu.clock.internal_12m.build.speed=12m
 attiny84mi12.menu.clock.internal_12m.build.clocksource=0
 attiny84mi12.menu.clock.internal_12m.build.extra_flags=-DBOOT_TUNED120
+attiny84mi12.menu.clock.internal_1m=1 MHz internal
+attiny84mi12.menu.clock.internal_1m.bootloader.low_fuses=0x62
+attiny84mi12.menu.clock.internal_1m.build.f_cpu=1000000UL
+attiny84mi12.menu.clock.internal_1m.build.speed=1m
+attiny84mi12.menu.clock.internal_1m.build.clocksource=0
+attiny84mi12.menu.clock.internal_1m.build.extra_flags=-DBOOT_TUNED120
 
 ################################
 # Pin Mapping menu             #
@@ -5614,7 +5620,7 @@ attiny88micr.menu.clock.extclk_1m.build.clocksource=0x12
 ################################
 attiny88micr.menu.pinmap.mhet=MH-Tiny
 attiny88micr.menu.pinmap.default=Standard
-attiny88micr.menu.pinmap.mhet.build.variant=tinyx8_mh
+attiny88micr.menu.pinmap.mhet.build.variant=tinyx8_MH
 attiny88micr.menu.pinmap.default.build.pinmapabr=
 attiny88micr.menu.pinmap.mhet.build.pinmapabr=.mhet
 
@@ -6095,6 +6101,24 @@ attiny861micr.menu.remap.default.build.remap=
 attiny861micr.menu.remap.alternate.build.remap=-DSET_REMAPUSI
 attiny861micr.menu.remap.default.build.remapabr=
 attiny861micr.menu.remap.alternate.build.remapabr=rU
+
+################################
+# Software Serial menu         #
+################################
+attiny861micr.menu.softserial861.enable_AIN1=RX on PA7, TX on PA (default PA6)
+attiny861micr.menu.softserial861.enable_AIN0=RX on PA6, TX on PA (default PA7)
+attiny861micr.menu.softserial861.enable_AIN0.build.softser=-DSOFTSERIAL_RXAIN0
+attiny861micr.menu.softserial861.enable_AIN0.build.softserabr=ssAIN0
+attiny861micr.menu.softserial861.enable_AIN2=RX on PA5, TX on PA (default PA6)
+attiny861micr.menu.softserial861.enable_AIN2.build.softser=-DSOFTSERIAL_RXAIN2
+attiny861micr.menu.softserial861.enable_AIN2.build.softserabr=ssAIN2
+attiny861micr.menu.softserial861.txonly=No receiving, transmit only. TX on PA, default PA6.
+attiny861micr.menu.softserial861.txonly.build.softserabr=ssTX
+attiny861micr.menu.softserial861.txonly.build.softser=-DSOFT_TX_ONLY
+attiny861micr.menu.softserial861.enable_AIN1.bootloader.uart=_rx7tx6
+attiny861micr.menu.softserial861.enable_AIN0.bootloader.uart=_rx6tx7
+attiny861micr.menu.softserial861.enable_AIN2.bootloader.uart=_rx5tx6
+attiny861micr.menu.softserial861.txonly.bootloader.uart=_rx7tx6
 
 ################################
 # BrownOut Detect menu         #

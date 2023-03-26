@@ -77,8 +77,10 @@ static const uint8_t  A3 =  ADC_CH(3);
 // #define DEFAULT_INITIALIZE_ADC               1
 // #define DEFAULT_INITIALIZE_SECONDARY_TIMERS  1
 
-// We have hardware serial, so don't use soft serial.
-// #define USE_SOFTWARE_SERIAL                  0
+/* Builtin Software Serial "Serial"
+ * TX is on AIN0, RX is on AIN1. Comparator interrupt used so PCINTs remain
+ * available for other uses. Comparator pins in Analog section below.        */
+#define USE_SOFTWARE_SERIAL                     1
 
 /*---------------------------------------------------------------------------
  * Chip Features - Timers amnd PWM
