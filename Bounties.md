@@ -1,12 +1,21 @@
-### Policies w/regards to bounties for priority PRs
+# Policies w/regards to bounties for priority PRs
 
 In recognition of the large number of issues that need to be fixed here, and of the fact that I've got a pile of inventory for my Tindie store, I've decided to begin offering bounties on priority issues. For now, this will be limited to documentation issues. If it works out I may expand it to code as well.
 
-### Available "Bounties" will be listed in Issues.
+## Available "Bounties" will be listed in Issues
 These will list the requirements for successfully claiming the bounty. The value of the bounty will be listed in the title of the issue. These requirements will be quite specific, as the whole point is for me to avoid having to do extensive editing before merging the PR.
 
-### All bounties will be in the form of free stuff from my Tindie store.
-Free shipping via USPS first class mail is included for domestic bounty claimants. Due to the higher cost of international shipping, $2 will be debited from the value of the bounty if shipping internationally.
+Additionally, two things not listed in issues are worth a bounty:
+* A demonstration of how to use the avr_gcc function attribute "warning" to produce a warning if and only if a function declared with that attribute is **reachable** (this is supposed to work like #error, which generates an error only if the function declared with the error attribute is reachable after preprocessing, link time optimization, and constant folding. This is very different from the #warning directive, which generated a warning if it is present anywhere in the code after preprocessing. See badArg() and badCall() in Arduino.h and examples of how I use it in wiring_digital.c. I want the same thing for warnings.
+* An investigation of the ADC on the tragic ATtiny828, because I am dying of curiosity. See [my unsolved mysteries page on it](https://github.com/SpenceKonde/AVR_Research/blob/main/UnsolvedMysteries.md#the-828-and-the-mystery-of-the-adc) - in short, there is extremely strong evidence to suggest that there is a very fancy differential ADC that was planned for that part, and scrubbed at the last moment, with signs of a hasty editing of the datasheet to remove refeences to it. The register layout is identical to the Tiny841's layout, and it had a VERY fancy differential ADC. Based on the huge number of pins with analog inputs, it seems like the ADC was to be the crown jewel of the 828. My theory is that the window for release of the last classic tinyAVRs was closing, and it came back from the fab and the ADC was busted. The engineers asked for a respin, and management said "no", and so they released it was is. I speculate that they would not have released it at all if there was not *some* semblance of the differential ADC functionality there - that there was a workaround - but it was too complicated or too embarassing to describe in the errata; thus certain friendly customers (maybe ones involved in planning the part) know the trick to make the ADC run (or at least limp) in differential mode. I would love to close the book on this with either a conclusive proof that the unused mux options do nothing (A 27 level resistance ladder connected to every pin except the UART Tx pin, which can have it's ends swapped would be a good place to start - if you measure every unused option (use ADC_CH1, or information on the state of the ADC in production silicon.
 
-### If you have any questions about the requirements, email me before you start working
+## All bounties will be in the form of free stuff from my Tindie store
+Free shipping via USPS first class mail is included for domestic bounty claimants. Due to the higher cost of international shipping, $8 will be debited from the value of the bounty if shipping internationally.
+
+## If you have any questions about the requirements, email me before you start working
 That way you can save yourself time and trouble, and it will save me the awkward conversation if a submitted "bounty" PR ends up not meeting the requirements for inclusion in core. My email address is spencekonde@gmail.com
+
+## Offer void where prohibited
+The world is full of dumb laws. I am not aware of any that prohibit this specifically as no purchace is required. You are responsible for paying any taxes, duties or other fees per your jurisdiction.
+
+Obviously, we cannot honor bounties earned by persons residing in nations covered by applicable US economic sanctions, since awarding such a bounty would constitute a felony under US law (and that's where I live). Additionally, I cannot award a bounty to any person whom I have reason to suspect is planning to transfer it a nation or person covered by applicable sanctions. However, since I am not an international trade lawyer, I cannot assess whether sanctions are applicable, so to save my own skin, I have no choice but to assume that any sanction that could be construed as applying in any way (which is most of them) is applicable.

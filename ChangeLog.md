@@ -1,4 +1,4 @@
-# This document lists significant changes and bugfixes, including those not in yet in a release.
+# This document lists significant changes and bugfixes, including those not in yet in a release
 Any changes listed at the top, without a version number above thenm, have not been in a release yet, but can be downloaded from github for manual installation.
 ## Planned 2.0.0
 * Refurbish and standardize all variant files.

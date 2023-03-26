@@ -25,7 +25,7 @@ on:
 jobs:
   compile-examples:
     # same name as the fqbn (without the platform-name):
-    name: ${{ matrix.device.name}}-${matrix.device.soft-serial}}
+    name: ${{ matrix.device.name}}
     runs-on: ubuntu-latest
 
     env:

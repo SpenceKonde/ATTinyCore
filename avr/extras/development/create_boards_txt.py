@@ -478,7 +478,7 @@ boards = {
     "pinmap":[
       ".menu.pinmap.default=Standard",
       ".menu.pinmap.mhet=MH-ET Tiny",
-      ".menu.pinmap.mhet.build.variant=tinyx8_MH",
+      ".menu.pinmap.mhet.build.variant=tinyx8_mh",
       ".menu.pinmap.default.build.pinmapabr=",
       ".menu.pinmap.mhet.build.pinmapabr=.mhet"],
     "softser":True,

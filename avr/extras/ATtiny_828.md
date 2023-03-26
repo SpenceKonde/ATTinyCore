@@ -12,7 +12,7 @@ GPIO Pins             |     27 + RESET |     27 + RESET |
 ADC Channels          |             28 |             28 |
 PWM Channels (pins)   |          4 (8) |          4 (8) |
 Interfaces            | SPI, I2C slave | SPI, I2C slave |
-                      |          USART |          USART |
+(contd.)              |          USART |          USART |
 Clocking Options      |         in MHz |         in MHz |
 Int. Oscillator       |     8, 4, 2, 1 |     8, 4, 2, 1 |
 Int. WDT Oscillator   |  Not supported |  Not supported |

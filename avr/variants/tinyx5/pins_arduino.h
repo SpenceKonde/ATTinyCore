@@ -124,9 +124,9 @@ static const uint8_t  A3 =  ADC_CH(3);
 #define PIN_TIMER_T1                (NOT_A_PIN)
 #define PIN_TIMER_ICP1              (NOT_A_PIN)
 
-#if !defined(PWM_PB1_TIM0) {
+#if !defined(PWM_PB1_TIM0)
   #define PWM_TIMER1
-}
+#endif
 
 /*---------------------------------------------------------------------------
  * Chip Features - Analog stuff
@@ -269,7 +269,5 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
   TIMER1B, /*OC1B*/
   NOT_ON_TIMER,
 };
-#endif
-#endif
 #endif
 #endif

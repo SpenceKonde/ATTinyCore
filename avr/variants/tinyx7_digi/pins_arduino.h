@@ -48,6 +48,9 @@
   #define LED_BUILTIN (PIN_PB1)
 #endif
 
+#define PIN_A0    ( 3)
+#define PIN_A1    ( 3)
+#define PIN_A2    ( 3)
 #define PIN_A3    ( 3)
 #define PIN_A5    ( 5)
 #define PIN_A6    ( 6)
@@ -58,19 +61,20 @@
 #define PIN_A11   (11)
 #define PIN_A12   (12)
 #define PIN_A13   (13)
+#define PIN_A15   (15)
 
 /* DANGER - An does not refer to analog channel n */
+static const uint8_t A3   = ADC_CH(9);
+static const uint8_t A5   = ADC_CH(7);
 static const uint8_t A6   = ADC_CH(0);
 static const uint8_t A7   = ADC_CH(1);
-static const uint8_t A13  = ADC_CH(2);
+static const uint8_t A8   = ADC_CH(2);
 static const uint8_t A9   = ADC_CH(3);
 static const uint8_t A10  = ADC_CH(4);
 static const uint8_t A11  = ADC_CH(5);
 static const uint8_t A12  = ADC_CH(6);
-static const uint8_t A5   = ADC_CH(7);
-static const uint8_t A8   = ADC_CH(8);
-static const uint8_t A3   = ADC_CH(9);
 static const uint8_t A13  = ADC_CH(10);
+static const uint8_t A15  = ADC_CH(8);
 
 /* Interrupt macros to go from pin to PCMSK register and bit within it, and
  * the register to enable/disable banks of PCINTs, and bit within it PCICR
