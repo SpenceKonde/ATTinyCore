@@ -7,6 +7,8 @@ This document describes the considerations for users of the Arduino IDE when mig
   * Use the An constants as shown on the pinout charts: `analogRead(A0)`
   * If you must convert an analog channel number to a pin number programmatically, pass it through the ADC_CH() macro
 * There is no support for SerialEvent - nor was there ever.
+* There are new default pin mappings for the 1634 (because when that one was designed I was inexperienced and foolish, and it's terrible) and for the 167 (both the legacty and digispark mappings for the 167 are inspired works of evil)
+  * If you use the PIN_Pxn notation your code will have the same behavior, though maybe not the same timing, regardless of the pinmap used. The difference in the timing is because the legacy and other non-default mappins usuallly are unable to do certain tricks we use to improve performanmce and reduce resource usage
 
 ### To ATTinyCore from other cores
 Migration to ATTinyCore from other ATtiny hardware packages is typically straightforward - no code modification is typically required except to ensure that analog pin numbers are given correctly, though it may required to reap most of the benefits.
@@ -34,3 +36,9 @@ The ATtiny841 is largely compatible with the ATtiny84, only with additional feat
 * The ATtiny841 has a Timer2 - this is a 16-bit timer, identical to Timer1 on most AVRs. Libraries meant to work with Timer2 (an 8-bit async timer) on the ATmega devices will not work here. Other ATtiny parts supported do not have a Timer2 at all. Timer2 is used for Tone on the 841/441 to leave Timer1 open for other uses.
 * The Timer1 on the ATtiny85 and ATtiny861 are special high-speed timers. Libraries meant to work with Timer1 on other AVRs will not work on these parts.
 * When using direct port manipulation on the ATtiny828/841/441/1634, pullups are controlled by the PUEx register (see datasheet for details)
+
+### To ATTinyCore from a modern AVR
+Don't do this. You should be migrating your classic AVR code to modern AVRs not the other way around.
+
+### To a modern AVR from a classic one
+This will be covered in a future Ref_Migration document that will be added to megaTinyCore and DxCore.

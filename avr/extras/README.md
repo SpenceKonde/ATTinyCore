@@ -13,13 +13,49 @@
 
 Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or ATtiny85V)
 
+## Quick Comparison of supported parts, as a table
+| Part Family     |   x4-series |  x41-series |   x5-series | ATtiny26 |    x61-series |  x7-series | x8-series | x313-series | ATtiny1634 | ATtiny828 | ATtiny43 |
+|-----------------|-------------|-------------|-------------|----------|---------------|------------|-----------|-------------|------------|-----------|----------|
+| Flash Size      |    2k/4k/8k |       4k/8k |    2k/4k/8k |     2048 |      2k/4k/8k |     8k/16k |     4k/8k |       2k/4k |      16384 |      8192 |     4096 |
+| EEPROM Size     | 128/256/512 |     256/512 | 128/256/512 |      128 |   128/256/512 |        512 |           |             |        256 |       512 |       64 |
+| RAM size        | 128/256/512 |     256/512 | 128/256/512 |      128 |   128/256/512 |        512 |           |             |       1024 |       512 |      256 |
+| Internal 16 MHz |          No |  via tuning |    Yes, PLL | Yes, PLL |      Yes, PLL |         No |        No |          No |         No |        No |       No |
+| Ext. Crystal    |         Yes |         Yes |         Yes |      Yes |           Yes |        Yes |        No |         Yes |        Yes |        No |       No |
+| Clock Switching |          No |         Yes |          No |       No |            No | yes, buggy |        No |          No |        Yes |       Yes |       No |
+| HV programming  |        HVSP |        HVSP |        HVSP | parallel |      parallel |   parallel |  parallel |    parallel |   parallel |  parallel | parallel |
+| I/O pins        |          12 |          12 |           6 |       16 |            16 |         16 |        28 |          18 |         18 |        28 |       16 |
+| Optiboot        |         Yes |         Yes |         Yes |       No |           Yes |        Yes |       Yes |          No |        Yes |       Yes |       No |
+| Micronucleus    |         Yes |         Yes |         Yes |       No |           Yes |        Yes |       Yes |          No |        Yes |        No |       No |
+| AREF Pin        |         Yes |         Yes |         Yes |          |           Yes |        Yes |        No |          No |        Yes |        No |       No |
+| PWM pins        |           4 |       6 (8) |           3 |        2 |             3 |       3(9) |         2 |           4 |          4 |     4 (8) |        4 |
+| Internal Refs   | 1V1         | 1V1,2V2,4V1 |   1V1, 2V56 |     2V56 |   1V1, 2V56   |   1V1,2V56 |       1V1 |         1V1 |        1V1 |       1V1 |      1V1 |
+| Analog Pins     |           8 |          12 |           4 |       11 |            11 |         11 |    6 or 8 |        none |         12 |        28 |        4 |
+| Diff. ADC pairs |          12 |  "46"* (18) |           2 |        8 |     "16" (10) |          8 |      none |        none |       none |      none |     none |
+| Diff. ADC gain  |     1x, 20x | 1x,20x,100x |     1x, 20x |  1x, 20x | 1, 8, 20, 32x |    8x, 20x |      none |        none |       none |      none |     none |
+| Gimmick/trick   | Just pretty | 3 timer,ADC |     8 pins! |  Ancient | ADC, BLDC PWM | Automotive |   SPI+TWI |  Old, USART |   2x USART | Most bugs |Int. Boost|
+| (contd)         | normal.     | 2xUSART     |   PLL clock | not much | PLL clock     | Lin, SPI   | like 328p |     No ADC! |    1k SRAM | ADC gimped|runs at 1.5v or less|
+
+`* Number in quotes is from the Atmel marketing material which are inconsistent with the counting methods used for other parts and the most basic of mathematcal concepts. Ex: on x41, for differential pairs, they counted every pair of pins twice (since you can reverse them) plus the 10 channels where the same input is used as both positive and negative, for offset calibration and that added up to 46. But historically, they only counted unique pairs, and didn't count channels that would read 0 except for offset error. That gets 18 pairs. Hence: "46" (18)`
+
+I/O pins *includes* reset in the count; reset can only be used as GPIO if you disable reset (in which case you need to have an HV programmer to reprogram the part).
+
+HV programming is required if you disable eiher reset or ISP progrmming. HVSP is relatively easy and there are many plans for "fuse doctors" online that will fix the fuses. HVPP is much more complicated, requiring a minimum of 18 wires connecteed to the target (forget about in system reprorgramming). As HVPP programmers are not readily available to hobby programmers, it would cause more problems than it solved to allow the tools menu to disable reset there, so we dont.t
+
+PWM pins where second number is shown in (parenthesis), the first number is the number of simultaneous, independent duty cycles that can be generated, and the one in parenethesis is the number of pins on which those can be output. See the part specific documentation for details, as the implementation and core integration (if any) varies.
+
+Clock source switching is NEVER supported by ATTinyCore. The x7-series is impacted by scary errata with a very specific workaround.
+
+The "Gimmick" section lists the most prominant unique features of this part. These are what set it apart from other devives and may force you to go with that part even though you'd rather a different one. If you need to maximize battery life from a single alkaline battery cell, the tiny43 is your only choice without designing a very low quiescent current boost converter yourself.
+
+The 828 deserves a bit of explanation - it was one of the last parts that was released as classic AVR, andf I think they set a hard deadline. The part was going to have a super snazzy differential ADC like the 841. But the silicon came back, and in addition to the bugs listed in the errata (one of which is quite nasty) the differentil functionality of the ADC was hosed. Management woldn't approbe a respin. And so it was released in the sorry half done state that it is. I suspect that some digging around in that area of registers would find a differentuial ADC that didn't work very well hiding.
+
 ## Non-supported parts
 * [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great parts and work well with Arduino.
 * [ATtiny13/13A](https://github.com/MCUdude/MicroCore/) are supported by MicroCore by @MCUdude
 * ATtiny26 are not supported by any Arduino core. They are the obsolete predecessor to the '261, which itself is ancient). I will accept a PR to add support but will not use my own limited development time for such old and uninspiring parts.
 * ATtiny 4/5/10/11 and any other "AVRrc" (reduced core) parts. [Try this core](https://github.com/technoblogy/attiny10core)
 
-## Quick Gotcha list - having trouble, read these!
+## Quick Gotcha list - having trouble? READ THESE
 
 **Windows users must install Micronucleus drivers manually**
 If you want to use Micronucleus (VUSB) boards on Windows, you must manually install the drivers - Arduino does not run "post-install" tasks for third party libraries (though I am told they recognized how nonsensical this is - a malicious core could still run whatever commands it wanted to by telling the IDE that was how to compile sketches for these boards - and will be changing this in the future. Note also that the 1.5.0 release does not include working micronucleus upload tool for Windows, this is resolved in 1.5.2.
@@ -84,7 +120,7 @@ Virtual boot relies on rewriting the vector table, such that the RESET vector po
 See the [Programming Guide](Ref_Programming.md) for more information on programming parts using Optiboot.
 
 ### Micronucleus - VUSB bootloader for 841, 167, 85, 88 and 84/84a
-It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](UsingMicronucleus.md).
+It's finally here! As of 1.4.0, we now offer Micronucleus (aka Digispark) support for some of the more popular boards for these bootloaders. This allows sketches to be uploaded directly via USB, which many users find highly convenient. This comes at a cost in terms of flash - they typically use around 1.5k of flash, and they sometimes have problems connecting to specific USB ports. These boards are available from various vendors; see the part-specific documentation pages for more information on the implementation used on specific parts. For more information on using Micronucleus, see the [usage documentation](Ref_Micronucleus.md).
 
 ### Changing the ATtiny clock speed and other settings
 

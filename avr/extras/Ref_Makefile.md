@@ -7,62 +7,58 @@ project's folder.  You don't need to change anything in the Arduino
 sketches. What compiles with the Arduino IDE will also compile with
 the Sudar makefile suite.
 
-## Prerequisite:
+## Prerequisites
 
-If you have not already do so, **install the Arduino IDE** according
-to the instructions at the [Arduino.cc
-website](https://www.arduino.cc/en/Main/Software).
+1. If you have not already do so, **install the Arduino IDE** according to the instructions at the [Arduino.cc website](https://www.arduino.cc/en/Main/Software).
 
-If you have not already do so, **install SpenceKonde/ATTinyCore** according to the instructions in the [SpenceKonde/ATTinyCore](https://github.com/SpenceKonde/ATTinyCore)GitHub file *Installation.md*.
+2. If you have not already do so, **install SpenceKonde/ATTinyCore** according to the instructions in the [SpenceKonde/ATTinyCore](Ref_Installation.md)
 
-**Install the Sudar makefile suite** by following the installation instructions at the [sudar/Arduino-Makefile Github](https://github.com/sudar/Arduino-Makefile).
+3. **Install the Sudar makefile suite** by following the installation instructions at the [sudar/Arduino-Makefile Github](https://github.com/sudar/Arduino-Makefile).
 
-The most complex part of installation is creating your project Makefile. You need to know the installation pathnames of 'SpenceKonde/ATTinyCore' and 'sudar/Arduino-Makefile'. These locations can vary depending on your operating system and system configuration.
+4. The most complex part of installation is creating your project Makefile. You need to know the installation pathnames of 'SpenceKonde/ATTinyCore' and 'sudar/Arduino-Makefile'. These locations can vary depending on your operating system and system configuration.
 
-Examining the Makefile below as well as its console output, also below, will provide one example to help guide you.
+5. Examining the Makefile below as well as its console output, also below, will provide one example to help guide you.
 
-Assuming that your installation of ATTinyCore resides at `~/Arduino/hardware` then entering this grep command will provide a useful list of ATTinyCore options for your chosen processor (selected from the list below).
+6. Assuming that your installation of ATTinyCore resides at `~/Arduino/hardware` then entering this grep command will provide a useful list of ATTinyCore options for your chosen processor (selected from the list below).
 **NOTE:** this Linux command requires [Cygwin](https://www.cygwin.com/) on Microsoft Windows. `grep attinyx5 ~/Arduino/hardware/ATTinyCore/avr/boards.txt`
 
 ~At the time this was written~ As of 2/23/22, these are the ATtiny chips supported by ATTinyCore 2.0.0. It is not anticipated that any additional parts that would fall under the purview of ATTinyCore will be released.:
 
-* attinyx4
-* attinyx4opti
-* attinyx5
-* attinyx5opti
-* attinyx8
-* attinyx8opti
-* attinyx7
-* attinyx7opti
-* attinyx61
-* attinyx61opti
-* attinyx41
-* attiny841opti
-* attiny828
-* attiny828opti
-* attiny1634
-* attiny1634opti
-* attinyx313
-* attiny43u
-* attiny26
-* attiny85micr
-* attiny167micr
-* attiny88micr
-* attiny841micr
-* attiny87micr
-* attiny861micr
-* attiny1634micr
-* attiny84mi12
-* attiny84micr
+* No Bootloader
+  * attinyx4
+  * attinyx5
+  * attinyx8
+  * attinyx7
+  * attinyx61
+  * attinyx41
+  * attiny828
+  * attiny1634
+  * attinyx313      (Part does not meet criteria for bootloader inclusion)
+  * attiny43u       (Part does not meet criteria for bootloader inclusion)
+  * attiny26        (Part does not support self programming)
+* Serial Bootloader
+  * attinyx4opti    (Optiboot serial bootloader using software serial)
+  * attinyx5opti    (Optiboot serial bootloader using software serial)
+  * attinyx8opti    (Optiboot serial bootloader using software serial)
+  * attinyx7opti    (Optiboot serial bootloader)
+  * attinyx61opti   (Optiboot serial bootloader using software serial)
+  * attiny841opti   (Optiboot serial bootloader)
+  * attiny828opti   (Optiboot serial bootloader)
+  * attiny1634opti  (Optiboot serial bootloader)
+* VUSB Bootloader
+  * attiny85micr    (Micronucleus/VUSB bootloader, pll 16.5 MHz, Digispark)
+  * attiny167micr   (Micronucleus/VUSB bootloader, xtal 16 MHz, Digispark Pro)
+  * attiny88micr    (Micronucleus/VUSB bootloader, ext 16 MHz MH-ET design)
+  * attiny841micr   (Micronucleus/VUSB bootloader, int 12 MHz, oscillator belived good enough)
+  * attiny87micr    (Micronucleus/VUSB bootloader, xtal 16 MHz)
+  * attiny861micr   (Micronucleus/VUSB bootloader, pll 16.5 MHz)
+  * attiny1634micr  (Micronucleus/VUSB bootloader, int. 12 MHz; oscillator belived good enough.)
+  * attiny84mi12    (Micronucleus/VUSB bootloader, int. 12 MHz, but the oscillator may not be good enough for this.)
+  * attiny84micr    (Micronucleus/VUSB bootloader, int. 12.8 MHz.)
 
-Board names ending in micr (and mi12 - that's micronucleus with out-of-spec but more flash-efficient F_CPU of 12 MHz instead of 12.8 MHz). are for use with the Micronucleus (digispark) bootloader. Only parts with at least 8k of flash are supported for this bootloader.
-Board names ending in opti are for use with the Optiboot bootloader. Only parts with at least 4k of flash are supported. No parts are supported if there is not a version of the part differing only in flash size with at least 8k of flash.
+It is believed that this list will no longer change, except for potentially dropping optiboot (to a legacy designation) in favor urboot because urboot handles erase correctly under virtual boot so it won't brick boards. Optiboot does not.
 
-You can obtain a new copy of the list above by entering this command in a serial console:
-
-**awk -F. '/att/ {print $1}' ~/Arduino/hardware/ATTinyCore/avr/boards.txt|uniq**
-
-As noted above however, it is believed that this list is comprehensive.
+Note that the binaries produced for identical code, with otherwise identical settings, will not be the same when building for a board with a different bootloader. This is particularly true for Micronucleus boards (where the clock speed you start with is fixed, and you may want to reload the factory cal, or prescale the clock source), and
 
 An example of a working Makefile is shown below.
 <br>
@@ -151,7 +147,7 @@ include $(ARDMK_DIR)/Arduino.mk
 **Below, is the console output from this Makefile:**
 <br>
 
-```text
+```makefile
 $ make
 -------------------------
 Arduino.mk Configuration:
@@ -175,7 +171,7 @@ Arduino.mk Configuration:
 - [USER]               BOARD_SUB = 85
 - [USER]               BOARD_TAG = attinyx5
 - [COMPUTED]           CORE = tiny (from build.core)
-- [COMPUTED]           VARIANT = tinyX5 (from build.variant)
+- [COMPUTED]           VARIANT = tinyx5 (from build.variant)
 - [USER]               OBJDIR = /home/username/Arduino/ULPFlasher3/attinyx5/bin
 - [COMPUTED]           ARDUINO_CORE_PATH = /home/username/Arduino/hardware/ATTinyCore/avr/cores/tiny (from ALTERNATE_CORE_PATH, BOARD_TAG and boards.txt)
 - [USER]               MONITOR_BAUDRATE = 115200
@@ -191,7 +187,7 @@ Arduino.mk Configuration:
 - [COMPUTED]           CC_VERSION = 4.9.2 (avr-gcc)
 -------------------------
 mkdir -p /home/username/Arduino/ULPFlasher3/attinyx5/bin
-/home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-g++ -x c++ -include Arduino.h -MMD -c -mmcu=attiny85 -DF_CPU=8000000L -DARDUINO=1611 -DARDUINO_ARCH_AVR -D__PROG_TYPES_COMPAT__ -I/home/username/Arduino/hardware/ATTinyCore/avr/cores/tiny -I/home/username/Arduino/hardware/ATTinyCore/avr/variants/tinyX5    -Wall -ffunction-sections -fdata-sections -Os -pedantic -Wall -Wextra -fpermissive -fno-exceptions -std=gnu++11 ULPFlasher3.ino -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o
+/home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-g++ -x c++ -include Arduino.h -MMD -c -mmcu=attiny85 -DF_CPU=8000000L -DARDUINO=1611 -DARDUINO_ARCH_AVR -D__PROG_TYPES_COMPAT__ -I/home/username/Arduino/hardware/ATTinyCore/avr/cores/tiny -I/home/username/Arduino/hardware/ATTinyCore/avr/variants/tinyx5    -Wall -ffunction-sections -fdata-sections -Os -pedantic -Wall -Wextra -fpermissive -fno-exceptions -std=gnu++11 ULPFlasher3.ino -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-gcc -mmcu=attiny85 -Wl,--gc-sections -Os -flto -fuse-linker-plugin -o /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.ino.o /home/username/Arduino/ULPFlasher3/attinyx5/bin/libcore.a   -lc -lm
 /home/username/arduino-1.6.11/hardware/tools/avr/bin/avr-objcopy -j .eeprom --set-section-flags=.eeprom='alloc,load' \
     --no-change-warnings --change-section-lma .eeprom=0 -O ihex /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.elf /home/username/Arduino/ULPFlasher3/attinyx5/bin/ULPFlasher3.eep
@@ -210,9 +206,9 @@ Data:         13 bytes (2.5% Full)
 
 ## Important considerations
 **MANY FEATURES OF THIS CORE ARE DEFINED BY COMMAND LINE PARAMETERS**
-Basically, everything except pin mapping or the chip, that you select from a tools submenu, is passed via a command line parameter. These take the form of `-DMACRO_NAME=value`.
+Basically, everything except pin mapping or the chip, that you select from a tools submenu, either configures a fuse, or is passed as a commandline parameter. Sometimes both. These take the form of `-DMACRO_NAME=value`.
 
 You must check which of these are used by the settings you chose for your sketch. This can be found by examining boards.txt or by compiling with the Arduino IDE in verbose mode and pulling them out that way)
 
 ## Consider using the Arduino CLI instead
-Especially if you aren't impressed with the UX described above. It's not *that* much better on the CLI, but at least each menu setting never more than 2 short strings carried over into the FQBN, since it can parse the boards.txt while make cannot.
+Especially if you aren't impressed with the UX described above. It's not *that* much better on the CLI, but at least each menu setting is never more than 2 short strings carried over into the FQBN (for example, all boards have a "millis" menu. The important lines are `boardname.menu.millis.enabled.build.millis=` and `boardname.menu.millis.disabled.build.millis=-DDISABLEMILLIS` parts will have lines starting with `boardname.menu.bod.option.property`. If you wan , since it can parse the boards.txt while make cannot.
