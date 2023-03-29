@@ -49,10 +49,10 @@ the Sudar makefile suite.
   * attiny85micr    (Micronucleus/VUSB bootloader, pll 16.5 MHz, Digispark)
   * attiny167micr   (Micronucleus/VUSB bootloader, xtal 16 MHz, Digispark Pro)
   * attiny88micr    (Micronucleus/VUSB bootloader, ext 16 MHz MH-ET design)
-  * attiny841micr   (Micronucleus/VUSB bootloader, int 12 MHz, oscillator belived good enough)
+  * attiny841micr   (Micronucleus/VUSB bootloader, int 12 MHz, oscillator believed good enough)
   * attiny87micr    (Micronucleus/VUSB bootloader, xtal 16 MHz)
   * attiny861micr   (Micronucleus/VUSB bootloader, pll 16.5 MHz)
-  * attiny1634micr  (Micronucleus/VUSB bootloader, int. 12 MHz; oscillator belived good enough.)
+  * attiny1634micr  (Micronucleus/VUSB bootloader, int. 12 MHz; oscillator believed good enough.)
   * attiny84mi12    (Micronucleus/VUSB bootloader, int. 12 MHz, but the oscillator may not be good enough for this.)
   * attiny84micr    (Micronucleus/VUSB bootloader, int. 12.8 MHz.)
 

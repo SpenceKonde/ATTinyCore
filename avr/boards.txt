@@ -5437,11 +5437,11 @@ attiny85micr.upload.maximum_data_size=512
 # Clocking menu options        #
 ################################
 attiny85micr.build.extra_flags=-DBOOT_TUNED165
-attiny85micr.menu.clock.pll_165m=16.5 MHz (internal tuned PLL)
-attiny85micr.menu.clock.pll_165m.bootloader.low_fuses=0xF1
-attiny85micr.menu.clock.pll_165m.build.f_cpu=16500000UL
-attiny85micr.menu.clock.pll_165m.build.speed=16m5
-attiny85micr.menu.clock.pll_165m.build.clocksource=6
+attiny85micr.menu.clock.pll_16m5=16.5 MHz (internal tuned PLL)
+attiny85micr.menu.clock.pll_16m5.bootloader.low_fuses=0xF1
+attiny85micr.menu.clock.pll_16m5.build.f_cpu=16500000UL
+attiny85micr.menu.clock.pll_16m5.build.speed=16m5
+attiny85micr.menu.clock.pll_16m5.build.clocksource=6
 attiny85micr.menu.clock.pll_16m=16 MHz (internal PLL)
 attiny85micr.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attiny85micr.menu.clock.pll_16m.build.f_cpu=16000000UL
@@ -5554,7 +5554,7 @@ attiny85micr.menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.
 
 attiny88micr.build.board=AVR_ATTINY88
 attiny88micr.build.core=tiny
-attiny88micr.build.variant=tinyx8_MH
+attiny88micr.build.variant=tinyx8_mh
 attiny88micr.build.export_merged_output=false
 attiny88micr.bootloader.extended_fuses=0xFE
 attiny88micr.bootloader.high_fuses=0b{bootloader.rstbit}1011{bootloader.bod_bits}
@@ -6055,11 +6055,11 @@ attiny861micr.upload.maximum_data_size=512
 # Clocking menu options        #
 ################################
 attiny861micr.build.extra_flags=-DBOOT_TUNED165
-attiny861micr.menu.clock.pll_165m=16.5 MHz (internal tuned PLL)
-attiny861micr.menu.clock.pll_165m.bootloader.low_fuses=0xF1
-attiny861micr.menu.clock.pll_165m.build.f_cpu=16500000UL
-attiny861micr.menu.clock.pll_165m.build.speed=16m5
-attiny861micr.menu.clock.pll_165m.build.clocksource=6
+attiny861micr.menu.clock.pll_16m5=16.5 MHz (internal tuned PLL)
+attiny861micr.menu.clock.pll_16m5.bootloader.low_fuses=0xF1
+attiny861micr.menu.clock.pll_16m5.build.f_cpu=16500000UL
+attiny861micr.menu.clock.pll_16m5.build.speed=16m5
+attiny861micr.menu.clock.pll_16m5.build.clocksource=6
 attiny861micr.menu.clock.pll_16m=16 MHz (internal PLL)
 attiny861micr.menu.clock.pll_16m.bootloader.low_fuses=0xF1
 attiny861micr.menu.clock.pll_16m.build.f_cpu=16000000UL

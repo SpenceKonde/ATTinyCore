@@ -45,7 +45,7 @@ PWM pins where second number is shown in (parenthesis), the first number is the 
 
 Clock source switching is NEVER supported by ATTinyCore. The x7-series is impacted by scary errata with a very specific workaround.
 
-The "Gimmick" section lists the most prominant unique features of this part. These are what set it apart from other devives and may force you to go with that part even though you'd rather a different one. If you need to maximize battery life from a single alkaline battery cell, the tiny43 is your only choice without designing a very low quiescent current boost converter yourself.
+The "Gimmick" section lists the most prominent unique features of this part. These are what set it apart from other devives and may force you to go with that part even though you'd rather a different one. If you need to maximize battery life from a single alkaline battery cell, the tiny43 is your only choice without designing a very low quiescent current boost converter yourself.
 
 The 828 deserves a bit of explanation - it was one of the last parts that was released as classic AVR, andf I think they set a hard deadline. The part was going to have a super snazzy differential ADC like the 841. But the silicon came back, and in addition to the bugs listed in the errata (one of which is quite nasty) the differentil functionality of the ADC was hosed. Management woldn't approbe a respin. And so it was released in the sorry half done state that it is. I suspect that some digging around in that area of registers would find a differentuial ADC that didn't work very well hiding.
 

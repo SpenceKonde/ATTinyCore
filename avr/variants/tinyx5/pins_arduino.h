@@ -211,7 +211,6 @@ static const uint8_t  A3 =  ADC_CH(3);
   #define USI_START_COND_INT  USISIF
 #endif
 
-#define LED_BUILTIN  ( 1)
 #ifdef ARDUINO_MAIN
 
 /*---------------------------------------------------------------------------

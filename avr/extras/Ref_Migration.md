@@ -8,7 +8,7 @@ This document describes the considerations for users of the Arduino IDE when mig
   * If you must convert an analog channel number to a pin number programmatically, pass it through the ADC_CH() macro
 * There is no support for SerialEvent - nor was there ever.
 * There are new default pin mappings for the 1634 (because when that one was designed I was inexperienced and foolish, and it's terrible) and for the 167 (both the legacty and digispark mappings for the 167 are inspired works of evil)
-  * If you use the PIN_Pxn notation your code will have the same behavior, though maybe not the same timing, regardless of the pinmap used. The difference in the timing is because the legacy and other non-default mappins usuallly are unable to do certain tricks we use to improve performanmce and reduce resource usage
+  * If you use the PIN_Pxn notation your code will have the same behavior, though maybe not the same timing, regardless of the pinmap used. The difference in the timing is because the legacy and other non-default mappins usually are unable to do certain tricks we use to improve performanmce and reduce resource usage
 
 ### To ATTinyCore from other cores
 Migration to ATTinyCore from other ATtiny hardware packages is typically straightforward - no code modification is typically required except to ensure that analog pin numbers are given correctly, though it may required to reap most of the benefits.

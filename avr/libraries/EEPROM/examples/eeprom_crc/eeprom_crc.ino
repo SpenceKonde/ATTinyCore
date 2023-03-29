@@ -42,8 +42,8 @@ unsigned long eeprom_crc(void) {
   };
 
   unsigned long crc = ~0L;
-
-  for (int index = 0 ; index < EEPROM.length()  ; ++index) {
+  //SK 3/29/23: EEPROM.length is unsigned, we receive a warning when we compare signed and unsigned values.
+  for (uint16_t index = 0 ; index < EEPROM.length()  ; ++index) {
     crc = crc_table[(crc ^ EEPROM[index]) & 0x0f] ^ (crc >> 4);
     crc = crc_table[(crc ^ (EEPROM[index] >> 4)) & 0x0f] ^ (crc >> 4);
     crc = ~crc;
