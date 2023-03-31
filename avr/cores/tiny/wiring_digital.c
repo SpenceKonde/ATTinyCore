@@ -75,7 +75,7 @@ void turnOffPWM(uint8_t timer) {
         // TCCR0A &= ~(1 << COM0B0); /* We do not clean up after user code that may have shit on a timer. */
       } else
     #endif
-    #ifdef __AVR_ATtinyX7__
+    #if defined(__AVR_ATtinyX7__)
       if (timer & 0xF1) {               // It's one of the flex pins on timer1
       // Timer1 on x7                   // Likely implementation:
       uint8_t bitmask = timer & 0xF0;   // mov, andi

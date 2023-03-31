@@ -17,8 +17,8 @@
  *
  *---------------------------------------------------------------------------*/
 
-#define ATTINYX7 1       // backwards compatibility
-#define __AVR_ATtinyX7__ // recommended
+#define ATTINYX5 1       // backwards compatibility
+#define __AVR_ATtinyX5__ // recommended
 
 #define NUM_DIGITAL_PINS            (6)
 #define NUM_ANALOG_INPUTS           (4)
