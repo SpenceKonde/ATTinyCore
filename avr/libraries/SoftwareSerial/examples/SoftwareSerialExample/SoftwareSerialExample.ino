@@ -14,15 +14,16 @@
 
   (however, this is ATTinyCore - we provide a software serial named Serial that
   does not have that restriction (though it still has all the others, see the
-  library readme)). You should use that fake hardware serial instead of these
-  software ones when you can.
+  part-specific documentation for the part you are using for more details).
+  You should use that fake hardware serial instead of these software ones
+  when you can.
 
   Created back in prehistoric times.
   Modified in March 31 2023 to add the little blob of #if's at the top tp
   make sure it can find a pin that exists on this part, so that we can use
   this for CI testing. I also removed the "while !(Serial)" line, and added
-  appropriate warnings reminding people of the caveats of any software serial
-  implementation. This was done by Spence Konde for ATTinyCore 2.0.0.
+  basically all the comments, reminding people of the limits of software serial.
+  This was done by Spence Konde for ATTinyCore 2.0.0.
   The previous time someone has admitted to modifying it was 25 May 2012,
   and the modifying person was none other than Tom Igoe,
   who notes that it was "based on Mikal Hart's example"
@@ -50,7 +51,7 @@
 void setup() {
   // Open serial communications on either the "fake" hardware serial port
   // which is actually another implementation of software serial (if there
-  // is no harware serial. Otherwise it will use the hardware serial)
+  // is no harware serial) or the actual hardware serial port (if any)
   Serial.begin(9600);
 
   Serial.println("Goodnight moon!");
