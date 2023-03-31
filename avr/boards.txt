@@ -3559,7 +3559,7 @@ attinyx8opti.menu.clock.extclk_3686k.upload.speed=14400
 ################################
 attinyx8opti.menu.pinmap.default=Standard
 attinyx8opti.menu.pinmap.mhet=MH-ET Tiny
-attinyx8opti.menu.pinmap.,mhet.build.variant=tinyx8_MH
+attinyx8opti.menu.pinmap.,mhet.build.variant=tinyx8_mh
 attinyx8opti.menu.pinmap.default.build.pinmapabr=
 attinyx8opti.menu.pinmap.mhet.build.pinmapabr=.mhet
 
@@ -5620,7 +5620,7 @@ attiny88micr.menu.clock.extclk_1m.build.clocksource=0x12
 ################################
 attiny88micr.menu.pinmap.mhet=MH-Tiny
 attiny88micr.menu.pinmap.default=Standard
-attiny88micr.menu.pinmap.mhet.build.variant=tinyx8_MH
+attiny88micr.menu.pinmap.mhet.build.variant=tinyx8_mh
 attiny88micr.menu.pinmap.default.build.pinmapabr=
 attiny88micr.menu.pinmap.mhet.build.pinmapabr=.mhet
 
