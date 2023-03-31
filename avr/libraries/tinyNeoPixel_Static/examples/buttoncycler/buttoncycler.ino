@@ -3,6 +3,9 @@
 // press the button it will change to a new pixel animation.  Note that you need to press the
 // button once to start the first animation!
 
+// Edit 3/31/23: pixel pin must exist on all parts.
+// Ensure that there are no -Wsigned_compare issues.
+
 #if (F_CPU>7370000) //neopixel library required 7.37MHz minimum clock speed; this line is used to skip this sketch in internal testing. It is not needed in your sketches.
 
 #include <tinyNeoPixel_Static.h>
@@ -12,7 +15,7 @@
                           // pull the pin to ground momentarily.  On a high -> low
                           // transition the button press logic will execute.
 
-#define PIXEL_PIN    6    // Digital IO pin connected to the NeoPixels.
+#define PIXEL_PIN    3    // Digital IO pin connected to the NeoPixels.
 
 #define PIXEL_COUNT 16
 
@@ -124,16 +127,16 @@ void rainbowCycle(uint8_t wait) {
 
 //Theatre-style crawling lights.
 void theaterChase(uint32_t c, uint8_t wait) {
-  for (int j = 0; j < 10; j++) {  //do 10 cycles of chasing
-    for (int q = 0; q < 3; q++) {
-      for (int i = 0; i < strip.numPixels(); i = i + 3) {
+  for (uint8_t j = 0; j < 10; j++) {  //do 10 cycles of chasing
+    for (uint8_t q = 0; q < 3; q++) {
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
         strip.setPixelColor(i + q, c);    //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (int i = 0; i < strip.numPixels(); i = i + 3) {
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
         strip.setPixelColor(i + q, 0);        //turn every third pixel off
       }
     }
@@ -142,16 +145,16 @@ void theaterChase(uint32_t c, uint8_t wait) {
 
 //Theatre-style crawling lights with rainbow effect
 void theaterChaseRainbow(uint8_t wait) {
-  for (int j = 0; j < 256; j++) {     // cycle all 256 colors in the wheel
-    for (int q = 0; q < 3; q++) {
-      for (int i = 0; i < strip.numPixels(); i = i + 3) {
+  for (uint16_t j = 0; j < 256; j++) {     // cycle all 256 colors in the wheel
+    for (uint8_t q = 0; q < 3; q++) {
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
         strip.setPixelColor(i + q, Wheel((i + j) % 255));    //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (int i = 0; i < strip.numPixels(); i = i + 3) {
+      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
         strip.setPixelColor(i + q, 0);        //turn every third pixel off
       }
     }

@@ -339,7 +339,7 @@ jobs:
             hasinternal: 1
             crystal: 1
             crystalspeed: "9216k"
-          - name: attinyx313:chip=2313a,
+          - name: attinyx313:chip=2313,
             available-flash-kB: 2
             soft-serial: ""
             pll: 0
