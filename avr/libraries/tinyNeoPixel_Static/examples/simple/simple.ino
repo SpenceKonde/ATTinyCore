@@ -42,18 +42,18 @@ void loop() {
   for (int i = 0; i < NUMPIXELS; i++) {
 
     // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-    leds.setPixelColor(i, leds.Color(0,150,0)); // Moderately bright green color.
+    leds.setPixelColor(i, leds.Color(0, 150, 0)); // Moderately bright green color.
 
     leds.show(); // This sends the updated pixel color to the hardware.
 
     delay(delayval); // Delay for a period of time (in milliseconds).
   }
   //with tinyNeoPixel_Static, since we have the pixel array, we can also directly manipulate it - this sacrifices the correction for the pixel order, and the clarity of setColor to save a tiny amount of flash and time.
-  for (int i = 0; i < (NUMPIXELS*3); i++) {
-    pixels[i]=150; //set byte i of array (this is channel (i%3) of led (i/3) (respectively, i%4 and i/4 for RGBW leds)
+  for (int i = 0; i < (NUMPIXELS * 3); i++) {
+    pixels[i] = 150; //set byte i of array (this is channel (i%3) of led (i/3) (respectively, i%4 and i/4 for RGBW leds)
     leds.show(); //show
     delay(delayval); //delay for a period of time
-    pixels[i]=0; //turn off the above pixel
+    pixels[i] = 0; //turn off the above pixel
     //result is that each pixel will cycle through each of the primary colors (green, red, blue for most LEDs) in turn, and only one LED will be on at a time.
   }
 }

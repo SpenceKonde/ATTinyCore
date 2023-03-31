@@ -235,30 +235,25 @@ const uint8_t PROGMEM port_to_input_PGM[] = {
   (uint8_t)(uint16_t) &PINB,
 };
 
-const uint8_t PROGMEM digital_pin_to_port_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB, /* 0 */
   PB,
   PB,
   PB,
   PB,
   PB, /* 5 */
-
 };
 
-const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(0), /* 0, port B */
   _BV(1),
   _BV(2),
   _BV(3), /* 3 port B */
   _BV(4),
   _BV(5),
-
 };
 
-const uint8_t PROGMEM digital_pin_to_timer_PGM[] =
-{
+const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   TIMER0A, /* OC0A */
   #ifdef TIMER1_PWM
   TIMER1A, /* OC1A */

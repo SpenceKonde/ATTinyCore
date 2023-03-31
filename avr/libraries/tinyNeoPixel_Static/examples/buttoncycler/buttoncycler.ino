@@ -11,9 +11,9 @@
 #include <tinyNeoPixel_Static.h>
 
 #define BUTTON_PIN   2    // Digital IO pin connected to the button.  This will be
-                          // driven with a pull-up resistor so the switch should
-                          // pull the pin to ground momentarily.  On a high -> low
-                          // transition the button press logic will execute.
+//                           driven with a pull-up resistor so the switch should
+//                           pull the pin to ground momentarily.  On a high -> low
+//                           transition the button press logic will execute.
 
 #define PIXEL_PIN    3    // Digital IO pin connected to the NeoPixels.
 
@@ -56,8 +56,9 @@ void loop() {
     newState = digitalRead(BUTTON_PIN);
     if (newState == LOW) {
       showType++;
-      if (showType > 9)
+      if (showType > 9) {
         showType = 0;
+      }
       startShow(showType);
     }
   }
@@ -67,27 +68,27 @@ void loop() {
 }
 
 void startShow(int i) {
-  switch(i) {
+  switch (i) {
     case 0: colorWipe(strip.Color(0, 0, 0), 50);    // Black/off
-            break;
+      break;
     case 1: colorWipe(strip.Color(255, 0, 0), 50);  // Red
-            break;
+      break;
     case 2: colorWipe(strip.Color(0, 255, 0), 50);  // Green
-            break;
+      break;
     case 3: colorWipe(strip.Color(0, 0, 255), 50);  // Blue
-            break;
+      break;
     case 4: theaterChase(strip.Color(127, 127, 127), 50); // White
-            break;
-    case 5: theaterChase(strip.Color(127,   0,   0), 50); // Red
-            break;
-    case 6: theaterChase(strip.Color(  0,   0, 127), 50); // Blue
-            break;
+      break;
+    case 5: theaterChase(strip.Color(127, 0, 0), 50); // Red
+      break;
+    case 6: theaterChase(strip.Color(0, 0, 127), 50); // Blue
+      break;
     case 7: rainbow(20);
-            break;
+      break;
     case 8: rainbowCycle(20);
-            break;
+      break;
     case 9: theaterChaseRainbow(50);
-            break;
+      break;
   }
 }
 
@@ -116,8 +117,8 @@ void rainbow(uint8_t wait) {
 void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
 
-  for (j = 0; j < 256*5; j++) { // 5 cycles of all colors on wheel
-    for (i = 0; i< strip.numPixels(); i++) {
+  for (j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
+    for (i = 0; i < strip.numPixels(); i++) {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     strip.show();
@@ -133,9 +134,7 @@ void theaterChase(uint32_t c, uint8_t wait) {
         strip.setPixelColor(i + q, c);    //turn every third pixel on
       }
       strip.show();
-
       delay(wait);
-
       for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
         strip.setPixelColor(i + q, 0);        //turn every third pixel off
       }
