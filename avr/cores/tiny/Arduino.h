@@ -129,7 +129,7 @@ static inline void delayMicroseconds(uint16_t us)
     delay4us:
         // delay 4us per loop, less 4 cycles for overhead
         _delay_us(4.0 - (4.0 / fMHz));
-        asm volatile ("sbiw %[us], 4" : [us]"+d"(us));
+        asm volatile ("sbiw %[us], 4" : [us]"+w"(us));
     asm goto( "brpl %l[delay4us]" :::: delay4us);
 }
 

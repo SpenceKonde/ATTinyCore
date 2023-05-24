@@ -17,8 +17,8 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 | Part Family     |   x4-series |  x41-series |   x5-series | ATtiny26 |    x61-series |  x7-series | x8-series | x313-series | ATtiny1634 | ATtiny828 | ATtiny43 |
 |-----------------|-------------|-------------|-------------|----------|---------------|------------|-----------|-------------|------------|-----------|----------|
 | Flash Size      |    2k/4k/8k |       4k/8k |    2k/4k/8k |     2048 |      2k/4k/8k |     8k/16k |     4k/8k |       2k/4k |      16384 |      8192 |     4096 |
-| EEPROM Size     | 128/256/512 |     256/512 | 128/256/512 |      128 |   128/256/512 |        512 |           |             |        256 |       512 |       64 |
-| RAM size        | 128/256/512 |     256/512 | 128/256/512 |      128 |   128/256/512 |        512 |           |             |       1024 |       512 |      256 |
+| EEPROM Size     | 128/256/512 |     256/512 | 128/256/512 |      128 |   128/256/512 |        512 |   256/512 |     128/256 |        256 |       512 |       64 |
+| RAM size        | 128/256/512 |     256/512 | 128/256/512 |      128 |   128/256/512 |        512 |   256/512 |     128/256 |       1024 |       512 |      256 |
 | Internal 16 MHz |          No |  via tuning |    Yes, PLL | Yes, PLL |      Yes, PLL |         No |        No |          No |         No |        No |       No |
 | Ext. Crystal    |         Yes |         Yes |         Yes |      Yes |           Yes |        Yes |        No |         Yes |        Yes |        No |       No |
 | Clock Switching |          No |         Yes |          No |       No |            No | yes, buggy |        No |          No |        Yes |       Yes |       No |
@@ -39,7 +39,7 @@ Variants of these are also supported (such as the ATtiny1634R, ATtiny2313A or AT
 
 I/O pins *includes* reset in the count; reset can only be used as GPIO if you disable reset (in which case you need to have an HV programmer to reprogram the part).
 
-HV programming is required if you disable eiher reset or ISP progrmming. HVSP is relatively easy and there are many plans for "fuse doctors" online that will fix the fuses. HVPP is much more complicated, requiring a minimum of 18 wires connecteed to the target (forget about in system reprorgramming). As HVPP programmers are not readily available to hobby programmers, it would cause more problems than it solved to allow the tools menu to disable reset there, so we dont.t
+HV programming is required if you disable eiher reset or ISP progrmming. HVSP is relatively easy and there are many plans for "fuse doctors" online that will fix the fuses. HVPP (parallel) is much more complicated, requiring a minimum of 18 wires connecteed to the target (forget about in system reprogramming). As HVPP programmers are not readily available to hobby programmers, it would cause more problems than it solved to allow the tools menu to disable reset there, so we don't. That is not the case for HVSP parts (the 85, 84, and 841 and their smaller versions)
 
 PWM pins where second number is shown in (parenthesis), the first number is the number of simultaneous, independent duty cycles that can be generated, and the one in parenethesis is the number of pins on which those can be output. See the part specific documentation for details, as the implementation and core integration (if any) varies.
 
@@ -47,7 +47,7 @@ Clock source switching is NEVER supported by ATTinyCore. The x7-series is impact
 
 The "Gimmick" section lists the most prominent unique features of this part. These are what set it apart from other devives and may force you to go with that part even though you'd rather a different one. If you need to maximize battery life from a single alkaline battery cell, the tiny43 is your only choice without designing a very low quiescent current boost converter yourself.
 
-The 828 deserves a bit of explanation - it was one of the last parts that was released as classic AVR, andf I think they set a hard deadline. The part was going to have a super snazzy differential ADC like the 841. But the silicon came back, and in addition to the bugs listed in the errata (one of which is quite nasty) the differentil functionality of the ADC was hosed. Management woldn't approbe a respin. And so it was released in the sorry half done state that it is. I suspect that some digging around in that area of registers would find a differentuial ADC that didn't work very well hiding.
+The 828 deserves a bit of explanation - it was one of the last parts that was released as classic AVR, and I think they set a hard deadline. The part was going to have a super snazzy differential ADC like the 841. But the silicon came back, and in addition to the bugs listed in the errata (one of which is quite nasty) the differential functionality of the ADC was hosed. Management woldn't approve a respin. And so it was released in the sorry half done state that it is. I suspect that some digging around in that area of registers would find a differential ADC that didn't work very well hiding.
 
 ## Non-supported parts
 * [tinyAVR 0/1/2-series](https://github.com/SpenceKonde/megaTinyCore/) Modern tinyAVR (with 0, 1, or 2 as next-to-last digit) are supported by my megaTinyCore instead. They are totally different in every way except the "t-word" in the name, and the fact that they're great parts and work well with Arduino.
