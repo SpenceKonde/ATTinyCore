@@ -256,7 +256,7 @@ uint8_t SPIClass::interruptSave = 0;
 void SPIClass::begin(void) {
     USICR &= ~(_BV(USISIE) | _BV(USIOIE) | _BV(USIWM1));
     USICR |= _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
-    USI_CLOCK_DDR |= USI_USCK_BIT;   //set the USCK pin as output
+    USI_CLOCK_DDR |= USI_CLOCK_BIT;   //set the USCK pin as output
     USI_DDR |=  USI_DO_BIT;     //set the DO pin as output
     USI_DDR &= ~USI_DI_BIT;    //set the DI pin as input
     applySettings(SPISettings());
@@ -269,9 +269,9 @@ void SPIClass::setDataMode(uint8_t spiDataMode) {
     USICR &= ~_BV(USICS0);
   }
   if (spiDataMode == SPI_MODE2 || spiDataMode == SPI_MODE3) {
-    USI_CLOCK_PORT |= USI_USCK_BIT;
+    USI_CLOCK_PORT |= USI_CLOCK_BIT;
   } else {
-    USI_CLOCK_PORT &= ~USI_USCK_BIT;
+    USI_CLOCK_PORT &= ~USI_CLOCK_BIT;
   }
 }
 
@@ -297,7 +297,7 @@ static byte reverse (byte x) {
   "ror %[out] \n\t"
   "lsl __tmp_reg__  \n\t"   /* 8 */
   "ror %[out] \n\t"
-  : [out] "+r" (x)
+  : [out] "+r" (x));
   return(result);
 }
 
@@ -438,9 +438,9 @@ void SPIClass::applySettings(SPISettings settings) {
   delay = settings.delay;
   clockoutfn = settings.clockoutfn;
   if (settings.cpol) {
-    USI_CLOCK_PORT |= USI_USCK_BIT;
+    USI_CLOCK_PORT |= USI_CLOCK_BIT;
   } else {
-    USI_CLOCK_PORT &= ~USI_USCK_BIT;
+    USI_CLOCK_PORT &= ~USI_CLOCK_BIT;
   }
 }
 
