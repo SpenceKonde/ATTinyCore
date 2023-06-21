@@ -662,17 +662,19 @@ void loop() {
 
  * so it's unfortunate that they did named it so inconsistently.   */
 #ifndef SIGRD
-  #ifndef RSIG
+  #ifndef RSIG // Nieither defined, so we define for both.
     #define SIGRD 5
     #define RSIG 5
   #else
-    #define SIGRD RSIG
+    #define SIGRD RSIG //RSIG defined but SIGRD not -> alias SIGRD to RSIG
   #endif
 #else
   #ifndef RSIG
-    #define RSIG SIGRD
+    #define RSIG SIGRD // other way around.
   #endif
 #endif
+
+// Thcase where both SIGRD and RSIG is definded is unlikely to exist in the wild.
 
 /*---------------------------------------------------------------------------
  * Aliases for the interrupt service routine vector numbers so the code

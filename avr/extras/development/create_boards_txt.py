@@ -716,7 +716,7 @@ boards = {
        ".menu.clock.internal_2m.build.f_cpu=2000000UL", ".menu.clock.internal_2m.build.speed=2m",
        ".menu.clock.internal_2m.build.clocksource=0x10",".menu.clock.internal_2m.bootloader.f_cpu=1000000UL"], getspeed(".menu.clock.internal_2m.upload.speed=","2")],
       [[".menu.clock.internal_500k=0.5 MHz (internal)", ".menu.clock.internal_500k.bootloader.low_fuses=0x62",
-       ".menu.clock.internal_500k.build.f_cpu=2000000UL", ".menu.clock.internal_500k.build.speed=500k",
+       ".menu.clock.internal_500k.build.f_cpu=500000UL", ".menu.clock.internal_500k.build.speed=500k",
        ".menu.clock.internal_500k.build.clocksource=0x10",".menu.clock.internal_500k.bootloader.f_cpu=500000UL"], getspeed(".menu.clock.internal_2m.upload.speed=","2")]],
     "hasxtal":True,
     "lfuse_ext":"0xE0",
