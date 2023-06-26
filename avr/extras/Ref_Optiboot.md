@@ -92,3 +92,5 @@ I like programming embedded systems. I do not like setting up build environments
 6. If create_boards_txt was modified, be sure to run it and copy the new Makefile.tiny and makeall.tiny.bat from (repository root)/avr/extras/development (copying boards.txt to (repository root)/avr is required as well - this is to permit manual inspection.)
 
 If it wasn't clear from the above, I am unlikely to be able to answer questions about building on other platforms, or setting up a build environment that differs in any way. That is pretty much the extent of my knowledge of setting up the build environment.
+
+See also [Optiboot Readme](../bootloaders/optiboot/source/README.md)
