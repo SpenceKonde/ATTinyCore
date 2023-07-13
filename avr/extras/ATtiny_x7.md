@@ -115,6 +115,11 @@ On the Digispark pinout, the analog numbers they used were the same as the digit
 | ADC8 (PB5) |  ADC9 (PB6) |   0x1C  |  0x1D  |  `DIFF_A8_A9_8X` |  `DIFF_A8_A9_20X` |   `DIFF_A8_A3_8X` |   `DIFF_A8_A3_20X` |
 | ADC9 (PB6) | ADC10 (PB7) |   0x1E  |  0x1F  | `DIFF_A9_A10_8X` | `DIFF_A9_A10_20X` |  `DIFF_A3_A15_8X` |  `DIFF_A3_A15_20X` |
 
+#### Bipolar Input Mode (BIN)
+Normally the x7 operates in unipolar mode, that is from Neg = Pos = (reading 0), to (pos-neg) < VREF). But maybe you want a bipolar measuremebt (-512 to 511) so you don't need to know which value is higher, this has become the norm, and the BIN option was dropped See the part specific docs. BIN set and cleared normally
+uint8_t ctrlb = ADC0.CTRLB
+ctrlb = AD
+
 ### Temperature Measurement
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 

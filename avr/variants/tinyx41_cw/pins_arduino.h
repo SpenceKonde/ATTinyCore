@@ -91,7 +91,7 @@ static const uint8_t A11 =  ADC_CH(11);
 #define digitalPinToPCMSK(p)        (((p) < 8) ? (&PCMSK0) : (((p) < 12) ? (&PCMSK1) : ((uint8_t *)NULL)))
 #define digitalPinToPCMSKbit(p)     (((p) < 8) ? (p) : ((p == 8 ? 2 : (p==11 ? 3 : (p == 9 ? 1 : 0)))))
 
-#define digitalPinToInterrupt(p)    ((p) == PIN_PB2 ? 0 : NOT_AN_INTERRUPT)
+#define digitalPinToInterrupt(p)    ((p) == PIN_PB1 ? 0 : NOT_AN_INTERRUPT)
 
 /* Analog Channel <-> Digital Pin macros */
 #define analogInputToDigitalPin(p)  ((p) < 9 ? (p) : (p) == 9 ? (11) : ((p) + 1))
