@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import re
 
 clocktobaud = {
@@ -309,8 +310,8 @@ resetpinmenu = [
   "gpio=I/O pin - DANGER: If anything goes wrong, only HV programming can unbrick!","gpio.bootloader.rstbit=0"]
 
 bootmodesopti = [
-  ".menu.bootentry.1s=Standard (1s wait, for use w/autoreset)",".menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex",
-  ".menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)",".menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex"]
+  ".menu.bootentry.1s=Standard (1s wait, for use w/autoreset)",".menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex",
+  ".menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)",".menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex"]
 
 bootmodesmicr = [
   ".menu.bootentry.extrf_porf=External Reset and Power On Reset",".menu.bootentry.extrf_porf.bootloader.entrymode=extrf_porf",
