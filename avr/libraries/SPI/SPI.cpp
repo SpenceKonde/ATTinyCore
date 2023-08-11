@@ -280,25 +280,29 @@ USI_impl::ClockOut USI_impl::dispatchClockout_slow(uint8_t div, uint8_t* delay) 
 }
 
 static byte reverse (byte x) {
- asm("mov __tmp_reg__, %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* shift out high bit to carry */
-  "ror %[out] \n\t"  /* rotate carry __tmp_reg__to low bit (eventually) */
-  "lsl __tmp_reg__  \n\t"   /* 2 */
-  "ror %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* 3 */
-  "ror %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* 4 */
-  "ror %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* 5 */
-  "ror %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* 6 */
-  "ror %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* 7 */
-  "ror %[out] \n\t"
-  "lsl __tmp_reg__  \n\t"   /* 8 */
-  "ror %[out] \n\t"
-  : [out] "+r" (x));
-  return(result);
+ asm(
+  "mov __tmp_reg__, %[out]  \n\t"  /* Real SPI can send byte in reverse in hardware. But we're this USI thing, and we have to do it in software */
+  "lsl __tmp_reg__          \n\t"  /* We copy the byte to the __tmp_reg__ */
+  "ror %[out]               \n\t"  /* then repeatedly lsl from there and ror into result*/
+  "lsl __tmp_reg__          \n\t"   /* 8 times. 17 words 17 clocks.  */
+  "ror %[out]               \n\t"
+  "lsl __tmp_reg__          \n\t"   /* 3 */
+  "ror %[out]               \n\t"
+  "lsl __tmp_reg__          \n\t"   /* 4 */
+  "ror %[out]               \n\t"
+  "lsl __tmp_reg__          \n\t"   /* 5 */
+  "ror %[out]               \n\t"
+  "lsl __tmp_reg__          \n\t"   /* 6 */
+  "ror %[out]               \n\t"
+  "lsl __tmp_reg__          \n\t"   /* 7 */
+  "ror %[out]               \n\t"
+  "lsl __tmp_reg__          \n\t"   /* 8 */
+  "ror %[out]               \n\t"
+  : [out] "+r" (x)
+  :
+  :
+  );
+  return (x);
 }
 
 uint8_t USI_impl::clockoutUSI2(uint8_t data, uint8_t) {
