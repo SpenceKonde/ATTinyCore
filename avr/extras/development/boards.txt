@@ -2497,7 +2497,7 @@ attinyx313.menu.clock.internal_2m.build.clocksource=0x10
 attinyx313.menu.clock.internal_2m.bootloader.f_cpu=1000000UL
 attinyx313.menu.clock.internal_500k=0.5 MHz (internal)
 attinyx313.menu.clock.internal_500k.bootloader.low_fuses=0x62
-attinyx313.menu.clock.internal_500k.build.f_cpu=2000000UL
+attinyx313.menu.clock.internal_500k.build.f_cpu=500000UL
 attinyx313.menu.clock.internal_500k.build.speed=500k
 attinyx313.menu.clock.internal_500k.build.clocksource=0x10
 attinyx313.menu.clock.internal_500k.bootloader.f_cpu=500000UL
@@ -3086,9 +3086,9 @@ attinyx4opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attinyx4opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attinyx4opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attinyx4opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attinyx4opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attinyx4opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attinyx4opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 
 #*******************************************************************************
@@ -3377,9 +3377,9 @@ attinyx5opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attinyx5opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attinyx5opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attinyx5opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attinyx5opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attinyx5opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attinyx5opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 
 #*******************************************************************************
@@ -3559,7 +3559,7 @@ attinyx8opti.menu.clock.extclk_3686k.upload.speed=14400
 ################################
 attinyx8opti.menu.pinmap.default=Standard
 attinyx8opti.menu.pinmap.mhet=MH-ET Tiny
-attinyx8opti.menu.pinmap.,mhet.build.variant=tinyx8_MH
+attinyx8opti.menu.pinmap.,mhet.build.variant=tinyx8_mh
 attinyx8opti.menu.pinmap.default.build.pinmapabr=
 attinyx8opti.menu.pinmap.mhet.build.pinmapabr=.mhet
 
@@ -3597,9 +3597,9 @@ attinyx8opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attinyx8opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attinyx8opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attinyx8opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attinyx8opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attinyx8opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attinyx8opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 
 #*******************************************************************************
@@ -3877,9 +3877,9 @@ attinyx7opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attinyx7opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attinyx7opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attinyx7opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attinyx7opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attinyx7opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attinyx7opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 
 #*******************************************************************************
@@ -4191,9 +4191,9 @@ attinyx61opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attinyx61opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attinyx61opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attinyx61opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attinyx61opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attinyx61opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attinyx61opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 
 #*******************************************************************************
@@ -4519,9 +4519,9 @@ attinyx41opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attinyx41opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attinyx41opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attinyx41opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attinyx41opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attinyx41opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attinyx41opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 ################################
 # Serial Port:                 #
@@ -4758,9 +4758,9 @@ attiny828opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attiny828opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attiny828opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attiny828opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attiny828opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attiny828opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attiny828opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 
 #*******************************************************************************
@@ -5050,9 +5050,9 @@ attiny1634opti.menu.millis.disabled.build.millisabr=mNONE
 # Boot Entrymode menu          #
 ################################
 attiny1634opti.menu.bootentry.1s=Standard (1s wait, for use w/autoreset)
-attiny1634opti.menu.bootentry.1s.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
+attiny1634opti.menu.bootentry.1s.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}.hex
 attiny1634opti.menu.bootentry.8s=8-second (8s wait, for use w. out/autoreset)
-attiny1634opti.menu.bootentry.8s_8sec.bootloader.file=optiboot/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
+attiny1634opti.menu.bootentry.8s_8sec.bootloader.file={runtime.platform.path}/bootloaders/optiboot/hex/optiboot_{build.mcu}_{build.f_cpu}{bootloader.uart}_8sec.hex
 
 ################################
 # Serial Port:                 #
@@ -5554,7 +5554,7 @@ attiny85micr.menu.burnmode.install.bootloader.flashstring=-Uflash:w:{bootloader.
 
 attiny88micr.build.board=AVR_ATTINY88
 attiny88micr.build.core=tiny
-attiny88micr.build.variant=tinyx8_MH
+attiny88micr.build.variant=tinyx8_mh
 attiny88micr.build.export_merged_output=false
 attiny88micr.bootloader.extended_fuses=0xFE
 attiny88micr.bootloader.high_fuses=0b{bootloader.rstbit}1011{bootloader.bod_bits}
@@ -5620,7 +5620,7 @@ attiny88micr.menu.clock.extclk_1m.build.clocksource=0x12
 ################################
 attiny88micr.menu.pinmap.mhet=MH-Tiny
 attiny88micr.menu.pinmap.default=Standard
-attiny88micr.menu.pinmap.mhet.build.variant=tinyx8_MH
+attiny88micr.menu.pinmap.mhet.build.variant=tinyx8_mh
 attiny88micr.menu.pinmap.default.build.pinmapabr=
 attiny88micr.menu.pinmap.mhet.build.pinmapabr=.mhet
 
