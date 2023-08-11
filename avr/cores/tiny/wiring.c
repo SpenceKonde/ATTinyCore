@@ -53,7 +53,7 @@
     #define timer1Prescaler (0b010)
   #endif
   #define timer0_Prescale_Value    (8)
-  #define timer1_Prescale_Value    (8)
+  #define TIMER0_USE_FAST_PWM
 #endif
 
 #if (TIMER_TO_USE_FOR_MILLIS == 0)
@@ -1088,7 +1088,8 @@ void init() {
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1) //ATtiny x5
     TCCR1 = (1 << CTC1) | (1 << PWM1A) | (MillisTimer_Prescale_Index << CS10);
     GTCCR = (1 << PWM1B);
-    OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
+    // OCR1C = 0xFF; //Use 255 as the top to match with the others as this module doesn't have a 8bit PWM mode.
+    // Don't need to write OCR1C - it's already set to 255 on poweron.
   #elif (TIMER_TO_USE_FOR_MILLIS == 1) && defined(TCCR1E) //ATtiny x61
     TCCR1C = 1 << PWM1D;
     TCCR1B = (MillisTimer_Prescale_Index << CS10);
@@ -1107,13 +1108,13 @@ void init() {
   #ifndef DISABLEMILLIS
     // Enable the overflow interrupt (this is the basic system tic-toc for millis)
     #if defined(TIMSK) && defined(TOIE0) && (TIMER_TO_USE_FOR_MILLIS == 0)
-      sbi(TIMSK, TOIE0);
+      TIMSK |= (1 << TOIE0); //sbi(TIMSK,TOIE0);
     #elif defined(TIMSK0) && defined(TOIE0) && (TIMER_TO_USE_FOR_MILLIS == 0)
-      sbi(TIMSK0, TOIE0);
+      TIMSK0 |= (1 << TOIE0); //sbi(TIMSK0,TOIE0);
     #elif defined(TIMSK) && defined(TOIE1) && (TIMER_TO_USE_FOR_MILLIS == 1)
-      sbi(TIMSK, TOIE1);
+      TIMSK |= (1 << TOIE1); //sbi(TIMSK,TOIE1);
     #elif defined(TIMSK1) && defined(TOIE1) && (TIMER_TO_USE_FOR_MILLIS == 1)
-      sbi(TIMSK1, TOIE1);
+      TIMSK1 |= (1 << TOIE1); //sbi(TIMSK1,TOIE1);
     #else
       #error Millis() Timer overflow interrupt not set correctly
     #endif
