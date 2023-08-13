@@ -60,6 +60,27 @@ We do still provide a >4.5v clock option in order to improve behavior of the run
 
 The internal oscillator is factory calibrated to +/- 10% or +/- 2% for the slightly more expensive 1634R. +/- 2% is good enough for serial communication. However, this spec is only valid below 4v - above 4v, the oscillator runs significantly faster; enough so that serial communication does not work absent the above-described countermeasures.
 
+### PWM frequency
+TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
+
+| F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz | 1/8/256=     488 Hz |  1/8/256=      488 Hz |                              |
+| 2  MHz | 2/8/256=     977 Hz |  2/8/256=      977 Hz |                              |
+| <4 MHz | x/8/256= 488 * x Hz |  x/8/512=  244 * x Hz | Phase correct TC1            |
+| 4  MHz | 4/8/256=    1960 Hz |  4/8/512=      977 Hz | Phase correct TC1            |
+| <8 MHz | x/64/256= 61 * x Hz |  x/8/512=  244 * x Hz | Between 4 and 8 MHz, the target range is elusive | Phase correct TC1 |
+| 8  MHz | 8/64/256=    488 Hz |  8/64/256=     488 Hz |                              |
+| >8 MHz | x/64/256= 61 * x Hz |  x/64/256=  61 * x Hz |                              |
+| 12 MHz | 12/64/256=   735 Hz | 12/64/256=     735 Hz |                              |
+| 16 MHz | 16/64/256=   977 Hz | 16/64/256=     977 Hz |                              |
+|>16 MHz | x/64/256= 61 * x Hz |  x/64/512=  31 * x Hz | Phase correct TC1            |
+| 20 MHz | 20/64/256=  1220 Hz | 20/64/512=     610 Hz | Phase correct TC1            |
+
+Phase correct PWM counts up to 255, turning the pin off as it passes the compare value, updates it's double-buffered registers at TOP, then it counts down to 0, flipping the pin back as is passes the compare value. This is considered preferable for motor control applications, though the "Phase and Frequency Correct" mode is better if the period is ever adjusted by a large amount at a time, because it updates the doublebuffered registers at BOTTOM, and thus produces a less problematic glitch in the duty cycle, but doesn't have any modes that don't require setting ICR1 too.
+
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
+
 ### Tone Support
 Tone() uses Timer1. For best results, use pin 2 or 14 (PIN_PA6, PIN_PB3), as this will use the hardware output compare to generate the square wave instead of using interrupts. Any use of tone() will disable PWM on pins PA6 (Arduino pin 2) and PB3 (Arduino pin 14).
 
@@ -126,41 +147,44 @@ void startSleep() { //call instead of sleep_cpu()
 
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny1634, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
+This table lists all of the interrupt vectors available on the ATtiny 1634, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not cleanly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging.
+
+Note: The shown addresses below are "byte addressed" as that has proven more readily recognizable. The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first. Notice that INT0 is (as always) the highest priority interrupt. Since these parts  use 4-byte vectors.
+
 vect_num | Addr.  | Vector Name       | Interrupt Definition                  |
 |--------|--------|-------------------|---------------------------------------|
 |      0 | 0x0000 | RESET_vect        | Not an interrupt - this is a jump to the start of your code.  |
-|      1 | 0x0002 | INT0_vect         | External Interrupt Request 0          |
-|      2 | 0x0004 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)       |
+|      1 | 0x0004 | INT0_vect         | External Interrupt Request 0          |
+|      2 | 0x0008 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)       |
 |      3 | 0x0006 | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)       |
-|      4 | 0x0008 | PCINT2_vect       | Pin Change Interrupt 2 (PORT C)       |
-|      5 | 0x000A | WDT_vect          | Watchdog Time-out (Interrupt Mode)    |
-|      6 | 0x000C |   TIM1_CAPT_vect  | Timer/Counter1 Input Capture          |
-|      6 | 0x000C | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore        |
-|      7 | 0x000E |   TIM1_COMPA_vect | Timer/Counter1 Compare Match A        |
-|      7 | 0x000E | TIMER1_COMPA_vect | Alias - provided by ATTinyCore        |
-|      8 | 0x0010 |   TIM1_COMPB_vect | Timer/Counter1 Compare Match B        |
+|      4 | 0x0000 | PCINT2_vect       | Pin Change Interrupt 2 (PORT C)       |
+|      5 | 0x0004 | WDT_vect          | Watchdog Time-out (Interrupt Mode)    |
+|      6 | 0x0008 | ~TIM1_CAPT_vect~  | Timer/Counter1 Input Capture          |
+|      6 | 0x0008 | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore        |
+|      7 | 0x000C | ~TIM1_COMPA_vect~ | Timer/Counter1 Compare Match A        |
+|      7 | 0x000C | TIMER1_COMPA_vect | Alias - provided by ATTinyCore        |
+|      8 | 0x0010 | ~TIM1_COMPB_vect~ | Timer/Counter1 Compare Match B        |
 |      8 | 0x0010 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore        |
-|      9 | 0x0012 |   TIM1_OVF_vect   | Timer/Counter1 Overflow               |
-|      9 | 0x0012 | TIMER1_OVF_vect   | Alias - provided by ATTinyCore        |
-|     10 | 0x0014 |   TIM0_COMPA_vect | Timer/Counter0 Compare Match A        |
-|     10 | 0x0014 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore        |
-|     11 | 0x0016 |   TIM0_COMPB_vect | Timer/Counter0 Compare Match B        |
+|      9 | 0x0014 | ~TIM1_OVF_vect~   | Timer/Counter1 Overflow               |
+|      9 | 0x0014 | TIMER1_OVF_vect   | Alias - provided by ATTinyCore        |
+|     10 | 0x0018 | ~TIM0_COMPA_vect~ | Timer/Counter0 Compare Match A        |
+|     10 | 0x0018 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore        |
+|     11 | 0x0016 | ~TIM0_COMPB_vect~ | Timer/Counter0 Compare Match B        |
 |     11 | 0x0016 | TIMER0_COMPB_vect | Alias - provided by ATTinyCore        |
-|     12 | 0x0018 |   TIM0_OVF_vect   | Timer/Counter0 Overflow               |
-|     12 | 0x0018 | TIMER0_OVF_vect   | Alias - provided by ATTinyCore        |
-|     13 | 0x001A | ANA_COMP_vect     | Analog Comparator                     |
-|     14 | 0x001C | ADC_READY_vect    | ADC Conversion Complete               |
-|     15 | 0x001E | USART0_RXS_vect   | USART0 Rx Start                       |
+|     12 | 0x0010 | ~TIM0_OVF_vect~   | Timer/Counter0 Overflow               |
+|     12 | 0x0010 | TIMER0_OVF_vect   | Alias - provided by ATTinyCore        |
+|     13 | 0x0014 | ANA_COMP_vect     | Analog Comparator                     |
+|     14 | 0x0018 | ADC_READY_vect    | ADC Conversion Complete               |
+|     15 | 0x001C | USART0_RXS_vect   | USART0 Rx Start                       |
 |     16 | 0x0020 | USART0_RXC_vect   | USART0 Rx Complete                    |
-|     17 | 0x0022 | USART0_DRE_vect   | USART0 Data Register Empty            |
-|     18 | 0x0024 | USART0_TXC_vect   | USART0 Tx Complete                    |
+|     17 | 0x0024 | USART0_DRE_vect   | USART0 Data Register Empty            |
+|     18 | 0x0028 | USART0_TXC_vect   | USART0 Tx Complete                    |
 |     19 | 0x0026 | USART1_RXS_vect   | USART1 Rx Start                       |
-|     20 | 0x0028 | USART1_RXC_vect   | USART1 Rx Complete                    |
-|     21 | 0x002A | USART1_DRE_vect   | USART1 Data Register Empty            |
-|     22 | 0x002C | USART1_TXC_vect   | USART1 Tx Complete                    |
-|     23 | 0x002E | USI_STR_vect      | USI START                             |
+|     20 | 0x0020 | USART1_RXC_vect   | USART1 Rx Complete                    |
+|     21 | 0x0024 | USART1_DRE_vect   | USART1 Data Register Empty            |
+|     22 | 0x0028 | USART1_TXC_vect   | USART1 Tx Complete                    |
+|     23 | 0x002C | USI_STR_vect      | USI START                             |
 |     24 | 0x0030 | USI_OVF_vect      | USI Overflow                          |
-|     25 | 0x0032 | TWI_vect          | Two-Wire Interface                    |
-|     26 | 0x0034 | EE_RDY_vect       | EEPROM Ready                          |
+|     25 | 0x0034 | TWI_vect          | Two-Wire Interface                    |
+|     26 | 0x0038 | EE_RDY_vect       | EEPROM Ready                          |
 |     27 | 0x0036 | QTRIP_vect        | QTouch                                |

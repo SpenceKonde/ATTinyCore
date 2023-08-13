@@ -28,6 +28,27 @@ Any of these parts can be programmed by use of any ISP programmer. No bootloader
 ### There is no bootloader
 Not enough space for it to make sense. The x313-series is a pair of essentially obsolete and overpriced parts being kept in production to milk companies who don't have time to redesign (and haven't for the past decade). Their ongoing popularity is baffling
 
+### PWM frequency
+TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
+
+| F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz | 1/8/256=     488 Hz |  1/8/256=      488 Hz |                              |
+| 2  MHz | 2/8/256=     977 Hz |  2/8/256=      977 Hz |                              |
+| <4 MHz | x/8/256= 488 * x Hz |  x/8/512=  244 * x Hz | Phase correct TC1            |
+| 4  MHz | 4/8/256=    1960 Hz |  4/8/512=      977 Hz | Phase correct TC1            |
+| <8 MHz | x/64/256= 61 * x Hz |  x/8/512=  244 * x Hz | Between 4 and 8 MHz, the target range is elusive | Phase correct TC1 |
+| 8  MHz | 8/64/256=    488 Hz |  8/64/256=     488 Hz |                              |
+| >8 MHz | x/64/256= 61 * x Hz |  x/64/256=  61 * x Hz |                              |
+| 12 MHz | 12/64/256=   735 Hz | 12/64/256=     735 Hz |                              |
+| 16 MHz | 16/64/256=   977 Hz | 16/64/256=     977 Hz |                              |
+|>16 MHz | x/64/256= 61 * x Hz |  x/64/512=  31 * x Hz | Phase correct TC1            |
+| 20 MHz | 20/64/256=  1220 Hz | 20/64/512=     610 Hz | Phase correct TC1            |
+
+Phase correct PWM counts up to 255, turning the pin off as it passes the compare value, updates it's double-buffered registers at TOP, then it counts down to 0, flipping the pin back as is passes the compare value. This is considered preferable for motor control applications, though the "Phase and Frequency Correct" mode is better if the period is ever adjusted by a large amount at a time, because it updates the doublebuffered registers at BOTTOM, and thus produces a less problematic glitch in the duty cycle, but doesn't have any modes that don't require setting ICR1 too.
+
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
+
 ### Tone Support
 Tone() uses Timer1. For best results, use pin PB3 (12) or PB4 (13), as this will use the hardware output compare to generate the square wave instead of using interrupts. In order to use Tone(), you must select Initialize Secondard Timers: Yes. tone() will disable PWM on PB3 and PB4.
 

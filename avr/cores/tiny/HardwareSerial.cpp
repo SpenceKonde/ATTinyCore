@@ -46,6 +46,11 @@
     volatile uint8_t *udr) {
     _rx_buffer = rx_buffer;
     _tx_buffer = tx_buffer;
+    _ubrrh = ubrrh;
+    _ubrrl = ubrrl;
+    _ucsra = ucsra;
+    _ucsrb = ucsrb;
+    _udr = udr;
   }
   #else
   ) {
@@ -90,66 +95,6 @@
     *_ubrrl = baud_setting;
     *_ucsrb = (_rxen | _txen | _rxcie);
 
-    // For fucks sake, the USART registers aren't in low I/O space!
-    // Even if they WERE, SBI and CBI only work when both arguments are compiletimne known
-    // here they *would* be except that classes completely stymie LTO. the 4 lines of SBI and CBI that were here got turned into this:
-    /*
-        sbi(*_ucsrb, _rxen);
-     376: a0 91 4a 01   lds r26, 0x014A ; 0x80014a <Serial+0x16>
-     37a: b0 91 4b 01   lds r27, 0x014B ; 0x80014b <Serial+0x17>
-     37e: 8c 91         ld  r24, X
-     380: 90 91 4e 01   lds r25, 0x014E ; 0x80014e <Serial+0x1a>
-     384: 9f 01         movw  r18, r30
-     386: 01 c0         rjmp  .+2       ; 0x38a <__stack+0x8b>
-     388: 22 0f         add r18, r18
-     38a: 9a 95         dec r25         ; this is a LOOP. Why is there a loop here? to lefthift the bit position into a bitmask.
-                                        ; CLASSES ARE KYRPYONITE TO LTO. Even though we know that all the places where the bit positions
-                                        ; get passed to the constructor, it takes the same value.... the compiler isn't smart enough to see that.
-     38c: ea f7         brpl  .-6       ; 0x388 <__stack+0x89>
-     38e: 82 2b         or  r24, r18
-     390: 8c 93         st  X, r24
-    C:\Users\Spence\Documents\Arduino\hardware\ATTinyCore\avr\cores\tiny/HardwareSerial.cpp:121
-        sbi(*_ucsrb, _txen);
-     392: a0 91 4a 01   lds r26, 0x014A ; 0x80014a <Serial+0x16>
-     396: b0 91 4b 01   lds r27, 0x014B ; 0x80014b <Serial+0x17>
-     39a: 8c 91         ld  r24, X
-     39c: 90 91 4f 01   lds r25, 0x014F ; 0x80014f <Serial+0x1b>
-     3a0: 9f 01         movw  r18, r30
-     3a2: 01 c0         rjmp  .+2       ; 0x3a6 <__stack+0xa7>
-     3a4: 22 0f         add r18, r18
-     3a6: 9a 95         dec r25         ; THIS IS ANOTHER BLOODY LOOP TO ACHIEVE A LEFTSHIFT!
-     3a8: ea f7         brpl  .-6       ; 0x3a4 <__stack+0xa5>
-     3aa: 82 2b         or  r24, r18
-     3ac: 8c 93         st  X, r24
-    C:\Users\Spence\Documents\Arduino\hardware\ATTinyCore\avr\cores\tiny/HardwareSerial.cpp:122
-        sbi(*_ucsrb, _rxcie);
-     3ae: a0 91 4a 01   lds r26, 0x014A ; 0x80014a <Serial+0x16>
-     3b2: b0 91 4b 01   lds r27, 0x014B ; 0x80014b <Serial+0x17>
-     3b6: 8c 91         ld  r24, X
-     3b8: 90 91 50 01   lds r25, 0x0150 ; 0x800150 <Serial+0x1c>
-     3bc: 9f 01         movw  r18, r30
-     3be: 01 c0         rjmp  .+2       ; 0x3c2 <__stack+0xc3>
-     3c0: 22 0f         add r18, r18
-     3c2: 9a 95         dec r25         ; THIS IS ANOTHER BLOODY LOOP TO ACHIEVE A LEFTSHIFT!
-     3c4: ea f7         brpl  .-6       ; 0x3c0 <__stack+0xc1>
-     3c6: 82 2b         or  r24, r18
-     3c8: 8c 93         st  X, r24
-    C:\Users\Spence\Documents\Arduino\hardware\ATTinyCore\avr\cores\tiny/HardwareSerial.cpp:123
-        cbi(*_ucsrb, _udrie);
-     3ca: a0 91 4a 01   lds r26, 0x014A ; 0x80014a <Serial+0x16>
-     3ce: b0 91 4b 01   lds r27, 0x014B ; 0x80014b <Serial+0x17>
-     3d2: 8c 91         ld  r24, X
-     3d4: 90 91 51 01   lds r25, 0x0151 ; 0x800151 <Serial+0x1d>
-     3d8: 01 c0         rjmp  .+2       ; 0x3dc <__stack+0xdd>
-     3da: ee 0f         add r30, r30
-     3dc: 9a 95         dec r25         ; THIS IS ANOTHER BLOODY LOOP TO ACHIEVE A LEFTSHIFT!
-     3de: ea f7         brpl  .-6       ; 0x3da <__stack+0xdb>
-     3e0: e0 95         com r30
-     3e2: e8 23         and r30, r24
-     3e4: ec 93         st  X, r30
-     3e6: ff cf         rjmp  .-2       ; 0x3e6 <__stack+0xe7>
-     So in total that flagraqnt SBI/CBI abuse swallowed 112 bytes flash and had execution time of around 150 clocks
-    */
   #else
     LINCR = (1 << LSWRES);
     LINBRR = (((F_CPU * 10L / 16L / baud) + 5L) / 10L) - 1;

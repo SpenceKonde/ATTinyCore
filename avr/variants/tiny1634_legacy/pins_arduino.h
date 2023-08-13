@@ -269,7 +269,7 @@ static const uint8_t A11 = ADC_CH(11);
  * x indicates XTAL pin
  *---------------------------------------------------------------------------*/
 
-#warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
+#pragma message("This is the Counterclockwise pin mapping - make sure you're using the pinout diagram or\n board numbered with the pins in counterclockwise order or by port \nand bit, or just use PIN_Pxn notation and never use a number and it'll work on both.\nThis mapping is stritly worse than clockwise, it is for compatibility, and is not recommended for new designs.")
 const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,
   (uint8_t)(uint16_t) &DDRA,

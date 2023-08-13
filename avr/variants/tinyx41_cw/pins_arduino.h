@@ -328,7 +328,7 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
 
 #ifdef ARDUINO_MAIN
-#warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"
+#pragma message("\nThis is the CLOCKWISE pin mapping - make sure you're using the pinout diagram or board numbered\n with the pins in clockwise order or just use PIN_Pxn notation and never use a number\nand it'll work on both.")
 
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY841 / ATTinyCore Clockwise

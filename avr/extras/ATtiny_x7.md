@@ -61,7 +61,33 @@ The legacy pin mapping is even stranger - and also really really bad. It is as i
 LED_BUILTIN is on PB0 on the legacy option (that was a dumb choice), PB1 on digispark (this is equally dumb) - those two choices are both used by the USI! On the new pinout, we use PA6 for LED_BUILTIN. It is probably the least useful pin on the chip (and being the SS pin for SPI, one that you need to keep as an output if using SPI anyway, unless you're making an SPI slave but I am aware of nobody having done that in an Arduin context)
 
 ### Flexible PWM support
-The two channels of Timer1 can each output on one or more of 4 pins, albeit with the same duty cycle. The OCR1Ax and OCR1Bx pins each share the channel. All of those pins can be used for PWM. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle on PB0, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin.
+The two channels of Timer1 can each output on one or more of 4 pins, but each channel can only output one duty cycle. Thus, on the x67, the OCR1Ax and OCR1Bx pins, which are the even and odd pins in PORTB respectively) each share a single channel, while the lone compare output on PA3 from timer0 is independent. So while all 8 of those pins can be used for PWM, you can only have a single duty cycle on the odd pins and a different one on the even ones. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle on PB0, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin you want to turn off. However if you did `analogWrite(PIN_PB0,128); analogWrite(PIN_PB1,128);` (OCR1AU and OCR1BU), you would get 25% on PB0 and 50% on PB1.
+
+#### PWM frequency:
+
+TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
+
+| F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz | 1/8/256=     488 Hz |  1/8/256=      488 Hz |                              |
+| 2  MHz | 2/8/256=     977 Hz |  2/8/256=      977 Hz |                              |
+| <4 MHz | x/8/256= 488 * x Hz |  x/8/512=  244 * x Hz | Phase correct TC1            |
+| 4  MHz | 4/32/256=    488 Hz |  4/8/512=      977 Hz | /32 prescale on TC0 x7 only. Phase correct TC1 |
+| <8 MHz | x/32/256=122 * x Hz |  x/8/512=  244 * x Hz | /32 prescale on TC0 x7 only. Between 4 and 8 MHz, the target range is elusive ||
+| 8  MHz | 8/32/256=    977 Hz |  8/64/256=     488 Hz | /32 prescale on TC0 x7 only. |
+| >8 MHz | x/64/256= 61 * x Hz |  x/64/256=  61 * x Hz |                              |
+| 12 MHz | 12/64/256=   732 Hz | 12/64/256=     732 Hz |                              |
+| 16 MHz | 16/64/256=   977 Hz | 16/64/256=     977 Hz |                              |
+|>16 MHz | x/128/256=30 * x Hz |  x/64/512=  30 * x Hz | Phase correct TC1            |
+| 20 MHz | 20/128/255=  610 Hz | 20/64/512=     610 Hz | Phase correct TC1            |
+
+Where the /32 or /128 prescaler, not available on most parts, is used, it sigificantly improves the output frequency in the most desirable range for typical applications - unfortunately timer0 has only a single output (it's not the standard TC0 - it has much in common the the ATmega TC2 async, potentially externally-clocked timer.
+
+Where speeds above or below a certain speed are specified, it's implied that the other end of the range is the next marked value. So >16 in that table is for 16-20 MHz clocks. The formula is given as a constant times x where x is expressed as MHz (the division above gets the time in megahertz - in the interest of readability I did not include the MHz to Hz conversion - I'm sure you all know how to multiply by a million)
+
+Phase correct PWM counts up to 255, flipping the pin off (er... that may not be the best choice of words, I wasn't thinking about the colloquial sense...) as it passes the compare value, updates it's double-buffered registers at TOP, then it counts down to 0, flipping the pin back as is passes the compare value. This is considered preferable for motor control applications, though the "Phase and Frequency Correct" mode is better if the period is ever adjusted by a large amount at a time, because it updates the doublebuffered registers at BOTTOM, and thus produces a less problematic glitch in the duty cycle, but doesn't have any modes that don't require setting ICR1 too.
+
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
 
 ### Tone Support
 Tone() uses Timer1. For best results, use a pin on port B - those will use the hardware output compare rather than an interrupt to generate the tone. Using tone() will disable all PWM pins except PIN_PA2.
@@ -162,30 +188,33 @@ The 87 and 167 are available in three package variations. Additionally, the 167 
 * WQFN20 (167 only) - the only time, to my knowledge, that a new package option has been added for a classic AVR after the Microchip buyout. That this has only happened once, despite many examples of disappointing packages fromthe past, so I have to imagine that one or more very large customers (they're automotive parts, so the main buyers tend to be small in number but make up for it in volume) was giving them holy hell over that 32-pin package. The 87 did not get the same blessing (nor did the 861, which was also a 20-pin tiny stuck in a 32-pin VQFN), nor did any other part they have made. They have also not added any packages to a post-revolutionary part either, even when we can show that the die size would would work fine based on what they've already fit it into, and it is plain to see the that the product is held back by it's current package options.
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x7-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses shown are "word addressed". The `#` column is the number you are shown in the event of a duplicate vector error, among other things.
+This table lists all of the interrupt vectors available on the ATtiny x7-family, aas well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging.
+
+Note: The shown addresses below are "byte addressed" as that has proven more readily recognizable. The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first. Notice that INT0 is (as always) the highest priority interrupt.
+
 Addresses for 87 and 167 are different - the 167, having 16k of flash, has 4-byte vectors, because an rjmp instruction can only reach the entire flash on parts with not more than 8k of flash.
 
-**WARNING** The datasheet here is WRONG. It innacuratesly lists the vectors as being the same size on the 87 and 167 (this would be a design flaw if it were the case - if the 87 had 2-word vectors it could be worked around by the compiler - but happilly it they didn't need to, cause they did it right (this was done on the ATmega808/809 parts IIRC). The inverse, the 167 having only 1 word vectors would be fatal, I know of one batch of parts that was recalled because of exactly this flaw in the initial silicon shipping (the AVR32DA__ parts initially shipped with 1-word vectors, and were then recalled when the nature of the issue became clear. This also looks to have served as a bit of a wakeup call that they had been letting QA stadards slip on the post-2016 AVRs, and they seem to have tightened things up since)
+**WARNING** The datasheet here is WRONG. It innacuratesly lists the vectors as being the same size on the 87 and 167. They are not, these were done correctly - the 8k part has 1 word vectors and the 16k part has 2 word vectors.
 
 |  # |87 addr |167 addr| Vector Name         | Interrupt Definition                |
 |----|--------|--------|---------------------|-------------------------------------|
 |  0 | 0x0000 | 0x0000 | `RESET_vect`        | Not an interrupt - this is a jump to the start of your code.  |
-|  1 | 0x0001 | 0x0002 | `INT0_vect`         | External Interrupt Request 0        |
-|  2 | 0x0002 | 0x0004 | `INT1_vect`         | External Interrupt Request 1        |
-|  3 | 0x0003 | 0x0006 | `PCINT0_vect`       | Pin Change Interrupt (PORTA)        |
-|  4 | 0x0004 | 0x0008 | `PCINT1_vect`       | Pin Change Interrupt (PORTB)        |
-|  5 | 0x0005 | 0x000A | `WDT_vect`          | Watchdog Time-out (Interrupt Mode)  |
-|  6 | 0x0006 | 0x000C | `TIMER1_CAPT_vect`  | Timer/Counter1 Capture              |
-|  7 | 0x0007 | 0x000E | `TIMER1_COMPA_vect` | Timer/Counter1 Compare Match        |
-|  8 | 0x0008 | 0x0010 | `TIMER1_COMPB_vect` | Timer/Coutner1 Compare Match        |
-|  9 | 0x0009 | 0x0012 | `TIMER1_OVF_vect`   | Timer/Counter1 Overflow             |
-| 10 | 0x000A | 0x0014 | `TIMER0_COMPA_vect` | Timer/Counter0 Compare Match        |
-| 11 | 0x000B | 0x0016 | `TIMER0_OVF_vect`   | Timer/Counter0 Overflow             |
-| 12 | 0x000C | 0x0018 | `LIN_TC_vect`       | LIN/UART Transfer Complete          |
-| 13 | 0x000D | 0x001A | `LIN_ERR_vect`      | LIN/UART Error                      |
-| 14 | 0x000E | 0x001C | `SPI_STC_vect`      | SPI Serial Transfer Complete        |
-| 15 | 0x000F | 0x001E | `ADC_READY_vect`    | Conversion Complete                 |
-| 16 | 0x0010 | 0x0020 | `EE_READY_vect`     | EEPROM Ready                        |
-| 17 | 0x0011 | 0x0022 | `ANALOG_COMP_vect`  | Analog Comparator                   |
-| 18 | 0x0012 | 0x0024 | `USI_START_vect`    | USI Start Condition                 |
-| 19 | 0x0013 | 0x0026 | `USI_OVF_vect`      | USI Counter Overflow                |
+|  1 | 0x0002 | 0x0004 | `INT0_vect`         | External Interrupt Request 0        |
+|  2 | 0x0004 | 0x0008 | `INT1_vect`         | External Interrupt Request 1        |
+|  3 | 0x0006 | 0x000C | `PCINT0_vect`       | Pin Change Interrupt (PORTA)        |
+|  4 | 0x0008 | 0x0010 | `PCINT1_vect`       | Pin Change Interrupt (PORTB)        |
+|  5 | 0x000A | 0x0014 | `WDT_vect`          | Watchdog Time-out (Interrupt Mode)  |
+|  6 | 0x000C | 0x0018 | `TIMER1_CAPT_vect`  | Timer/Counter1 Capture              |
+|  7 | 0x000E | 0x001C | `TIMER1_COMPA_vect` | Timer/Counter1 Compare Match        |
+|  8 | 0x0010 | 0x0020 | `TIMER1_COMPB_vect` | Timer/Coutner1 Compare Match        |
+|  9 | 0x0012 | 0x0024 | `TIMER1_OVF_vect`   | Timer/Counter1 Overflow             |
+| 10 | 0x0014 | 0x0028 | `TIMER0_COMPA_vect` | Timer/Counter0 Compare Match        |
+| 11 | 0x0016 | 0x002C | `TIMER0_OVF_vect`   | Timer/Counter0 Overflow             |
+| 12 | 0x0018 | 0x0030 | `LIN_TC_vect`       | LIN/UART Transfer Complete          |
+| 13 | 0x001A | 0x0034 | `LIN_ERR_vect`      | LIN/UART Error                      |
+| 14 | 0x001C | 0x0038 | `SPI_STC_vect`      | SPI Serial Transfer Complete        |
+| 15 | 0x001E | 0x003C | `ADC_READY_vect`    | Conversion Complete                 |
+| 16 | 0x0020 | 0x0040 | `EE_READY_vect`     | EEPROM Ready                        |
+| 17 | 0x0022 | 0x0044 | `ANALOG_COMP_vect`  | Analog Comparator                   |
+| 18 | 0x0024 | 0x0048 | `USI_START_vect`    | USI Start Condition                 |
+| 19 | 0x0026 | 0x004C | `USI_OVF_vect`      | USI Counter Overflow                |

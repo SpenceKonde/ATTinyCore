@@ -63,6 +63,29 @@ Example of a "guard" against wrong pin mapping:
 
 All pin mapping options assume that PB2 has the LED (bootloaders will blink that pin, and LED_BUILTIN is defined as PIN_PB2), unless it's a micronucleus configuration with D+ on PB2, in which case it will instead use PB0.
 
+### PWM frequency:
+TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
+
+| F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz | 1/8/256=     488 Hz |  1/8/256=      488 Hz |                              |
+| 2  MHz | 2/8/256=     977 Hz |  2/8/256=      977 Hz |                              |
+| <4 MHz | x/8/256= 488 * x Hz |  x/8/512=  244 * x Hz | Phase correct TC1            |
+| 4  MHz | 4/8/256=    1960 Hz |  4/8/512=      977 Hz | Phase correct TC1            |
+| <8 MHz | x/64/256= 61 * x Hz |  x/8/512=  244 * x Hz | Between 4 and 8 MHz, the target range is elusive | Phase correct TC1 |
+| 8  MHz | 8/64/256=    488 Hz |  8/64/256=     488 Hz |                              |
+| >8 MHz | x/64/256= 61 * x Hz |  x/64/256=  61 * x Hz |                              |
+| 12 MHz | 12/64/256=   735 Hz | 12/64/256=     735 Hz |                              |
+| 16 MHz | 16/64/256=   977 Hz | 16/64/256=     977 Hz |                              |
+|>16 MHz | x/64/256= 61 * x Hz |  x/64/512=  31 * x Hz | Phase correct TC1            |
+| 20 MHz | 20/64/256=  1220 Hz | 20/64/512=     610 Hz | Phase correct TC1            |
+
+Where speeds above or below a certain speed are specified, it's implied that the other end of the range is the next marked value. So >16 in that table is for 16-20 MHz clocks. The formula is given as a constant times x where x is expressed as MHz (the division above gets the time in megahertz - in the interest of readability I did not include the MHz to Hz conversion - I'm sure you all know how to multiply by a million)
+
+Phase correct PWM counts up to 255, turning the pin off as it passes the compare value, updates it's double-buffered registers at TOP, then it counts down to 0, flipping the pin back as is passes the compare value. This is considered preferable for motor control applications, though the "Phase and Frequency Correct" mode is better if the period is ever adjusted by a large amount at a time, because it updates the doublebuffered registers at BOTTOM, and thus produces a less problematic glitch in the duty cycle, but doesn't have any modes that don't require setting ICR1 too.
+
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
+
 ### Tone Support
 Tone() uses Timer1. For best results, use PA6 and PA5, as this will use the hardware output compare to generate the square wave instead of using interrupts.
 
@@ -157,38 +180,37 @@ I (Spence Konde) sell a specialized prototyping board that combines an ISP heade
 * [ATtiny84 prototyping board](https://www.tindie.com/products/drazzy/attiny84-project-board/)
 * Micronucleus boards can be bought from one of my collaborators: [Micronucleus ATtiny84a](https://www.tindie.com/products/svdbor/tiniest-arduino-compatible-board-with-micronucleus/)
 
-
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x4-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the handler will not exist, and the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging, which is one of the reasons I have done everything I can to make it impossible to turn off warnings. The addresses shown below are "word addressed" (1 word = 2 bytes - this is what is used internally by the hardware as well, since program memory is mostly read to read the next instruction, and the instructions are all 16 bits or 32 bits in length). As a part with 8k or less flash, these are 1 word vectors, all of which will always be an rjmp instruction pointing to the appropriate ISR (if any). vect_num is the number that you will be shown if you get a duplicate vector number. For more indepth treatment of this, see [my vector table description](https://github.com/SpenceKonde/AVR-Guidance/blob/master/LowLevel/VectorTable.md)
+This table lists all of the interrupt vectors available on the ATtiny x8-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not cleanly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging.
 
-As shown in the below table, the core provides aliases of the names timer interrupts with names starting with `TIMn` and `TIMERn`. During the era that these parts were released, Atmel was not naming the vectors consistently. The names starting with `TIMERn` are preferred - they are consistent with a majority of the extant hardware's vector names as defined by the IO headers. Within the IO headers for a few of the most popular parts, including these, for some reason the vectors are named starting with `TIMn_...` instead, making it more challenging to write portable code. To maximize portability, we recommend the `TIMERn_...` names. The `TIMn_...` names are shown in ~strikethrough~ on the below table.
+Note: The shown addresses below are "byte addressed" as that has proven more readily recognizable. The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first. Notice that INT0 is (as always) the highest priority interrupt. All of the parts  in this family are 8k or less flash, so they do not need to use 4-byte vectors.
 
 | num | Address | Vector Name         | Interrupt Definition                |
 |-----|---------|---------------------|-------------------------------------|
 |   0 | 0x0000  |  RESET_vect         | Not an interrupt - this is a jump to the start of your code. |
-|   1 | 0x0001  |  INT0_vect          | External Interrupt Request 0        |
-|   2 | 0x0002  |  PCINT0_vect        | Pin Change Interrupt 0 (PORT A)     |
-|   3 | 0x0003  |  PCINT1_vect        | Pin Change Interrupt 1 (PORT B)     |
-|   4 | 0x0004  |  WDT_vect           | Watchdog Time-out (Interrupt Mode)  |
-|   5 | 0x0005  |   ~TIM1_CAPT_vect~  | Timer/Counter1 Capture Event        |
-|   5 | 0x0005  |  TIMER1_CAPT_vect   | Alias - provided by ATTinyCore      |
-|   6 | 0x0006  |   ~TIM1_COMPA_vect~ | Timer/Counter1 Compare Match A      |
-|   6 | 0x0006  |  TIMER1_COMPA_vect  | Alias - provided by ATTinyCore      |
-|   7 | 0x0007  |   ~TIM1_COMPB_vect~ | Timer/Counter1 Compare Match B      |
-|   7 | 0x0007  |  TIMER1_COMPB_vect  | Alias - provided by ATTinyCore      |
-|   8 | 0x0008  |   ~TIM1_OVF_vect    | Timer/Counter1 Overflow             |
-|   8 | 0x0008  |  TIMER1_OVF_vect    | Alias - provided by ATTinyCore      |
-|   9 | 0x0009  |   ~TIM0_COMPA_vect~ | Timer/Counter0 Compare Match A      |
-|   9 | 0x0009  |  TIMER0_COMPA_vect  | Alias - provided by ATTinyCore      |
-|  10 | 0x000A  |   ~TIM0_COMPB_vect~ | Timer/Counter0 Compare Match B      |
-|  10 | 0x000A  |  TIMER0_COMPB_vect  | Alias - provided by ATTinyCore      |
-|  11 | 0x000B  |   ~TIM0_OVF_vect~   | Timer/Counter0 Overflow             |
-|  11 | 0x000B  |  TIMER0_OVF_vect    | Alias - provided by ATTinyCore      |
-|  12 | 0x000C  |  ANA_COMP_vect      | Analog Comparator                   |
-|  13 | 0x000D  |  ADC_vect           | ADC Conversion Complete             |
-|  14 | 0x000E  |  EE_RDY_vect        | EEPROM Ready                        |
-|  16 | 0x000F  |  USI_STR_vect       | USI START                           |
-|  17 | 0x0010  |  USI_OVF_vect       | USI Overflow                        |
+|   1 | 0x0002  |  INT0_vect          | External Interrupt Request 0        |
+|   2 | 0x0004  |  PCINT0_vect        | Pin Change Interrupt 0 (PORT A)     |
+|   3 | 0x0006  |  PCINT1_vect        | Pin Change Interrupt 1 (PORT B)     |
+|   4 | 0x0008  |  WDT_vect           | Watchdog Time-out (Interrupt Mode)  |
+|   5 | 0x000A  |   ~TIM1_CAPT_vect~  | Timer/Counter1 Capture Event        |
+|   5 | 0x000A  |  TIMER1_CAPT_vect   | Alias - provided by ATTinyCore      |
+|   6 | 0x000C  |   ~TIM1_COMPA_vect~ | Timer/Counter1 Compare Match A      |
+|   6 | 0x000C  |  TIMER1_COMPA_vect  | Alias - provided by ATTinyCore      |
+|   7 | 0x000E  |   ~TIM1_COMPB_vect~ | Timer/Counter1 Compare Match B      |
+|   7 | 0x000E  |  TIMER1_COMPB_vect  | Alias - provided by ATTinyCore      |
+|   8 | 0x0010  |   ~TIM1_OVF_vect    | Timer/Counter1 Overflow             |
+|   8 | 0x0010  |  TIMER1_OVF_vect    | Alias - provided by ATTinyCore      |
+|   9 | 0x0012  |   ~TIM0_COMPA_vect~ | Timer/Counter0 Compare Match A      |
+|   9 | 0x0012  |  TIMER0_COMPA_vect  | Alias - provided by ATTinyCore      |
+|  10 | 0x0014  |   ~TIM0_COMPB_vect~ | Timer/Counter0 Compare Match B      |
+|  10 | 0x0014  |  TIMER0_COMPB_vect  | Alias - provided by ATTinyCore      |
+|  11 | 0x0016  |   ~TIM0_OVF_vect~   | Timer/Counter0 Overflow             |
+|  11 | 0x0016  |  TIMER0_OVF_vect    | Alias - provided by ATTinyCore      |
+|  12 | 0x0018  |  ANA_COMP_vect      | Analog Comparator                   |
+|  13 | 0x001A  |  ADC_vect           | ADC Conversion Complete             |
+|  14 | 0x001C  |  EE_RDY_vect        | EEPROM Ready                        |
+|  16 | 0x001E  |  USI_STR_vect       | USI START                           |
+|  17 | 0x0020  |  USI_OVF_vect       | USI Overflow                        |
 
 ## 84 vs 84a - you said "almost" fully interchangible?
 Okay, there is one difference I'm aware of that makes them distinct: The 84 has the old, bifurcated calibration curve for the internal oscillator, that is, there is a discontinuite in the speed vs `OSCCAL` value as you increase the `OSCCAL` register from 127 to 128, the oscillator speed, which is generally above the nominal frequency at 127 will jump down to below it at 128 (though remaining higher than it was at `OSCCAL = 0`); Further increases to the cal register will then increase the speed again to it's maximum at 255 (which is generally higher than it was at 127). The "bifurcated" oscillator is generally less accurate and less stable than the newer design found on the ATtiny84A. This is most relevant with Micronucleus using the internal oscillator. Since the reliability of USB on VUSB-using parts depends on accuracy of the clock (USB is picky about timing) the A-version should work better. No testing was conducted with non-A parts, and they are now difficult to get legacy components (though supposedly still produced, they are sold at a heavy premium to encourage customers to use more modern parts). Because the vast majority of 84/84A parts have been 84As for many years, it has become very common for the parts to be called simply "ATtiny84" or "t84" when the writer is referring to the ATtiny84A.

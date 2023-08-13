@@ -66,6 +66,27 @@ Example of a "guard" against wrong pin mapping:
 
 All pin mapping options assume that PB2 has the LED (bootloaders will blink that pin, and LED_BUILTIN is defined as PIN_PB2), unless it's a micronucleus configuration with D+ on PB2, in which case it will instead use PB0.
 
+### PWM frequency:
+TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode. Unique among the tinyAVRs, the x41 parts have a third timer. TC1 and TC2 are both the "good" timers, the 16-bit-capable ones.
+
+| F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1/2</sub> | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz | 1/8/256=     488 Hz |  1/8/256=      488 Hz |                              |
+| 2  MHz | 2/8/256=     977 Hz |  2/8/256=      977 Hz |                              |
+| <4 MHz | x/8/256= 488 * x Hz |  x/8/512=  244 * x Hz | Phase correct TC1/2          |
+| 4  MHz | 4/8/256=    1960 Hz |  4/8/512=      977 Hz | Phase correct TC1/2          |
+| <8 MHz | x/64/256= 61 * x Hz |  x/8/512=  244 * x Hz | Between 4 and 8 MHz, the target range is elusive | Phase correct TC1 |
+| 8  MHz | 8/64/256=    488 Hz |  8/64/256=     488 Hz |                              |
+| >8 MHz | x/64/256= 61 * x Hz |  x/64/256=  61 * x Hz |                              |
+| 12 MHz | 12/64/256=   735 Hz | 12/64/256=     735 Hz |                              |
+| 16 MHz | 16/64/256=   977 Hz | 16/64/256=     977 Hz |                              |
+|>16 MHz | x/64/256= 61 * x Hz |  x/64/512=  31 * x Hz | Phase correct TC1/2          |
+| 20 MHz | 20/64/256=  1220 Hz | 20/64/512=     610 Hz | Phase correct TC1/2          |
+
+Phase correct PWM counts up to 255, turning the pin off as it passes the compare value, updates it's double-buffered registers at TOP, then it counts down to 0, flipping the pin back as is passes the compare value. This is considered preferable for motor control applications, though the "Phase and Frequency Correct" mode is better if the period is ever adjusted by a large amount at a time, because it updates the doublebuffered registers at BOTTOM, and thus produces a less problematic glitch in the duty cycle, but doesn't have any modes that don't require setting ICR1 too.
+
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
+
 ### Tone support
 The standard Tone() function is supported on these parts. For best results, use PA5 (pin 5 on either pinout) or PA6 (pin 4 on counterclockwise, pin 6 on clockwise), as this will use hardware output compare to generate the square wave, instead of interrupts.
 
@@ -184,7 +205,7 @@ Due to the long and storied history of this core, there are a large number of sy
 
 
 #### ADC Differential Pair Matrix
-**bold** indicates that an option was not available on the ATtiny x4-series
+The t x41-series parts offer a superset of the tinyx4-series; in the below table,**bold** indicates that an option was not available on the ATtiny x4-series
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |   11  |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 |   0   |   X   |   X   |       |   X   |       |       |       |       |       |       |       |       |
@@ -276,49 +297,52 @@ The Wattuino board does not support maintenance of this core, but it does suppor
 
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x41-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" - however, when that interrupt is triggered, the device will (at best) immediately reset - and not cleanly either. The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, among other things.
+This table lists all of the interrupt vectors available on the ATtiny x41-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not cleanly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging.
+
+Note: The shown addresses below are "byte addressed" as that has proven more readily recognizable. The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first. Notice that INT0 is (as always) the highest priority interrupt. All of the parts in this family are 8k or less flash, so they do not need to use 4-byte vectors.
+
 
 vect_num | Addr.  | Vector Name       | Interrupt Definition
 |--------|--------|-------------------|-------------------------------------|
 |      0 | 0x0000 | RESET_vect        | Any reset (pin, WDT, power-on, BOD) |
-|      1 | 0x0001 | INT0_vect         | External Interrupt Request 0        |
-|      2 | 0x0002 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |
-|      3 | 0x0003 | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)     |
-|      4 | 0x0004 | WDT_vect          | Watchdog Time-out (Interrupt Mode)  |
-|      5 | 0x0005 | TIM1_CAPT_vect    | Timer/Counter1 Capture Event        |
-|      5 | 0x0005 | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore      |
-|      6 | 0x0006 | TIM1_COMPA_vect   | Timer/Counter1 Compare Match A      |
-|      6 | 0x0006 | TIMER1_COMPA_vect | Alias - provided by ATTinyCore      |
-|      7 | 0x0007 | TIM1_COMPB_vect   | Timer/Counter1 Compare Match B      |
-|      7 | 0x0007 | TIMER1_COMPB_vect | Alias - provided by ATTinyCore      |
-|      8 | 0x0008 | TIM1_OVF_vect     | Timer/Counter1 Overflow             |
-|      8 | 0x0008 | TIMER1_OVF_vect   | Alias - provided by ATTinyCore      |
-|      9 | 0x0009 | TIM0_COMPA_vect   | Timer/Counter0 Compare Match A      |
-|      9 | 0x0009 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore      |
-|     10 | 0x000A | TIM0_COMPB_vect   | Timer/Counter0 Compare Match B      |
-|     10 | 0x000A | TIMER0_COMPB_vect | Alias - provided by ATTinyCore      |
-|     11 | 0x000B | TIM0_OVF_vect     | Timer/Counter0 Overflow             |
-|     11 | 0x000B | TIMER0_OVF_vect   | Alias - provided by ATTinyCore      |
-|     12 | 0x000C | ANA_COMP0_vect    | Analog Comparator 0                 |
-|     13 | 0x000D | ADC_READY_vect    | ADC Conversion Complete             |
-|     14 | 0x000E | EE_RDY_vect       | EEPROM Ready                        |
-|     15 | 0x000F | ANA_COMP1_vect    | Analog Comparator 1                 |
-|     16 | 0x0010 | TIM2_CAPT_vect    | Timer/Counter2 Capture Event        |
-|     16 | 0x0010 | TIMER2_CAPT_vect  | Alias - provided by ATTinyCore      |
-|     17 | 0x0011 | TIM2_COMPA_vect   | Timer/Counter2 Compare Match A      |
-|     17 | 0x0011 | TIMER2_COMPA_vect | Alias - provided by ATTinyCore      |
-|     18 | 0x0012 | TIM2_COMPB_vect   | Timer/Counter2 Compare Match B      |
-|     18 | 0x0012 | TIMER2_COMPB_vect | Alias - provided by ATTinyCore      |
-|     19 | 0x0013 | TIM2_OVF_vect     | Timer/Counter2 Overflow             |
-|     19 | 0x0013 | TIMER2_OVF_vect   | Alias - provided by ATTinyCore      |
-|     20 | 0x0014 | SPI_vect          | SPI Serial Transfer Complete        |
-|     21 | 0x0015 | USART0_RXS_vect   | USART0 Rx Start                     |
-|     22 | 0x0016 | USART0_RXC_vect   | USART0 Rx Complete                  |
-|     23 | 0x0017 | USART0_DRE_vect   | USART0 Data Register Empty          |
-|     24 | 0x0018 | USART0_TXC_vect   | USART0 Tx Complete                  |
-|     25 | 0x0019 | USART1_RXS_vect   | USART1 Rx Start                     |
-|     26 | 0x001A | USART1_RXC_vect   | USART1 Rx Complete                  |
-|     27 | 0x001B | USART1_DRE_vect   | USART1 Data Register Empty          |
-|     28 | 0x001C | USART1_TXC_vect   | USART1 Tx Complete                  |
-|     29 | 0x001D | TWI_vect          | TWI Slave Interrupt                 |
-|     30 | 0x001E | QTRIP_vect        | QTouch                              |
+|      1 | 0x0002 | INT0_vect         | External Interrupt Request 0        |
+|      2 | 0x0004 | PCINT0_vect       | Pin Change Interrupt 0 (PORT A)     |
+|      3 | 0x0006 | PCINT1_vect       | Pin Change Interrupt 1 (PORT B)     |
+|      4 | 0x0008 | WDT_vect          | Watchdog Time-out (Interrupt Mode)  |
+|      5 | 0x000A | ~TIM1_CAPT_vect~  | Timer/Counter1 Capture Event        |
+|      5 | 0x000A | TIMER1_CAPT_vect  | Alias - provided by ATTinyCore      |
+|      6 | 0x000C | ~TIM1_COMPA_vect~ | Timer/Counter1 Compare Match A      |
+|      6 | 0x000C | TIMER1_COMPA_vect | Alias - provided by ATTinyCore      |
+|      7 | 0x000E | ~TIM1_COMPB_vect~ | Timer/Counter1 Compare Match B      |
+|      7 | 0x000E | TIMER1_COMPB_vect | Alias - provided by ATTinyCore      |
+|      8 | 0x0010 | ~TIM1_OVF_vect~   | Timer/Counter1 Overflow             |
+|      8 | 0x0010 | TIMER1_OVF_vect   | Alias - provided by ATTinyCore      |
+|      9 | 0x0012 | ~TIM0_COMPA_vect~ | Timer/Counter0 Compare Match A      |
+|      9 | 0x0012 | TIMER0_COMPA_vect | Alias - provided by ATTinyCore      |
+|     10 | 0x0014 | ~TIM0_COMPB_vect~ | Timer/Counter0 Compare Match B      |
+|     10 | 0x0014 | TIMER0_COMPB_vect | Alias - provided by ATTinyCore      |
+|     11 | 0x0016 | ~TIM0_OVF_vect~   | Timer/Counter0 Overflow             |
+|     11 | 0x0016 | TIMER0_OVF_vect   | Alias - provided by ATTinyCore      |
+|     12 | 0x0018 | ANA_COMP0_vect    | Analog Comparator 0                 |
+|     13 | 0x001A | ADC_READY_vect    | ADC Conversion Complete             |
+|     14 | 0x001C | EE_RDY_vect       | EEPROM Ready                        |
+|     15 | 0x001E | ANA_COMP1_vect    | Analog Comparator 1                 |
+|     16 | 0x0020 | ~TIM2_CAPT_vect~  | Timer/Counter2 Capture Event        |
+|     16 | 0x0020 | TIMER2_CAPT_vect  | Alias - provided by ATTinyCore      |
+|     17 | 0x0022 | ~TIM2_COMPA_vect~ | Timer/Counter2 Compare Match A      |
+|     17 | 0x0022 | TIMER2_COMPA_vect | Alias - provided by ATTinyCore      |
+|     18 | 0x0024 | ~TIM2_COMPB_vect~ | Timer/Counter2 Compare Match B      |
+|     18 | 0x0024 | TIMER2_COMPB_vect | Alias - provided by ATTinyCore      |
+|     19 | 0x0026 | ~TIM2_OVF_vect~   | Timer/Counter2 Overflow             |
+|     19 | 0x0026 | TIMER2_OVF_vect   | Alias - provided by ATTinyCore      |
+|     20 | 0x0028 | SPI_vect          | SPI Serial Transfer Complete        |
+|     21 | 0x002A | USART0_RXS_vect   | USART0 Rx Start                     |
+|     22 | 0x002C | USART0_RXC_vect   | USART0 Rx Complete                  |
+|     23 | 0x002E | USART0_DRE_vect   | USART0 Data Register Empty          |
+|     24 | 0x0030 | USART0_TXC_vect   | USART0 Tx Complete                  |
+|     25 | 0x0032 | USART1_RXS_vect   | USART1 Rx Start                     |
+|     26 | 0x0034 | USART1_RXC_vect   | USART1 Rx Complete                  |
+|     27 | 0x0036 | USART1_DRE_vect   | USART1 Data Register Empty          |
+|     28 | 0x0038 | USART1_TXC_vect   | USART1 Tx Complete                  |
+|     29 | 0x003A | TWI_vect          | TWI Slave Interrupt                 |
+|     30 | 0x003B | QTRIP_vect        | QTouch                              |

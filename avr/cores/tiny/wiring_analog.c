@@ -217,22 +217,22 @@ inline int analogRead(uint8_t pin) {
 
 
 #ifndef ADCSRA
-  int _analogRead(uint8_t __attribute__((unused)) pin)
-  badCall("analogRead() cannot be used on a part without an ADC");
-  /* if a device does not have an ADC, instead of giving a number we know is
-   * wrong AND that isn't unique to error conditions, let's just refuse to
-   * compile it - if they want some other function substituted in, that's
-   * what #ifdefs are for, otherwise, we assume they have the wrong part
-   * selected, or didn't know that the ATtiny4313/2313 don't have an ADC. */
-  return -32768;
+  int _analogRead(uint8_t __attribute__((unused)) pin) {
+    badCall("analogRead() cannot be used on a part without an ADC");
+    /* if a device does not have an ADC, instead of giving a number we know is
+     * wrong AND that isn't unique to error conditions, let's just refuse to
+     * compile it - if they want some other function substituted in, that's
+     * what #ifdefs are for, otherwise, we assume they have the wrong part
+     * selected, or didn't know that the ATtiny4313/2313 don't have an ADC. */
+    return -32768;
+  }
 #else
 
   #ifdef SLEEP_MODE_ADC
-    int _analogRead(uint8_t pin, bool use_noise_reduction)
+    int _analogRead(uint8_t pin, bool use_noise_reduction) {
   #else
-    int _analogRead(uint8_t pin)
+    int _analogRead(uint8_t pin) {
   #endif
-  {
     #if !defined(ADC_NO_CHECK_PINS)
       #if defined(__AVR_ATtinyX61__)
         if ((pin & 0x3F) < 32 && (pin & 0x40))  return ADC_ERROR_NOT_A_CHANNEL;
@@ -411,7 +411,7 @@ void analogWrite(uint8_t pin, int val) {
         } else
       #endif
 
-      // TCCR1E is present only on tinyx61 and tinyx7 and there's no TCCR1A on Tiny85
+      // TCCR1D is present only on tinyx61 and tinyx7 and there's no TCCR1A on Tiny85
       // Hence this line is approximately "If Timer1 has PWM, and isn't some wacky thing"
       #if defined(TCCR1A) && defined(COM1A1) && !defined(TCCR1D)
         //So this handles "normal" timers

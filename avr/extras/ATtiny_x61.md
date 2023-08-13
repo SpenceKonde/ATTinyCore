@@ -18,14 +18,14 @@ Int. Oscillator       |   16, 8, 4, 2, 1 |   16, 8, 4, 2, 1 |      16.5. 16, 8 |
 Internal, with tuning |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |      16.5, 12, 8 |
 External Crystal      |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
 External Clock        |     All Standard |     All Standard |    Not supported |     All Standard |     All Standard |     All Standard |
-Int. WDT Oscillator   |          128 kHz |          128 kHz |          128 kHz |          128 kHz |          128 kHz |          128 kHz |
+Int. WDT Oscillator   |          128 kHz | Not as sys. clock| Not as sys. clock|          128 kHz | Not as sys. clock|          128 kHz |
 Default Pin Mapping   |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |        Clockwise |
 LED_BUILTIN           |              PB6 |              PB6 |       PB5 or PB6 |              PB6 |              PB6 |              PB6 |
 
 
 The 261/461/861 and 261a/461a/861a are functionally very similar; the latter replaced the former in 2009, and uses slightly less power. Actual ATtiny861 parts are rarely seen in circulation today. They have the same signatures and are almost* fully interchangible. It is extremely common to refer to the ATtiny861a as an ATtiny861.
 
-The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control.  To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. For reasons that were never clear to me, in addition to the high speed timer, it also got a very fancy ADC, second only to the one in the ATtiny841 in the number of channels and programmable gain capabilities. Everything other than Timer1 and the ADC is sub-par, and frankly, most of us would be happier with a normal timer 0 and timer 1 too,  It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or TQFP/MLF-32
+The ATtiny861 is a specialized microcontroller designed specifically to address the demands of brushless DC (BLDC) motor control.  To this end, it has a PLL and high speed timer like the ATtiny85, and it's timer has a mode where it can output three complementary PWM signals (with controllable dead time), as is needed for driving a three phase BLDC motor. For reasons that were never clear to me, in addition to the high speed timer, it also got a very fancy ADC, second only to the one in the ATtiny841 in the number of channels and programmable gain capabilities. Everything other than Timer1 and the ADC is sub-par, and frankly, most of us would be happier with a normal timer 0 and timer 1 too,  It can also be used as a general purpose microcontroller with more pins than the ATtiny84/841. It is available in 20-pin SOIC or DIP package, or a 32-pin no-lead package (there is no more modestly sized no-lead package - they for some reason seemed to love using 32-pin QFN packages for tinyAVRs with 20 pins.)
 
 ## Programming
 Any of these parts can be programmed by use of any ISP programmer. 4k and 8k parts can be programmed over the software serial port using Optiboot, and 8k parts can be programmed via Micronucleus. Be sure to read the section of the main readme on the ISP programmers and IDE versions. 1.8.13 is recommended for best results.
@@ -34,12 +34,12 @@ Any of these parts can be programmed by use of any ISP programmer. 4k and 8k par
 This core includes an Optiboot bootloader for the ATtiny861/461, operating using software serial at 19200 baud - the software serial uses the AIN0 and AIN1 pins, marked on pinout chart (see also UART section below). The bootloader uses 640b of space, leaving 3456 or 7552b available for user code. In order to work on the 861/461, which does not have hardware bootloader support (hence no BOOTRST functionality), "Virtual Boot" is used. This works around this limitation by rewriting the vector table of the sketch as it's uploaded - the reset vector gets pointed at the start of the bootloader, while the EE_RDY vector gets pointed to the start of the application.
 
 ### Micronucleus Bootloader
-As of 2.0.0, a Micronucleus bootloader is included as well! With a PLL begging to be nudged up half a Mhz for the the 16.5 MHz option, it has finally fulfilled it's destiny. Build it from the DIP version, or buy my Azduino USB 861 likely available Q1 2022.
+As of 2.0.0, a Micronucleus bootloader is included as well! With a PLL begging to be nudged up half a Mhz for the the 16.5 MHz option, it has finally fulfilled it's destiny.
 
 ## Features
 
 ### Pin mapping options
-Historically, there was on pin mapping for the x61-series used by ATTinyCore. It was inherited from older versions of this core. During developoment of 1.5.0, it was realized that the traditional pinout, to put it bluntly, sucked, and a rational pinout was created. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. The new pinout is recommended for all new development; it is not only more coherent, but also more efficient (it simplifies some math that must be done at runtime.)
+Historically, there was one pin mapping for the x61-series used by ATTinyCore. It was inherited from older versions of this core. During developoment of 1.5.0, it was realized that the traditional pinout, to put it bluntly, sucked - really badly.  A rational pinout that allowed necessary values to use the I/O pins to be calculated in the cases of the  was created. Be very sure that you have selected the one that you wrote your sketch for - or, preferably, use the PIN_Pxn constants to refer to pins. Regardless of what pin mapping is selected, those constants always point towards that logical pin. The new pinout is recommended for all new development; it is not only more coherent, but also more efficient, as it simplifies runtime math that the core needs to do.
 
 Example of a "guard" against wrong pin mapping:
 ```c
@@ -55,6 +55,27 @@ The ATtiny x61-family parts have an on-chip PLL. This is clocked off the interna
 
 ### Timer1 is a high speed timer
 This means it can be clocked at 64 MHz from the on-chip PLL. In the past a menu option was provided to configure this. It never worked, and in any event is insufficient to do much of practical use with. It was eliminated for 2.0.0. Instead, see the [ATTinyCore library](../libraries/ATTinyCore/README.md)
+
+### PWM frequency
+TC0 does not support PWM, and is used for millis. TC1 gives 3 outputs, and can operate in phase correct or fast pwm mode, or variations on those that operate only in PWM6 mode, which is designed specifically for controlling brushless DC (BLDC) motors. We always use phase correct when we can reach the target frequency with it. Which, on these parts, is all the time.
+
+| F_CPU  | No PWM from TC0     | F_PWM<sub>TC1</sub>   | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz |                   - |  1/4/512=      488 Hz | Phase & Freq correct TC1     |
+| 2  MHz |                   - |  2/8/512=      488 Hz | Phase & Freq correct TC1     |
+| <4 MHz |                   - |  x/8/512=  244 * x Hz | Phase & Freq correct TC1     |
+| 4  MHz |                   - |  4/8/512=      977 Hz | Phase & Freq correct TC1     |
+| <8 MHz |                   - |  x/16/512= 122 * x Hz | Phase & Freq correct TC1     |
+| 8  MHz |                   - |  8/32/512=     488 Hz | Phase & Freq correct TC1     |
+| >8 MHz |                   - |  x/32/512=  61 * x Hz | Phase & Freq correct TC1     |
+| 12 MHz |                   - | 12/32/512=     735 Hz | Phase & Freq correct TC1     |
+| 16 MHz |                   - | 16/32/512=     977 Hz | Phase & Freq correct TC1     |
+|>16 MHz |                   - |  x/64/512=  31 * x Hz | Phase & Freq correct TC1     |
+| 20 MHz |                   - | 20/64/512=     610 Hz | Phase & Freq correct TC1     |
+
+Phase & frequency correct PWM counts up to 255, turning the pin off as it passes the compare value, then it counts down to 0, flipping the pin back as is passes the compare value, and then updates it's double-buffered registers at BOTTOM. Phase and frequency correct PWM is almost never worse than normal PWM - as long as the
+
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
 
 ### Tone Support
 Tone() uses Timer1. If the high speed functionality of Timer1 has been enabled (see link above), tone() will not produce the expected frequencies, but rather ones 2 or 4 times higher. For best results, use pin 1 or 4 for tone - this will use Timer1's output compare unit to generate the tone, rather than generating an interrupt to toggle the pin. In this way, "tones" can be generated up into the MHz range.  If using SoftwareSerial or the builtin software serial "Serial", tone() will work on the PWM pins while the software serial is active but not on any other pins.  As only Timer1 is capable of hardware PWM on the x61 series, tone() will break all PWM functionality.
@@ -87,7 +108,8 @@ Although the timers are quite different, and historically there have been issues
 The ATtiny861 has a surprisingly sophisticated ADC, one more advanced than many ATmega parts, with many differential channels, most with selectable gain. As of ATTinyCore 2.0.0, these are available through analogRead!  When used to read a pair of analog pins in differential mode, the ADC normally runs in unipolar mode: The voltage on the positive pin must be higher than that on the negative one, but the difference is measured to the full precision of the ADC. It can be put into bipolar mode, where the voltage on the negative side can go below the voltage on the positive side and generate meaningful measurements (it will return a signed value, which costs 1 bit of accuracy for the sign bit). This can be enabled by calling the helper function `setADCBipolarMode(true or false)`. On many AVR devices with a differential ADC, only bipolar mode is available.
 
 ### ADC Reference options
-The ATtiny x61-series has two internal references, one of which can (optionally) use the AREF pin with an external capacitor for improved stability. It can also use an external reference voltage or the supply voltage. For historical reasons, there are several aliases available for some of these options.
+The ATtiny x61-series has two internal references, one of which can (optionally) use the AREF pin with an external capacitor for improved stability. It can also use an external reference voltage or the supply voltage. For historical reasons, there are several aliases available for some of these options; these are deprecated.
+
 | Reference Option   | Reference Voltage           | Uses AREF Pin        | Aliases/synonyms                         |
 |--------------------|-----------------------------|----------------------|------------------------------------------|
 | `DEFAULT`          | Vcc                         | No, pin available    |                                          |
@@ -161,7 +183,9 @@ There are 24 different differential pairs available. Seven of those are measurin
 
 Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny26 - the older version of these parts - with the same ADMUX values so that code and hardware could be directly copied. These do not support the GSEL for 8x or 32x gain. These are not "reversible" (meaning that if you guessed wrong about which was higher, all you could do is use the ADC in "bipolar input mode", which costs 1 bit of resolution). Then two of those "trios" of pins are available in both directions with GSEL: ADC0/ADC1/ADC2 and ADC4/ADC5/ADC6, and finally, ADC0-ADC0 is available with all gain options, and each of the other channels involved in the "second half" of the differential ADC are supported with 20x/32x gain. Since pairings and gain options available on the "first half" involving ADC1 and ADC5 are also available in the "second half" with additional functionality It is enough to make one wonder what the intent of the design was. Do they use the same pathways in the chip, or do you get different offsets when you, say measure ADC1 against itself using channel 0x0D (DIFF_A1_A1_20XA), vs channel 0x3A w/GSEL=0 (DIFF_A1_A1_20X)? If they use different pathways, then why did they choose to have two options to measure those 10 pairs - why not use those to support gain selection on more pins? If not - well, I guess it hangs together, they didn't want to add more mux channels and figured what they had was enough (I'm inclined to agree - this ADC is a beast for it's time).
 #### ADC Differential Pair Matrix
-**bold** indicates that an option has all gain options available. *italic* indicates only 20x/32x gain, and no text styling indicates that only 1x and 20x are available
+* **bold** indicates that an option has all gain options available.
+* *italic* indicates only 20x/32x gain
+* Unstyled text indicates that only 1x and 20x are available
 |  N\P  |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   8   |   9   |  10   |
 |-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 |   0   | **X** | **X** | **X** |       |       |       |       |       |       |       |
@@ -177,9 +201,8 @@ Those 4 sets of 20x/1x channels are an exact copy of the channels on the ATtiny2
 To measure the temperature, select the 1.1v internal voltage reference, and analogRead(ADC_TEMPERATURE); This value changes by approximately 1 LSB per degree C. This requires calibration on a per-chip basis to translate to an actual temperature, as the offset is not tightly controlled - take the measurement at a known temperature (we recommend 25C - though it should be close to the nominal operating temperature, since the closer to the single point calibration temperature the measured temperature is, the more accurate that calibration will be without doing a more complicated two-point calibration (which would also give an approximate value for the slope)) and store it in EEPROM (make sure that `EESAVE` fuse is set first, otherwise it will be lost when new code is uploaded via ISP) if programming via ISP, or at the end of the flash if programming via a bootloader (same area where oscillator tuning values are stored). See the section below for the recommended locations for these.
 
 ### Tuning Constant Locations
-These are the recommended locations to store tuning constants. In the case of OSCCAL, they are what are checked during startup when a tuned configuration is selected.
-
-ISP programming: Make sure to have EESAVE fuse set, stored in EEPROM
+These are the recommended locations to store tuning constants. In the case of the bootloader board definitions, it is critical to place the tuning values *into* the bootloader's flash pages, because otherwise every upload will erase the calibration. This in turn requires some measure of care, as you must be certain to rewrite the contents of the earlier parts of the page. (and of course that the bootloader has enough space after it to fit the these values )
+ISP programming used: Make sure to have EESAVE fuse set, stored in EEPROM
 
 Optiboot used: Saved between end of bootloader and end of flash.
 
@@ -188,49 +211,54 @@ Optiboot used: Saved between end of bootloader and end of flash.
 | Temperature Offset     | E2END - 5       | FLASHEND - 7   |
 | Temperature Slope      | E2END - 4       | FLASHEND - 6   |
 | Unspecified            | E2END - 3       | FLASHEND - 5   |
-| Tuned OSCCAL 12 MHz    | E2END   2       | FLASHEND - 4   |
+| Tuned OSCCAL 12 MHz    | E2END - 2       | FLASHEND - 4   |
 | Tuned OSCCAL 8.25 MHz  | E2END - 1       | FLASHEND - 3   |
 | Tuned OSCCAL 8 MHz     | E2END           | FLASHEND - 2   |
 | Bootloader Signature 1 | Not Used        | FLASHEND - 1   |
 | Bootloader Signature 2 | Not Used        | FLASHEND       |
 
-Mironucleus used: Micronucleus boards store a tuning value to the application section, but a separate sketch could also use a different means of calibration and store a value in the flash. The recommended locationsare shown below.
+Mironucleus used: Micronucleus boards store a tuning value to the application section, but a separate sketch could also use a different means of calibration and store a value in the flash of the bootloader section to persist the setting across uploads, but this seems to be an implausible use case.
 
 | Tuning Constant        | Location Flash         |
 |------------------------|------------------------|
-| Tuned OSCCAL 8.25 MHz  | BOOTLOADER_ADDRESS - 4 |
+| Tuned OSCCAL 8.25 MHz* | BOOTLOADER_ADDRESS - 4 |
 | Temperature Offset     | FLASHEND - 3           |
 | Temperature Slope      | FLASHEND - 2           |
 | Tuned OSCCAL 8.25 MHz  | FLASHEND - 1           |
-| Tuned OSCCAL 8 MHz     | FLASHEND               |
+| Tuned OSCCAL 8 MHz     | FLASHEND -             |
 
+`*` Calibrated at the USB voltage during programming
 
 ## Interrupt Vector Table
-This table lists all of the interrupt vectors available on the ATtiny x61-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
+This table lists all of the interrupt vectors available on the ATtiny x61-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not cleanly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging.
 
-**Note about PCINTs:** There's a `PCMSK0` and `PCMSK1` for port A and B respectively, like normal. There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs on each port, like normal. But both of them call the same PCINT vector when triggered: *there's ONLY ONE PCINT VECTOR!*
+Note: The shown addresses below are "byte addressed" as that has proven more readily recognizable. The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first. Notice that INT0 is (as always) the highest priority interrupt. All of the parts  in this family are 8k or less flash, so they do not need to use 4-byte vectors.
+
+**Note about PCINTs:** The x61's are abnormal here. There's a `PCMSK0` and `PCMSK1` for port A and B respectively, like normal. There are `PCIE0` and `PCIE1` bits in `GIMSK` to enable PCINTs on each port, like normal. But both of them call the same PCINT vector when triggered. That's right, *there's ONLY ONE PCINT VECTOR!*
+"What? They made the ADCs able to use the same channels, but went from normal pcints on the tiny26 to weird ones here?"
+Not at all! Where did you get the idea that the Tiny26 PCINTs were any less wacky or less primitive than the ones on the Tinyx61? I agree that from the list of vector names, it really does look like the tiny26 has two normal pcint banks. But if you read that chapter of the datasheet, you discover that those are the wackiest two (well, more like 1.5) banks of PCINTs you've ever seen. The single vector here is WAY more normal.
 
  # | Address | Vector Name          | Interrupt Definition
 ---|---------|----------------------|-------------
  0 |  0x0000 | RESET_vect           | Not an interrupt - this is a jump to the start of your code.
- 1 |  0x0001 | INT0_vect            | External Interrupt Request 0
- 2 |  0x0002 | PCINT_vect           | Pin Change Interrupt
- 3 |  0x0003 | TIMER1_COMPA_vect    | Timer/Counter1 Compare Match A
- 4 |  0x0004 | TIMER1_COMPB_vect    | Timer/Counter1 Compare Match B
- 5 |  0x0005 | TIMER1_OVF_vect      | Timer/Counter1 Overflow
- 6 |  0x0006 | TIMER0_OVF_vect      | Timer/Counter0 Overflow
- 7 |  0x0007 | USI_START_vect       | USI Start
- 8 |  0x0008 | USI_OVF_vect         | USI Overflow
- 9 |  0x0009 | EE_RDY_vect          | EEPROM Ready
-10 |  0x000A | ANA_COMP_vect        | Analog Comparator
-11 |  0x000B | ADC_vect             | ADC Conversion Complete
-12 |  0x000C | WDT_vect             | Watchdog Time-out (Interrupt Mode)
-13 |  0x000D | INT1_vect            | External Interrupt Request 1
-14 |  0x000E | TIMER0_COMPA_vect    | Timer/Counter0 Compare Match A
-15 |  0x000F | TIMER0_COMPB_vect    | Timer/Counter0 Compare Match B
-16 |  0x0010 | TIMER0_CAPT_vect     | Timer/Counter1 Capture Event
-17 |  0x0011 | TIMER1_COMPD_vect    | Timer/Counter1 Compare Match D
-18 |  0x0012 | FAULT_PROTECTION_vect| Timer/Counter1 Fault Protection
+ 1 |  0x0002 | INT0_vect            | External Interrupt Request 0
+ 2 |  0x0004 | PCINT_vect           | Pin Change Interrupt
+ 3 |  0x0006 | TIMER1_COMPA_vect    | Timer/Counter1 Compare Match A
+ 4 |  0x0008 | TIMER1_COMPB_vect    | Timer/Counter1 Compare Match B
+ 5 |  0x000A | TIMER1_OVF_vect      | Timer/Counter1 Overflow
+ 6 |  0x000C | TIMER0_OVF_vect      | Timer/Counter0 Overflow
+ 7 |  0x000E | USI_START_vect       | USI Start
+ 8 |  0x0010 | USI_OVF_vect         | USI Overflow
+ 9 |  0x0012 | EE_RDY_vect          | EEPROM Ready
+10 |  0x0014 | ANA_COMP_vect        | Analog Comparator
+11 |  0x0016 | ADC_vect             | ADC Conversion Complete
+12 |  0x0018 | WDT_vect             | Watchdog Time-out (Interrupt Mode)
+13 |  0x001A | INT1_vect            | External Interrupt Request 1
+14 |  0x001C | TIMER0_COMPA_vect    | Timer/Counter0 Compare Match A
+15 |  0x001E | TIMER0_COMPB_vect    | Timer/Counter0 Compare Match B
+16 |  0x0020 | TIMER0_CAPT_vect     | Timer/Counter1 Capture Event
+17 |  0x0022 | TIMER1_COMPD_vect    | Timer/Counter1 Compare Match D
+18 |  0x0024 | FAULT_PROTECTION_vect| Timer/Counter1 Fault Protection
 
 ## 861 vs 861a - the one apparently relevant difference
-There is one way in which the 861A is notably more usable than the 861. That is the fact that the A markedly better internal oscillator. If you look at the graphs of internal oscillator speed fs OSCCAL, you will notice that some parts have a discontinuity. The 861 does. The 861A does not. The bifiurcated oscillator cal curve comes with an older, inferior design, and those parts are less suited to running micronucleus and more likely to have random problems caused by clock inaccuracy compared to the ones with the non-bifurcated oscillator (not counting the 441/841/1634/828 which have a third type - the most stable of all, but with a sharp upturn in the F vs V curve above 4v - those don't directly compare.
+There is one way in which the 861A is notably more usable than the 861. That is the fact that they have a markedly better internal oscillator. If you look at the graphs of internal oscillator speed vs OSCCAL, you will notice that some parts have a discontinuity in the middle. The 861 does. The 861A does not. These represent two different designs - The bifiurcated oscillator cal curve is associated an older, inferior oscillator design, and those parts are less suited to running micronucleus and, regardless of whether micronucleus is used, the bifurcated oscillator design is less more likely to have random problems caused by clock inaccuracy compared to the 861A with the non-bifurcated oscillator. Thankfully the 861-not-A is so unusual these days that it's more expensive than it's successor (same is true of the other tinies with an A after their number - The A is consistently cheaper than not-A, as they would love for everyone to switch to the strictly better A's

@@ -292,7 +292,7 @@ static const uint8_t A7 = ADC_CH(7);
  * a indicates ADC pin
  * x indicates XTAL pin
  *---------------------------------------------------------------------------*/
-#pragma message("This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order")
+#pragma message("This is the Counterclockwise pin mapping - make sure you're using the pinout diagram or\n board numbered with the pins in counterclockwise order or by port \nand bit, or just use PIN_Pxn notation and never use a number and it'll work on both.\nThis mapping is stritly worse than clockwise, it is for compatibility, and is not recommended for new designs.")
 
 // #warning "This is the COUNTERCLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in counter clockwise order"
 

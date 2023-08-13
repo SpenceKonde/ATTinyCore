@@ -77,11 +77,11 @@ void turnOffPWM(uint8_t timer) {
     #endif
     #if defined(__AVR_ATtinyX7__)
       if (timer & 0xF1) {               // It's one of the flex pins on timer1
-      // Timer1 on x7                   // Likely implementation:
-      uint8_t bitmask = timer & 0xF0;   // mov, andi
-      if (!(timer & 0x04)){             // sbrs
-        _SWAP(bitmask);                 // swp
-      }
+        // Timer1 on x7                   // Likely implementation:
+        uint8_t bitmask = timer & 0xF0;   // mov, andi
+        if (!(timer & 0x04)){             // sbrs
+          _SWAP(bitmask);                 // swp
+        }
         TCCR1D &= (~bitmask);           // com, sts
       }
       // Using the swp instruction results in MUCH better code. The old way had a variable shift, which gets implemented as a tiny loop.

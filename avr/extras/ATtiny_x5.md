@@ -45,11 +45,10 @@ For those brave souls who wish to try, your best hope is:
 * Digital I/O functions should be avoided. They must be replaced with fast digital I/O, which writes to the pins with the atomic CBI or SBI instruction.
 * It may be most practical if USB is dynamically enabled and disabled, as the above constraints apply only while the device is connected and acting as a USB device (notice how a digispark disappears from device manager when a non-USB sketch is run).
 * Some research will be required to realize that sort of intermittent USB. I believe it to be possible, but don't know how to implement it. What I do know is that if you wish to to intermittently run VUSB in interrupt driven mode, you must disable all interrupts *except* the USB one. My approach would be, after all interrupts are in place but this is not yet done, compile and export the hex (which gets you the assembly listing and memory map too). Open the memory map in your favorite text editor (see , and make note of all `_vector` functions with non-zero size. Cross-reference with the interrupt list at the bottom of this document, and write down a list of the interrupt routines present, and hence which interrupts the sketch uses, and cross-reference that with the datasheet to find the bit which enables said interrupt.
-
-* The libraries you find may require modification as many of them were written for AVR-GCC 4.3 (not 7.3). Among other things, since AVR-GCC 5, a variable declared PROGMEM must also be declared const. If trying to compile gives errors about that, you've got a very old version of the library - try to find a newer one to work from. There are also problems with mismatches between versions of VUSB and the libraries that make use of it (typically they supply their own copy of VUSB).
+* The libraries you find may require modification as many of them were written for AVR-GCC 4.3 (not 7.3). Among other things, since AVR-GCC 5, a variable declared PROGMEM must also be declared const. If trying to compile gives errors about that, you've got a very old version of the library - try to find a newer library version to work from. There are also problems with mismatches between versions of VUSB and the libraries that make use of it (typically they supply their own copy of VUSB, all of which have forkitis where countless forks of an open source project have been made at different times, and are all mutually incompatible).
 
 ##### Background and hope for the future
-The crux of the problem is that USB requires that the chip be able to respond within a very very short time (a number of clock cycles in the low double digits) to certain USB events. This is easy in polled mode micronucleus uses - it is a bootloader fit into the gaps between when USB has to be serviced, written with an intimate knowledge of USB. This barely scrapes by in interrupt mode if there are no other interrupts that fire and interrupts are never disabled when USB comms has to happen. Now, on the newer modern AVR devices, those have a two level interrupt controller - thus, all that should be necessary is to run at a sufficiently high clock speed (which those parts are eminantly capable of, especially if you take advantage of the overclocking headroom) - I don't know the current status of ports to that platform, I don't think there's a ready micronucleus bootloader available, let alone VUSB libraries - but my assessment is that an arduino-y environment that admits VUSB would be entirely viable on modern AVRs, with the sacrifice of a single port's worth of pin interrupts to service USB, and with that interrupt given LVL1 priority. If/when I become aware of any port of micronucleus to modern AVRs, I would be eager to add it to megaTinyCore and DxCore, which would generate enough interest to hopefully stimulate development of VUSB libraries there, where they have a chance of working there
+The crux of the problem is that USB requires that the chip be able to respond within a very very short time (a number of clock cycles in the low double digits) to certain USB events. This is easy in polled mode micronucleus uses - it is a bootloader fit into the gaps between when USB has to be serviced, written with an intimate knowledge of USB. This barely scrapes by in interrupt mode if there are no other interrupts that fire and interrupts are never disabled when USB comms has to happen. Now, on the newer modern AVR devices, those have a two level interrupt controller - thus, all that should be necessary is to run at a sufficiently high clock speed (which those parts are eminantly capable of, especially if you take advantage of the overclocking headroom) - I don't know the current status of ports to that platform, I don't think there's a ready micronucleus bootloader available, let alone VUSB libraries - but my assessment is that an arduino-y environment that admits VUSB would be entirely viable on modern AVRs, with the sacrifice of a single port's worth of pin interrupts to service USB, and with that interrupt given LVL1 priority - However, I dont expect this is high on anyone's priority pile:
 
 ### LED_BUILTIN is on PB1
 Both optiboot and micronucleus will try to blink it to indicate bootloader status.
@@ -69,7 +68,28 @@ The core configures PWM output as described below
 * Timer1 is a unique timer which is more complicated to configure but also more capable.
   * Inverted outputs are not supported by the core (you must configure it manually by register writes, and refrain from using digitalWrite() or analogWrite() on any associated pin as those may have undesired effects on the configuration of the timer.
   * The timer by default is clocked from the the main peripheral clock (F_CPU), but it can be configured to use the PLL instead using the included [ATTinyCore library](../libraries/ATTinyCore/README.md). The PLL clock is generated from the internal oscillator kicked up by a factor of 8 by the on-chip PLL, for a nominal frequency of 64 MHz, or 65 MHz with the 16.5 MHz tuned oscillator option (sometimes used by digispark-like configurations)
-  *
+
+### PWM frequency
+TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode. TC1 has no phase correct mode. However because of the flexible prescaler, we can always keep the output from TC1 between 488 and 977 Hz, our target range.
+
+| F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |
+|--------|---------------------|-----------------------|------------------------------|
+| 1  MHz | 1/8/256=     488 Hz |  1/8/256=      488 Hz |                              |
+| 2  MHz | 2/8/256=     977 Hz |  2/16/256=     488 Hz |                              |
+| <4 MHz | x/8/256= 488 * x Hz |  x/16/256= 244 * x Hz |                              |
+| 4  MHz | 4/8/256=    1960 Hz |  4/16/256=     977 Hz |                              |
+| <8 MHz | x/64/256= 61 * x Hz |  x/32/256= 122 * x Hz |                              |
+| 8  MHz | 8/64/256=    488 Hz |  8/64/256=     488 Hz |                              |
+| >8 MHz | x/64/256= 61 * x Hz |  x/64/256=  61 * x Hz |                              |
+| 12 MHz | 12/64/256=   735 Hz | 12/64/256=     735 Hz |                              |
+| 16 MHz | 16/64/256=   977 Hz | 16/64/256=     977 Hz |                              |
+|>16 MHz | x/64/256= 61 * x Hz | x/128/256=  31 * x Hz |                              |
+| 20 MHz | 20/64/256=  1220 Hz | 20/128/256=    610 Hz |                              |
+
+Where speeds above or below a certain speed are specified, it's implied that the other end of the range is the next marked value. So >16 in that table is for 16-20 MHz clocks. The formula is given as a constant times x where x is expressed as MHz (the division above gets the time in megahertz - in the interest of readability I did not include the MHz to Hz conversion - I'm sure you all know how to multiply by a million)
+For more information see the [Changing PWM Frequency](Ref_ChangePWMFreq.md) reference.
+
+### I2C support
 There is no hardware I2C peripheral. I2C functionality can be achieved with the hardware USI. This is handled transparently via the special version of the Wire library included with this core. **You must have external pullup resistors installed** in order for I2C functionality to work at all. We only support use of the builtin universal Wire.h library. If you try to use other libraries and encounter issues, please contact the author or maintainer of that library - there are too many of these poorly written libraries for us to provide technical support for.
 
 ### SPI Support
@@ -191,22 +211,24 @@ The manufacturer part numbers (ordering codes) indicate, in the final non-decima
   * M = 4mm x 4mm QFN-20 0.5mm pitch. Only 8 of the contacts are electrically connected, the other 12 are just for decoration and to promote successful soldering via self-centering. If you ever, for some crazy reason, end up using these, and after-reflow inspection reveals visible solder bridge(s), only those that involve the 8 used pins must be corrected.
 
 ## Interrupt Vectors
-This table lists all of the interrupt vectors available on the ATtiny x5-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not clearly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging. Vector addresses are "word addressed". vect_num is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first.
+This table lists all of the interrupt vectors available on the ATtiny x8-family, as well as the name you refer to them as when using the `ISR()` macro. Be aware that a non-existent vector is just a "warning" not an "error" (for example, if you misspell a vector name) - however, when that interrupt is triggered, the device will (at best) immediately reset (and not cleanly - I refer to this as a "dirty reset") The catastrophic nature of the failure often makes debugging challenging.
+
+Note: The shown addresses below are "byte addressed" as that has proven more readily recognizable. The vector number is the number you are shown in the event of a duplicate vector error, as well as the interrupt priority (lower number = higher priority), if, for example, several interrupt flags are set while interrupts are disabled, the lowest numbered one would run first. Notice that INT0 is (as always) the highest priority interrupt. All of the parts  in this family are 8k or less flash, so they do not need to use 4-byte vectors.
 
 |vect_num | Address| Vector Name        | Interrupt Definition                |
 |---------|--------|--------------------|-------------------------------------|
 |       0 | 0x0000 | RESET_vect         | Not an interrupt - this is a jump to the start of your code.  |
-|       1 | 0x0001 | INT0_vect          | External Interrupt Request 0        |
-|       2 | 0x0002 | PCINT0_vect        | Pin Change Interrupt 0              |
-|       3 | 0x0003 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A      |
-|       4 | 0x0004 | TIMER1_OVF_vect    | Timer/Counter1 Overflow             |
-|       5 | 0x0005 | TIMER0_OVF_vect    | Timer/Counter0 Overflow             |
-|       6 | 0x0006 | EE_RDY_vect        | EEPROM Ready                        |
-|       7 | 0x0007 | ANA_COMP_vect      | Analog Comparator                   |
-|       8 | 0x0008 | ADC_vect           | ADC Conversion Complete             |
-|       9 | 0x0009 | TIMER1_COMPB_vect  | Timer/Counter1 Compare Match B      |
-|      10 | 0x000A | TIMER0_COMPA_vect  | Timer/Counter0 Compare Match A      |
-|      11 | 0x000B | TIMER0_COMPB_vect  | Timer/Counter0 Compare Match B      |
-|      12 | 0x000C | WDT_vect           | Watchdog Time-out (Interrupt Mode)  |
-|      13 | 0x000D | USI_START_vect     | USI START                           |
-|      14 | 0x000E | USI_OVF_vect       | USI Overflow                        |
+|       1 | 0x0002 | INT0_vect          | External Interrupt Request 0        |
+|       2 | 0x0004 | PCINT0_vect        | Pin Change Interrupt 0              |
+|       3 | 0x0006 | TIMER1_COMPA_vect  | Timer/Counter1 Compare Match A      |
+|       4 | 0x0008 | TIMER1_OVF_vect    | Timer/Counter1 Overflow             |
+|       5 | 0x000A | TIMER0_OVF_vect    | Timer/Counter0 Overflow             |
+|       6 | 0x000C | EE_RDY_vect        | EEPROM Ready                        |
+|       7 | 0x000E | ANA_COMP_vect      | Analog Comparator                   |
+|       8 | 0x0000 | ADC_vect           | ADC Conversion Complete             |
+|       9 | 0x0002 | TIMER1_COMPB_vect  | Timer/Counter1 Compare Match B      |
+|      10 | 0x0004 | TIMER0_COMPA_vect  | Timer/Counter0 Compare Match A      |
+|      11 | 0x0006 | TIMER0_COMPB_vect  | Timer/Counter0 Compare Match B      |
+|      12 | 0x0008 | WDT_vect           | Watchdog Time-out (Interrupt Mode)  |
+|      13 | 0x000A | USI_START_vect     | USI START                           |
+|      14 | 0x000C | USI_OVF_vect       | USI Overflow                        |
