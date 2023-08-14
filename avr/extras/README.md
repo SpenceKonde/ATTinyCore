@@ -98,7 +98,7 @@ Vaguely recent versions of AVRdude appear to have dropped a few versions of the 
 
 **You cannot use the Pxn notation (ie, PB2, PA1, etc) to refer to pins** - these are defined by the compiler-supplied headers, and not to what an arduino user would expect. To refer to pins by port and bit, use PIN_Pxn (ex, PIN_PB2); these are #defined to the Arduino pin number for the pin in question, and can be used wherever digital pin numbers can be used. We recommend this method of referring to pins, especially on parts with multiple pinmapping options
 
-**All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.**
+**All ATtiny chips (as well as the vast majority of digital integrated circuits) require a 0.1uF ceramic capacitor** between Vcc and Gnd for decoupling; this should be located as close to the chip as possible (minimize length of wires to cap). Devices with multiple Vcc pins, or an AVcc pin, should use a cap on those pins too. Do not be fooled by poorly written tutorials or guides that omit these. Yes, I know that in some cases (ex, the x5-family) the datasheet doesn't mention these - but other users as well as myself have had problems when it was omitted on a t85.
 
 **For low power applications, before entering sleep, remember to turn off the ADC (ADCSRA&=(~(1<<ADEN))) - otherwise it will waste ~270uA**
 
@@ -225,12 +225,16 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 ```
 
 
-### Refer to pins by port/pin
-Instead of referring to pins by the digital pin numbers, it is now (as of 1.4.0) possible to refer to pins based on their port and pin number within the port. **We recommend this method of referring to pins in all cases**, as it can be more easily cross-referenced with the datasheet, and is independent of pin mapping (for devices with multiple pin mapping options). It also helps to build good mental habits with regards to thinking about pins in the context of ports, which is helpful when writing code where more advanced techniques are needed. For every pin, the core supplies a constant of the form `PIN_Pxn`, where `x` is the port letter, and `n` is the bit of the pin within that port; this is a #define set to the digital pin number corresponding to it. For example, `PIN_PA2` refers to bit 2 in PORTA. On the ATtiny167, where there are three different pin mappings, all radically different, `analogWrite(PIN_PA2,128)` will always generate a squarewave on the same pin, and the code can be moved between pinmappings without concern.
-
+### How to refer to pins
+There are several ways to refer to pins. 
+1. **Recommended: `PIN_PA0` - PIN_Pxn notation** - the Pxn constants are defined in the headers
+  a. For all Pxn that corresponds to a pin, the headers define as n, eg, #define PA0 0, #define PA1 1 ... #define PB7 7). As it is unprecedented and generally agreed to be a mortal sin, we do not undefine anything that the Microchip IO headers supply - that road leads to hell (or at least, to users thinking they're in hell) - and that in turn is why there are so many programmers down there. We add to them (when they change the spelling of things, which they've been doing lately to newer parts, we add compatibility #defines with the name of the old constant), but we don't take away.
+2. **Recommended: MISO, MOSI, SCK, SS, SCL, SDA** - Regardless of whether your device uses a USI, has hardware SPI, even hardware I2C, these defines are provided with the appropriate pins (though SS is the only one you need to know, since you need to keep it output) 
+3. **Deprecated: Numeric pin numbers** - these put a pin-mapping dependency on your code. 
 ### Assembler Listing generation
+Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. The file is named with abbreviations for all options selected from a tools menu, so you can export, change a tools submenu, export again, and then find two sets of listings waiting for you (if it's not added as an abbreviation, it does not change the binary output - or it shouldnt). 
 
-In version 1.2.2 and later, Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions.
+You should also have two .map files - these are memory maps. They are fucking ugly to read, and it's very difficult to get them into excell, for example, when it really shouldn't be. That is because the format that the linker uses is so evil that it is surely the work of the devil or a minion of his (All of the formats it uses suck. The one I use sucks the worst, but it also is the one that displays the most complete information. I've been working on python scripts to clean them up to be more readable. It's over in [AVR Research: Maps and Listings](https://github.com/SpenceKonde/AVR_Research/MapsAndListings)
 
 ### Link-time Optimization (LTO) support
 As of 2.0.0, we no longer support use without Link Time Optimization. It is required for some of the tricks I use to ensure that useful compile errors appear instead of mysterious broken behavior at runtime when we know at compile time that it won't work, and link time optimization is a stunning reduction in sketch size as well.
