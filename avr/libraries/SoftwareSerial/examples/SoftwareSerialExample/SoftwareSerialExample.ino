@@ -51,7 +51,7 @@
 void setup() {
   // Open serial communications on either the "fake" hardware serial port
   // which is actually another implementation of software serial (if there
-  // is no harware serial) or the actual hardware serial port (if any)
+  // is no hardware serial) or the actual hardware serial port (if any)
   Serial.begin(9600);
 
   Serial.println("Goodnight moon!");

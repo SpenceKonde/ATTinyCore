@@ -674,7 +674,7 @@ void loop() {
   #endif
 #endif
 
-// Thcase where both SIGRD and RSIG is definded is unlikely to exist in the wild.
+// Thcase where both SIGRD and RSIG is defined is unlikely to exist in the wild.
 
 /*---------------------------------------------------------------------------
  * Aliases for the interrupt service routine vector numbers so the code

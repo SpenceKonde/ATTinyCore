@@ -25,8 +25,8 @@ In a timer counter unit, when we're talking about PWM, we're talking about the s
   * Periodic interrupts with CTC (Clear Timer on Compare match)
   * Arbitrary TOP values, sometimes without the loss of an output
   * Higher resolution on Timer1 and Timer2 (where present) - those are both mostly standard 16-bit timers.
-  * Asynchronous low speed opperation from an external clock or watch crystal (x7, possibly a small number of others)
-  * Asynchronous high speed operration from a x8 PLL on the 8 MHz internal osc. (x5, x61 26 only)
+  * Asynchronous low speed operation from an external clock or watch crystal (x7, possibly a small number of others)
+  * Asynchronous high speed operation from a x8 PLL on the 8 MHz internal osc. (x5, x61 26 only)
 
 ### What can I change without breaking analogWrite() or other core API functions?
 * TC0 cannot be reconfigured at all without breaking millis, and should only be used if millis is disabled from the tools submenu.
@@ -47,7 +47,7 @@ tccr1b |=  0b00000001; // set the one low bit(s) we want - this sets the timer t
 TCCR1B = tccr1b;
 ```
 
-You can also change the Waveform Generation Mode (WGM)) - on a normal 16-bit timer this is 2 bits each in TCCR1A (0bxxxxxx10) and TCCR1B (0xbxxx43xxx) to another 8-bit mode (including the frequency and phase correct PWM option where TOP is specified by ICR1, if and only if ICR1 is set to exactly 255. You should probably at a minimum disable interrupts, and stop the timer, write TCCR1A, then TCCR1B, then reenable interrupts. . Depending on the application, you may also want to zero out TCNT1.
+You can also change the Waveform Generation Mode (WGM)) - on a normal 16-bit timer this is 2 bits each in TCCR1A (0bxxxxxx10) and TCCR1B (0xbxxx43xxx) to another 8-bit mode (including the frequency and phase correct PWM option where TOP is specified by ICR1, if and only if ICR1 is set to exactly 255. You should probably at a minimum disable interrupts, and stop the timer, write TCCR1A, then TCCR1B, then re-enable interrupts. . Depending on the application, you may also want to zero out TCNT1.
 
 Consult the datasheet for the list of WGMs that your timer supports and the values corresponding to them.
 
