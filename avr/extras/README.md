@@ -226,13 +226,13 @@ In version 1.3.3 and later, the clock source is also made available via the CLOC
 
 
 ### How to refer to pins
-There are several ways to refer to pins. 
+There are several ways to refer to pins.
 1. **Recommended: `PIN_PA0` - PIN_Pxn notation** - the Pxn constants are defined in the headers
   a. For all Pxn that corresponds to a pin, the headers define as n, eg, #define PA0 0, #define PA1 1 ... #define PB7 7). As it is unprecedented and generally agreed to be a mortal sin, we do not undefine anything that the Microchip IO headers supply - that road leads to hell (or at least, to users thinking they're in hell) - and that in turn is why there are so many programmers down there. We add to them (when they change the spelling of things, which they've been doing lately to newer parts, we add compatibility #defines with the name of the old constant), but we don't take away.
-2. **Recommended: MISO, MOSI, SCK, SS, SCL, SDA** - Regardless of whether your device uses a USI, has hardware SPI, even hardware I2C, these defines are provided with the appropriate pins (though SS is the only one you need to know, since you need to keep it output) 
-3. **Deprecated: Numeric pin numbers** - these put a pin-mapping dependency on your code. 
+2. **Recommended: MISO, MOSI, SCK, SS, SCL, SDA** - Regardless of whether your device uses a USI, has hardware SPI, even hardware I2C, these defines are provided with the appropriate pins (though SS is the only one you need to know, since you need to keep it output)
+3. **Deprecated: Numeric pin numbers** - these put a pin-mapping dependency on your code.
 ### Assembler Listing generation
-Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. The file is named with abbreviations for all options selected from a tools menu, so you can export, change a tools submenu, export again, and then find two sets of listings waiting for you (if it's not added as an abbreviation, it does not change the binary output - or it shouldn't). 
+Sketch -> Export compiled binary will generate an assembly listing in the sketch folder; this is particularly useful when attempting to reduce flash usage, as you can see how much flash is used by different functions. The file is named with abbreviations for all options selected from a tools menu, so you can export, change a tools submenu, export again, and then find two sets of listings waiting for you (if it's not added as an abbreviation, it does not change the binary output - or it shouldn't).
 
 You should also have two .map files - these are memory maps. They are fucking ugly to read, and it's very difficult to get them into excel, for example, when it really shouldn't be. That is because the format that the linker uses is so evil that it is surely the work of the devil or a minion of his (All of the formats it uses suck. The one I use sucks the worst, but it also is the one that displays the most complete information. I've been working on python scripts to clean them up to be more readable. It's over in [AVR Research: Maps and Listings](https://github.com/SpenceKonde/AVR_Research/MapsAndListings)
 
