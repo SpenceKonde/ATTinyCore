@@ -73,14 +73,14 @@ On these devices, when the master writes:
 2. Master clocks out the 7 bit part address and the Write bit
 3. Slave ACKs
 4. Master clocks out the address. Slave sets the pointer to this and acks (rarely, the second byte is also part of the pointer address (usually encountered with EEPROMs))
-5. Master clocks out one byte of data to write tothat address (most devices autoincrement, a few dont)
-6. Slave writes it to that location in the virtual register table and acks
+5. Master clocks out one byte of data to write tothat address (most devices autoincrement, a few don't, some have an option for that in some register).
+6. Slave writes it to to it's internal SFRs or RAM as appropriate.
 7. Repeat 5 and 6 until all data transferred.
-8. Master generates a stop condition
+8. Master responds with a NACK and generates a stop condition.
 
 For a read, the master would first perform the first 4 steps above setting the location they want to read from, then either send a stop, then start condition or a repeated start and then reads per steps 5 to 8 of the way the Arduino API provides.
 
-### Yeah, they don't line up so good.
-It's like the API designer read the protocol spec and designed to that and had never actually used an I2C device. You cannot have a register-model, because you don't know how many bytes the master will read (the protocol never tells you this), nor can you find out how many are read after the fact, nor can you put the slave to sleep because it might be silently servicing an interrupt for a read that hasn't finished yet. This will generally make you "that device" that when misused, becomes non-responsive with one or both being held low. You don't want to be that device.
+### Yeah, they don't line up so good
+It's like the API designer read the protocol spec and designed to that and had never actually used an I2C device, or had little imagination and hadn't attempted to make anything that acted like other I2C devices. You cannot have a register-model, because you don't know how many bytes the master will read (the protocol never tells you this), nor can you find out how many are read after the fact, nor can you put the slave to sleep because it might be silently servicing an interrupt for a read that hasn't finished yet. This will generally make you "that device" that when misused, becomes non-responsive with one or both lines being held low. You don't want to be that device. I don't really have any good solution to offer here, but this is why all arduino slave devices you've seen use I2C like lobotomized serial: That's the only mode of operation that the API supports.
 
-The API has been extended for DxCore and mTC, as the problem was far more tractable there (not only is it a single implementation covering a much more cooperative peripheral, the same library works unmodified and likely will continue to do so for the forseeable future.
+The API has been extended for DxCore and mTC - the problem was far more tractable there: It only had to be done once for every AVR released since 2016 - the same library works unmodified and likely will continue to do so for the forseeable future, with only trivial changes, whereas it would have to be done thrice for the older parts. Moreover, on all of these parts, whatever I2C implementation is available, it is much less helpful, and lacks the features that we used for this on mTC and DxC.

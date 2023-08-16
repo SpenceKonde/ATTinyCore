@@ -1,4 +1,4 @@
-# Internals and advanced functionality:
+# Internals and advanced functionality
 
 You can identify the core using the following:
 

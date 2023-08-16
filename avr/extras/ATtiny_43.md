@@ -40,7 +40,7 @@ Obviously, you can buy my lovely tiny43 board with the buck converter ready to g
  You want, ideally, a device which is prohibited by the laws of physics - a diode with near zero forward drop, but even more importantly, you need a diode with very VERY low reverse leakage current. If you just optiomi
 
 
-### PWM frequency:
+### PWM frequency
 TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode. On this part, the TC1 is uniquely bad - it has a different, shorter list of possible WGMs, and is only 8 bits.
 
 | F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |

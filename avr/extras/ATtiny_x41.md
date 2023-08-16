@@ -66,7 +66,7 @@ Example of a "guard" against wrong pin mapping:
 
 All pin mapping options assume that PB2 has the LED (bootloaders will blink that pin, and LED_BUILTIN is defined as PIN_PB2), unless it's a micronucleus configuration with D+ on PB2, in which case it will instead use PB0.
 
-### PWM frequency:
+### PWM frequency
 TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode. Unique among the tinyAVRs, the x41 parts have a third timer. TC1 and TC2 are both the "good" timers, the 16-bit-capable ones.
 
 | F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1/2</sub> | Notes                        |
