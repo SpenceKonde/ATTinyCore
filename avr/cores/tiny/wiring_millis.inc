@@ -19,7 +19,7 @@
 /* The key is never to compute (F_CPU / 1000000L), which may lose precision.
    The formula below is correct for all F_CPU times that evenly divide by 10,
    at least for prescaler values up and including 64 as used in this file. */
-  #if MillisTimer_Prescale_Value <= 64
+  #if MillisTimer_Prescale_Value <= 64 | (MillisTimer_Prescale_Value == 128 && F_CPU <= 20000000UL)
     #define MICROSECONDS_PER_MILLIS_OVERFLOW \
   (MillisTimer_Prescale_Value * 256UL * 1000UL * 100UL / ((F_CPU + 5UL) / 10UL))
   #else
