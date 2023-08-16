@@ -63,8 +63,7 @@ LED_BUILTIN is on PB0 on the legacy option (that was a dumb choice), PB1 on digi
 ### Flexible PWM support
 The two channels of Timer1 can each output on one or more of 4 pins, but each channel can only output one duty cycle. Thus, on the x67, the OCR1Ax and OCR1Bx pins, which are the even and odd pins in PORTB respectively) each share a single channel, while the lone compare output on PA3 from timer0 is independent. So while all 8 of those pins can be used for PWM, you can only have a single duty cycle on the odd pins and a different one on the even ones. If you do `analogWrite(PIN_PB0,64);`, you get 25% dutycycle on PB0, if you then do `analogWrite(PIN_PB2,128);` (these are OCR1AU and OCR1AW, respectively) both of the pins will be outputting 50% dutycycle after the second command. To stop the PWM output, call digitalWrite() or analogWrite() with 0 or 255 on the pin you want to turn off. However if you did `analogWrite(PIN_PB0,128); analogWrite(PIN_PB1,128);` (OCR1AU and OCR1BU), you would get 25% on PB0 and 50% on PB1.
 
-#### PWM frequency:
-
+#### PWM frequency
 TC0 is always run in Fast PWM mode: We use TC0 for millis, and phase correct mode can't be used on the millis timer - you need to read the count to get micros, but that doesn't tell you the time in phase correct mode because you don't know if it's upcounting or downcounting in phase correct mode.
 
 | F_CPU  | F_PWM<sub>TC0</sub> | F_PWM<sub>TC1</sub>   | Notes                        |

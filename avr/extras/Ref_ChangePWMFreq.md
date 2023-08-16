@@ -1,9 +1,7 @@
 # Changing PWM frequency
 
 ## Classic AVR
-This is concerned with Classic AVRs (those released before 2016), specifically those supported by ATTinyCore. The ATmegas use essentially the same timer1, (usually with the normal 2 outputs, occasionally with a third compare channel) - but they also typically have a very different timer2 than we get. Because this is targeted at ATTinyCore users, we will not be discussing the Async timer2; however for ATmega parts with multiple 16-bit timers that are copies of timer1 (usually timer 1, and 3 through 5 if present are this kind of timer).
-
-Links to resources for modern AVRs are linked below.
+This is concerned with Classic AVRs (those released before 2016), specifically those supported by ATTinyCore. The ATmegas use essentially the same timer1, (usually with the normal 2 outputs, occasionally with a third compare channel) - but they also typically have a very different timer2 than we get. Because this is targeted at ATTinyCore users, we will not be discussing the Async timer2; however for ATmega parts with multiple 16-bit timers that are copies of timer1 (usually timer 1, and 3 through 5 if present are this kind of timer) - they have the same timer, sometimes with an third output compare channel
 
 You can change the PWM frequency to a limited number of values on **Timer/Counter1** and (if present) **Timer/Counter2** by simply adjusting the prescaler *while still using analogWrite()*. A much wider range of frequencies are accessible if you take full control of the timer, but in these cases, you would need to change registers that analogWrite() assumes a computationally convenient value is stored in, and analogWrite() would no longer work.
 
@@ -23,8 +21,8 @@ In a timer counter unit, when we're talking about PWM, we're talking about the s
     * On Timer 1 (which is not used for millis), you can optionally get an additional /2 prescaling by using phase correct mode. Many cores copy the official core and always use this mode, but this can slow the PWM down to speeds we might prefer it avoid - or slow them down **from** speeds we'd like to avoid. by being willing to change this mode, it becomes much easier to stay within the target PWM frequency of 490-980 Hz, or at absolute most 1960 Hz (chosen for a number of reasons - it's fast enough that you can blink an LED and it won't appear to flicker, but slow enough that you can PWM most power MOSFETs with just a small gate resistor while staying in spec. At higher frequencies, microcontrollers begin to have trouble driving the pins fast and hard enough to switch the pin without the use of a gate driver), since on most parts the prescaling options are  0 (timer off) 1, 8, 64, 256, and 1024. On the x5 and x61, Timer1 has prescale options of 0, 1, and 2^n where n can be any integer up to 14 (ie, divide by 16384). On parts where timer1 doesn't have that crazy prescaler, which easily gets us into our target range for any frequency, we will choose fastPWM or phase correct PWM if it gets us closer to the target range.
 * When full control of the timer is taken the additional functionality might include (briefly - these features are beyond the scope of this document):
   * Periodic interrupts with CTC (Clear Timer on Compare match)
-  * Arbitrary TOP values, sometimes without the loss of an output
-  * Higher resolution on Timer1 and Timer2 (where present) - those are both mostly standard 16-bit timers.
+  * Arbitrary TOP values, sometimes without the loss of an output, other times only at the cost of an output channel
+  * Higher resolution on Timer1 and Timer2 (where present), at least on most parts, which have a 16-bit timer1 (and the x61's with a 10-bit one, though using that 10-bit one is tricky)
   * Asynchronous low speed opperation from an external clock or watch crystal (x7, possibly a small number of others)
   * Asynchronous high speed operration from a x8 PLL on the 8 MHz internal osc. (x5, x61 26 only)
 
@@ -116,8 +114,7 @@ pllcsr |= 1 << PCKE; // No low speed mode
 PLLCSR = pllcsr; //finally, enable the PLL as timer clock source.
 ```
 
-On the x61, you can change the WGM - there are only 2 bits, and they're the two LSBs of TCCR1D, though unless you're driving a three-phase BLDC motor, only 2 of them are useful - 00 is fast PWM, and 1 is 01 is phase and frequency correct, which is what the core uses. The rest of the register is concerned with the fault protection feature (which is far beyond the scope of this document), and if you're not using that, you can use simple assignment to write a 0 or 1 to that register.
-
+On the x61, you can change the WGM - there are only 2 bits, and they're the two LSBs of TCCR1D, though unless you're driving a three-phase BLDC motor, only 2 of them are useful - 00 is fast PWM, and 1 is 01 is phase and frequency correct. Where available, it is always used by default (as shown on individual part documentation). The rest of the register is concerned with the fault protection feature (which is far beyond the scope of this document and the interests of most readers), and if you're not using that, you can use simple assignment to write a 0 or 1 to that register.
 
 ```c
 // switch to Fast PWM mode (we normally configure this timer for phase correct mode. );  This will halve the PWM speed if it's not already set phase correct.
@@ -175,18 +172,4 @@ SREG = oldsreg;
 
 
 ## Modern AVRs
-This document is not concerned with the modern AVRs.
-
-### tinyAVR 0/1/2 and megaAVR 0
- * [tinyAVR 0/2/1-series TCA](https://github.com/SpenceKonde/DxCore/blob/master/megaavr/extras/Ref_Timers.md)
- * [tinyAVR 1-series TCD](https://github.com/SpenceKonde/DxCore/blob/master/megaavr/extras/Ref_Timers.md)
- * MegaCoreX and the official Arduino Nano Every core have a PWM implementation for TCBs. See notes below.
-
-### AVR Dx, Ex-series
- * [Ex/Dx TCA/TCD](https://github.com/SpenceKonde/DxCore/blob/master/megaavr/extras/Ref_Timers.md)
- * [Dx TCD](https://github.com/SpenceKonde/DxCore/blob/master/megaavr/extras/Ref_TCD.md)
- * Ex TCE - details still unknown. 16-bit 4-channels, no split mode, but possible enhancements from WEX and HIRES to possibly get higher resolution or and additional features. This is going to take some serious study of the datasheet, and this chapter is gonna be a doozy.
- * Ex TCF - details still unknown. 24-bit pulse or squarewave generator clockable from PLL, but if you want real PWM, you have to put it into dual channel 8 bit pwm mode.
-
-### TCB PWM notes
-* On the tinies, the extra TCB pins are mostly on existing TCA pins, and so these are not particularly useful, and the TCBs are bad at pwm, period - whereas whenever any value passed to analogWrite() *or digitalWrite()* as a pin number, if that isn't compile time known (as in, if the value is determined by anything that isn't constant, OR is constant but in a way that the compiler can't assume anything about, it has to be able to react an arbitrary value; (that is, if you have a switch case with 4 options, LTO will optimize those at link time, and see that "Oh this function only gets called with the first two options, and there's no way the third or fourth can be invoked" (before LTO it couldn't do this sort of thing across files, but now it can)). This is more of a chore on the modern AVRs than it was on classics - I didn't think it was worth it for a single additional PWM pin on high pincount tinyAVRs, considering the overhead).
+This document is not concerned with the modern AVRs. Equivalent documentation is provided for those parts in megaTinyCore and DxCore.

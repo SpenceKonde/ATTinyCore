@@ -66,7 +66,7 @@ Two versions of every configuration are supplied - one for use with auto-reset, 
 ## Optiboot and MCUSR (reset cause)
 In order to make the entry modes work correctly - regardless of sketch behavior - Optiboot for ATTinyCore must reset MCUSR prior to exiting. It stashes the value of MCUSR in the GPIOR0 register - in the unlikely event that your sketch needs to know the reset cause, the most efficient wat to do this is shown below.
 
-```
+```c
 uint8_t resetcause = GPIOR0;  // in reg, GPIOR0
 GPIOR0 = 0;                   // out GPIOR0, __zero_reg__
 if(resetcause != 0) {         // cpse reg, __zero_reg__

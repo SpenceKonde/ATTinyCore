@@ -47,9 +47,10 @@ New in 2.0.0. D+ is on PC4, D- is on PC5, and it tries to blink an LED on PC2. T
 ### Two pin mapping options
 When I first merged in support for the tiny1634, I lacked the background to assess the pin mapping that the original author (TC-world as I recall) had chosen. With greater experience, it is evident that it is markedly worse than it could have been I think it was designed with it's prime directive to make 0 and 1 be the serial pins, which was very common practice in those days - and to try to have the SPI be on the same numbered pins as the '328p. As the market has become less of a monoculture, that convention has become less ubiquitous, which is good, because it's destructive . 2.0.0 introduces a more rational pin mapping with the pins numbered in clockwise order instead of counterclockwise. The desired pin mapping can be chosen from the Tools -> Pin Mapping submenu. Be very sure that you have selected the one that you wrote your sketch for, as debugging these issues can be surprisingly timeconsuming. Your sketch can check for PINMAPPING_CCW or PINMAPPING_CW macro (eg, `#ifdef PINMAPPING_CCW` - I would recommend checking for the incompatible one, and immediately #error'ing if you find it). Remember also that you can always refer to pins by their port and number within that port, using the `PIN_Pxn` syntax - where x is the port letter, and n is the pin number, eg PIN_PA7 is PIN A7, which is pin 7 in the clockwise mapping and pin 1 in the counterclockwise mapping. The clockwise mapping is strictly better than the counterclockwise one - the macros are more efficient (hence smaller binary sizes)
 Example of a "guard" against wrong pin mapping:
-```
+
+```c
 #ifdef PINMAPPING_CCW
-#error "Sketch was written for clockwise pin mapping!"
+  #error "Sketch was written for clockwise pin mapping!"
 #endif
 ```
 
@@ -97,9 +98,9 @@ There is no hardware SPI peripheral. SPI functionality can be achieved with the 
 There are two hardware serial ports, Serial and Serial1. It works the same as Serial on any normal Arduino - it is not a software implementation.
 
 To use only TX or only RX channel, after Serial.begin(), one of the following commands will disable the TX or RX channels (for Serial1, use UCSR1B instead)
-```
-UCSR0B&=~(1<<TXEN0); // disable TX
-UCSR0B&=~(1<<RXEN0); // disable RX
+```c
+UCSR0B &= ~(1<<TXEN0); // disable TX
+UCSR0B &= ~(1<<RXEN0); // disable RX
 ```
 
 ### ADC Reference options
@@ -128,20 +129,20 @@ I (Spence Konde / Dr. Azzy) sell ATtiny1634 boards through my Tindie store - you
 If you have no need to use the WDT, but do have a need to use PB3 as an input, you can keep the WDT running by putting it into interrupt mode, with an empty interrupt, at the cost of just 10b of flash, an ISR that executes in 11 clock cycles every 8 seconds, and an extra 1-4uA of power consumption (negligible compared to what the chip consumes when not sleeping, and you'll turn it off while sleeping anyway - see below) - so the real impact of this issue is in fact very low, assuming you know about it and don't waste hours or days trying to figure out what is going on.
 
 ```c
-//put these lines in setup
-CCP=0xD8; //write key to configuration change protection register
-WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt with longest prescale option (8 seconds)
-//put this empty WDT ISR outside of all functions
-EMPTY_INTERRUPT(WDT_vect) //empty ISR to work around bug with PB3. EMPTY_INTERRUPT uses 26 bytes less than ISR(WDT_vect){;}
+// put these lines in setup
+CCP = 0xD8; //write key to configuration change protection register
+WDTCSR = (1 << WDP3) | (1 << WDP0) | (1 << WDIE); //enable WDT interrupt with longest prescale option (8 seconds)
+// put this empty WDT ISR outside of all functions
+EMPTY_INTERRUPT(WDT_vect) // empty ISR to work around bug with PB3. EMPTY_INTERRUPT uses 26 bytes less than ISR(WDT_vect){;}
 ```
 If you are using sleep modes, you also need to turn the WDT off while sleeping (both because the interrupts would wake it, and because the WDT is consuming power, and presumably that's what you're trying to avoid by sleeping). Doing so as shown below only uses an extra 12-16 bytes if you call it from a single place, 20 if called from two places, and 2 bytes when you call it thereafter, compared to calling sleep_cpu() directly in those places, as you would on a part that didn't need this workaround.
 ```c
 void startSleep() { //call instead of sleep_cpu()
-  CCP=0xD8; //write key to configuration change protection register
-  WDTCSR=0; //disable WDT interrupt
+  CCP = 0xD8; //write key to configuration change protection register
+  WDTCSR = 0; //disable WDT interrupt
   sleep_cpu();
-  CCP=0xD8; //write key to configuration change protection register
-  WDTCSR=(1<<WDP3)|(1<<WDP0)|(1<<WDIE); //enable WDT interrupt
+  CCP = 0xD8; // write key to configuration change protection register
+  WDTCSR = (1 << WDP3) | (1 << WDP0) | (1 << WDIE); // enable WDT interrupt
 }
 ```
 

@@ -44,6 +44,6 @@ Instances of abusive, harassing, or otherwise unacceptable behavior may
 be reported by emailing `spencekonde@gmail. com>` which only goes to to
 Spence Konde.
 
-This Code of Conduct is adapted from the `Contributor
+This Code of Conduct is adapted from the examples cited by GitHub, which was adapted from the `Contributor
 Covenant <http://contributor-covenant.org>` version 1.0.0, available at
-http://contributor-covenant.org/version/1/0/0/
+[http://contributor-covenant.org/version/1/0/0/](http://contributor-covenant.org/version/1/0/0/).

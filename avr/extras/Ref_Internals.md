@@ -13,8 +13,6 @@ You can identify the core using the following:
 #define ATTINY_CORE_RELEASED (0)   // 0 for development, 1  Version
 
 ```
-
-
 ## Identify basic features
 
 ```c
@@ -29,7 +27,7 @@ You can identify the core using the following:
 
 ```
 
-## The following identify board variants (various cores have used both styles of defines, so both are provided here to maximize compatibility).
+## The following identify board variants (various cores have used both styles of defines, so both are provided here to maximize compatibility)
 
 ```c
 #define ATTINYX4 1

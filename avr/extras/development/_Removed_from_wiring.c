@@ -1,4 +1,3 @@
-
 /* Delay for the given number of microseconds.  Assumes a 1, 8, 12, 16, 20 or 24 MHz clock. */
 //Not used anymore, we have the version we stole from nerdralph's picocore!
 
