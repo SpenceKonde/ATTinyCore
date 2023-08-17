@@ -1,5 +1,5 @@
 # UniversalWire library
-Should provide a mediocre rendition ofthe standard API for most use cases. There is a reason it's not better than this, and it's not exclusively a list of my deficiencies.
+Should provide a mediocre rendition of the standard API for most use cases. There is a reason it's not better than this, and it's not exclusively a list of my deficiencies.
 
 ## Background: Heterogeneous hardware
 The root of most problems with the Universal Wire library is that there are a total of 6 implementations in here - USI master, USI slave, Real TWI master (direct copy from Uno library, I think), Real TWI slave (definitely direct copy from uno version), and for two unfortunate parts, Software I2C master only - though they have slave only hardware implementations too.
@@ -11,7 +11,7 @@ Only on the Tiny88. Here, as long as you're able to fit in overall resource limi
 
 ### Useless Serial Interface (USI)
 Some resources refer to this as "Universal". Others refer to it as what you get if you strip out every feature and nicety that we expect from hardware SPI or hardware TWI, and instead of branding it as "crippled SPI/TWI" which doesn't have much of a ring to it, they called it a universal serial interface. It also happens to do very little for you. Essentially, what you get is an 8-bit SPI-like shift register, that is triggered, by USCK/scl, a way to see when 8 bits have been clocked through it, and a data register that that gets copied to at that time. You do get a start condition detector that works to wake from all sleep cycles at least.
-You may have noticed that I didn't mention clock generation. That's cause there is none. You have to stobe the pin from software or monopolize a timer to generate a clock, and you cant use timer0 cause that's millis, and if you use timer1, you have only 1 PWM pin left. Hence we do software strobing on the master side,
+You may have noticed that I didn't mention clock generation. That's cause there is none. You have to stobe the pin from software or monopolize a timer to generate a clock, and you can't use timer0 cause that's millis, and if you use timer1, you have only 1 PWM pin left. Hence we do software strobing on the master side,
 
 We are also not allowed to use the internal pullups:
 To quote the datasheet:
@@ -19,7 +19,7 @@ To quote the datasheet:
 
 (emphasis mine)
 
-Now, the internal pullups are NEVER strong enough for reliable opperation except under the most favorable conditions, but those conditions are common enough that people will be dissappointed to find that configurations that worked without external pullups require them here. They should not be upset at that, they should be upset with the stock API which hid the critical defect (lack of external pullups) from them. The pullups should be like 4.7-10k at 5V normal speed, and lower values (stronger pullups) at 3.3v and/or higher clock speeds.
+Now, the internal pullups are NEVER strong enough for reliable operation except under the most favorable conditions, but those conditions are common enough that people will be disappointed to find that configurations that worked without external pullups require them here. They should not be upset at that, they should be upset with the stock API which hid the critical defect (lack of external pullups) from them. The pullups should be like 4.7-10k at 5V normal speed, and lower values (stronger pullups) at 3.3v and/or higher clock speeds.
 
 ### Slave Only TWI
 The exiting quartet - 841, 441, 1634 and 828 have a slave only TWI. The 1634 also has a USI, though. So that uses USI TWI master and HW slave TWI as slave.
@@ -28,7 +28,7 @@ So 3 of those have only HW slave TWI. Most people consider TWI master to be non-
 
 So on these devices, we have the worst I2C master of all: Software I2C. Not only is there no clock generation, since there's no dedicated hardware, bits are clocked out through the Wire.EndTransaction and Wire.request() purely by software manipulation of pins, and we also can't guarantee that it will read correctly in the absence of sufficient setup and hold time. It does not deal very well with clock stretching, and bus errors are not well reported.
 
-It might be possible to achive modest improvements on the master behavior in these cases, but I do not expect to be able to work on that.
+It might be possible to achieve modest improvements on the master behavior in these cases, but I do not expect to be able to work on that.
 
 On the 828, due to an erratum that will never get corrected, you must have the WDT running (interrupt mode with the interrupt being declared as an empty ISR is recommended). If the WDT oscillator is not running one of the TWI lines will be continually pulled low, rendering the bus unusable.
 
@@ -37,7 +37,7 @@ All 6 of these implementations do the best they can to provide the same API. The
 
 Caveats:
 * On 841, 441, and 828, errors are not always properly recognized.
-* On 828, the ULP (hence WDT) must be on if slave mode is used, otherwise one of the I2C pins is pulled low with greater strength thatn the pullups can counteract.
+* On 828, the ULP (hence WDT) must be on if slave mode is used, otherwise one of the I2C pins is pulled low with greater strength than the pullups can counteract.
 * Wire.setClock() has no effect on 841, 441, and 828.
 * 828 Wire Master pins are different from normal to get away from the bugged pin.
 
@@ -83,4 +83,4 @@ For a read, the master would first perform the first 4 steps above setting the l
 ### Yeah, they don't line up so good
 It's like the API designer read the protocol spec and designed to that and had never actually used an I2C device, or had little imagination and hadn't attempted to make anything that acted like other I2C devices. You cannot have a register-model, because you don't know how many bytes the master will read (the protocol never tells you this), nor can you find out how many are read after the fact, nor can you put the slave to sleep because it might be silently servicing an interrupt for a read that hasn't finished yet. This will generally make you "that device" that when misused, becomes non-responsive with one or both lines being held low. You don't want to be that device. I don't really have any good solution to offer here, but this is why all arduino slave devices you've seen use I2C like lobotomized serial: That's the only mode of operation that the API supports.
 
-The API has been extended for DxCore and mTC - the problem was far more tractable there: It only had to be done once for every AVR released since 2016 - the same library works unmodified and likely will continue to do so for the forseeable future, with only trivial changes, whereas it would have to be done thrice for the older parts. Moreover, on all of these parts, whatever I2C implementation is available, it is much less helpful, and lacks the features that we used for this on mTC and DxC.
+The API has been extended for DxCore and mTC - the problem was far more tractable there: It only had to be done once for every AVR released since 2016 - the same library works unmodified and likely will continue to do so for the foreseeable future, with only trivial changes, whereas it would have to be done thrice for the older parts. Moreover, on all of these parts, whatever I2C implementation is available, it is much less helpful, and lacks the features that we used for this on mTC and DxC.
