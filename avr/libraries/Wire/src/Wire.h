@@ -38,7 +38,7 @@
   and the library provides an instance of it named Wire
 */
 
-#include <avr/io.h>
+#include <Arduino.h>
 
 
 
