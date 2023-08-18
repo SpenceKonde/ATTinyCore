@@ -436,8 +436,9 @@ void analogWrite(uint8_t pin, int val) {
           // timer & 0xF0 gives the bitmask, and if it is to be swapped, swap it,
 
           uint8_t bitmask = 0xF0 & timer;
-          if (bitmask & (bitmask -1) != 0)
-            return
+          if ((bitmask & (bitmask -1)) != 0) {
+            return;
+          }
           if (timer & 0x04) {
             OCR1B = val;
           } else {
