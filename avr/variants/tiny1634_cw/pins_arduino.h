@@ -269,7 +269,7 @@ static const uint8_t A11 = ADC_CH(11);
  * x indicates XTAL pin
  *---------------------------------------------------------------------------*/
 
-#warning "This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram with the pins in clockwise order"
+#pragma message("This is the CLOCKWISE pin mapping - make sure you're using the pinout diagram or board numbered with the pins in clockwise order or by port and bit, or just use PIN_Pxn notation and never use a number and it'll work on both.")
 
 const uint8_t PROGMEM port_to_mode_PGM[] = {
   NOT_A_PORT,

@@ -15,8 +15,6 @@
  * one unless you have to test old code, Port to new mapping ASAP.
  *---------------------------------------------------------------------------*/
 
-#warning "This is the strictly worse legacy pin mapping - It should only be used for compatibility with existing code, \nis deprecated, and not recommended for new designs. It is slower, and \n applications should switch to PIN_Pxn notation at as soon as practical\n which will run on both mappings, just faster on the other on."
-
 #define ATTINYX61 1  // backwards compatibility
 #define __AVR_ATtinyX61__ // recommended
 
@@ -354,6 +352,7 @@ static const uint8_t A10 = ADC_CH(10);
 #endif
 
 #ifdef ARDUINO_MAIN
+#pragma message("\nThis is the strictly worse legacy pin mapping - It should only be used for compatibility with existing code, \nis deprecated, and not recommended for new designs. It is slower, and \n applications should switch to PIN_Pxn notation at as soon as practical\n which will run on both mappings, just faster on the other one.")
 /*---------------------------------------------------------------------------
  * ATMEL ATTINY861 ATTinyCore Legacy Pin Mapping
  *

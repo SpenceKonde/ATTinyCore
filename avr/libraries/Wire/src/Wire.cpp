@@ -620,7 +620,7 @@
   #if !defined(__AVR_ATtiny841__) && !defined(__AVR_ATtiny441__) && !defined(__AVR_ATtiny828__) /* this final case is only used for those three parts */
     #error "Can't happen - We have gotten to the soft master hard slave implementation part of Wire.h - we should be on a 841, 441, or 828 - but we are not. How did you manage to end up here?!"
   #endif
-  #if !defined(TWSR)
+  #if !defined(TWSD)
     #error "TWI slave hardware not found? How could this happen?"
   #endif
   #if (!(defined(SCL_PIN) && defined(SDA_PIN) && defined(SCL_PORT) && defined(SDA_PORT)))
