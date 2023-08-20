@@ -162,7 +162,7 @@
   };
   extern TwoWire Wire;
   #endif
-#elif !defined(__AVR_ATtiny841__) && !defined(__AVR_ATtiny441__) && !defined(__AVR_ATtiny828__)
+#elif defined(__AVR_ATtiny841__) || defined(__AVR_ATtiny441__) || defined(__AVR_ATtiny828__)
   #ifndef TWSWire_h
   #define TWSWire_h
   #include <stdint.h>
