@@ -295,7 +295,11 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
 
 /* Hardware I2C slave */
 #define SCL                      PIN_PA6
+#define SCL_PORT                 (PORTA)
+#define SCL_PIN                  (6)
 #define SDA                      PIN_PA4
+#define SDA_PORT                 (PORTA)
+#define SDA_PIN                  (4)
 
 /* Hardware SPI */
 #if defined(SET_REMAP) && SET_REMAP > 1
