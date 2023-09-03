@@ -159,7 +159,7 @@ void yield(void) __attribute__ ((weak, alias("__empty")));
     if (__builtin_constant_p(ms)) {
       _delay_ms(ms); //if its a compile time known constant use the avrlibc version
     } else {
-      _delay(ms)
+      _delay(ms);
     }
   }
 #endif
