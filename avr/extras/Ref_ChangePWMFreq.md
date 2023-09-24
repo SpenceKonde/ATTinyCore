@@ -3,6 +3,8 @@
 ## Classic AVR
 This is concerned with Classic AVRs (those released before 2016), specifically those supported by ATTinyCore. The ATmegas use essentially the same timer1, (usually with the normal 2 outputs, occasionally with a third compare channel) - but they also typically have a very different timer2 than we get. Because this is targeted at ATTinyCore users, we will not be discussing the Async timer2; however for ATmega parts with multiple 16-bit timers that are copies of timer1 (usually timer 1, and 3 through 5 if present are this kind of timer) - they have the same timer, sometimes with an third output compare channel
 
+Modern AVRs supported by DxCore and megaTinyCore have analogous documentation, for information on those parts see the DxC and mTC documentation.
+
 You can change the PWM frequency to a limited number of values on **Timer/Counter1** and (if present) **Timer/Counter2** by simply adjusting the prescaler *while still using analogWrite()*. A much wider range of frequencies are accessible if you take full control of the timer, but in these cases, you would need to change registers that analogWrite() assumes a computationally convenient value is stored in, and analogWrite() would no longer work.
 
 Note that since Timer/Counter0 is used for millis, no registers of Timer0 should ever be written unless millis is disabled from the tools menu.
@@ -24,7 +26,7 @@ In a timer counter unit, when we're talking about PWM, we're talking about the s
   * Arbitrary TOP values, sometimes without the loss of an output, other times only at the cost of an output channel
   * Higher resolution on Timer1 and Timer2 (where present), at least on most parts, which have a 16-bit timer1 (and the x61's with a 10-bit one, though using that 10-bit one is tricky)
   * Asynchronous low speed operation from an external clock or watch crystal (x7, possibly a small number of others)
-  * Asynchronous high speed operration from a x8 PLL on the 8 MHz internal osc. (x5, x61 26 only)
+  * Asynchronous high speed operation from a x8 PLL on the 8 MHz internal osc. (x5, x61 26 only)
 
 ### What can I change without breaking analogWrite() or other core API functions?
 * TC0 cannot be reconfigured at all without breaking millis, and should only be used if millis is disabled from the tools submenu.

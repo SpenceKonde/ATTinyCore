@@ -511,6 +511,7 @@ jobs:
         if: ${{matrix.device.hasinternal == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
@@ -534,6 +535,7 @@ jobs:
         if: ${{matrix.device.hasinternal == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.minspeed_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
@@ -557,6 +559,7 @@ jobs:
         if: ${{matrix.device.crystal == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.xtal_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
@@ -580,6 +583,7 @@ jobs:
         if: ${{matrix.device.pll == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.pll_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
@@ -603,6 +607,7 @@ jobs:
         if: ${{matrix.device.pll == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.pll165_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
@@ -626,6 +631,7 @@ jobs:
         if: ${{matrix.device.extclk == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.extclk_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
@@ -649,6 +655,7 @@ jobs:
         if: ${{matrix.device.havespecialclock == 1}}
         uses: arduino/compile-sketches@main
         with:
+          cli-version: 0.33.0
           fqbn: ${{ env.specclk_job_fqbn }}
           sketch-paths: |
             ${{ env[format('available-flash-8kB-sketch-paths-{0}', matrix.device.available-flash-kB >= 7.5)] }}
