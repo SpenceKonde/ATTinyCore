@@ -13,9 +13,9 @@ Only on the Tiny88. Here, as long as you're able to fit in overall resource limi
 Some resources refer to this as "Universal". Others refer to it as what you get if you strip out every feature and nicety that we expect from hardware SPI or hardware TWI, and instead of branding it as "crippled SPI/TWI" which doesn't have much of a ring to it, they called it a universal serial interface. It also happens to do very little for you. Essentially, what you get is an 8-bit SPI-like shift register, that is triggered, by USCK/scl, a way to see when 8 bits have been clocked through it, and a data register that that gets copied to at that time. You do get a start condition detector that works to wake from all sleep cycles at least.
 You may have noticed that I didn't mention clock generation. That's cause there is none. You have to stobe the pin from software or monopolize a timer to generate a clock, and you can't use timer0 cause that's millis, and if you use timer1, you have only 1 PWM pin left. Hence we do software strobing on the master side,
 
-We are also not allowed to use the internal pullups:
-To quote the datasheet:
-"The SCL line is held low when a start detector detects a start condition and the output is enabled. Clearing the Start Condition Flag (USISIF) releases the line. The SDA and SCL pin inputs is not affected by enabling this (two wire) mode. **Pull-ups on the SDA and SCL port pin are disabled in Two-wire mode**"
+We are also not allowed to use the internal pullups; To quote the datasheet:
+
+*The SCL line is held low when a start detector detects a start condition and the output is enabled. Clearing the Start Condition Flag (USISIF) releases the line. The SDA and SCL pin inputs is not affected by enabling this (two wire) mode. **Pull-ups on the SDA and SCL port pin are disabled in Two-wire mode***
 
 (emphasis mine)
 
@@ -83,4 +83,4 @@ For a read, the master would first perform the first 4 steps above setting the l
 ### Yeah, they don't line up so good
 It's like the API designer read the protocol spec and designed to that and had never actually used an I2C device, or had little imagination and hadn't attempted to make anything that acted like other I2C devices. You cannot have a register-model, because you don't know how many bytes the master will read (the protocol never tells you this), nor can you find out how many are read after the fact, nor can you put the slave to sleep because it might be silently servicing an interrupt for a read that hasn't finished yet. This will generally make you "that device" that when misused, becomes non-responsive with one or both lines being held low. You don't want to be that device. I don't really have any good solution to offer here, but this is why all arduino slave devices you've seen use I2C like lobotomized serial: That's the only mode of operation that the API supports.
 
-The API has been extended for DxCore and mTC - the problem was far more tractable there: It only had to be done once for every AVR released since 2016 - the same library works unmodified and likely will continue to do so for the foreseeable future, with only trivial changes, whereas it would have to be done thrice for the older parts. Moreover, on all of these parts, whatever I2C implementation is available, it is much less helpful, and lacks the features that we used for this on mTC and DxC.
+The API has been extended for DxCore and mTC, as the problem was far more tractable there (not only is it a single implementation covering a much more cooperative peripheral, the same library works unmodified across all post-2016 design AVRs and likely will continue to do so for the foreseeable future).

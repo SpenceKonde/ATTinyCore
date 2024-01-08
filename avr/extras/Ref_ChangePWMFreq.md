@@ -23,8 +23,14 @@ In a timer counter unit, when we're talking about PWM, we're talking about the s
     * On Timer 1 (which is not used for millis), you can optionally get an additional /2 prescaling by using phase correct mode. Many cores copy the official core and always use this mode, but this can slow the PWM down to speeds we might prefer it avoid - or slow them down **from** speeds we'd like to avoid. by being willing to change this mode, it becomes much easier to stay within the target PWM frequency of 490-980 Hz, or at absolute most 1960 Hz (chosen for a number of reasons - it's fast enough that you can blink an LED and it won't appear to flicker, but slow enough that you can PWM most power MOSFETs with just a small gate resistor while staying in spec. At higher frequencies, microcontrollers begin to have trouble driving the pins fast and hard enough to switch the pin without the use of a gate driver), since on most parts the prescaling options are  0 (timer off) 1, 8, 64, 256, and 1024. On the x5 and x61, Timer1 has prescale options of 0, 1, and 2^n where n can be any integer up to 14 (ie, divide by 16384). On parts where timer1 doesn't have that crazy prescaler, which easily gets us into our target range for any frequency, we will choose fastPWM or phase correct PWM if it gets us closer to the target range.
 * When full control of the timer is taken the additional functionality might include (briefly - these features are beyond the scope of this document):
   * Periodic interrupts with CTC (Clear Timer on Compare match)
-  * Arbitrary TOP values, sometimes without the loss of an output, other times only at the cost of an output channel
-  * Higher resolution on Timer1 and Timer2 (where present), at least on most parts, which have a 16-bit timer1 (and the x61's with a 10-bit one, though using that 10-bit one is tricky)
+  * Arbitrary TOP values, sometimes without the loss of an output, other times only at the cost of an output channel.
+    * 16-bit timers which have an input capture feature (I belive all of the classic AVR "standard" timer1s plus higher timers that are a copy of the standard timer1) have a PWM mode where you set the ICR register to the TOP value without losing either of the output compares.
+    * On 8-bit timers, typically the only option is to set it so output compare channel A sets top, losing a channel.
+  * Higher resolution on Timer1, except:
+    * On the 43 - it's 8-bit there, copy of timer0.
+    * On the x5 or 26, where timer1 is instead a high speed 8 bit async timer.
+    * Limited benefit is seen on the x61 - it's the souped up version of the 26, and timer1 is again a high speed timer - but a 10-bit one. The 10-bit register behavior is nonstandard.
+  * Higher resolution on Timer2, on the single family of parts that has one, the x41. Timer2 there is a copy of Timer1, not the Timer2 that the ATmegas got.
   * Asynchronous low speed operation from an external clock or watch crystal (x7, possibly a small number of others)
   * Asynchronous high speed operation from a x8 PLL on the 8 MHz internal osc. (x5, x61 26 only)
 
