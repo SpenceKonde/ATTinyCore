@@ -199,7 +199,6 @@ void  i2c_delay_half(void)
   __asm__ __volatile__ (" ret");
   // 7 cycles for call and return
 #else
-  uint8_t temp = 0;
   __asm__ __volatile__
     (
      " ldi      r25, %[DELAY]           ; load delay constant   ; 4C \n\t"
@@ -207,7 +206,7 @@ void  i2c_delay_half(void)
      " dec r25                          ; decrement counter     ; 4C + xC \n\t"
      " brne _Lidelay                                           ; 5C+(x-1)2C + xC\n\t"
      " ret                                                     ; 9C+(x-1)2C + xC = 7C + xC"
-     :"+d" ((uint8_t) temp) : [DELAY] "M" I2C_DELAY_COUNTER);
+    : : [DELAY] "M" I2C_DELAY_COUNTER : "r25");
   // 7 cycles + 3 times x cycles
 #endif
 }

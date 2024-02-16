@@ -113,11 +113,11 @@ public:
       beginTransmission(address);
       // the maximum size of internal address is 3 bytes
       if (isize > 3) {
-  isize = 3;
+          isize = 3;
       }
       // write internal register address - most significant byte first
       while (isize-- > 0)
-  write((uint8_t)(iaddress >> (isize*8)));
+          write((uint8_t)(iaddress >> (isize*8)));
       endTransmission(false);
     }
     // clamp to buffer length
