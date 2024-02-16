@@ -293,13 +293,13 @@ anyway) and instead just use TOCPMCOE bits to control whether PWM is output */
  * a markedly inferior software TWI master implementation if that is requested.
  *---------------------------------------------------------------------------*/
 
-/* Hardware I2C slave */
-#define SCL                      PIN_PA6
+/* Used by hardware I2C slave and software I2C master */
+#define SCL                      PIN_PA4
 #define SCL_PORT                 (PORTA)
-#define SCL_PIN                  (6)
-#define SDA                      PIN_PA4
+#define SCL_PIN                  (4)
+#define SDA                      PIN_PA6
 #define SDA_PORT                 (PORTA)
-#define SDA_PIN                  (4)
+#define SDA_PIN                  (6)
 
 /* Hardware SPI */
 #if defined(SET_REMAP) && SET_REMAP > 1

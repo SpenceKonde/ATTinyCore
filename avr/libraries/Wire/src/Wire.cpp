@@ -732,10 +732,9 @@
       return value;
     }
   #else // Implementations for slave only mode
-    void TwoWire::begin(int address) {
-      begin((uint8_t)address);
+void TwoWire::begin(uint8_t address) {
+      TinyWireS.begin((uint8_t)address, 0);
     }
-
     // must be called in slave onRequest event callback
     size_t TwoWire::write(uint8_t data) {
       size_t numBytes = 0;
@@ -814,7 +813,7 @@
   /* END MASTER ONLY METHODS */
 
   /* BEGIN SLAVE ONLY METHODS */
-  #if defined(SLAVE_MASTER_ONLY) || defined(WIRE_BOTH)
+  #if defined(WIRE_SLAVE_ONLY) || defined(WIRE_BOTH)
 
     void TwoWire::onReceive( void (*function)(size_t)) {
       TinyWireS.onReceive(function);
@@ -822,7 +821,7 @@
     void TwoWire::onReceive( void (*function)(int)) {
       // arduino api compatibility fixer:
       // really hope size parameter will not exceed 2^31 :)
-      static_assert(sizeof(int) == sizeof(size_t), "something is wrong in Arduino kingdom");
+      static_assert(sizeof(int) == sizeof(size_t), "something is wrong in the Arduino kingdom");
       TinyWireS.onReceive(reinterpret_cast<void(*)(size_t)>(function));
     }
     // sets function called on slave read
