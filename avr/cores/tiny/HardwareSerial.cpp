@@ -179,11 +179,12 @@
       *_ucsrb |= _udrie;
     #else
       if(!(LINENIR & _BV(LENTXOK))){
-        //The buffer was previously empty, so enable TX Complete interrupt and load first byte.
-        LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
+        // The buffer was previously empty, so load the first byte, then enable 
+        // the TX Complete interrupt
         unsigned char c = _tx_buffer->buffer[_tx_buffer->tail];
         _tx_buffer->tail = (_tx_buffer->tail + 1) & (SERIAL_BUFFER_SIZE - 1);
         LINDAT = c;
+        LINENIR = _BV(LENTXOK) | _BV(LENRXOK);
       }
     #endif
 

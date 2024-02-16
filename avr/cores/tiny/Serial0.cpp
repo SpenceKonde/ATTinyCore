@@ -37,7 +37,7 @@
       if(LINSIR & _BV(LTXOK)) {
         //PINA |= _BV(PINA5); //debug
         if (tx_buffer.head == tx_buffer.tail) {
-        // Buffer empty, so disable interrupts
+        // Buffer empty, so disable the Transmit Performed Interrupt
           LINENIR = LENRXOK; //unset LENTXOK
         } else {
           // There is more data in the output buffer. Send the next byte
