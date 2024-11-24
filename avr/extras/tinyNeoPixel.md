@@ -5,6 +5,14 @@ Outputting data to WS2812 and compatible LEDs requires carefully tuned assembly 
 ## tinyNeoPixel Port menu option REMOVED from ATTinyCore 2.0.0
 There assembly has been refactored and now uses ST and works on all pins with neither multiplication of flash use nor the user having to supply an appropriate menu option.
 ~At less than 15.4MHz, the hand-tuned assembly code used to send the data to the LEDs requires the port to be set at compile time. The original Adafruit_NeoPixel library used if/then statements to allow it to work with different ports - however this requires multiple copies of the assembly code in the compiled binary which increases flash usage. Since the pin that the NeoPixel is on is known when the sketch is written, a submenu is provided to select the port to be used with the NeoPixel library - this is used only at speeds below 15.4MHz (and only on parts with more than 8 I/O pins - the x5-series only has one port, and hence there is no menu for the port); at 16MHz and higher, this option is ignored and any pin will work regardless of the menu setting.~
+<strike>
+### PlatformIO
+With PlatformIO, you must define the port using `build_flags` in your `platformio.ini`, eg.
+</strike>
+```
+build_flags =
+	-D NEOPIXELPORT=PORTX
+```
 
 ## Library name
 While this library was initially created in order to both ensure compatibility with, and through the Static version, fit within the flash and memory constraints of the tinyAVR line of parts, now with the removal of dependence on a tools menu option in ATTinyCore 2.0.0 (tinyNeoPixel 1.5.0) **this library is entirely suitable for non-tiny devices** - this version (1.5.x) is suitable for all classic AVR devices, and the version distributed with megaTinyCore and DxCore (2.0.x) is suitable for all modern (AVRxt) parts; It offers all the functionality of the Adafruit version on the library, with the addition of the Static mode. This library is code compatible with the version distributed with megaTinyCore and DxCore. Only `show()` has non-trivial changes: On AVRxt, several instructions, crucially including ST, execute 1 clock faster; that had to be accounted for. Plus AVR Dx-series parts can be overclocked at high as 48 MHz, requiring the addition of new "speed buckets" with appropriate implementations of show(). .
