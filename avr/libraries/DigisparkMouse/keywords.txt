@@ -1,0 +1,7 @@
+DigiMouse KEYWORD1
+update KEYWORD2
+moveX KEYWORD2
+moveY KEYWORD2
+scroll KEYWORD2
+move KEYWORD2
+setButtons KEYWORD2

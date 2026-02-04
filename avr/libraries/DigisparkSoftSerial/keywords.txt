@@ -1,0 +1,29 @@
+#######################################
+# Syntax Coloring Map for SoftSerial
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SoftSerial	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+end	KEYWORD2
+read	KEYWORD2
+available	KEYWORD2
+isListening	KEYWORD2
+overflow	KEYWORD2
+flush	KEYWORD2
+listen	KEYWORD2
+txMode	KEYWORD2
+rxMode	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

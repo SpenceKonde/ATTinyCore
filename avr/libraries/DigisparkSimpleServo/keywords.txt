@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map SimpleServo
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SimpleServo	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+attach	KEYWORD2
+attached	KEYWORD2
+detach	KEYWORD2
+read	KEYWORD2
+setMaximumPulse	KEYWORD2
+setMinimumPulse	KEYWORD2
+write	KEYWORD2
+writeMillis	KEYWORD2
+writeMicrosecondsMillis	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

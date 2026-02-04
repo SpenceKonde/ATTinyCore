@@ -1,51 +1,20 @@
-/*-------------------------------------------------------------------------*
- * tinySPI.h - Arduino hardware SPI master library for ATtiny24/44/84,     *
- * ATtiny25/45/85, and Attiny2313/4313.                                    *
- *                                                                         *
- * Original version of tinyISP by Jack Christensen 24Oct2013               *
- *                                                                         *
- * Added support for Attiny24/25, and Attiny2313/4313                      *
- * by Leonardo Miliani 28Nov2014                                           *
- *                                                                         *
- * Reworked to add support for 87/167, 261/461/861, and include the normal *
- * SPI library on chips that have hardware SPI.                            *
- * Spence Konde 2016 (in progress)                                         *
- *                                                                         *
- * CC BY-SA-NC:                                                            *
- * This work is licensed under the Creative Commons Attribution-           *
- * ShareAlike- Not Commercial 4.0 Unported License. To view a copy of this *
- * license, visit                                                          *
- * http://creativecommons.org/licenses/by-sa/4.0/ or send a                *
- * letter to Creative Commons, 171 Second Street, Suite 300,               *
- * San Francisco, California, 94105, USA.                                  *
- *-------------------------------------------------------------------------*/
+/*
+ * Copyright (c) 2010 by Cristian Maglie <c.maglie@arduino.cc>
+ * Copyright (c) 2014 by Paul Stoffregen <paul@pjrc.com> (Transaction API)
+ * Copyright (c) 2014 by Matthijs Kooijman <matthijs@stdin.nl> (SPISettings AVR)
+ * Copyright (c) 2014 by Andrew J. Kroll <xxxajk@gmail.com> (atomicity fixes)
+ * SPI Master library for arduino.
+ *
+ * This file is free software; you can redistribute it and/or modify
+ * it under the terms of either the GNU General Public License version 2
+ * or the GNU Lesser General Public License version 2.1, both as
+ * published by the Free Software Foundation.
+ */
 
-#ifndef tinycoreSPI_h
-#define tinycoreSPI_h
+#ifndef _SPI_H_INCLUDED
+#define _SPI_H_INCLUDED
 
-#include <stdint.h>
-#include <avr/io.h>
-#include <util/atomic.h>
 #include <Arduino.h>
-
-#ifndef LSBFIRST
-#define LSBFIRST 0
-#endif
-#ifndef MSBFIRST
-#define MSBFIRST 1
-#endif
-
-// define SPI_AVR_EIMSK for AVR boards with external interrupt pins
-#if defined(EIMSK)
-  #define SPI_AVR_EIMSK  EIMSK
-#elif defined(GICR)
-  #define SPI_AVR_EIMSK  GICR
-#elif defined(GIMSK)
-  #define SPI_AVR_EIMSK  GIMSK
-#endif
-
-
-#ifdef SPDR //Then we have hardware SPI, let's use it:
 
 // SPI_HAS_TRANSACTION means SPI has beginTransaction(), endTransaction(),
 // usingInterrupt(), and SPISetting(clock, bitOrder, dataMode)
@@ -91,6 +60,15 @@
 #define SPI_CLOCK_MASK 0x03  // SPR1 = bit 1, SPR0 = bit 0 on SPCR
 #define SPI_2XCLOCK_MASK 0x01  // SPI2X = bit 0 on SPSR
 
+// define SPI_AVR_EIMSK for AVR boards with external interrupt pins
+#if defined(EIMSK)
+  #define SPI_AVR_EIMSK  EIMSK
+#elif defined(GICR)
+  #define SPI_AVR_EIMSK  GICR
+#elif defined(GIMSK)
+  #define SPI_AVR_EIMSK  GIMSK
+#endif
+
 class SPISettings {
 public:
   SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode) {
@@ -128,7 +106,7 @@ private:
     // slowest (128 == 2 ^^ 7, so clock_div = 6).
     uint8_t clockDiv;
 
-    // When the clock is known at compile time, use this if-then-else
+    // When the clock is known at compiletime, use this if-then-else
     // cascade, which the compiler knows how to completely optimize
     // away. When clock is not known, use a loop instead, which generates
     // shorter code.
@@ -333,7 +311,7 @@ public:
 
 private:
   static uint8_t initialized;
-  static uint8_t interruptMode; // 0 = none, 1 = mask, 2 = global
+  static uint8_t interruptMode; // 0=none, 1=mask, 2=global
   static uint8_t interruptMask; // which interrupts to mask
   static uint8_t interruptSave; // temp storage, to restore state
   #ifdef SPI_TRANSACTION_MISMATCH_LED
@@ -343,145 +321,4 @@ private:
 
 extern SPIClass SPI;
 
-
-#else
-
-#ifdef USICR //if we have a USI instead, use that
-
-//SPI data modes
-#define SPI_MODE0 0x00
-#define SPI_MODE1 0x01
-#define SPI_MODE2 0x02
-#define SPI_MODE3 0x03
-
-#define SPI_CLOCK_DIV2       2
-#define SPI_CLOCK_DIV4       4
-#define SPI_CLOCK_DIV8       8
-#define SPI_CLOCK_DIV16     16
-#define SPI_CLOCK_DIV32     32
-#define SPI_CLOCK_DIV64     64
-#define SPI_CLOCK_DIV128   128
-
-//This implementation does have transaction:
-#define SPI_HAS_TRANSACTION 1
-#define SPI_HAS_NOTUSINGINTERRUPT 1
-// Settings for default USI based SPI bus for different chips
-
-namespace USI_impl {
-    using ClockOut = uint8_t (*)(uint8_t,uint8_t);
-    uint8_t clockoutUSI(uint8_t data, uint8_t delay);
-    uint8_t clockoutUSI2(uint8_t data, uint8_t delay);
-    uint8_t clockoutUSI4(uint8_t data, uint8_t delay);
-    uint8_t clockoutUSI8(uint8_t data, uint8_t delay);
-
-    __attribute__((always_inline))
-    inline ClockOut dispatchClockout(uint8_t div, uint8_t* delay) {
-      *delay = 0;
-      if (div <= 2) {
-          return clockoutUSI2;
-      } else if (div <= 4) {
-          return clockoutUSI4;
-      } else if (div <= 8) {
-          return clockoutUSI8;
-      } else {
-        // Slow mode, convert clockdiv into delay loop count.
-        // Calculated inline to allow compile-time evaluation.
-        *delay = ((uint16_t)div*100 - 780) / 59;
-        // Round it to nearest integer.
-        *delay = *delay < 10 ? 1 : (*delay + 5) / 10;
-        return clockoutUSI;
-      }
-    }
-
-    ClockOut dispatchClockout_slow(uint8_t div, uint8_t* delay)
-    __attribute__((warning("SPI clock is not a runtime constant, increasing code size a lot.")));
-}
-
-class SPISettings {
-public:
-  SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode) {
-    init_AlwaysInline(clock, bitOrder, dataMode);
-  }
-  SPISettings() {
-    init_AlwaysInline(F_CPU / 16, MSBFIRST, SPI_MODE0);
-  }
-private:
-  void init_AlwaysInline(uint32_t clock, uint8_t bitOrder, uint8_t dataMode)
-    __attribute__((always_inline)) {
-    usicr = _BV(USIWM0) | _BV(USICS1) | _BV(USICLK);
-    if (dataMode == SPI_MODE1 || dataMode == SPI_MODE3) {
-        usicr |= _BV(USICS0);
-    }
-    msb1st = bitOrder;
-    cpol = dataMode == SPI_MODE2 || dataMode == SPI_MODE3;
-    // Round up.
-    uint8_t div = F_CPU / clock + (F_CPU % clock ? 1 : 0);
-    if (__builtin_constant_p(clock)) {
-      clockoutfn = USI_impl::dispatchClockout(div, &delay);
-    } else {
-      clockoutfn = USI_impl::dispatchClockout_slow(div, &delay);
-    }
-  }
-
-  uint8_t msb1st;
-  uint8_t cpol;
-  uint8_t usicr;
-  uint8_t delay;
-  USI_impl::ClockOut clockoutfn;
-  friend class SPIClass;
-};
-
-class SPIClass
-{
- public:
-  SPIClass();
-  static void begin();
-  static void beginTransaction(SPISettings settings);
-  static uint8_t transfer(uint8_t data);
-  static uint16_t transfer16(uint16_t data);
-  static void transfer(void *buf, size_t count);
-  static void endTransaction(void);
-  static void end();
-
-  // This function is deprecated.  New applications should use
-  // beginTransaction() to configure SPI settings.
-  static void setBitOrder(uint8_t bitOrder) {msb1st = bitOrder;}
-  // This function is deprecated.  New applications should use
-  // beginTransaction() to configure SPI settings.
-  static void setDataMode(uint8_t dataMode);
-  // This function is deprecated.  New applications should use
-  // beginTransaction() to configure SPI settings.
-  static void setClockDivider(uint8_t div) {
-      if (__builtin_constant_p(div)) {
-        clockoutfn = USI_impl::dispatchClockout(div, &delay);
-      } else {
-        clockoutfn = USI_impl::dispatchClockout_slow(div, &delay);
-      }
-  }
-
-  static void usingInterrupt(uint8_t interruptNumber);
-  static void notUsingInterrupt(uint8_t interruptNumber);
-
-private:
-  static void applySettings(SPISettings settings);
-
-  static uint8_t msb1st;
-  static uint8_t delay;
-  static USI_impl::ClockOut clockoutfn;
-  static uint8_t interruptMode; // 0 = none, 1 = mask, 2 = global
-  static uint8_t interruptMask; // which interrupts to mask
-  static uint8_t interruptSave; // temp storage, to restore state
-};
-
-extern SPIClass SPI;
-
-
-
-#else
-//if no USICR and no TWBR
-
-#error No supported hardware
-
-#endif //end if USICR
-#endif //end if TWBR
-#endif //end of module include guard
+#endif

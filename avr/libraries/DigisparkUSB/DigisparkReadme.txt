@@ -1,0 +1,1 @@
+Modified for use with an Attiny85 running at 16.5Mhz by Digistump for the Digispark MCU

@@ -1,0 +1,16 @@
+Change Log for IRLib – an Arduino library for infrared encoding and decoding
+Copyright 2013 by Chris Young http://cyborg5.com
+ 
+April 2013	Version 1.1	Constructor of IRsendBase now initializes output
+				pin and forces it low immediately.
+
+				New IRrecv::No_Output() method initializes output 
+				pin and forces it low. Use this in sketches which
+				receive only by the have output hardware connected.
+
+				Added examples IRservo and IRserial_remote
+
+February 2013 	Version 1.0a	Removed debugging test switch which was accidentally 
+				left on in file "IRLib.h"
+
+January 2013 	Version 1.0 	Initial Release 

@@ -1,0 +1,19 @@
+#######################################
+# Syntax Coloring Map TinySoftPwm
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+TinySoftPwm	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+TinySoftPwm_begin	KEYWORD2
+TinySoftPwm_analogWrite	KEYWORD2
+TinySoftPwm_process	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

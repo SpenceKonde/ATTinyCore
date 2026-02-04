@@ -1,0 +1,272 @@
+{
+  "packages": [
+    {
+      "name": "ATTinyCore-2026",
+      "maintainer": "Ian Walsh",
+      "websiteURL": "https://github.com/FlashStopFall/ATTinyCore-2026",
+      "email": "",
+      "help": {
+        "online": ""
+      },
+      "platforms": [
+        {
+          "name": "ATTinyCore-2026",
+          "architecture": "avr",
+          "version": "2.0.0",
+          "category": "Contributed",
+          "url": "https://github.com/FlashStopFall/ATTinyCore-2026/releases/download/v2.0.0-alpha/attinycore-2026.bz2",
+          "archiveFileName": "attinycore-2026.bz2",
+          "checksum": "SHA-256:a748235d3837e45738e652db2461ef70db1a4541ad83760b8f85541ec609a5a3",
+          "size": "25594009",
+          "boards": [
+            {
+              "name": "<b>Program via ISP or Serial:</b> ATtiny841/441, ATtiny85/45/25, ATtiny84/44/24, ATtiny1634, ATtiny861/461/261, ATtiny167/87, ATtiny43, ATtiny828, ATtiny88/48, ATtiny4313/2313"
+            },
+            {
+              "name": "<br/><b>USB (Micronucleus) Support:</b> DigiSpark (t85), Digispark Pro (t167), MH-ET (t88), Wattuino/Nanite/etc (t841), CaliforniaSTEAM (t84)"
+            },
+            {
+              "name": "<br/><b>Windows users:</b> If USB drivers are not already installed, run the post_install.bat manually or DL from <a href=https://azduino.com/bin/micronucleus>https://azduino.com/bin/micronucleus</a>"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "arduino",
+              "name": "avr-gcc",
+              "version": "7.3.0-atmel3.6.1-arduino7"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "avrdude",
+              "version": "8.0-arduino.1"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "micronucleus",
+              "version": "2.5-azd1b"
+            }
+          ]
+        },
+        {
+          "name": "ATTinyCore-2026",
+          "architecture": "avr",
+          "version": "2.0.0-ian-2",
+          "category": "Contributed",
+          "url": "https://github.com/FlashStopFall/ATTinyCore-2026/releases/download/v2.0.0-ian-2/attinycore-2026-2_0_0_ian_2.bz2",
+          "archiveFileName": "attinycore-2026-2_0_0_ian_2.bz2",
+          "checksum": "SHA-256:7395e591c6454ca8e7691390b2d7bdb7e5ecab9d13d5317cdf28d8cfa7e31caa",
+          "size": "25593760",
+          "boards": [
+            {
+              "name": "<b>Program via ISP or Serial:</b> ATtiny841/441, ATtiny85/45/25, ATtiny84/44/24, ATtiny1634, ATtiny861/461/261, ATtiny167/87, ATtiny43, ATtiny828, ATtiny88/48, ATtiny4313/2313"
+            },
+            {
+              "name": "<br/><b>USB (Micronucleus) Support:</b> DigiSpark (t85), Digispark Pro (t167), MH-ET (t88), Wattuino/Nanite/etc (t841), CaliforniaSTEAM (t84)"
+            },
+            {
+              "name": "<br/><b>Windows users:</b> If USB drivers are not already installed, run the post_install.bat manually or DL from <a href=https://azduino.com/bin/micronucleus>https://azduino.com/bin/micronucleus</a>"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "arduino",
+              "name": "avr-gcc",
+              "version": "7.3.0-atmel3.6.1-arduino7"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "avrdude",
+              "version": "8.0-arduino.1"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "micronucleus",
+              "version": "2.5-azd1b"
+            }
+          ]
+        },
+        {
+          "name": "ATTinyCore-2026",
+          "architecture": "avr",
+          "version": "2.0.1-ian.1",
+          "category": "Contributed",
+          "url": "https://github.com/FlashStopFall/ATTinyCore-2026/releases/download/v2.0.1-ian.1/attinycore-2026-2_0_1-ian_1.bz2",
+          "archiveFileName": "attinycore-2026-2_0_1-ian_1.bz2",
+          "checksum": "SHA-256:a5c1bf94c32393684349100ae538b8c7ca5f3d9a2cf8e99498ba0d2388c106d1",
+          "size": "25594707",
+          "boards": [
+            {
+              "name": "<b>Program via ISP or Serial:</b> ATtiny841/441, ATtiny85/45/25, ATtiny84/44/24, ATtiny1634, ATtiny861/461/261, ATtiny167/87, ATtiny43, ATtiny828, ATtiny88/48, ATtiny4313/2313"
+            },
+            {
+              "name": "<br/><b>USB (Micronucleus) Support:</b> DigiSpark (t85), Digispark Pro (t167), MH-ET (t88), Wattuino/Nanite/etc (t841), CaliforniaSTEAM (t84)"
+            },
+            {
+              "name": "<br/><b>Windows users:</b> If USB drivers are not already installed, run the post_install.bat manually or DL from <a href=https://azduino.com/bin/micronucleus>https://azduino.com/bin/micronucleus</a>"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "arduino",
+              "name": "avr-gcc",
+              "version": "7.3.0-atmel3.6.1-arduino7"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "avrdude",
+              "version": "8.0-arduino.1"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "micronucleus",
+              "version": "2.5-azd1b"
+            }
+          ]
+        },
+        {
+          "name": "ATTinyCore-2026",
+          "architecture": "avr",
+          "version": "2.0.1-ian.2",
+          "category": "Contributed",
+          "url": "https://github.com/FlashStopFall/ATTinyCore-2026/releases/download/v2.0.1-ian.2/attinycore-2026-2_0_1_ian_2.bz2",
+          "archiveFileName": "attinycore-2026-2_0_1_ian_2.bz2",
+          "checksum": "SHA-256:5d9614e9ab69bc4525e837693ffa94fec153827454f90c75b845e93e92ffec54",
+          "size": "25593763",
+          "boards": [
+            {
+              "name": "<b>Program via ISP or Serial:</b> ATtiny841/441, ATtiny85/45/25, ATtiny84/44/24, ATtiny1634, ATtiny861/461/261, ATtiny167/87, ATtiny43, ATtiny828, ATtiny88/48, ATtiny4313/2313"
+            },
+            {
+              "name": "<br/><b>USB (Micronucleus) Support:</b> DigiSpark (t85), Digispark Pro (t167), MH-ET (t88), Wattuino/Nanite/etc (t841), CaliforniaSTEAM (t84)"
+            },
+            {
+              "name": "<br/><b>Windows users:</b> If USB drivers are not already installed, run the post_install.bat manually or DL online.</a>"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "arduino",
+              "name": "avr-gcc",
+              "version": "7.3.0-atmel3.6.1-arduino7"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "avrdude",
+              "version": "8.0-arduino.1"
+            },
+            {
+              "packager": "ATTinyCore-2026",
+              "name": "micronucleus",
+              "version": "2.5-azd1b"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "name": "micronucleus",
+          "version": "2.5-azd1b",
+          "systems": [
+            {
+              "size": "1166778",
+              "checksum": "SHA-256:db8f92750d1c94669ba5d8b46e72d27d28ec927a19344cf42b7ae7bd1b5c30c9",
+              "host": "x86_64-mingw32",
+              "archiveFileName": "micronucleus-cli-2.5-azd1b-x86_64-mingw32.zip",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1b-x86_64-mingw32.zip"
+            },
+            {
+              "size": "1159717",
+              "checksum": "SHA-256:5e795fb90598ea7a0e917965fc9bc6d536c405df50d2735f12b2fb8710bcec54",
+              "host": "i686-mingw32",
+              "archiveFileName": "micronucleus-cli-2.5-azd1b-i686-mingw32.zip",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1b-i686-mingw32.zip"
+            },
+            {
+              "size": "325836",
+              "checksum": "SHA-256:c557d5769125f94b82ec2c30b1b68c9fb8a140e06b141aafb794907022f0bf56",
+              "host": "aarch64-linux-gnu",
+              "archiveFileName": "micronucleus-cli-2.5-azd1-aarch64-linux-gnu.tar.bz2",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1-aarch64-linux-gnu.tar.bz2"
+            },
+            {
+              "size": "276745",
+              "checksum": "SHA-256:cedf56ab3f2fdaa2ad2e55de26d73b41aa03c3ac9698ab3b719ef86d76487084",
+              "host": "arm-linux-gnueabihf",
+              "archiveFileName": "micronucleus-cli-2.5-azd1-arm-linux-gnueabihf.tar.bz2",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1-arm-linux-gnueabihf.tar.bz2"
+            },
+            {
+              "size": "372733",
+              "checksum": "SHA-256:daea74a05671b14f619763dc21168103c9837c56ba84aa88c329979a1eac8bd7",
+              "host": "i686-linux-gnu",
+              "archiveFileName": "micronucleus-cli-2.5-azd1-i686-linux-gnu.tar.bz2",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1-i686-linux-gnu.tar.bz2"
+            },
+            {
+              "size": "51607",
+              "checksum": "SHA-256:cf0d268409ba8a5121225aceb5d8a562915b85bc96c270db5fb776a983355d51",
+              "host": "x86_64-apple-darwin",
+              "archiveFileName": "micronucleus-cli-2.5-azd1-x86_64-apple-darwin.tar.bz2",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1-x86_64-apple-darwin.tar.bz2"
+            },
+            {
+              "size": "431381",
+              "checksum": "SHA-256:1a9efa50e23fec004bf169579978882db6079b76c52da9188d149d270ded432c",
+              "host": "x86_64-linux-gnu",
+              "archiveFileName": "micronucleus-cli-2.5-azd1-x86_64-linux-gnu.tar.bz2",
+              "url": "https://felias-fogg.github.io/micronucleus/micronucleus-cli-2.5-azd1-x86_64-linux-gnu.tar.bz2"
+            }
+          ]
+        },
+        {
+          "name": "avrdude",
+          "version": "8.0-arduino.1",
+          "systems": [
+            {
+              "size": "1441658",
+              "checksum": "SHA-256:66ae53dac08b2db2f065d7b6b2f60ff62d2a85907613c7b2988fdd1922950b5d",
+              "host": "arm-linux-gnueabihf",
+              "archiveFileName": "avrdude_8.0-arduino.1_Linux_ARMv6.tar.gz",
+              "url": "http://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Linux_ARMv6.tar.gz"
+            },
+            {
+              "size": "1565761",
+              "checksum": "SHA-256:031f212bdcb77e2ea13895f07ab4a0c254963f8f1bbd3b8797d3363a6a2e95e3",
+              "host": "aarch64-linux-gnu",
+              "archiveFileName": "avrdude_8.0-arduino.1_Linux_ARM64.tar.gz",
+              "url": "http://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Linux_ARM64.tar.gz"
+            },
+            {
+              "size": "1173108",
+              "checksum": "SHA-256:8a36cf441a3ce21622eb30b40f0b71d27864b30ea851cb795ae654ee10e2c132",
+              "host": "x86_64-apple-darwin12",
+              "archiveFileName": "avrdude_8.0-arduino.1_macOS_64bit.tar.gz",
+              "url": "http://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_macOS_64bit.tar.gz"
+            },
+            {
+              "size": "1476932",
+              "checksum": "SHA-256:1d2edadb07e070fcd016e8c802e961e30bfa606c2db63625c930526e7044aaa6",
+              "host": "x86_64-linux-gnu",
+              "archiveFileName": "avrdude_8.0-arduino.1_Linux_64bit.tar.gz",
+              "url": "http://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Linux_64bit.tar.gz"
+            },
+            {
+              "size": "1452068",
+              "checksum": "SHA-256:622358355a17cb400060cffbe1f8fc2fd9cea2ee883ab1b7766fd8219e0fc0f9",
+              "host": "i686-linux-gnu",
+              "archiveFileName": "avrdude_8.0-arduino.1_Linux_32bit.tar.gz",
+              "url": "http://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Linux_32bit.tar.gz"
+            },
+            {
+              "size": "1890359",
+              "checksum": "SHA-256:833aa1a66a8e70cd597fcfdbd7e559a91a00eca1d7aa3be2ce9bcadf7ccb987c",
+              "host": "i686-mingw32",
+              "archiveFileName": "avrdude_8.0-arduino.1_Windows_32bit.tar.gz",
+              "url": "http://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Windows_32bit.tar.gz"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

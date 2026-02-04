@@ -1,0 +1,106 @@
+GAS LISTING C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s 			page 1
+
+
+   1               		.file	"osccal.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+   8               		.text
+   9               	.global	calibrateOscillator
+  10               		.type	calibrateOscillator, @function
+  11               	calibrateOscillator:
+  12 0000 FF92      		push r15
+  13 0002 0F93      		push r16
+  14 0004 1F93      		push r17
+  15 0006 CF93      		push r28
+  16 0008 DF93      		push r29
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19 000a 80E8      		ldi r24,lo8(-128)
+  20 000c F82E      		mov r15,r24
+  21 000e 00E0      		ldi r16,lo8(0)
+  22 0010 C0E0      		ldi r28,lo8(0)
+  23 0012 D0E0      		ldi r29,hi8(0)
+  24               	.L4:
+  25 0014 102F      		mov r17,r16
+  26 0016 1F0D      		add r17,r15
+  27 0018 11BF      		out 81-32,r17
+  28 001a 00D0      		rcall usbMeasureFrameLength
+  29 001c 29E0      		ldi r18,hi8(2356)
+  30 001e 8433      		cpi r24,lo8(2356)
+  31 0020 9207      		cpc r25,r18
+  32 0022 04F0      		brlt .L2
+  33 0024 102F      		mov r17,r16
+  34               	.L2:
+  35 0026 F694      		lsr r15
+  36 0028 2196      		adiw r28,1
+  37 002a C830      		cpi r28,8
+  38 002c D105      		cpc r29,__zero_reg__
+  39 002e 01F0      		breq .L3
+  40 0030 012F      		mov r16,r17
+  41 0032 00C0      		rjmp .L4
+  42               	.L3:
+  43 0034 1150      		subi r17,lo8(-(-1))
+  44 0036 11BF      		out 81-32,r17
+  45 0038 1F5F      		subi r17,lo8(-(1))
+  46 003a 012F      		mov r16,r17
+  47 003c EC01      		movw r28,r24
+  48 003e 00C0      		rjmp .L5
+  49               	.L8:
+  50 0040 00D0      		rcall usbMeasureFrameLength
+  51 0042 8453      		subi r24,lo8(-(-2356))
+  52 0044 9940      		sbci r25,hi8(-(-2356))
+  53 0046 97FF      		sbrs r25,7
+  54 0048 00C0      		rjmp .L6
+  55 004a 9095      		com r25
+  56 004c 8195      		neg r24
+  57 004e 9F4F      		sbci r25,lo8(-1)
+GAS LISTING C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s 			page 2
+
+
+  58               	.L6:
+  59 0050 8C17      		cp r24,r28
+  60 0052 9D07      		cpc r25,r29
+  61 0054 04F4      		brge .L7
+  62 0056 01B7      		in r16,81-32
+  63 0058 EC01      		movw r28,r24
+  64               	.L7:
+  65 005a 81B7      		in r24,81-32
+  66 005c 8F5F      		subi r24,lo8(-(1))
+  67 005e 81BF      		out 81-32,r24
+  68               	.L5:
+  69 0060 21B7      		in r18,81-32
+  70 0062 30E0      		ldi r19,lo8(0)
+  71 0064 812F      		mov r24,r17
+  72 0066 90E0      		ldi r25,lo8(0)
+  73 0068 0196      		adiw r24,1
+  74 006a 8217      		cp r24,r18
+  75 006c 9307      		cpc r25,r19
+  76 006e 04F4      		brge .L8
+  77 0070 01BF      		out 81-32,r16
+  78               	/* epilogue start */
+  79 0072 DF91      		pop r29
+  80 0074 CF91      		pop r28
+  81 0076 1F91      		pop r17
+  82 0078 0F91      		pop r16
+  83 007a FF90      		pop r15
+  84 007c 0895      		ret
+  85               		.size	calibrateOscillator, .-calibrateOscillator
+GAS LISTING C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 osccal.c
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:2      *ABS*:0000003f __SREG__
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:3      *ABS*:0000003e __SP_H__
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:4      *ABS*:0000003d __SP_L__
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:5      *ABS*:00000034 __CCP__
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\Erik\AppData\Local\Temp/ccabieCZ.s:11     .text:00000000 calibrateOscillator
+
+UNDEFINED SYMBOLS
+usbMeasureFrameLength

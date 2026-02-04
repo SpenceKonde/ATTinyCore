@@ -1,0 +1,1 @@
+read, write, send, and receive should be run as python scripts (found in the source directory) - they depend on pyusb, so you will need to install that "sudo easy_install pyusb"

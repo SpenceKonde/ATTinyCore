@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring Map SoftRcPulseOut
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SoftRcPulseOut	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+attach	KEYWORD2
+attache	KEYWORD2
+detach	KEYWORD2
+detache	KEYWORD2
+write	KEYWORD2
+ecrit	KEYWORD2
+write_us	KEYWORD2
+ecrit_us	KEYWORD2
+read	KEYWORD2
+lit	KEYWORD2
+read_us	KEYWORD2
+lit_us	KEYWORD2
+attached	KEYWORD2
+estAttache	KEYWORD2
+setMinimumPulse	KEYWORD2
+definitImpulsionMinimum	KEYWORD2
+setMaximumPulse	KEYWORD2
+definitImpulsionMaximum	KEYWORD2
+refresh	KEYWORD2
+rafraichit	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

@@ -1,0 +1,28 @@
+RESEARCH
+
+
+SSD1306
+http://www.solomon-systech.com/en/product/display-ic/oled-driver-controller/ssd1306/
+SSD1306 is a single-chip CMOS OLED/PLED driver with controller for organic / polymer light emitting diode dot-matrix graphic display system. It consists of 128 segments and 64 commons. This IC is designed for Common Cathode type OLED panel.
+
+
+---- SSD1306 Datasheets ----
+
+https://www.adafruit.com/datasheets/SSD1306.pdf
+
+http://www.crystalfontz.com/controllers/Solomon_Systech_SSD1306_v1.1_April_2008.pdf
+
+
+---- Other SSD1306 Libraries ----
+
+
+
+---- Projects ----
+
+
+
+---- Other References ----
+
+
+
+

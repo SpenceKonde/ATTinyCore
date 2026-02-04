@@ -1,0 +1,3 @@
+ArduinoNunchuk	KEYWORD1
+init	KEYWORD2
+update	KEYWORD2

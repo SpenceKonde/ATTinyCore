@@ -3,7 +3,7 @@
 
  Shows the output of a Barometric Pressure Sensor on a
  Uses the SPI library. For details on the sensor, see:
- http://www.sparkfun.com/commerce/product_info.php?products_id = 8161
+ http://www.sparkfun.com/commerce/product_info.php?products_id=8161
  http://www.vti.fi/en/support/obsolete_products/pressure_sensors/
 
  This sketch adapted from Nathan Seidle's SCP1000 example for PIC:
@@ -43,7 +43,7 @@ void setup() {
   // start the SPI library:
   SPI.begin();
 
-  // initialize the  data ready and chip select pins:
+  // initalize the  data ready and chip select pins:
   pinMode(dataReadyPin, INPUT);
   pinMode(chipSelectPin, OUTPUT);
 
@@ -85,7 +85,7 @@ void loop() {
 }
 
 //Read from or write to register from the SCP1000:
-unsigned int readRegister(byte thisRegister, int bytesToRead ) {
+unsigned int readRegister(byte thisRegister, int bytesToRead) {
   byte inByte = 0;           // incoming byte from the SPI
   unsigned int result = 0;   // result to return
   Serial.print(thisRegister, BIN);
@@ -117,7 +117,7 @@ unsigned int readRegister(byte thisRegister, int bytesToRead ) {
   // take the chip select high to de-select:
   digitalWrite(chipSelectPin, HIGH);
   // return the result:
-  return(result);
+  return (result);
 }
 
 
@@ -140,3 +140,4 @@ void writeRegister(byte thisRegister, byte thisValue) {
   // take the chip select high to de-select:
   digitalWrite(chipSelectPin, HIGH);
 }
+

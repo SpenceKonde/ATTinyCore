@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring Map SoftRcPulseIn
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SoftRcPulseIn	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+LibVersion	KEYWORD2
+LibRevision	KEYWORD2
+LibTextVersionRevision	KEYWORD2
+attach	KEYWORD2
+attache	KEYWORD2
+available	KEYWORD2
+disponible	KEYWORD2
+timeout	KEYWORD2
+width_us	KEYWORD2
+largeur_us	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

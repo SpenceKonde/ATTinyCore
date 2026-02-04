@@ -1,0 +1,60 @@
+############################################
+# Syntax Coloring Map RcSeq
+############################################
+
+############################################
+# Datatypes (KEYWORD1)
+############################################
+RcSeq	KEYWORD1
+
+############################################
+# Methods and Functions (KEYWORD2)
+############################################
+RcSeq_LibVersion	KEYWORD2
+RcSeq_LibRevision	KEYWORD2
+RcSeq_LibTextVersionRevision	KEYWORD2
+RcSeq_Init	KEYWORD2
+RcSeq_DeclareSignal	KEYWORD2
+RcSeq_SignalTimeout	KEYWORD2
+RcSeq_DeclareKeyboard	KEYWORD2
+RcSeq_DeclareClavier	KEYWORD2
+RcSeq_DeclareStick	KEYWORD2
+RcSeq_DeclareManche	KEYWORD2
+RcSeq_DeclareServo	KEYWORD2
+RcSeq_ServoWrite	KEYWORD2
+RcSeq_DeclareCustomKeyboard	KEYWORD2
+RcSeq_DeclareClavierMaison	KEYWORD2
+RcSeq_DeclareMultiPosSwitch	KEYWORD2
+RcSeq_DeclareInterMultiPos	KEYWORD2
+RcSeq_DeclareCommandAndSequence	KEYWORD2
+RcSeq_DeclareCommandeEtSequence	KEYWORD2
+RcSeq_DeclareCommandAndShortAction	KEYWORD2
+RcSeq_DeclareCommandeEtActionCourte	KEYWORD2
+RcSeq_LaunchSequence	KEYWORD2
+RcSeq_LanceSequence	KEYWORD2
+RcSeq_LaunchShortAction		KEYWORD2
+RcSeq_LanceActionCourte		KEYWORD2
+RcSeq_Refresh	KEYWORD2
+RcSeq_Rafraichit	KEYWORD2
+
+############################################
+# Constants (LITERAL1)
+############################################
+SequenceSt_t	LITERAL1
+KeyMap_t	LITERAL1
+SHORT_ACTION_TO_PERFORM	LITERAL1
+ACTION_COURTE_A_EFFECTUER	LITERAL1
+MOTION_WITH_SOFT_START_AND_STOP	LITERAL1
+MOTION_WITHOUT_SOFT_START_AND_STOP	LITERAL1
+MVT_AVEC_DEBUT_ET_FIN_MVT_LENTS	LITERAL1
+MVT_SANS_DEBUT_ET_FIN_MVT_LENTS	LITERAL1
+RC_CUSTOM_KEYBOARD	LITERAL1
+RC_CLAVIER_MAISON	LITERAL1
+RC_SEQUENCE	LITERAL1
+CENTER_VALUE_US	LITERAL1
+VALEUR_CENTRALE_US	LITERAL1
+RC_SEQ_START_CONDITION	LITERAL1
+RC_SEQ_CONDITION_DE_DEPART	LITERAL1
+RC_SEQ_END_OF_SEQ	LITERAL1
+RC_SEQ_FIN_DE_SEQ	LITERAL1
+

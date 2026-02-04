@@ -1,0 +1,34 @@
+#######################################
+# Syntax Coloring Map For RTC
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+DateTime  KEYWORD1
+RTC_DS1307	KEYWORD1
+RTC_Millis	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+year	KEYWORD2
+month	KEYWORD2
+day	KEYWORD2
+hour	KEYWORD2
+minute	KEYWORD2
+second	KEYWORD2
+dayOfWeek	KEYWORD2
+secondstime	KEYWORD2
+unixtime	KEYWORD2
+begin	KEYWORD2
+adjust	KEYWORD2
+isrunning	KEYWORD2
+now	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

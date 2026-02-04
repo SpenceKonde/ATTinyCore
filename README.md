@@ -1,4 +1,16 @@
-# ATTinyCore **Universal**
+# ATTinyCore **Universal** (2026 Working Update)
+<br>
+
+This is useful if you are trying to use a DigiSpark in 2026, all the other standard methods seem broken.
+
+<br>
+Add this url "https://raw.githubusercontent.com/FlashStopFall/ATTinyCore-2026/refs/heads/v2.0.0-devThis-is-the-head-submit-PRs-against-this/package_attinycore-2026_index.json" to your board package manager in preferences in the Arduino IDE. Working in Arduino IDE 2.3.7.
+
+<br><br>
+This is a fork of Spence Konde's ATTinyCore Repo (https://github.com/SpenceKonde/ATTinyCore). It was not working enough to use for programming a DigiSpark in 2026, so I fixed some things, and added some example code from Digistump's Digispark repo (https://github.com/digistump/DigistumpArduino/tree/master) as well as some helper programs from Digistump to be able to use DigiUSB (https://github.com/digistump/DigisparkExamplePrograms/tree/master). Credit also to felias-fogg (https://github.com/felias-fogg/ATTinyCore). His repo is installable via the Arduino IDE, and I used his code to learn how make package_index.json. Some of the download links still point to his mirrors.
+
+<br><br><br><br><br><br><br><br><br>
+
 Arduino support for almost every classic tinyAVR device! Supports ATtiny 1634, 2313/4313, 24/44/84, 441/841, 25/45/85, 261/461/861, 87/167, 48/88, 43, 26 and 828.
 
 Supports programming via ISP, Serial (Optiboot) or VUSB (Micronucleus)

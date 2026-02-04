@@ -1,0 +1,34 @@
+Notes On Integrating AVRUSB with Arduino
+========================================
+
+* Note the license(s) under which AVRUSB is distributed.
+
+* See also: http://code.rancidbacon.com/ProjectLogArduinoUSB
+
+* Note: The pins we use on the PCB (not protoboard) hardware shield are:
+
+     INT0 == PD2 == IC Pin 4 == Arduino Digital Pin 2 == D+
+
+     ---- == PD4 == -------- == Arduino Digital Pin 4 == D-
+
+     ---- == PD5 == -------- == Arduino Digital Pin 5 == pull-up
+
+  (DONE: Change to not use PD3 so INT1 is left free?)
+
+* In order to compile a valid 'usbconfig.h' file must exit. The content of this
+  file will vary depending on whether the device is a generic USB device,
+  generic HID device or specific class of HID device for example.
+
+  The file 'usbconfig-prototype.h' can be used as a starting point, however
+  it might be easier to use the 'usbconfig.h' from one of the example projects.
+
+  TODO: Specify the settings that need to be changed to match the shield
+        design we use.
+
+* (NOTE: Initial 'usbconfig.h' used will be based on the file from
+ 'HIDKeys.2007-03-29'.) (Note: Have now upgraded to V-USB 2009-08-22.)
+
+* Versions of the Arduino IDE prior to 0018 won't compile our library
+  so it needs to be pre-compiled with:
+
+    avr-g++  -Wall -Os -I. -DF_CPU=16000000 -mmcu=atmega168  -c usbdrvasm.S  -c usbdrv.c

@@ -1,0 +1,2 @@
+DigiUSB	KEYWORD1
+refresh KEYWORD2

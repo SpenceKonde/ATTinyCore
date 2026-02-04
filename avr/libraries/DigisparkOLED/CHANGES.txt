@@ -1,0 +1,52 @@
+CHANGES
+
+
+2015-01-10 (nb)
+
+Fixed and improved initialization. New and improved printing of text. Updated texts.
+
+- Fixed initialization commands.
+- Implemented ssd1306_init more efficiently.
+- New functions ssd1306_send_command_start, ssd1306_send_command_stop.
+- Improved ssd1306_setpos, more efficient.
+- Reimplemented function ssd1306_char_f6x8 as improved ssd1306_char_font6x8 printing single characters only, added new ssd1306_string_font6x8 for printing strings.
+- The font8x16 functions and data moved to another file until properly implemented.
+- Added to the Make file ssd1306xled8x16 file.
+- Updated testing text displayed on the screen.
+
+
+2015-01-10 (nb)
+
+Changed default pins for display, now PB0=SCL and PB1=SDA. Source code reformatting, improvements, edited comments.
+
+- Changed default pins for connecting to the display for consistency with the built-in TWI interface, they are now PB0=SCL and PB1=SDA.
+- Source code, removed redundant initializations of variables.
+- Source code reformatting, edited comments.
+
+
+2015-01-10 (nb)
+
+Fixed some warnings, variables renamed. The font16x16/Chinese stuff moved to other folders.
+
+- Font variable ssd1306xled_font8X16 renamed to ssd1306xled_font8x16 for consistency. TODO: rename "ssd1306xled_font8x16" file as well.
+- Fixed ssd1306_draw_bmp prototype: added "const" to bitmap so it wont't generate warning.
+- Files related to font 16x16 (Chinese) moved to different folders: font16x16cn.h.
+- Functions and other code related to font 16x16 (Chinese) moved to different folders.
+- Source code reformatting, edited comments.
+
+
+2014-10-26 (gs)
+
+Make project compile on gcc-avr - turn static images to consts, and rename include of font16x16cn.h
+
+
+2014-08-13 (nb)
+
+More files added to the repository.
+
+
+2014-08-11 (nb)
+
+Files added to the repository.
+
+

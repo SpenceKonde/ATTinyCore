@@ -1,4 +1,5 @@
-/* SoftwareSerial.cpp (formerly NewSoftSerial.cpp) -
+/*
+SoftwareSerial.cpp (formerly NewSoftSerial.cpp) -
 Multi-instance software serial library for Arduino/Wiring
 -- Interrupt-driven receive and other improvements by ladyada
    (http://ladyada.net)
@@ -9,25 +10,31 @@ Multi-instance software serial library for Arduino/Wiring
 -- Pin change interrupt macros by Paul Stoffregen (http://www.pjrc.com)
 -- 20MHz processor support by Garrett Mace (http://www.macetech.com)
 -- ATmega1280/2560 support by Brett Hagman (http://www.roguerobotics.com/)
--- Adapted to handle corner cases (older classic AVRs with PCINT_vect
-   and to #error when we don't find one, and removed workaround for
-   versions of AVR-gcc that existed when dinosaurs walked the earth.
-   Spemce Konde 2021 for ATTimyCore.
 
-This version is designed for distribution with ATTinyCore 2.0.0 and later.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
 
-This library is free software (LGPL 2.1) see the LICENCE.md file in this package
-for the full legal boilerplate.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+The latest version of this library can always be found at
+http://arduiniana.org.
 */
 
 // When set, _DEBUG co-opts pins 11 and 13 for debugging with an
 // oscilloscope or logic analyzer.  Beware: it also slightly modifies
 // the bit times, so don't rely on it too much at high baud rates
 #define _DEBUG 0
-#if _DEBUG
-  #define _DEBUG_PIN1 11
-  #define _DEBUG_PIN2 13
-#endif
+#define _DEBUG_PIN1 11
+#define _DEBUG_PIN2 13
 //
 // Includes
 //
@@ -38,7 +45,7 @@ for the full legal boilerplate.
 #include <util/delay_basic.h>
 
 //
-// Statistics
+// Statics
 //
 SoftwareSerial *SoftwareSerial::active_object = 0;
 char SoftwareSerial::_receive_buffer[_SS_MAX_RX_BUFF];
@@ -50,23 +57,19 @@ volatile uint8_t SoftwareSerial::_receive_buffer_head = 0;
 //
 // This function generates a brief pulse
 // for debugging or measuring on an oscilloscope.
-// Spence observes that this is a lousy implementant.
-// weould split into 2 functions and get *ppin = portInputRegister(digitalPinToPort(pin)) using the LTO tricks
-// then we could do *ppin |= (1 << bitposition) (toggle), and make sure we do it an even number of times,
-// and it would come out right with less impoact ion timing
+inline void DebugPulse(uint8_t pin, uint8_t count)
+{
 #if _DEBUG
-inline void DebugPulse(uint8_t pin,  uint8_t count) {
-
   volatile uint8_t *pport = portOutputRegister(digitalPinToPort(pin));
 
   uint8_t val = *pport;
-  while (count--) {
+  while (count--)
+  {
     *pport = val | digitalPinToBitMask(pin);
     *pport = val;
   }
-}
 #endif
-
+}
 
 //
 // Private methods
@@ -79,11 +82,13 @@ inline void SoftwareSerial::tunedDelay(uint16_t delay) {
 
 // This function sets the current object as the "listening"
 // one and returns true if it replaces another
-bool SoftwareSerial::listen() {
+bool SoftwareSerial::listen()
+{
   if (!_rx_delay_stopbit)
     return false;
 
-  if (active_object != this) {
+  if (active_object != this)
+  {
     if (active_object)
       active_object->stopListening();
 
@@ -99,8 +104,10 @@ bool SoftwareSerial::listen() {
 }
 
 // Stop listening. Returns true if we were actually listening.
-bool SoftwareSerial::stopListening() {
-  if (active_object == this) {
+bool SoftwareSerial::stopListening()
+{
+  if (active_object == this)
+  {
     setRxIntMsk(false);
     active_object = NULL;
     return true;
@@ -111,14 +118,31 @@ bool SoftwareSerial::stopListening() {
 //
 // The receive routine called by the interrupt handler
 //
-void SoftwareSerial::recv() {
-  // Spence Konde: removed dead code to work around bugs in aincent compiler version. This core requires Link
-  // timer optimization as of 2.0.0, which was not implemented unti 5.x
+void SoftwareSerial::recv()
+{
+
+#if GCC_VERSION < 40302
+// Work-around for avr-gcc 4.3.0 OSX version bug
+// Preserve the registers that the compiler misses
+// (courtesy of Arduino forum user *etracer*)
+  asm volatile(
+    "push r18 \n\t"
+    "push r19 \n\t"
+    "push r20 \n\t"
+    "push r21 \n\t"
+    "push r22 \n\t"
+    "push r23 \n\t"
+    "push r26 \n\t"
+    "push r27 \n\t"
+    ::);
+#endif
+
   uint8_t d = 0;
 
   // If RX line is high, then we don't see any start bit
   // so interrupt is probably not for us
-  if (_inverse_logic ? rx_pin_read() : !rx_pin_read()) {
+  if (_inverse_logic ? rx_pin_read() : !rx_pin_read())
+  {
     // Disable further interrupts during reception, this prevents
     // triggering another interrupt directly after we return, which can
     // cause problems at higher baudrates.
@@ -126,16 +150,14 @@ void SoftwareSerial::recv() {
 
     // Wait approximately 1/2 of a bit width to "center" the sample
     tunedDelay(_rx_delay_centering);
-    #if _DEBUG
-      DebugPulse(_DEBUG_PIN2, 1);
-    #endif
+    DebugPulse(_DEBUG_PIN2, 1);
+
     // Read each of the 8 bits
-    for (uint8_t i = 8; i > 0; --i) {
+    for (uint8_t i=8; i > 0; --i)
+    {
       tunedDelay(_rx_delay_intrabit);
       d >>= 1;
-      #if _DEBUG
-        DebugPulse(_DEBUG_PIN2, 1);
-      #endif
+      DebugPulse(_DEBUG_PIN2, 1);
       if (rx_pin_read())
         d |= 0x80;
     }
@@ -145,32 +167,45 @@ void SoftwareSerial::recv() {
 
     // if buffer full, set the overflow flag and return
     uint8_t next = (_receive_buffer_tail + 1) % _SS_MAX_RX_BUFF;
-    if (next != _receive_buffer_head) {
+    if (next != _receive_buffer_head)
+    {
       // save new data in buffer: tail points to where byte goes
       _receive_buffer[_receive_buffer_tail] = d; // save new byte
       _receive_buffer_tail = next;
     }
     else
     {
-      #if _DEBUG
-        DebugPulse(_DEBUG_PIN1, 1);
-      #endif
+      DebugPulse(_DEBUG_PIN1, 1);
       _buffer_overflow = true;
     }
 
     // skip the stop bit
     tunedDelay(_rx_delay_stopbit);
-    #if _DEBUG
-      DebugPulse(_DEBUG_PIN1, 1);
-    #endif
+    DebugPulse(_DEBUG_PIN1, 1);
+
     // Re-enable interrupts when we're sure to be inside the stop bit
     setRxIntMsk(true);
 
   }
 
+#if GCC_VERSION < 40302
+// Work-around for avr-gcc 4.3.0 OSX version bug
+// Restore the registers that the compiler misses
+  asm volatile(
+    "pop r27 \n\t"
+    "pop r26 \n\t"
+    "pop r23 \n\t"
+    "pop r22 \n\t"
+    "pop r21 \n\t"
+    "pop r20 \n\t"
+    "pop r19 \n\t"
+    "pop r18 \n\t"
+    ::);
+#endif
 }
 
-uint8_t SoftwareSerial::rx_pin_read() {
+uint8_t SoftwareSerial::rx_pin_read()
+{
   return *_receivePortRegister & _receiveBitMask;
 }
 
@@ -179,37 +214,32 @@ uint8_t SoftwareSerial::rx_pin_read() {
 //
 
 /* static */
-inline void SoftwareSerial::handle_interrupt() {
-  if (active_object) {
+inline void SoftwareSerial::handle_interrupt()
+{
+  if (active_object)
+  {
     active_object->recv();
   }
 }
 
 #if defined(PCINT0_vect)
-ISR(PCINT0_vect) {
+ISR(PCINT0_vect)
+{
   SoftwareSerial::handle_interrupt();
 }
-#elif defined(PCINT_vect)
-  ISR(PCINT_vect) {
-    SoftwareSerial::handle_interrupt();
-  }
-#endif
-#if (defined (PCINT0_vect) || defined(PCINT_vect))
-  #if defined(PCINT1_vect)
-    ISR(PCINT1_vect, ISR_ALIASOF(PCINT0_vect));
-  #endif
-  #if defined(PCINT2_vect)
-    ISR(PCINT2_vect, ISR_ALIASOF(PCINT0_vect));
-  #endif
-  #if defined(PCINT3_vect)
-    ISR(PCINT3_vect, ISR_ALIASOF(PCINT0_vect));
-  #endif
-#else
-  #error "There is no PCINT vector known to this library; SoftwareSerial requires PCINT (pin change interrupts)"
-  #error "which are present on essentially all classic AVRs; are you using something ancient? The post-2016 (so called modern AVRs are not supported by this version)!"
 #endif
 
+#if defined(PCINT1_vect)
+ISR(PCINT1_vect, ISR_ALIASOF(PCINT0_vect));
+#endif
 
+#if defined(PCINT2_vect)
+ISR(PCINT2_vect, ISR_ALIASOF(PCINT0_vect));
+#endif
+
+#if defined(PCINT3_vect)
+ISR(PCINT3_vect, ISR_ALIASOF(PCINT0_vect));
+#endif
 
 //
 // Constructor
@@ -220,7 +250,8 @@ SoftwareSerial::SoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inv
   _rx_delay_stopbit(0),
   _tx_delay(0),
   _buffer_overflow(false),
-  _inverse_logic(inverse_logic) {
+  _inverse_logic(inverse_logic)
+{
   setTX(transmitPin);
   setRX(receivePin);
 }
@@ -228,11 +259,13 @@ SoftwareSerial::SoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inv
 //
 // Destructor
 //
-SoftwareSerial::~SoftwareSerial() {
+SoftwareSerial::~SoftwareSerial()
+{
   end();
 }
 
-void SoftwareSerial::setTX(uint8_t tx) {
+void SoftwareSerial::setTX(uint8_t tx)
+{
   // First write, then set output. If we do this the other way around,
   // the pin would be output low for a short while before switching to
   // output hihg. Now, it is input with pullup for a short while, which
@@ -244,7 +277,8 @@ void SoftwareSerial::setTX(uint8_t tx) {
   _transmitPortRegister = portOutputRegister(port);
 }
 
-void SoftwareSerial::setRX(uint8_t rx) {
+void SoftwareSerial::setRX(uint8_t rx)
+{
   pinMode(rx, INPUT);
   if (!_inverse_logic)
     digitalWrite(rx, HIGH);  // pullup for normal logic!
@@ -265,7 +299,8 @@ uint16_t SoftwareSerial::subtract_cap(uint16_t num, uint16_t sub) {
 // Public methods
 //
 
-void SoftwareSerial::begin(long speed) {
+void SoftwareSerial::begin(long speed)
+{
   _rx_delay_centering = _rx_delay_intrabit = _rx_delay_stopbit = _tx_delay = 0;
 
   // Precalculate the various delays, in number of 4-cycle delays
@@ -337,20 +372,23 @@ void SoftwareSerial::begin(long speed) {
   listen();
 }
 
-void SoftwareSerial::setRxIntMsk(bool enable) {
+void SoftwareSerial::setRxIntMsk(bool enable)
+{
     if (enable)
       *_pcint_maskreg |= _pcint_maskvalue;
     else
       *_pcint_maskreg &= ~_pcint_maskvalue;
 }
 
-void SoftwareSerial::end() {
+void SoftwareSerial::end()
+{
   stopListening();
 }
 
 
 // Read data from buffer
-int SoftwareSerial::read() {
+int SoftwareSerial::read()
+{
   if (!isListening())
     return -1;
 
@@ -360,22 +398,20 @@ int SoftwareSerial::read() {
 
   // Read from "head"
   uint8_t d = _receive_buffer[_receive_buffer_head]; // grab next byte
-  _receive_buffer_head = (uint8_t)(_receive_buffer_head + 1) % _SS_MAX_RX_BUFF; // this cast saves 6 bytes
+  _receive_buffer_head = (_receive_buffer_head + 1) % _SS_MAX_RX_BUFF;
   return d;
 }
 
-int SoftwareSerial::available() {
-  if (!isListening()) {
+int SoftwareSerial::available()
+{
+  if (!isListening())
     return 0;
-  }
 
-  return (uint8_t)(_receive_buffer_tail + _SS_MAX_RX_BUFF - _receive_buffer_head) % _SS_MAX_RX_BUFF;
-  // this cast saves 86 - and a even a uint16_t saves 78, and cuts > 10 us from the execution time
-  // The shortcut of & (2^n - 1) only works for unsigned operands.
+  return (_receive_buffer_tail + _SS_MAX_RX_BUFF - _receive_buffer_head) % _SS_MAX_RX_BUFF;
 }
 
-
-size_t SoftwareSerial::write(uint8_t b) {
+size_t SoftwareSerial::write(uint8_t b)
+{
   if (_tx_delay == 0) {
     setWriteError();
     return 0;
@@ -406,7 +442,8 @@ size_t SoftwareSerial::write(uint8_t b) {
   tunedDelay(delay);
 
   // Write each of the 8 bits
-  for (uint8_t i = 8; i > 0; --i) {
+  for (uint8_t i = 8; i > 0; --i)
+  {
     if (b & 1) // choose bit
       *reg |= reg_mask; // send 1
     else
@@ -428,7 +465,8 @@ size_t SoftwareSerial::write(uint8_t b) {
   return 1;
 }
 
-void SoftwareSerial::flush() {
+void SoftwareSerial::flush()
+{
   if (!isListening())
     return;
 
@@ -438,7 +476,8 @@ void SoftwareSerial::flush() {
   SREG = oldSREG;
 }
 
-int SoftwareSerial::peek() {
+int SoftwareSerial::peek()
+{
   if (!isListening())
     return -1;
 

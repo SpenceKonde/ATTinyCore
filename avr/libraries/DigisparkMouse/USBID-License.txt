@@ -1,0 +1,154 @@
+Royalty-Free Non-Exclusive Use of USB Product-IDs
+=================================================
+
+Version 2009-04-13
+
+Strictly speaking, this is not a license. You can't give a license to use
+a simple number (such as e.g. 1500) for any purpose. This is a set of rules
+which should make it possible to build USB devices without the requirement
+for individual USB IDs. If you break one of the rules, you will run into
+technical problems sooner or later, but you don't risk legal trouble.
+
+
+OBJECTIVE DEVELOPMENT Software GmbH hereby grants you the non-exclusive
+right to use four USB.org vendor-ID (VID) / product-ID (PID) pairs with
+products based on Objective Development's firmware-only USB driver for
+Atmel AVR microcontrollers:
+
+ * VID = 5824 (=0x16c0) / PID = 1500 (=0x5dc) for devices implementing no
+   USB device class (vendor-class devices with USB class = 0xff). Devices
+   using this pair will be referred to as "VENDOR CLASS" devices.
+
+ * VID = 5824 (=0x16c0) / PID = 1503 (=0x5df) for HID class devices
+   (excluding mice and keyboards). Devices using this pair will be referred
+   to as "HID CLASS" devices.
+
+ * VID = 5824 (=0x16c0) / PID = 1505 (=0x5e1) for CDC class modem devices
+   Devices using this pair will be referred to as "CDC-ACM CLASS" devices.
+
+ * VID = 5824 (=0x16c0) / PID = 1508 (=0x5e4) for MIDI class devices
+   Devices using this pair will be referred to as "MIDI CLASS" devices.
+
+Since the granted right is non-exclusive, the same VID/PID pairs may be
+used by many companies and individuals for different products. To avoid
+conflicts, your device and host driver software MUST adhere to the rules
+outlined below.
+
+OBJECTIVE DEVELOPMENT Software GmbH has obtained these VID/PID pairs from
+Wouter van Ooijen (see www.voti.nl) for exclusive disposition. Wouter van
+Ooijen has obtained the VID from the USB Implementers Forum, Inc.
+(see www.usb.org). The VID is registered for the company name
+"Van Ooijen Technische Informatica".
+
+
+RULES AND RESTRICTIONS
+======================
+
+(1) The USB device MUST provide a textual representation of the
+manufacturer and product identification. The manufacturer identification
+MUST be available at least in USB language 0x0409 (English/US).
+
+(2) The textual manufacturer identification MUST contain either an Internet
+domain name (e.g. "mycompany.com") registered and owned by you, or an
+e-mail address under your control (e.g. "myname@gmx.net"). You can embed
+the domain name or e-mail address in any string you like, e.g.  "Objective
+Development http://www.obdev.at/vusb/".
+
+(3) You are responsible for retaining ownership of the domain or e-mail
+address for as long as any of your products are in use.
+
+(4) You may choose any string for the textual product identification, as
+long as this string is unique within the scope of your textual manufacturer
+identification.
+
+(5) Matching of device-specific drivers MUST be based on the textual
+manufacturer and product identification in addition to the usual VID/PID
+matching. This means that operating system features which are based on
+VID/PID matching only (e.g. Windows kernel level drivers, automatic actions
+when the device is plugged in etc) MUST NOT be used. The driver matching
+MUST be a comparison of the entire strings, NOT a sub-string match. For
+CDC-ACM CLASS and MIDI CLASS devices, a generic class driver should be used
+and the matching is based on the USB device class.
+
+(6) The extent to which VID/PID matching is allowed for non device-specific
+drivers or features depends on the operating system and particular VID/PID
+pair used:
+
+ * Mac OS X, Linux, FreeBSD and other Unixes: No VID/PID matching is
+   required and hence no VID/PID-only matching is allowed at all.
+
+ * Windows: The operating system performs VID/PID matching for the kernel
+   level driver. You are REQUIRED to use libusb-win32 (see
+   http://libusb-win32.sourceforge.net/) as the kernel level driver for
+   VENDOR CLASS devices. HID CLASS devices all use the generic HID class
+   driver shipped with Windows, except mice and keyboards. You therefore
+   MUST NOT use any of the shared VID/PID pairs for mice or keyboards.
+   CDC-ACM CLASS devices require a ".inf" file which matches on the VID/PID
+   pair. This ".inf" file MUST load the "usbser" driver to configure the
+   device as modem (COM-port).
+
+(7) OBJECTIVE DEVELOPMENT Software GmbH disclaims all liability for any
+problems which are caused by the shared use of these VID/PID pairs. You
+have been warned that the sharing of VID/PID pairs may cause problems. If
+you want to avoid them, get your own VID/PID pair for exclusive use.
+
+
+HOW TO IMPLEMENT THESE RULES
+============================
+
+The following rules are for VENDOR CLASS and HID CLASS devices. CDC-ACM
+CLASS and MIDI CLASS devices use the operating system's class driver and
+don't need a custom driver.
+
+The host driver MUST iterate over all devices with the given VID/PID
+numbers in their device descriptors and query the string representation for
+the manufacturer name in USB language 0x0409 (English/US). It MUST compare
+the ENTIRE string with your textual manufacturer identification chosen in
+(2) above. A substring search for your domain or e-mail address is NOT
+acceptable. The driver MUST NOT touch the device (other than querying the
+descriptors) unless the strings match.
+
+For all USB devices with matching VID/PID and textual manufacturer
+identification, the host driver must query the textual product
+identification and string-compare it with the name of the product it can
+control. It may only initialize the device if the product matches exactly.
+
+Objective Development provides examples for these matching rules with the
+"PowerSwitch" project (using libusb) and with the "Automator" project
+(using Windows calls on Windows and libusb on Unix).
+
+
+Technical Notes:
+================
+
+Sharing the same VID/PID pair among devices is possible as long as ALL
+drivers which match the VID/PID also perform matching on the textual
+identification strings. This is easy on all operating systems except
+Windows, since Windows establishes a static connection between the VID/PID
+pair and a kernel level driver. All devices with the same VID/PID pair must
+therefore use THE SAME kernel level driver.
+
+We therefore demand that you use libusb-win32 for VENDOR CLASS devices.
+This is a generic kernel level driver which allows all types of USB access
+for user space applications. This is only a partial solution of the
+problem, though, because different device drivers may come with different
+versions of libusb-win32 and they may not work with the libusb version of
+the respective other driver. You are therefore encouraged to test your
+driver against a broad range of libusb-win32 versions. Do not use new
+features in new versions, or check for their existence before you use them.
+When a new libusb-win32 becomes available, make sure that your driver is
+compatible with it.
+
+For HID CLASS devices it is necessary that all those devices bind to the
+same kernel driver: Microsoft's generic USB HID driver. This is true for
+all HID devices except those with a specialized driver. Currently, the only
+HIDs with specialized drivers are mice and keyboards. You therefore MUST
+NOT use a shared VID/PID with mouse and keyboard devices.
+
+Sharing the same VID/PID among different products is unusual and probably
+violates the USB specification. If you do it, you do it at your own risk.
+
+To avoid possible incompatibilities, we highly recommend that you get your
+own VID/PID pair if you intend to sell your product. Objective
+Development's commercial licenses for V-USB include a PID for
+unrestricted exclusive use.
